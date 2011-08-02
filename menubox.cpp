@@ -1,0 +1,394 @@
+#include "menubox.h"
+#include "prjmanager.h"
+#include "newprojectwizard.h"
+
+MenuBox::MenuBox(QWidget *parent) :
+    QFrame(parent)
+{
+
+    file = 0;
+    giveStyle();
+    createActions(); // if buttons with menus
+    createButtons();
+
+
+    readSettings();
+
+}
+
+//---------------------------------------------------------------------------
+
+void MenuBox::newProject()
+{
+    NewProjectWizard projectWizard;
+    projectWizard.exec();
+
+    projectManager();
+
+}
+
+//---------------------------------------------------------------------------
+
+void MenuBox::open()
+{
+    QString fileName =
+            QFileDialog::getOpenFileName(window(), tr("Open Project File"),
+                                         QDir::homePath(),
+                                         tr(".Plume Creator Files (*.Plume Creator)"));
+
+
+
+    if (fileName.isEmpty())
+        return;
+
+    closeProject();
+
+
+    //    tempDomFile = new QFile(fileName + ".temp");
+    //    if(tempDomFile->exists()){
+    //        if (!tempDomFile->open(QFile::ReadOnly | QFile::Text)) {
+    //            QMessageBox::warning(this, tr("Plume Creator File"),
+    //                                 tr("Cannot read file %1:\n%2.")
+    //                                 .arg(fileName)
+    //                                 .arg(tempDomFile->errorString()));
+    //            return;
+    //        }
+
+
+    //        QMessageBox::warning(this, tr("Plume Creator File"),
+    //                             tr("This project has been closed abruptly. Plume Creator will try to recuperate this project."));
+    //        connect(this, SIGNAL(openProjectSignal(QFile*)), treeDock, SLOT(openProjectSlot(QFile*)));
+    //        emit openProjectSignal(tempDomFile);
+
+    //        tempDomFile->close();
+
+    //    }
+    //    else{
+
+
+    file = new QFile(fileName);
+    if (!file->open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(window(), tr("Plume Creator File"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(fileName)
+                             .arg(file->errorString()));
+        return;
+    }
+    emit openProjectSignal(file);
+
+    file->close();
+
+    //    }
+}
+
+//---------------------------------------------------------------------------
+
+void MenuBox::projectManager()
+{
+    projManager = new PrjManager();
+    connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
+    connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
+    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+
+    projManager->exec();
+}
+
+//---------------------------------------------------------------------------
+
+
+void MenuBox::displayConfig()
+{
+
+
+    //    //    Config config;
+    //    ConfigDialog dialog(/*config, */this);
+    //    if (dialog.exec() == QDialog::Accepted) {
+    //        //        loadPreferences(config);
+    //    }
+}
+
+
+//--------------------------------------------------------------------------
+
+
+void MenuBox::closeProject()
+{
+    if(!file == 0){
+
+
+        QMessageBox msgBox(window());
+        msgBox.setText(tr("Do you want to close the current project ?"));
+        msgBox.setInformativeText(tr("Your changes are already saved."));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox.exec();
+
+        switch (ret) {
+        case QMessageBox::Ok:
+            emit closeProjectSignal();
+
+            break;
+
+        case QMessageBox::Cancel:
+            return;
+            break;
+        default:
+            // should never be reached
+            break;
+        }
+
+
+    }
+
+
+}
+
+//--------------------------------------------------------------------------
+
+
+void MenuBox::goFullscreen()
+{
+    m_fullscreen = !m_fullscreen;
+    emit goFullscreenSignal(m_fullscreen);
+    goFullscreenButton->setChecked(m_fullscreen);
+
+}
+
+//--------------------------------------------------------------------------
+
+
+void MenuBox::exit()
+{
+
+    writeSettings();
+    emit exitSignal();
+
+
+}
+
+
+//--------------------------------------------------------------------------
+
+
+void MenuBox::print()
+{
+
+
+
+
+}
+
+
+
+
+
+//---------------------------------------------------------------------------
+
+
+void MenuBox::createActions()
+{
+
+}
+
+//---------------------------------------------------------------------------
+
+
+void MenuBox::createButtons()
+{
+    QSize buttonSize(120,40);
+
+
+    QGridLayout *baseGridLayout = new QGridLayout;
+    QWidget *stretcher = new QWidget;
+    stretcher->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    newProjectButton = new QToolButton(this);
+    newProjectButton->setMaximumSize(buttonSize);
+    newProjectButton->setText(tr("&New Project"));
+    newProjectButton->setShortcut(QKeySequence::New);
+    newProjectButton->setToolTip(tr("Create a new project"));
+    connect(newProjectButton, SIGNAL(pressed()), this, SLOT(newProject()));
+
+    projectManagerButton = new QToolButton(this);
+    projectManagerButton->setMaximumSize(buttonSize);
+    projectManagerButton->setText(tr("Project &Manager"));
+    // projectManagerAct->setShortcut(QKeySequence::New);
+    projectManagerButton->setToolTip(tr("Create a new project"));
+    connect(projectManagerButton, SIGNAL(pressed()), this, SLOT(projectManager()));
+
+    openButton = new QToolButton(this);
+    openButton->setMaximumSize(buttonSize);
+    openButton->setText(tr("&Open..."));
+    openButton->setShortcut(QKeySequence::Open);
+    openButton->setToolTip(tr("Open an existing file"));
+    connect(openButton, SIGNAL(pressed()), this, SLOT(open()));
+
+    displayConfigButton = new QToolButton(this);
+    displayConfigButton->setMaximumSize(buttonSize);
+    displayConfigButton->setText(tr("&Configure"));
+    //   displayConfigButton->setShortcut(QKeySequence::Print);
+    displayConfigButton->setToolTip(tr("Display the configuration"));
+    connect(displayConfigButton, SIGNAL(pressed()), this, SLOT(displayConfig()));
+
+    printButton = new QToolButton(this);
+    printButton->setMaximumSize(buttonSize);
+    printButton->setText(tr("&Print"));
+    printButton->setShortcut(QKeySequence::Print);
+    printButton->setToolTip(tr("Print part of the project"));
+    connect(printButton, SIGNAL(pressed()), this, SLOT(print()));
+
+    closeProjectButton = new QToolButton(this);
+    closeProjectButton->setMaximumSize(buttonSize);
+    closeProjectButton->setText(tr("&Close project"));
+    closeProjectButton->setShortcut(QKeySequence::Close);
+    closeProjectButton->setToolTip(tr("Print the dprintocument"));
+    connect(closeProjectButton, SIGNAL(pressed()), this, SLOT(closeProject()));;
+
+    exitButton = new QToolButton(this);
+    exitButton->setMaximumSize(buttonSize);
+    exitButton->setText(tr("E&xit"));
+    exitButton->setShortcut(QKeySequence::Quit);
+    exitButton->setToolTip(tr("Exit the application"));
+    connect(exitButton, SIGNAL(pressed()), this, SLOT(exit()));
+
+
+    goFullscreenButton = new QToolButton(this);
+    goFullscreenButton->setMaximumSize(buttonSize);
+    goFullscreenButton->setText(tr("&Fullscreen"));
+    goFullscreenButton->setCheckable(true);
+    goFullscreenButton->setShortcut(Qt::CTRL + Qt::Key_F11);
+    goFullscreenButton->setStatusTip(tr("Go fullscreen"));
+    connect(goFullscreenButton, SIGNAL(clicked()), this, SLOT(goFullscreen()));
+
+
+    QSize size(60,30);
+    newProjectButton->setFixedSize(size);
+    projectManagerButton->setFixedSize(size);
+    openButton->setFixedSize(size);
+    displayConfigButton->setFixedSize(size);
+    closeProjectButton->setFixedSize(size);
+    exitButton->setFixedSize(size);
+    goFullscreenButton->setFixedSize(size);
+    printButton->setFixedSize(size);
+
+    baseGridLayout->addWidget(newProjectButton,0,0);
+    baseGridLayout->addWidget(projectManagerButton,1,0);
+    baseGridLayout->addWidget(openButton,2,0);
+    baseGridLayout->addWidget(displayConfigButton,3,0);
+    baseGridLayout->addWidget(printButton,3,0);
+    baseGridLayout->addWidget(closeProjectButton,4,0);
+    baseGridLayout->addWidget(exitButton,5,0);
+    baseGridLayout->addWidget(goFullscreenButton,6,0);
+    baseGridLayout->addWidget(stretcher,7,0);
+
+    baseGridLayout->setVerticalSpacing(0);
+    setLayout(baseGridLayout);
+}
+
+
+
+
+
+
+//---------------------------------------------------------------------------
+
+void MenuBox::readSettings()
+{
+    QSettings settings;
+    settings.beginGroup( "MainWindow" );
+    m_fullscreen = settings.value("fullscreen", true).toBool();
+    settings.endGroup();
+
+    emit goFullscreenSignal(m_fullscreen);
+    goFullscreenButton->setChecked(m_fullscreen);
+
+}
+
+//---------------------------------------------------------------------------
+
+void MenuBox::writeSettings()
+{
+
+    QSettings settings;
+    settings.beginGroup( "MainWindow" );
+    settings.setValue( "fullscreen", m_fullscreen);
+    settings.endGroup();
+    qDebug() << "menuDock write settings";
+
+}
+
+
+
+//---------------------------------------------------------------------------
+
+void MenuBox::openProjectManagerSlot()
+{
+
+    if(projManager->isVisible()){
+        projManager->close();
+    }
+
+    projectManager();
+}
+//---------------------------------------------------------------------------
+
+void MenuBox::openNewProjectSlot()
+{
+
+    newProject();
+
+    if(projManager->isVisible()){
+        projManager->close();
+        projectManager();
+
+    }
+}
+//---------------------------------------------------------------------------
+
+void MenuBox::openProjectSlot(QFile *device)
+{
+
+    closeProject();
+
+    file = new QFile;
+    file = device;
+
+    emit openProjectSignal(device);
+
+    if(projManager->isVisible()){
+        projManager->close();
+    }
+
+
+}
+
+
+
+
+
+void MenuBox::giveStyle()
+{
+
+    setStyleSheet(" QToolButton {"
+                  "background-color: grey;"
+                  "border-style: outset;"
+                  "border-width: 2px;"
+                  "border-radius: 0px;"
+                  "border-color: black;"
+                  "font: bold 12px;"
+                  "min-width: 10em;"
+                  "padding: 6px;"
+                  "}"
+                  "QToolButton:pressed {"
+                  "background-color: rgb(150, 150, 150);"
+                  "border-style: inset;"
+                  "}");
+
+
+
+
+}
+
+
+
+
