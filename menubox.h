@@ -68,6 +68,8 @@ private slots:
     void print();
     void closeProject();
     void goFullscreen();
+    void aboutQt();
+    void about();
     void exit();
 
 private:
@@ -81,6 +83,8 @@ private:
     *closeProjectButton,
     *exitButton,
     *printButton,
+    *aboutQtButton,
+    *aboutButton,
     *goFullscreenButton;
 
 

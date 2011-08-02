@@ -157,6 +157,54 @@ void MenuBox::goFullscreen()
 //--------------------------------------------------------------------------
 
 
+void MenuBox::print()
+{
+
+
+
+
+}
+//--------------------------------------------------------------------------
+
+void MenuBox::aboutQt()
+{
+    QMessageBox::aboutQt(this, tr("About Qt"));
+
+
+
+}
+//--------------------------------------------------------------------------
+
+void MenuBox::about()
+{
+    QMessageBox::about(this, tr("About Plume Creator"),
+                       "<center><b>Plume Creator</b>"
+                       "<b>A Project Manager and Rich Text Editor for Writers.</b>"
+
+                       "<p>Version 0.2  Alpha</p>"
+
+
+                       "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
+                       "<p>terreville@google.com </p></center>"
+                       "<br>"
+                       "<p>Plume Creator is free software: you can redistribute it and/or modify "
+                       "it under the terms of the GNU General Public License as published by "
+                       "the Free Software Foundation, either version 3 of the License, or "
+                       "(at your option) any later version.</p> "
+                       "<br>"
+                       "<p>Plume Creator is distributed in the hope that it will be useful, "
+                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                       "GNU General Public License for more details.</p>"
+                       "<br>"
+                       "<p>You should have received a copy of the GNU General Public License "
+                       "along with Plume Creator.  If not, see <address>http://www.gnu.org/licenses</address>.</p>"
+                       );
+
+
+}
+//--------------------------------------------------------------------------
+
 void MenuBox::exit()
 {
 
@@ -167,16 +215,6 @@ void MenuBox::exit()
 }
 
 
-//--------------------------------------------------------------------------
-
-
-void MenuBox::print()
-{
-
-
-
-
-}
 
 
 
@@ -260,6 +298,19 @@ void MenuBox::createButtons()
     goFullscreenButton->setStatusTip(tr("Go fullscreen"));
     connect(goFullscreenButton, SIGNAL(clicked()), this, SLOT(goFullscreen()));
 
+    aboutButton = new QToolButton(this);
+    aboutButton->setMaximumSize(buttonSize);
+    aboutButton->setText(tr("About Plume Creator"));
+    // aboutButton->setShortcut(QKeySequence::Quit);
+    aboutButton->setToolTip(tr("about the application"));
+    connect(aboutButton, SIGNAL(pressed()), this, SLOT(about()));
+
+    aboutQtButton = new QToolButton(this);
+    aboutQtButton->setMaximumSize(buttonSize);
+    aboutQtButton->setText(tr("About Qt"));
+    // aboutQtButton->setShortcut(QKeySequence::Quit);
+    aboutQtButton->setToolTip(tr("aboutQt the application"));
+    connect(aboutQtButton, SIGNAL(pressed()), this, SLOT(aboutQt()));
 
     QSize size(60,30);
     newProjectButton->setFixedSize(size);
@@ -270,6 +321,8 @@ void MenuBox::createButtons()
     exitButton->setFixedSize(size);
     goFullscreenButton->setFixedSize(size);
     printButton->setFixedSize(size);
+    aboutQtButton->setFixedSize(size);
+    aboutButton->setFixedSize(size);
 
     baseGridLayout->addWidget(newProjectButton,0,0);
     baseGridLayout->addWidget(projectManagerButton,1,0);
@@ -279,7 +332,9 @@ void MenuBox::createButtons()
     baseGridLayout->addWidget(closeProjectButton,4,0);
     baseGridLayout->addWidget(exitButton,5,0);
     baseGridLayout->addWidget(goFullscreenButton,6,0);
-    baseGridLayout->addWidget(stretcher,7,0);
+    baseGridLayout->addWidget(aboutButton,7,0);
+    baseGridLayout->addWidget(aboutQtButton,8,0);
+    baseGridLayout->addWidget(stretcher,9,0);
 
     baseGridLayout->setVerticalSpacing(0);
     setLayout(baseGridLayout);

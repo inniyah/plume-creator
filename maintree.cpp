@@ -1165,6 +1165,11 @@ void MainTree::split()
 
 
         }
+
+
+
+
+        /*
         else if(domItem.tagName() == "chapter"){
             qDebug() << "jal AA ";
 
@@ -1325,7 +1330,7 @@ void MainTree::split()
                     txtPath = newElement.toElement().attribute("textPath");
                     qDebug() <<   "U";
                     txtFile->setFileName(devicePath + txtPath);
-                    textDocument->setHtml(/*scenesList.at(j)*/scenesList.takeFirst());
+                    textDocument->setHtml(scenesList.takeFirst());
                     docWriter->setDevice(txtFile);
                     bool written = docWriter->write(textDocument);
 
@@ -1383,8 +1388,9 @@ void MainTree::split()
 
             }
         }
+*/
         else{
-            qDebug() << "------------------ PROBLEM SPLIT ";
+            qDebug() << "------------------ PROBLEM SPLIT";
             QApplication::restoreOverrideCursor();
 
             return;

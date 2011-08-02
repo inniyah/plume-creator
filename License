@@ -1,4 +1,6 @@
-Pume Creator - A Project Manager and Rich Text Editor for Writers.
+Plume Creator - A Project Manager and Rich Text Editor for Writers.
+
+Version 0.2  Alpha
 
 
 
@@ -6,19 +8,19 @@ Pume Creator - A Project Manager and Rich Text Editor for Writers.
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
  *   terreville@google.com                                                 *
  *                                                                         *
- *  This file is part of Pume Creator.                                     *
+ *  					                                   *
  *                                                                         *
- *  Pume Creator is free software: you can redistribute it and/or modify   *
+ *  Plume Creator is free software: you can redistribute it and/or modify  *
  *  it under the terms of the GNU General Public License as published by   *
  *  the Free Software Foundation, either version 3 of the License, or      *
  *  (at your option) any later version.                                    *
  *                                                                         *
- *  Pume Creator is distributed in the hope that it will be useful,        *
+ *  Plume Creator is distributed in the hope that it will be useful,       *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
  *  GNU General Public License for more details.                           *
  *                                                                         *
  *  You should have received a copy of the GNU General Public License      *
- *  along with Pume Creator.  If not, see <http://www.gnu.org/licenses/>.  *
+ *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
