@@ -127,7 +127,7 @@ void PrjManager::displayProjects(){
         QLabel *projCreationDate = new QLabel(projCreationDateI);
 
         openButton = new OpenPrjButton;
-        QString proj(projWorkPathI + "/" + projNameI + ".Plume Creator");
+        QString proj(projWorkPathI + "/" + projNameI + ".plume");
         QFile *file = new QFile(proj);
         openButton->openProjectFile(file);
         connect(openButton, SIGNAL(openProjectSignal(QFile*)), this, SIGNAL(openProjectSignal(QFile*)));

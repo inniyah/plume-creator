@@ -49,7 +49,7 @@ bool MainTree::read(QFile *device)
 
     if (!domDocument.setContent(device, true, &errorStr, &errorLine,
                                 &errorColumn)) {
-        QMessageBox::information(window(), tr("Plume Creator Tree"),
+        QMessageBox::information(this, tr("Plume Creator Tree"),
                                  tr("Parse error at line %1, column %2:\n%3\n")
                                  .arg(errorLine)
                                  .arg(errorColumn)
@@ -70,13 +70,13 @@ bool MainTree::read(QFile *device)
 
 
     root = domDocument.documentElement();
-    if (root.tagName() != "Plume Creator") {
-        QMessageBox::information(window(), tr("Plume Creator Tree"),
+    if (root.tagName() != "plume") {
+        QMessageBox::information(this, tr("Plume Creator Tree"),
                                  tr("The file is not a a Plume Creator project file."));
         return false;
     } else if (root.hasAttribute("version")
-               && root.attribute("version") != "1.0") {
-        QMessageBox::information(window(), tr("Plume Creator Tree"),
+               && root.attribute("version") != "0.2") {
+        QMessageBox::information(this, tr("Plume Creator Tree"),
                                  tr("The file is not an Plume Creator project file version 1.0 "
                                     "file."));
         return false;
@@ -761,7 +761,7 @@ void MainTree::moveDown()
 
 void MainTree::delYesItem()
 {
-    int ret = QMessageBox::warning(window(), tr("Sheet Deletion"),
+    int ret = QMessageBox::warning(this, tr("Sheet Deletion"),
                                    tr("<p>The selected sheet and its children "
                                       "will be permanently deleted.</p>\n"
                                       "<br>"
@@ -1141,7 +1141,7 @@ void MainTree::split()
 
             scenesList = mainString.split("***", QString::SkipEmptyParts);
             if(scenesList.size() == 1){
-                QMessageBox::information(window(), tr("Splitting Task"), tr("This sheet does not contain *** ."));
+                QMessageBox::information(this, tr("Splitting Task"), tr("This sheet does not contain *** ."));
                 return;
             }
             QString debug;
@@ -1403,9 +1403,9 @@ void MainTree::split()
                 this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
         if(resultsList.size() == 0)
-            QMessageBox::critical(window(), tr("Splitting Task"), tr("Splitting critical error !"));
+            QMessageBox::critical(this, tr("Splitting Task"), tr("Splitting critical error !"));
         else
-            QMessageBox::information(window(), tr("Splitting Task"), tr("Splitting done with %1 errors !").arg(resultsErrorsNum));
+            QMessageBox::information(this, tr("Splitting Task"), tr("Splitting done with %1 errors !").arg(resultsErrorsNum));
 
         chaptersList.clear();
         scenesList.clear();
@@ -1431,7 +1431,7 @@ void MainTree::split()
 
 void MainTree::addMulti()
 {
-    int numSheets = QInputDialog::getInt(window(), tr("Add X Children"),
+    int numSheets = QInputDialog::getInt(this, tr("Add X Children"),
                                          tr("Please enter a number :"),
                                          1, 1, 100, 1);
 

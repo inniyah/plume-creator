@@ -56,20 +56,20 @@ firstFile.close();
 }
 
 
-    QDomDocument domDoc("Plume Creator");
+    QDomDocument domDoc("plume");
 
 
 //    QDomNode xmlNode = domDoc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
 //    domDoc.insertBefore(xmlNode, domDoc.firstChild());
 
 
-    QFile file(field("projectNameField").toString() + ".Plume Creator");
+    QFile file(field("projectNameField").toString() + ".plume");
     file.open(QIODevice::ReadWrite | QIODevice::Text);
 
     QDomElement root = domDoc.createElement("root");
     root.setAttribute("theme","");
-    root.setAttribute("version","1.0");
-    root.setTagName("Plume Creator");
+    root.setAttribute("version","0.2");
+    root.setTagName("plume");
     domDoc.appendChild(root);
 
     QDomElement bookElem = domDoc.createElement("book");

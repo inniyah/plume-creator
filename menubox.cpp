@@ -20,7 +20,7 @@ MenuBox::MenuBox(QWidget *parent) :
 
 void MenuBox::newProject()
 {
-    NewProjectWizard projectWizard;
+    NewProjectWizard projectWizard(this);
     projectWizard.exec();
 
     projectManager();
@@ -32,9 +32,9 @@ void MenuBox::newProject()
 void MenuBox::open()
 {
     QString fileName =
-            QFileDialog::getOpenFileName(window(), tr("Open Project File"),
+            QFileDialog::getOpenFileName(this, tr("Open Project File"),
                                          QDir::homePath(),
-                                         tr(".Plume Creator Files (*.Plume Creator)"));
+                                         tr(".Plume Creator Files (*.plume)"));
 
 
 
@@ -68,7 +68,7 @@ void MenuBox::open()
 
     file = new QFile(fileName);
     if (!file->open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(window(), tr("Plume Creator File"),
+        QMessageBox::warning(this, tr("Plume Creator File"),
                              tr("Cannot read file %1:\n%2.")
                              .arg(fileName)
                              .arg(file->errorString()));
@@ -85,7 +85,7 @@ void MenuBox::open()
 
 void MenuBox::projectManager()
 {
-    projManager = new PrjManager();
+    projManager = new PrjManager(this);
     connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
     connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
     connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
@@ -116,7 +116,7 @@ void MenuBox::closeProject()
     if(!file == 0){
 
 
-        QMessageBox msgBox(window());
+        QMessageBox msgBox(this);
         msgBox.setText(tr("Do you want to close the current project ?"));
         msgBox.setInformativeText(tr("Your changes are already saved."));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
