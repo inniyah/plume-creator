@@ -236,12 +236,11 @@ void MenuBox::createButtons()
     QSize buttonSize(120,40);
 
 
-    QGridLayout *baseGridLayout = new QGridLayout;
-    QWidget *stretcher = new QWidget;
-    stretcher->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QVBoxLayout *baseGridLayout = new QVBoxLayout;
 
     newProjectButton = new QToolButton(this);
     newProjectButton->setMaximumSize(buttonSize);
+    newProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     newProjectButton->setText(tr("&New Project"));
     newProjectButton->setShortcut(QKeySequence::New);
     newProjectButton->setToolTip(tr("Create a new project"));
@@ -249,6 +248,7 @@ void MenuBox::createButtons()
 
     projectManagerButton = new QToolButton(this);
     projectManagerButton->setMaximumSize(buttonSize);
+    projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     projectManagerButton->setText(tr("Project &Manager"));
     // projectManagerAct->setShortcut(QKeySequence::New);
     projectManagerButton->setToolTip(tr("Create a new project"));
@@ -256,6 +256,7 @@ void MenuBox::createButtons()
 
     openButton = new QToolButton(this);
     openButton->setMaximumSize(buttonSize);
+    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     openButton->setText(tr("&Open..."));
     openButton->setShortcut(QKeySequence::Open);
     openButton->setToolTip(tr("Open an existing file"));
@@ -263,6 +264,7 @@ void MenuBox::createButtons()
 
     displayConfigButton = new QToolButton(this);
     displayConfigButton->setMaximumSize(buttonSize);
+    displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     displayConfigButton->setText(tr("&Configure"));
     //   displayConfigButton->setShortcut(QKeySequence::Print);
     displayConfigButton->setToolTip(tr("Display the configuration"));
@@ -270,6 +272,7 @@ void MenuBox::createButtons()
 
     printButton = new QToolButton(this);
     printButton->setMaximumSize(buttonSize);
+    printButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     printButton->setText(tr("&Print"));
     printButton->setShortcut(QKeySequence::Print);
     printButton->setToolTip(tr("Print part of the project"));
@@ -277,6 +280,7 @@ void MenuBox::createButtons()
 
     closeProjectButton = new QToolButton(this);
     closeProjectButton->setMaximumSize(buttonSize);
+    closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     closeProjectButton->setText(tr("&Close project"));
     closeProjectButton->setShortcut(QKeySequence::Close);
     closeProjectButton->setToolTip(tr("Print the dprintocument"));
@@ -284,6 +288,7 @@ void MenuBox::createButtons()
 
     exitButton = new QToolButton(this);
     exitButton->setMaximumSize(buttonSize);
+    exitButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     exitButton->setText(tr("E&xit"));
     exitButton->setShortcut(QKeySequence::Quit);
     exitButton->setToolTip(tr("Exit the application"));
@@ -292,6 +297,7 @@ void MenuBox::createButtons()
 
     goFullscreenButton = new QToolButton(this);
     goFullscreenButton->setMaximumSize(buttonSize);
+    goFullscreenButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     goFullscreenButton->setText(tr("&Fullscreen"));
     goFullscreenButton->setCheckable(true);
     goFullscreenButton->setShortcut(Qt::CTRL + Qt::Key_F11);
@@ -300,6 +306,7 @@ void MenuBox::createButtons()
 
     aboutButton = new QToolButton(this);
     aboutButton->setMaximumSize(buttonSize);
+    aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     aboutButton->setText(tr("About Plume Creator"));
     // aboutButton->setShortcut(QKeySequence::Quit);
     aboutButton->setToolTip(tr("about the application"));
@@ -307,6 +314,7 @@ void MenuBox::createButtons()
 
     aboutQtButton = new QToolButton(this);
     aboutQtButton->setMaximumSize(buttonSize);
+    aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     aboutQtButton->setText(tr("About Qt"));
     // aboutQtButton->setShortcut(QKeySequence::Quit);
     aboutQtButton->setToolTip(tr("aboutQt the application"));
@@ -324,19 +332,30 @@ void MenuBox::createButtons()
     aboutQtButton->setFixedSize(size);
     aboutButton->setFixedSize(size);
 
-    baseGridLayout->addWidget(newProjectButton,0,0);
-    baseGridLayout->addWidget(projectManagerButton,1,0);
-    baseGridLayout->addWidget(openButton,2,0);
-    baseGridLayout->addWidget(displayConfigButton,3,0);
-    baseGridLayout->addWidget(printButton,3,0);
-    baseGridLayout->addWidget(closeProjectButton,4,0);
-    baseGridLayout->addWidget(exitButton,5,0);
-    baseGridLayout->addWidget(goFullscreenButton,6,0);
-    baseGridLayout->addWidget(aboutButton,7,0);
-    baseGridLayout->addWidget(aboutQtButton,8,0);
-    baseGridLayout->addWidget(stretcher,9,0);
 
-    baseGridLayout->setVerticalSpacing(0);
+
+
+    baseGridLayout->addWidget(newProjectButton);
+    baseGridLayout->addWidget(projectManagerButton);
+    baseGridLayout->addWidget(openButton);
+    baseGridLayout->addSpacing(5);
+
+    baseGridLayout->addWidget(displayConfigButton);
+    baseGridLayout->addWidget(printButton);
+    baseGridLayout->addSpacing(5);
+
+    baseGridLayout->addWidget(goFullscreenButton);
+    baseGridLayout->addSpacing(5);
+
+    baseGridLayout->addWidget(aboutButton);
+    baseGridLayout->addWidget(aboutQtButton);
+    baseGridLayout->addSpacing(5);
+
+    baseGridLayout->addWidget(closeProjectButton);
+    baseGridLayout->addWidget(exitButton);
+    baseGridLayout->addStretch(0);
+
+    baseGridLayout->setSpacing(0);
     setLayout(baseGridLayout);
 }
 
@@ -424,10 +443,11 @@ void MenuBox::openProjectSlot(QFile *device)
 void MenuBox::giveStyle()
 {
 
+
     setStyleSheet(" QToolButton {"
                   "background-color: grey;"
                   "border-style: outset;"
-                  "border-width: 2px;"
+                  "border-width: 1px;"
                   "border-radius: 0px;"
                   "border-color: black;"
                   "font: bold 12px;"
@@ -437,9 +457,8 @@ void MenuBox::giveStyle()
                   "QToolButton:pressed {"
                   "background-color: rgb(150, 150, 150);"
                   "border-style: inset;"
-                  "}");
-
-
+                  "}"
+);
 
 
 }
