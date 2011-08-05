@@ -11,6 +11,9 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
 
 
+
+
+
 }
 
 

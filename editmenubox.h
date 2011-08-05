@@ -32,9 +32,18 @@ public:
     explicit EditMenuBox(QWidget *parent = 0);
 
 signals:
-
+    void widthChangedSignal(int sliderValue);
 public slots:
+    void tabWitdhChangedSlot(int value);
+    void loadSliderValue();
+private slots:
+    void sliderValueChanged(int sliderValue);
 
+private:
+    int xMax;
+    QSlider *widthSlider;
+    int sliderValue;
+    QSettings settings;
 };
 
 #endif // EDITMENUBOX_H

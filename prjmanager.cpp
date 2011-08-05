@@ -130,8 +130,9 @@ void PrjManager::displayProjects(){
         QString proj(projWorkPathI + "/" + projNameI + ".plume");
         QFile *file = new QFile(proj);
         openButton->openProjectFile(file);
+        openButton->openProjectSettingNumber(i);
         connect(openButton, SIGNAL(openProjectSignal(QFile*)), this, SIGNAL(openProjectSignal(QFile*)));
-
+        connect(openButton, SIGNAL(openProjectNumberSignal(int)), this, SIGNAL(openProjectNumberSignal(int)));
 
 
         deleteButton = new DeletePrjButton;
@@ -177,7 +178,8 @@ void PrjManager::displayProjects(){
     QLabel *newPrjLabel = new QLabel(tr("<b>You can also create a new project :</b>"));
     newPrjLabel->setAlignment(Qt::AlignCenter);
     QPushButton *newPrjButton = new QPushButton(tr("Add project"));
-    connect(newPrjButton,SIGNAL(clicked()), this, SIGNAL(newPrjSignal()));
+  //  connect(newPrjButton,SIGNAL(clicked()), this, SIGNAL(newPrjSignal()));
+    connect(newPrjButton,SIGNAL(clicked()), this, SLOT(newPrj()));
 
     newPrjStackLayout->addWidget(newPrjLabel);
     newPrjStackLayout->addWidget(newPrjButton);
@@ -193,8 +195,14 @@ void PrjManager::displayProjects(){
 
 }
 
+//----------------------------------------------------------------------------------------
 
+void PrjManager::newPrj()
+{
+    close();
+    emit newPrjSignal();
 
+}
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -226,7 +234,7 @@ void DeletePrjButton::deleteProjectNum(int numPrj)
 void DeletePrjButton::deleteProjectQuestion()
 {
 
-    QMessageBox deleteQuestion;
+    QMessageBox deleteQuestion(this);
     deleteQuestion.setIcon(QMessageBox::Warning);
     deleteQuestion.setText("This project will be deleted.");
     deleteQuestion.setInformativeText("Are you really sure to delete this project ?");
@@ -327,7 +335,7 @@ void DeletePrjButton::delProject()
 
 
 
-    QMessageBox deleteInfoBox;
+    QMessageBox deleteInfoBox(this);
     deleteInfoBox.setText("The project '" + del_projName + "' has been properly deleted !");
     deleteInfoBox.exec();
 
@@ -388,9 +396,16 @@ prjFile = device;
 
 //-----------------------------------------------------------------------------------
 
+void OpenPrjButton::openProjectSettingNumber(int prjNumber)
+{
+  projectNumber = prjNumber;
+}
+
+//-----------------------------------------------------------------------------------
+
 void OpenPrjButton::opProject()
 {
 emit openProjectSignal(prjFile);
-
+emit openProjectNumberSignal(projectNumber);
 }
 

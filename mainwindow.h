@@ -40,13 +40,14 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event);
-
+    void resizeEvent(QResizeEvent* event);
 signals:
     void closeSignal();
 
     void openTabTextSignal(QFile *textFile);
     void properSaveTabTextSignal(QFile *textFile);
     void closeTabTextSignal(QFile *textFile);
+void tabWidgetWidth(int value);
 
 public slots:
     void goFullscreenSlot(bool m_fullscreen);
@@ -60,6 +61,8 @@ private slots:
     void tabChangeSlot(int tabNum);
     void tabCloseRequest(int tabNum);
     void closeAllDocsSlot();
+void tabRenamingSlot(QString newName, int tabNum);
+void setProjectNumberSlot(int prjNumber);
 
 private:
 
@@ -97,7 +100,7 @@ int objectNum;
     //settings
     void readSettings();
     void writeSettings();
-
+int settingNumber;
 
 
 };

@@ -1,6 +1,7 @@
 #include "menubox.h"
 #include "prjmanager.h"
 #include "newprojectwizard.h"
+#include "settingsdialog.h"
 
 MenuBox::MenuBox(QWidget *parent) :
     QFrame(parent)
@@ -89,7 +90,7 @@ void MenuBox::projectManager()
     connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
     connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
     connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
-
+    connect(projManager, SIGNAL(openProjectNumberSignal(int)),this, SIGNAL(openProjectNumberSignal(int)));
     projManager->exec();
 }
 
@@ -99,7 +100,8 @@ void MenuBox::projectManager()
 void MenuBox::displayConfig()
 {
 
-
+    SettingsDialog settingsDialog(this);
+    settingsDialog.exec();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -435,6 +437,7 @@ void MenuBox::openProjectSlot(QFile *device)
 
 
 }
+
 
 
 

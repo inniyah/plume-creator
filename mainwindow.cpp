@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget->setTabsClosable(true);
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->setDocumentMode(false);
-tabWidget->setMovable(true);
+    tabWidget->setMovable(true);
 
     setCentralWidget(tabWidget);
 
@@ -42,6 +42,7 @@ tabWidget->setMovable(true);
     createTreeDock();
     createNoteDock();
     createToolDock();
+
 
     setTextTabConnections();
 
@@ -341,10 +342,19 @@ void MainWindow::closeProjectSlot()
     mainTree->closeTree();
 
 
+QSettings settings;
+    settings.beginWriteArray("Manager/projects");
+settings.setArrayIndex(settingNumber);
+    settings.setValue("lastModified", QDateTime::currentDateTime().toString());
+    settings.endArray();
+
+
 }
 
-
-
+void MainWindow::setProjectNumberSlot(int prjNumber)
+{
+    settingNumber = prjNumber;
+}
 
 
 
@@ -394,15 +404,15 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
         synWidgetList->append(synStack);
 
 
-//set objectnames
-QString string;
+        //set objectnames
+        QString string;
 
         tab->setObjectName("tab_" + string.setNum(number,10));
         noteStack->setObjectName("note_" + string.setNum(number,10));
         synStack->setObjectName("syn_" + string.setNum(number,10));
 
-numList->append(number);
-qDebug() << "added objectname value : " << string.setNum(number,10);
+        numList->append(number);
+        qDebug() << "added objectname value : " << string.setNum(number,10);
 
 
         objectNum += 1;
@@ -412,7 +422,9 @@ qDebug() << "added objectname value : " << string.setNum(number,10);
         tabWidget->setCurrentWidget(tab);
 
 
-
+//connect edit menu to tab
+        connect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
+        editMenu->loadSliderValue();
 
     }
     //    if(action == "tempSave"){
@@ -440,7 +452,7 @@ qDebug() << "added objectname value : " << string.setNum(number,10);
             synWidgetList->at(i)->saveSyn(synFileList->at(i), nameList->at(i));
 
 
-          }
+        }
 
     }
 
@@ -461,17 +473,17 @@ void MainWindow::secondTextSlot(int number, QString action)
 
         disconnect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
-       QString string;
-       TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
-      NoteZone *noteStack = noteLayout->findChild<NoteZone *>("note_" + string.setNum(number,10));
-      NoteZone *synStack = synLayout->findChild<NoteZone *>("syn_" + string.setNum(number,10));
-      qDebug() << "objectname value : " << string.setNum(number,10);
+        QString string;
+        TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
+        NoteZone *noteStack = noteLayout->findChild<NoteZone *>("note_" + string.setNum(number,10));
+        NoteZone *synStack = synLayout->findChild<NoteZone *>("syn_" + string.setNum(number,10));
+        qDebug() << "objectname value : " << string.setNum(number,10);
 
-      tabWidget->removeTab(tabWidget->indexOf(tab));
-      noteLayout->removeWidget(noteStack);
-      synLayout->removeWidget(synStack);
+        tabWidget->removeTab(tabWidget->indexOf(tab));
+        noteLayout->removeWidget(noteStack);
+        synLayout->removeWidget(synStack);
 
-      connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+        connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
     }
 }
@@ -491,14 +503,13 @@ void MainWindow::setTextTabConnections()
 
     connect(tabWidget,SIGNAL(currentChanged(int)),noteLayout,SLOT(setCurrentIndex(int)));
     connect(tabWidget,SIGNAL(currentChanged(int)),synLayout,SLOT(setCurrentIndex(int)));
-
     connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
-
     connect(tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(tabCloseRequest(int)));
+    connect(mainTree, SIGNAL(nameChangedSignal(QString,int)), this, SLOT(tabRenamingSlot(QString, int)));
+    connect(menu, SIGNAL(openProjectNumberSignal(int)), this, SLOT(setProjectNumberSlot(int)));
 
-
-
-
+    connect(this, SIGNAL(tabWidgetWidth(int)), editMenu,SLOT(tabWitdhChangedSlot(int)));
+emit tabWidgetWidth(tabWidget->width());
 }
 
 
@@ -568,7 +579,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     textWidgetList->removeAt(tabNum);
     noteWidgetList->removeAt(tabNum);
     synWidgetList->removeAt(tabNum);
-numList->removeAt(tabNum);
+    numList->removeAt(tabNum);
     tabNumList->removeAt(tabNum);
 
     qDebug() << "tabCloseRequest post :" << tabNum;
@@ -624,11 +635,36 @@ void MainWindow::closeAllDocsSlot()
     noteWidgetList->clear();
     synWidgetList->clear();
     tabNumList->clear();
-numList->clear();
+    numList->clear();
 
     connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
 }
+//---------------------------------------------------------------------------
+void MainWindow::tabRenamingSlot(QString newName, int number)
+{
+
+
+    if(!numList->contains(number))
+        return;
+
+
+    //        disconnect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+
+    QString string;
+    TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
+
+    qDebug() << "tabRenamingSlot : " << string.setNum(number,10);
+
+    tabWidget->setTabText(tabWidget->indexOf(tab),newName);
+
+    //    connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+
+
+}
+
+
+
 
 
 //---------------------------------------------------------------------------
@@ -703,4 +739,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 
 
+}
+
+//----------------------------------------------------------------------------------------
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    emit tabWidgetWidth(tabWidget->width());
 }

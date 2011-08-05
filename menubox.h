@@ -52,6 +52,8 @@ signals:
     void openProjectSignal(QFile *device);
     void closeProjectSignal();
 
+void openProjectNumberSignal(int prjNumber);
+
 public slots:
 
 

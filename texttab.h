@@ -50,7 +50,7 @@ protected:
 
 
 public slots:
-
+void changeWidthSlot(int width);
 
 private slots:
 

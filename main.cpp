@@ -52,7 +52,12 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+w.setWindowState(Qt::WindowActive);
+
+
     splash.finish(&w);
 //    delete splash;
+
+
     return app.exec();
 }

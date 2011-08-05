@@ -29,7 +29,6 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
 
 
 
-
     //config
 
 
@@ -184,4 +183,8 @@ tabWordCount->updateAll();
 }
 
 
+void TextTab::changeWidthSlot(int width)
+{
+textZone->setFixedWidth(width);
+}
 

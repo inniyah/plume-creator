@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     texttab.cpp \
     textzone.cpp \
     timer.cpp \
-    wordcount.cpp
+    wordcount.cpp \
+    settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     texttab.h \
     textzone.h \
     timer.h \
-    wordcount.h
+    wordcount.h \
+    settingsdialog.h
 
 RESOURCES += \
     pics.qrc

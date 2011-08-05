@@ -443,7 +443,7 @@ void MainTree::rename(QTreeWidgetItem *item)
     QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
                                          tr("Sheet name :"), QLineEdit::Normal,
                                          item->text(0), &ok);
-    if (ok && !text.isEmpty())
+    if (ok && !text.isEmpty()){
         item->setText(0, text);
 
 
@@ -451,7 +451,8 @@ void MainTree::rename(QTreeWidgetItem *item)
     //editItem(m_itemPressed, 0);
     //  m_itemPressed->setFlags(m_preFlagItemPressed->flags());
     m_itemEntered = item;
-
+    emit nameChangedSignal(text, domElementForItem.value(item).attribute("number").toInt());
+}
 }
 
 QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
@@ -789,17 +790,17 @@ void MainTree::delYesItem()
 
 
             QMessageBox::information(this, tr("Plume Creator Info"),
-                                           tr("For safety measure, you are\n"
-                                              "not allowed delete a filled book."));
+                                     tr("For safety measure, you are\n"
+                                        "not allowed delete a filled book."));
 
 
             return;
 
-//        if(current->parent())
-//            parentItem = current->parent();
-//        else
-//            parentItem = headerItem();
-}
+            //        if(current->parent())
+            //            parentItem = current->parent();
+            //        else
+            //            parentItem = headerItem();
+        }
         //    if(element.hasChildNodes()){
 
 
@@ -1014,6 +1015,7 @@ void MainTree::autoRenameChilds()
     QString chapterName = tr("Chapter");
     QString sceneName = tr("Scene");
     QString numString;
+    QString newName;
     int preNum = 1;
     int num = 1;
 
@@ -1032,9 +1034,15 @@ void MainTree::autoRenameChilds()
         while(!first.nextSiblingElement("chapter").isNull()){
 
             num = preNum + 1;
-            first.nextSiblingElement("chapter").setAttribute("name", chapterName + " " + numString.setNum(num,10));
+            newName = chapterName + " " + numString.setNum(num,10);
+            first.nextSiblingElement("chapter").setAttribute("name", newName);
+
+            emit nameChangedSignal(newName, first.attribute("number").toInt());
+            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(first.nextSiblingElement("scene").attribute("number").toInt(),10);
+
             preNum = num;
             first = first.nextSiblingElement("chapter");
+
         }
 
     }
@@ -1048,9 +1056,15 @@ void MainTree::autoRenameChilds()
         while(!first.nextSiblingElement("scene").isNull()){
 
             num = preNum + 1;
-            first.nextSiblingElement("scene").setAttribute("name", sceneName + " " + numString.setNum(num,10));
+            newName = sceneName + " " + numString.setNum(num,10);
+            first.nextSiblingElement("scene").setAttribute("name", newName);
+
+            emit nameChangedSignal(newName, first.attribute("number").toInt());
+            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(first.nextSiblingElement("scene").attribute("number").toInt(),10);
+
             preNum = num;
             first = first.nextSiblingElement("scene");
+
 
         }
     }
@@ -1442,7 +1456,7 @@ void MainTree::addMulti()
                                          1, 1, 100, 1);
 
     for(int i = 1; i <= numSheets; ++i){
-                QTreeWidgetItem *item = m_itemEntered;
+        QTreeWidgetItem *item = m_itemEntered;
         QDomElement element = domElementForItem.value(item);
         if(element.tagName() == "scene")
             return;
