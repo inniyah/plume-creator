@@ -101,11 +101,11 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     QGroupBox *textBox = new QGroupBox(tr("Main Text Area :"));
     QHBoxLayout *hTextLayout = new QHBoxLayout;
     QLabel *textFontLabel = new QLabel(tr("Default Text Font :"));
-    QFontComboBox *textFontCombo = new QFontComboBox;
+    textFontCombo = new QFontComboBox;
     textFontCombo->setCurrentFont(textFont);
-    QSpinBox *textSpin = new QSpinBox;
+    textSpin = new QSpinBox;
     textSpin->setRange(6,30);
-    textSpin->setValue(textSpinValue);
+    textSpin->setValue(textSpinValue);   
     QCheckBox *textApplyWideBox = new QCheckBox(tr("Apply project wide"));
 
     hTextLayout->addWidget(textFontLabel);
@@ -133,8 +133,8 @@ TextSettingTab::TextSettingTab(QWidget *parent)
 void TextSettingTab::readSettings()
 {
     settings.beginGroup( "Settings" );
-    textSpinValue = settings.value("textHeight", 12).toInt();
-    textFont.setFamily(settings.value("textFontFamily", "Liberation Serif").toString());
+    textSpinValue = settings.value("TextArea/textHeight", 12).toInt();
+    textFont.setFamily(settings.value("TextArea/textFontFamily", "Liberation Serif").toString());
     settings.endGroup();
 }
 
@@ -143,8 +143,8 @@ void TextSettingTab::readSettings()
 void TextSettingTab::accept()
 {
     settings.beginGroup( "Settings" );
-    settings.value("textHeight", textSpinValue);
-    settings.value("textFontFamily", textFont.family());
+    settings.setValue("TextArea/textHeight", textSpin->value());
+    settings.setValue("TextArea/textFontFamily", textFontCombo->currentFont());
     settings.endGroup();
 
  //   qDebug()<< "textFont" << textFont.family();

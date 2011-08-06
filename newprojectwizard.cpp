@@ -80,6 +80,7 @@ firstFile.close();
     bookElem.setAttribute("synPath","/text/S1.html");
     bookElem.setAttribute("name", projectNameFinish);
     bookElem.setAttribute("number", "1");
+     bookElem.setAttribute("cursorPos", "0");
 
     root.appendChild(bookElem);
 
@@ -92,7 +93,8 @@ firstFile.close();
     chapterElem.setAttribute("textPath","/text/T2.html");
     chapterElem.setAttribute("synPath","/text/S2.html");
     chapterElem.setAttribute("name",tr("Chapter 1"));
-    bookElem.setAttribute("number", "2");
+    chapterElem.setAttribute("number", "2");
+    chapterElem.setAttribute("cursorPos", "0");
 
     bookElem.appendChild(chapterElem);
 
@@ -105,7 +107,8 @@ firstFile.close();
     sceneElem.setAttribute("textPath","/text/T3.html");
     sceneElem.setAttribute("synPath","/text/S3.html");
     sceneElem.setAttribute("name",tr("Scene 1"));
-    bookElem.setAttribute("number", "3");
+    sceneElem.setAttribute("number", "3");
+    sceneElem.setAttribute("cursorPos", "0");
 
     chapterElem.appendChild(sceneElem);
 

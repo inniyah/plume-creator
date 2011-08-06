@@ -13,7 +13,6 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
 
 
 
-
 }
 
 
@@ -253,6 +252,8 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
 
 void TextZone::charFormat(QTextCharFormat cFormat)
 {
+    emit charFormatChangedSignal(cFormat);
+
     QString family = cFormat.fontFamily();
     int weight = cFormat.fontWeight();
     bool italic = cFormat.fontItalic();
@@ -298,7 +299,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     }
 
 
-
+setFocus();
 }
 
 //--------------------------------------------------------------------------------
@@ -306,6 +307,44 @@ void TextZone::charFormat(QTextCharFormat cFormat)
 
 
 
+void TextZone::setTextFont(QFont font)
+{
+    //    QString currentFormat = settings->value("Settings/Text/textFontFamily", textCursor().charFormat().fontFamily() ).toString();
+    QTextCharFormat fmt;
+    fmt.setFontFamily(font.family());
+    //    QString fontcolor = settings->value("Settings/Text/FontColor", "000000").toString();
+    //    QColor color;
+    //    color.setNamedColor(fontcolor);
+    //    QBrush brush(color, Qt::SolidPattern);
+    //    QFont font;
+    //    font.fromString(currentFormat);
+    //    fmt.setForeground(brush);
+
+    mergeFormatOnWordOrSelection(fmt);
+}
+
+
+void TextZone::setTextHeight(int height)
+{
+    QTextCharFormat fmt;
+        fmt.setFontPointSize(height);
+        mergeFormatOnWordOrSelection(fmt);
+
+}
+
+
+
+void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
+
+
+{
+    QTextCursor cursor = textCursor();
+//    if(cursor.charFormat().fontItalic())
+//        format.setFontItalic(true);
+
+    cursor.mergeCharFormat(format);
+    mergeCurrentCharFormat(format);
+}
 
 
 
@@ -325,15 +364,17 @@ void TextZone::charFormat(QTextCharFormat cFormat)
 
 
 
+
+//--------------------------------------------------------------------------------
 
 
 void TextZone::insertFromMimeData (const QMimeData *source )
 {
     if(source->hasHtml()){
 
-//        QString htmlText = ;
+        //        QString htmlText = ;
 
-//htmlText
+        //htmlText
         QTextDocument document;
         document.setHtml(qvariant_cast<QString>(source->html()));
 

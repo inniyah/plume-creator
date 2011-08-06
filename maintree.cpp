@@ -271,6 +271,9 @@ QTreeWidgetItem *MainTree::createItem(const QDomElement &element,
         item = new QTreeWidgetItem(this);
     }
     domElementForItem.insert(item, element);
+
+   int number = element.attribute("number").toInt();
+   domElementForNumber[number] = element;
     return item;
 }
 
@@ -298,13 +301,13 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     synName = domItem.attribute("synPath");
     name = domItem.attribute("name");
     int number = domItem.attribute("number").toInt();
-
+    int cursorPos = domItem.attribute("cursorPos").toInt();
     textFile = new QFile(devicePath + textName);
     noteFile = new QFile(devicePath + noteName);
     synFile = new QFile(devicePath + synName);
 
 
-    emit textAndNoteSignal(textFile, noteFile, synFile, name, number,  action);
+    emit textAndNoteSignal(textFile, noteFile, synFile, cursorPos, name, number,  action);
 
     //    prjIsJustOpened = false;
 
@@ -1621,6 +1624,7 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     newElement.setAttribute("notePath", "/text/N" + textChar.setNum(freeNum, 10) + ".html");
     newElement.setAttribute("synPath", "/text/S" + textChar.setNum(freeNum, 10) + ".html");
     newElement.setAttribute("number", textChar.setNum(freeNum, 10));
+    newElement.setAttribute("cursorPos", textChar.setNum(0, 10));
 
 
     QFile textFile(devicePath + newElement.attribute("textPath"));
@@ -1949,3 +1953,10 @@ void MainTree::itemExpandedSlot(QTreeWidgetItem* item)
 
 }
 
+void MainTree::saveCursorPos(int cursorPosition, int number)
+{
+    QDomElement element = domElementForNumber.value(number);
+           element.setAttribute("cursorPos", cursorPosition);
+           this->write(deviceFile);
+
+}

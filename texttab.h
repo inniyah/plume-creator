@@ -44,6 +44,7 @@ signals:
 
     void wordCountSignal(int wordCount);
     void blockCountSignal(int blockCount);
+    void charFormatChangedSignal(QTextCharFormat format);
 
 protected:
 
@@ -51,6 +52,11 @@ protected:
 
 public slots:
 void changeWidthSlot(int width);
+void changeTextFontSlot(QFont font);
+void changeTextHeightSlot(int height);
+void setTextFocus();
+void setCursorPos(int pos);
+int saveCursorPos();
 
 private slots:
 
@@ -65,7 +71,6 @@ private:
     QString stackName;
 
     TextZone *textZone;
-
 
 
 

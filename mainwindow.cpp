@@ -177,7 +177,7 @@ void MainWindow::createTreeDock()
 
     mainTree = new MainTree;
 
-    connect(mainTree, SIGNAL(textAndNoteSignal(QFile*,QFile*,QFile*, QString, int, QString)), this, SLOT(textSlot(QFile*,QFile*,QFile*, QString, int, QString)));
+    connect(mainTree, SIGNAL(textAndNoteSignal(QFile*,QFile*,QFile*, int, QString, int, QString)), this, SLOT(textSlot(QFile*,QFile*,QFile*, int, QString, int, QString)));
     connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
 
     treeDock->setWidget(mainTree);
@@ -367,7 +367,7 @@ void MainWindow::setProjectNumberSlot(int prjNumber)
 
 
 
-void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QString name, int number, QString action)
+void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int cursorPosition, QString name, int number, QString action)
 {
     if(action == "open"){
 
@@ -428,6 +428,9 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
         connect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
         editMenu->loadSliderValue();
 
+        connect(editMenu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
+        connect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
+        connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
 
         //launch autosaving :
@@ -435,6 +438,16 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
         autosaveTimer();
 
 
+
+        //focus on text :
+        tab->setTextFocus();
+
+        //set cursor position :
+        tab->setCursorPos(cursorPosition);
+
+        QString debug;
+        qDebug() << "cursorPosition : " << debug.setNum(cursorPosition);
+        //other :
         firstOpen = false;
 
     }
@@ -533,6 +546,8 @@ void MainWindow::tabChangeSlot(int tabNum)
     if(!tabNumList->isEmpty()){
         preTabNum = tabNumList->last();
         textWidgetList->at(tabNum)->updateWordCounts();
+        textWidgetList->at(tabNum)->setTextFocus();
+
     }
 
     tabNumList->append(tabNum);
@@ -567,7 +582,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     bool noteBool = noteWidgetList->at(tabNum)->saveNote(noteFileList->at(tabNum),nameList->at(tabNum));
     bool synBool = synWidgetList->at(tabNum)->saveSyn(synFileList->at(tabNum), nameList->at(tabNum));
 
-
+    mainTree->saveCursorPos(textWidgetList->at(tabNum)->saveCursorPos(), numList->at(tabNum));
 
 
     qDebug() << "tabCloseRequest textFile :" << textFileList->at(tabNum)->fileName() << "----------- saved :" << textBool;
@@ -614,6 +629,7 @@ void MainWindow::closeAllDocsSlot()
         bool noteBool = noteWidgetList->at(i)->saveNote(noteFileList->at(i),nameList->at(i));
         bool synBool = synWidgetList->at(i)->saveSyn(synFileList->at(i), nameList->at(i));
 
+        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(), numList->at(i));
 
         qDebug() << "tabCloseRequest name :" << nameList->at(i);
         qDebug() << "tabCloseRequest textFile n° " << i << " ---> " << textFileList->at(i)->fileName() << "----- saved :" << textBool;
@@ -780,9 +796,6 @@ timer->start(autosaveTime);
 
 
 
-
-
-
 //---------------------------------------------------------------------------
 //----------Apply Config---------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
@@ -797,6 +810,9 @@ void MainWindow::applyConfig()
 
     if(!firstOpen)
     configTimer();
+
+
+    editMenu->applyConfig();
 }
 
 //---------------------------------------------------------------------------

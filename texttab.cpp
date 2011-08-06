@@ -27,10 +27,9 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
     setContextMenuPolicy(Qt::PreventContextMenu);
 
 
-
+    connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
 
     //config
-
 
     //temporary config
 
@@ -38,21 +37,21 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
     textZone->setMinimumWidth(600);
 
 
-//    QFont synLiberationFont("Liberation Serif", 13);
-//    textZone->setFont(synLiberationFont);
-//    textZone->setFontPointSize(13);
+    //    QFont synLiberationFont("Liberation Serif", 13);
+    //    textZone->setFont(synLiberationFont);
+    //    textZone->setFontPointSize(13);
 
-//    QTextBlockFormat synTextBlockFormat;
-//    synTextBlockFormat.setBottomMargin(10);
-//    synTextBlockFormat.setTextIndent(50);
-//    QTextCharFormat synTextCharFormat;
-//    synTextCharFormat.setFontFamily("Liberation Serif");
-//    synTextCharFormat.setFontPointSize(13);
+    //    QTextBlockFormat synTextBlockFormat;
+    //    synTextBlockFormat.setBottomMargin(10);
+    //    synTextBlockFormat.setTextIndent(50);
+    //    QTextCharFormat synTextCharFormat;
+    //    synTextCharFormat.setFontFamily("Liberation Serif");
+    //    synTextCharFormat.setFontPointSize(13);
 
-//    QTextCursor synTextCursor;
-//    synTextCursor = textZone->textCursor();
-//    synTextCursor.setBlockFormat(synTextBlockFormat);
-//    synTextCursor.setCharFormat(synTextCharFormat);
+    //    QTextCursor synTextCursor;
+    //    synTextCursor = textZone->textCursor();
+    //    synTextCursor.setBlockFormat(synTextBlockFormat);
+    //    synTextCursor.setCharFormat(synTextCharFormat);
 
 
 
@@ -78,23 +77,27 @@ bool TextTab::openText(QFile *textFile, QString name)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTextStream textFileStream( textFile );
     textDocument->setHtml(textFileStream.readAll());
- //   textZone->setText( textFileStream.readAll() );
+    //   textZone->setText( textFileStream.readAll() );
     QApplication::restoreOverrideCursor();
 
 
     textFile->close();
 
-textZone->setDocument(textDocument);
+    textZone->setDocument(textDocument);
 
 
 
 
-//for wordcount :
-tabWordCount = new WordCount(textDocument, this);
-//connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
-connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
-connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
-tabWordCount->updateAll();
+    //for wordcount :
+    tabWordCount = new WordCount(textDocument, this);
+    //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
+    connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
+    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
+    tabWordCount->updateAll();
+
+
+
+
 
     return true;
 
@@ -111,25 +114,25 @@ bool TextTab::saveText(QFile *textFile, QString name)
 
 
 
-//    textFile->setFileName(textFile->fileName());
-//    textFile->open(QFile::WriteOnly | QFile::Text);
+    //    textFile->setFileName(textFile->fileName());
+    //    textFile->open(QFile::WriteOnly | QFile::Text);
 
-//    if(textFile->isWritable())
-//    {
+    //    if(textFile->isWritable())
+    //    {
 
-//        QTextStream stream(textFile);
-//        stream << textZone->toHtml();
-//        stream.flush();
-//        textFile->close();
+    //        QTextStream stream(textFile);
+    //        stream << textZone->toHtml();
+    //        stream.flush();
+    //        textFile->close();
 
 
-//        return true;
-//    }
-//    else{
-//        qDebug() << textFile->fileName() << " isn't Writtable.";
+    //        return true;
+    //    }
+    //    else{
+    //        qDebug() << textFile->fileName() << " isn't Writtable.";
 
-//        return false;
-//    }
+    //        return false;
+    //    }
 
     QTextDocumentWriter docWriter(textFile, "HTML");
     bool written = docWriter.write(textDocument);
@@ -151,8 +154,8 @@ QTextDocument* TextTab::document()
 
 void TextTab::wordCountUpdated(int wordCount)
 {
-    QString debug;
-    qDebug() << "wordCount : " << debug.setNum(wordCount,10);
+    //    QString debug;
+    //    qDebug() << "wordCount : " << debug.setNum(wordCount,10);
 
 
     emit wordCountSignal(wordCount);
@@ -178,13 +181,45 @@ void TextTab::blockCountUpdated(int blockCount)
 
 void TextTab::updateWordCounts()
 {
-tabWordCount->updateAll();
+    tabWordCount->updateAll();
 
 }
 
 
 void TextTab::changeWidthSlot(int width)
 {
-textZone->setFixedWidth(width);
+    textZone->setFixedWidth(width);
 }
 
+void TextTab::changeTextFontSlot(QFont font)
+{
+    textZone->setTextFont(font);
+}
+
+void TextTab::changeTextHeightSlot(int height)
+{
+    textZone->setTextHeight(height);
+}
+
+
+void TextTab::setTextFocus()
+{
+    textZone->setFocus();
+
+}
+
+void TextTab::setCursorPos(int pos)
+{
+    for(int i = 0; i < pos ; i++)
+        textZone->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
+
+
+    textZone->ensureCursorVisible();
+}
+
+int TextTab::saveCursorPos()
+{
+    QTextCursor cursor = textZone->textCursor();
+    return cursor.position();
+
+}

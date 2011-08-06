@@ -1,5 +1,10 @@
 PLUME CREATOR
 
+
+v 0.25
+	- font config (size and family)
+	- save last cursor position
+
 v 0.24
 	- config dialog	
 	- autosave and its config

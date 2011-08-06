@@ -33,9 +33,14 @@ public:
 
 signals:
     void widthChangedSignal(int sliderValue);
+    void textFontChangedSignal(QFont font);
+    void textHeightChangedSignal(int textHeight);
 public slots:
     void tabWitdhChangedSlot(int value);
     void loadSliderValue();
+    void applyConfig();
+     void charFormatChangedSlot(QTextCharFormat format);
+
 private slots:
     void sliderValueChanged(int sliderValue);
 
@@ -44,6 +49,10 @@ private:
     QSlider *widthSlider;
     int sliderValue;
     QSettings settings;
+    QFontComboBox *textFontCombo;
+    QFont textFont;
+    QSpinBox *textSpin;
+    int textSpinValue;
 };
 
 #endif // EDITMENUBOX_H

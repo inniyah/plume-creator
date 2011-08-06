@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QTextEdit>
+#include <QSettings>
 
 class TextZone : public QTextEdit
 {
@@ -30,6 +31,7 @@ public:
     explicit TextZone(QTextDocument *doc, QWidget *parent = 0);
 
 signals:
+    void charFormatChangedSignal(QTextCharFormat format);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -38,8 +40,8 @@ protected:
 
 public slots:
 
-
-
+void setTextFont(QFont font);
+void setTextHeight(int height);
 
 private slots:
 
@@ -57,6 +59,8 @@ private slots:
 
 
     void charFormat(QTextCharFormat cFormat);
+
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
 
 private:
 
@@ -82,6 +86,7 @@ private:
 
 QPoint mousePos;
 
+QSettings *settings;
 };
 
 #endif // TEXTZONE_H

@@ -66,6 +66,7 @@ public:
 signals:
     void textHeightSignal(int textSpinValue);
             void textFontSignal(QString textFont);
+
 public slots:
     void accept();
 
@@ -74,7 +75,9 @@ void readSettings();
 
 private:
 QSettings settings;
+QFontComboBox *textFontCombo;
     QFont textFont;
+    QSpinBox *textSpin;
 int textSpinValue;
 
 };
