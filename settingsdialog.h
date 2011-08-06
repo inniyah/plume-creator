@@ -3,11 +3,19 @@
 
 #include <QtGui>
 
+QT_BEGIN_NAMESPACE
+class GeneralSettingTab;
+class TextSettingTab;
+QT_END_NAMESPACE
+
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit SettingsDialog(QWidget *parent = 0);
+
+protected:
+   void accept();
 
 signals:
 
@@ -15,7 +23,8 @@ public slots:
 
 private:
    QDialogButtonBox *buttonBox;
-
+GeneralSettingTab *generalSettingTab;
+TextSettingTab *textSettingTab;
 };
 
 
@@ -29,10 +38,18 @@ public:
     explicit GeneralSettingTab(QWidget *parent = 0);
 
 signals:
+    void autosaveTimeSignal(int autosaveTime);
 
 public slots:
+    void accept();
+
+private slots:
+void readSettings();
 
 private:
+QSettings settings;
+QSpinBox *autosaveTimeSpin;
+int autosaveTime;
 
 
 };
@@ -47,11 +64,18 @@ public:
     explicit TextSettingTab(QWidget *parent = 0);
 
 signals:
-
+    void textHeightSignal(int textSpinValue);
+            void textFontSignal(QString textFont);
 public slots:
+    void accept();
+
+    private slots:
+void readSettings();
 
 private:
-
+QSettings settings;
+    QFont textFont;
+int textSpinValue;
 
 };
 #endif // SETTINGSDIALOG_H

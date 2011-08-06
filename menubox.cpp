@@ -100,8 +100,9 @@ void MenuBox::projectManager()
 void MenuBox::displayConfig()
 {
 
-    SettingsDialog settingsDialog(this);
-    settingsDialog.exec();
+    SettingsDialog *settingsDialog = new SettingsDialog(this);
+    connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
+    settingsDialog->exec();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -468,4 +469,14 @@ void MenuBox::giveStyle()
 
 
 
+//---------------------------------------------------------------------------
+//----------Apply Config---------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
 
+
+void MenuBox::applyConfig()
+{
+
+
+    emit applyConfigSignal();
+}

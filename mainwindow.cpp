@@ -13,7 +13,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), objectNum(1)
+    : QMainWindow(parent), objectNum(1), firstOpen(true)
 {
     setMinimumSize(800, 600);
     setWindowTitle("Plume Creator");
@@ -47,8 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
     setTextTabConnections();
 
 
-
+// Config :
     readSettings();
+    connect(menu, SIGNAL(applyConfigSignal()), this,SLOT(applyConfig()));
+applyConfig();
 
 
     // Welcome dialog at first start
@@ -340,7 +342,7 @@ void MainWindow::closeProjectSlot()
 
     mainTree->write(file);
     mainTree->closeTree();
-
+ firstOpen = true;
 
 QSettings settings;
     settings.beginWriteArray("Manager/projects");
@@ -426,6 +428,15 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
         connect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
         editMenu->loadSliderValue();
 
+
+
+        //launch autosaving :
+        if(firstOpen)
+        autosaveTimer();
+
+
+        firstOpen = false;
+
     }
     //    if(action == "tempSave"){
     //        tempSaveNote(noteFile, noteFile, synFile);
@@ -434,7 +445,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
 
 
 
-    if(action == "saveForSplit"){
+    if(action == "save"){
         //      emit properSaveTabTextSignal(textFile, name);
 
 
@@ -453,7 +464,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, QStr
 
 
         }
-
+        qDebug() << "saving all";
     }
 
 
@@ -678,6 +689,10 @@ void MainWindow::readSettings()
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
     settings.endGroup();
+
+
+
+
 }
 
 //---------------------------------------------------------------------------
@@ -746,4 +761,51 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
     emit tabWidgetWidth(tabWidget->width());
+}
+
+//----------------------------------------------------------------------------------------
+
+void MainWindow::autosaveTimer()
+{
+timer = new QTimer(this);
+connect(timer, SIGNAL(timeout()), this, SLOT(textSlot()));
+timer->start(autosaveTime);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------------------------------------
+//----------Apply Config---------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+
+
+void MainWindow::applyConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    autosaveTime = settings.value("autosaveTime", 20).toInt();
+    settings.endGroup();
+
+    if(!firstOpen)
+    configTimer();
+}
+
+//---------------------------------------------------------------------------
+
+void MainWindow::configTimer()
+{
+    timer->stop();
+    timer->start(autosaveTime);
+
+    QString debug;
+    qDebug() << "autosaveTime" << debug.setNum(autosaveTime);
 }

@@ -23,7 +23,9 @@
 #include <QtGui>
 #include <QWidget>
 #include <QFrame>
+
 #include "prjmanager.h"
+#include "settingsdialog.h"
 
 class MenuBox : public QFrame
 {
@@ -54,6 +56,8 @@ signals:
 
 void openProjectNumberSignal(int prjNumber);
 
+void applyConfigSignal();
+
 public slots:
 
 
@@ -73,6 +77,8 @@ private slots:
     void aboutQt();
     void about();
     void exit();
+
+    void applyConfig();
 
 private:
 

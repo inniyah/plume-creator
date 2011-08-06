@@ -64,11 +64,11 @@ preWordCount = finalWordCount - blockWordsList.size();
 
 preBlockNum = blockNum;
 
-    QString debug;
-     qDebug() << "first finalWordCount : " << debug.setNum(finalWordCount,10);
-    qDebug() << "pre wordCount :" << debug.setNum(preWordCount, 10);
-    qDebug() << "textCursor position :" << debug.setNum(textCursor.position(), 10);
-    qDebug() << "constructor blockNumber : " << debug.setNum(blockNum,10);
+//    QString debug;
+//     qDebug() << "first finalWordCount : " << debug.setNum(finalWordCount,10);
+//    qDebug() << "pre wordCount :" << debug.setNum(preWordCount, 10);
+//    qDebug() << "textCursor position :" << debug.setNum(textCursor.position(), 10);
+//    qDebug() << "constructor blockNumber : " << debug.setNum(blockNum,10);
 
 
 
@@ -95,7 +95,7 @@ preBlockCount = doc->blockCount();
 
     connect(doc,SIGNAL(blockCountChanged(int)), this, SLOT(updateBlockCount(int)));
 
-    qDebug() << "pre blockCount :" << debug.setNum(doc->blockCount(), 10);
+//    qDebug() << "pre blockCount :" << debug.setNum(doc->blockCount(), 10);
 
 
 
@@ -177,8 +177,8 @@ void WordCount::updateCursorPosition(QTextCursor textCursor)
     blockNum = textCursor.blockNumber();
 
 
-    QString debug;
-     qDebug() << "new cursor position : " << debug.setNum(blockNum,10);
+//    QString debug;
+//     qDebug() << "new cursor position : " << debug.setNum(blockNum,10);
 
 
 

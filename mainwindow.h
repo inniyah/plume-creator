@@ -54,7 +54,7 @@ public slots:
     void openProjectSlot(QFile *projectFile);
     void closeProjectSlot();
 
-    void textSlot(QFile *textFile = 0, QFile *noteFile = 0, QFile *synFile = 0, QString name = "nothing", int number = 0, QString action = "nothing");
+    void textSlot(QFile *textFile = 0, QFile *noteFile = 0, QFile *synFile = 0, QString name = "nothing", int number = 0, QString action = "save");
     void secondTextSlot(int number = 0, QString action = "nothing");
 
 private slots:
@@ -63,6 +63,10 @@ private slots:
     void closeAllDocsSlot();
 void tabRenamingSlot(QString newName, int tabNum);
 void setProjectNumberSlot(int prjNumber);
+
+//config :
+void applyConfig();
+void configTimer();
 
 private:
 
@@ -101,6 +105,11 @@ int objectNum;
     void readSettings();
     void writeSettings();
 int settingNumber;
+
+void autosaveTimer();
+bool firstOpen;
+int autosaveTime;
+QTimer *timer;
 
 
 };

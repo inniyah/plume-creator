@@ -1113,7 +1113,7 @@ void MainTree::split()
 
 
 
-        emit textAndNoteSignal(0,"saveForSplit");
+        emit textAndNoteSignal(0,"save");
 
 
 
