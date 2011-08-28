@@ -47,7 +47,9 @@ signals:
     void openTabTextSignal(QFile *textFile);
     void properSaveTabTextSignal(QFile *textFile);
     void closeTabTextSignal(QFile *textFile);
-void tabWidgetWidth(int value);
+    void tabWidgetWidth(int value);
+    void applyConfigSignal();
+
 
 public slots:
     void goFullscreenSlot(bool m_fullscreen);
@@ -61,12 +63,13 @@ private slots:
     void tabChangeSlot(int tabNum);
     void tabCloseRequest(int tabNum);
     void closeAllDocsSlot();
-void tabRenamingSlot(QString newName, int tabNum);
-void setProjectNumberSlot(int prjNumber);
+    void tabRenamingSlot(QString newName, int tabNum);
+    void setProjectNumberSlot(int prjNumber);
+    void editFullscreen();
 
-//config :
-void applyConfig();
-void configTimer();
+    //config :
+    void applyConfig();
+    void configTimer();
 
 private:
 
@@ -96,7 +99,7 @@ private:
     QList<TextTab *> *textWidgetList;
     QList<NoteZone *> *noteWidgetList;
     QList<NoteZone *> *synWidgetList;
-int objectNum;
+    int objectNum;
 
     QList<int> *tabNumList;
     QList<int> *numList;
@@ -104,14 +107,14 @@ int objectNum;
     //settings
     void readSettings();
     void writeSettings();
-int settingNumber;
+    int settingNumber;
 
-void autosaveTimer();
-bool firstOpen;
-int autosaveTime;
-QTimer *timer;
+    void autosaveTimer();
+    bool firstOpen;
+    int autosaveTime;
+    QTimer *timer;
 
-void setEditMenuConnections();
+    void setEditMenuConnections();
 
 };
 

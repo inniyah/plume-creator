@@ -171,8 +171,8 @@ void TextTab::wordCountUpdated(int wordCount)
 
 void TextTab::blockCountUpdated(int blockCount)
 {
-    QString debug;
-    qDebug() << "blockCount : " << debug.setNum(blockCount,10);
+//    QString debug;
+//    qDebug() << "blockCount : " << debug.setNum(blockCount,10);
 
 
     emit blockCountSignal(blockCount);
@@ -222,4 +222,21 @@ int TextTab::saveCursorPos()
     QTextCursor cursor = textZone->textCursor();
     return cursor.position();
 
+}
+
+QTextCharFormat TextTab::tabChangedSlot()
+{
+    return textZone->currentCharFormat();
+}
+
+QTextDocument* TextTab::tabDocument()
+{
+    return textDocument;
+}
+
+
+
+void TextTab::applyConfig()
+{
+    textZone->applyConfig();
 }

@@ -47,6 +47,9 @@ Timer::Timer(QWidget *parent) :
     secEdit->setAccelerated(true);
     secEdit->setSuffix(tr(" s"));
 
+    secEdit->hide();
+
+
     connect(minEdit,SIGNAL(valueChanged(int)),this,SLOT(minSpinFormat(int)));
     connect(secEdit,SIGNAL(valueChanged(int)),this,SLOT(secSpinFormat(int)));
 
@@ -87,6 +90,7 @@ Timer::Timer(QWidget *parent) :
     layout->addWidget(timerRunningFrame);
     layout->setContentsMargins(3,3,3,3);
     setLayout(layout);
+
 
 
     timerRunningFrame->hide();

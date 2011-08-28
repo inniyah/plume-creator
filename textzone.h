@@ -37,11 +37,14 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
+    void resizeEvent(QResizeEvent* event);
 
 public slots:
 
-void setTextFont(QFont font);
-void setTextHeight(int height);
+    void setTextFont(QFont font);
+    void setTextHeight(int height);
+    void centerCursor();
+    void applyConfig();
 
 private slots:
 
@@ -61,6 +64,7 @@ private slots:
     void charFormat(QTextCharFormat cFormat);
 
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+    void cursorPositionChangedSlot();
 
 private:
 
@@ -84,9 +88,10 @@ private:
 
     QMenu *alignmentGroup;
 
-QPoint mousePos;
+    QPoint mousePos;
 
-QSettings *settings;
+bool alwaysCenter;
+bool showScrollbar;
 };
 
 #endif // TEXTZONE_H

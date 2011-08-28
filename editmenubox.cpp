@@ -28,6 +28,10 @@ stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 baseGridLayout->addWidget(stretcher,6,0);
     setLayout(baseGridLayout);
 
+    connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+   connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+
+    applyConfig();
 }
 
 //----------------------------------------------------------------------------------------
@@ -84,7 +88,12 @@ void EditMenuBox::tabWitdhChangedSlot(int value)
 oldXMax = xMax;
 }
 
+void EditMenuBox::tabChangedSlot(QTextCharFormat newTabFormat)
+{
 
+
+charFormatChangedSlot(newTabFormat);
+}
 //---------------------------------------------------------------------------
 //----------Apply Config---------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------

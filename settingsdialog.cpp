@@ -96,10 +96,9 @@ void GeneralSettingTab::accept()
 TextSettingTab::TextSettingTab(QWidget *parent)
     : QWidget(parent)
 {
-    readSettings();
 
     QGroupBox *textBox = new QGroupBox(tr("Main Text Area :"));
-    QHBoxLayout *hTextLayout = new QHBoxLayout;
+    QGridLayout *gridTextLayout = new QGridLayout;
     QLabel *textFontLabel = new QLabel(tr("Default Text Font :"));
     textFontCombo = new QFontComboBox;
     textFontCombo->setCurrentFont(textFont);
@@ -108,12 +107,17 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     textSpin->setValue(textSpinValue);   
     QCheckBox *textApplyWideBox = new QCheckBox(tr("Apply project wide"));
 
-    hTextLayout->addWidget(textFontLabel);
-    hTextLayout->addStretch(20);
-    hTextLayout->addWidget(textFontCombo);
-    hTextLayout->addWidget(textSpin);
-    hTextLayout->addWidget(textApplyWideBox);
-    textBox->setLayout(hTextLayout);
+showScrollbarBox = new QCheckBox(tr("Show scrollbar"));
+
+
+
+
+    gridTextLayout->addWidget(textFontLabel,0,0);
+    gridTextLayout->addWidget(textFontCombo,0,1);
+    gridTextLayout->addWidget(textSpin,0,2);
+    gridTextLayout->addWidget(textApplyWideBox,0,3);
+     gridTextLayout->addWidget(showScrollbarBox,1,0);
+    textBox->setLayout(gridTextLayout);
 
 
 
@@ -125,6 +129,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     mainLayout->addWidget(textBox);
     setLayout(mainLayout);
 
+    readSettings();
 
 }
 
@@ -134,8 +139,13 @@ void TextSettingTab::readSettings()
 {
     settings.beginGroup( "Settings" );
     textSpinValue = settings.value("TextArea/textHeight", 12).toInt();
-    textFont.setFamily(settings.value("TextArea/textFontFamily", "Liberation Serif").toString());
-    settings.endGroup();
+textFont.setFamily(settings.value("TextArea/textFontFamily", "Liberation Serif").toString());
+showScrollbarBox->setChecked(settings.value("TextArea/showScrollbar", true).toBool());
+settings.endGroup();
+
+
+textSpin->setValue(textSpinValue);
+textFontCombo->setCurrentFont(textFont);
 }
 
 //---------------------------------------------------------------------------------
@@ -145,6 +155,7 @@ void TextSettingTab::accept()
     settings.beginGroup( "Settings" );
     settings.setValue("TextArea/textHeight", textSpin->value());
     settings.setValue("TextArea/textFontFamily", textFontCombo->currentFont());
+    settings.setValue("TextArea/showScrollbar", showScrollbarBox->isChecked());
     settings.endGroup();
 
  //   qDebug()<< "textFont" << textFont.family();

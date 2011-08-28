@@ -40,6 +40,7 @@ public slots:
     void loadSliderValue();
     void applyConfig();
      void charFormatChangedSlot(QTextCharFormat format);
+     void tabChangedSlot(QTextCharFormat newTabFormat);
 
 private slots:
     void sliderValueChanged(int sliderValue);

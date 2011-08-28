@@ -79,6 +79,7 @@ QFontComboBox *textFontCombo;
     QFont textFont;
     QSpinBox *textSpin;
 int textSpinValue;
+QCheckBox *showScrollbarBox;
 
 };
 #endif // SETTINGSDIALOG_H

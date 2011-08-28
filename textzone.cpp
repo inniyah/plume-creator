@@ -9,10 +9,12 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     createActions();
     setContextMenuPolicy(Qt::DefaultContextMenu);
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+
+setWordWrapMode(QTextOption::WordWrap);
 
 
-
-
+applyConfig();
 }
 
 
@@ -254,7 +256,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
 {
     emit charFormatChangedSignal(cFormat);
 
-    QString family = cFormat.fontFamily();
+  //  QString family = cFormat.fontFamily();
     int weight = cFormat.fontWeight();
     bool italic = cFormat.fontItalic();
     Qt::Alignment align = alignment();
@@ -351,10 +353,26 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 
 
 
+//--------------------------------------------------------------------------------
+void TextZone::centerCursor()
+{
+        QRect cursor = cursorRect();
+        QRect viewport =  this->viewport()->rect();
+        if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
+                QPoint offset = viewport.center() - cursor.center();
+                QScrollBar* scrollbar = verticalScrollBar();
+                scrollbar->setValue(scrollbar->value() - offset.y());
+        }
+}
 
+//--------------------------------------------------------------------------------
 
-
-
+void TextZone::cursorPositionChangedSlot()
+{
+if (QApplication::mouseButtons() == Qt::NoButton) {
+    centerCursor();
+}
+}
 
 
 
@@ -379,13 +397,18 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         document.setHtml(qvariant_cast<QString>(source->html()));
 
         QTextCursor cursor = this->textCursor();
+
+
+
+
         cursor.insertHtml(document.toHtml("utf-8"));
         qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
         QString plainText = qvariant_cast<QString>(source->text());
-        QTextCursor cursor = this->textCursor();
+        QTextCursor cursor = this->textCursor
+();
         cursor.insertText(plainText);
         qDebug() << "insertFromMimeData plainText";
 
@@ -408,4 +431,37 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 
     qDebug() << "canInsertFromMimeData";
 }
+//--------------------------------------------------------------------------------
+void TextZone::resizeEvent(QResizeEvent* event)
+{
+        centerCursor();
+        textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+        QWidget::resizeEvent(event);
+}
 
+
+
+//--------------------------------------------------------------------------------
+
+
+
+
+//-------------------------------------------------------------------------------
+
+void TextZone::applyConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("TextArea/alwaysCenter", true).toBool();
+    showScrollbar = settings.value("TextArea/showScrollbar", true).toBool();
+    settings.endGroup();
+
+
+    centerCursor();
+
+    if(showScrollbar)
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+}

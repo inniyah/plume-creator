@@ -20,7 +20,7 @@ void NewProjectWizard::accept()
 {
 
     QString projectNameFinish = field("projectNameField").toString();
-    QString projectDirectoryFinish = field("projectDirectoryField").toString();
+    QString projectDirectoryFinish = field("projectDirectoryField").toString().toUtf8();
     QString workingPath = (projectDirectoryFinish + "/" + projectNameFinish);
 
 
@@ -191,9 +191,9 @@ SelectPage::SelectPage(QWidget *parent)
 
     projectNameLabel = new QLabel(tr("Project name :"));
     projectNameLabelLineEdit = new QLineEdit;
+    projectNameLabelLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\*\?\x0022<>|]+"), projectNameLabelLineEdit));
 
-
-    //    directoryLabel = new QLabel(tr("Path : "));;
+    //    directoryLabel = new QLabel(tr("Path : "));
     directoryLabelLineEdit = new QLineEdit;
     QPushButton *directoryButton = new QPushButton(tr("Select path"));
     directoryButton->setMaximumWidth(100);

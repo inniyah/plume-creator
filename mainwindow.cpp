@@ -10,6 +10,7 @@
 #include "statsbox.h"
 #include "itembox.h"
 #include "texttab.h"
+#include "fullscreeneditor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -267,15 +268,15 @@ void MainWindow::createNoteDock()
     tabFullscreenButton->setText(tr("Fullscreen &Edit"));
     tabFullscreenButton->setShortcut(Qt::Key_F11);
     tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    connect(tabFullscreenButton, SIGNAL(pressed()), tabWidget, SLOT(showFullScreen()));;
+    connect(tabFullscreenButton, SIGNAL(pressed()), this, SLOT(editFullscreen()));;
 
 
-    QToolButton *keepVisibleButton = new QToolButton(this);
-    keepVisibleButton->setText(tr("Visible"));
-    keepVisibleButton->setShortcut(Qt::Key_F11);
-    keepVisibleButton->setCheckable(true);
-    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
-    connect(keepVisibleButton, SIGNAL(toggled(bool)), tabWidget, SLOT(showFullScreen()));;
+//    QToolButton *keepVisibleButton = new QToolButton(this);
+//    keepVisibleButton->setText(tr("Visible"));
+//    keepVisibleButton->setShortcut(Qt::Key_F11);
+//    keepVisibleButton->setCheckable(true);
+//    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
+//    connect(keepVisibleButton, SIGNAL(toggled(bool)), tabWidget, SLOT(showFullScreen()));;
 
 
     QComboBox *stateCombo = new QComboBox;
@@ -450,6 +451,22 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         //other :
         firstOpen = false;
 
+
+        //apply config :
+
+        connect(this, SIGNAL(applyConfigSignal()), tab,SLOT(applyConfig()));
+
+
+
+
+
+        //test fullscreen
+
+
+
+
+
+
     }
     //    if(action == "tempSave"){
     //        tempSaveNote(noteFile, noteFile, synFile);
@@ -568,8 +585,13 @@ void MainWindow::tabChangeSlot(int tabNum)
         qDebug() << "tabChangeRequest synFile :" << synFileList->at(preTabNum)->fileName() << "----------- saved :" << synBool;
         qDebug() << "tabChangeRequest pre :" << preTabNum;
         qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
-    }
 
+
+//to initialize edit menu fonts:
+
+    TextTab *tab = textWidgetList->at(tabNum);
+    editMenu->tabChangedSlot(tab->tabChangedSlot());
+    }
 }
 //---------------------------------------------------------------------------
 void MainWindow::tabCloseRequest(int tabNum)
@@ -803,6 +825,8 @@ timer->start(autosaveTime);
 
 void MainWindow::applyConfig()
 {
+    emit applyConfigSignal();
+
     QSettings settings;
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20).toInt();
@@ -824,4 +848,26 @@ void MainWindow::configTimer()
 
     QString debug;
     qDebug() << "autosaveTime" << debug.setNum(autosaveTime);
+}
+
+
+//----------------------------------------------------------------------------
+
+
+void MainWindow::editFullscreen()
+{
+
+
+
+
+//    qDebug() << tabWidget->currentWidget()->objectName();
+
+
+QString tabName = tabWidget->currentWidget()->objectName();
+           TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
+
+FullscreenEditor *fullEditor = new FullscreenEditor(0,tab->tabDocument());
+
+
+
 }

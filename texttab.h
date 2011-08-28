@@ -57,6 +57,9 @@ void changeTextHeightSlot(int height);
 void setTextFocus();
 void setCursorPos(int pos);
 int saveCursorPos();
+void applyConfig();
+QTextCharFormat tabChangedSlot();
+QTextDocument *tabDocument();
 
 private slots:
 

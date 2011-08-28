@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     textzone.cpp \
     timer.cpp \
     wordcount.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    fullscreeneditor.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     textzone.h \
     timer.h \
     wordcount.h \
-    settingsdialog.h
+    settingsdialog.h \
+    fullscreeneditor.h
 
 RESOURCES += \
     pics.qrc
