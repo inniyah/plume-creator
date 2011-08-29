@@ -11,10 +11,10 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-setWordWrapMode(QTextOption::WordWrap);
+    setWordWrapMode(QTextOption::WordWrap);
 
 
-applyConfig();
+    applyConfig();
 }
 
 
@@ -256,7 +256,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
 {
     emit charFormatChangedSignal(cFormat);
 
-  //  QString family = cFormat.fontFamily();
+    //  QString family = cFormat.fontFamily();
     int weight = cFormat.fontWeight();
     bool italic = cFormat.fontItalic();
     Qt::Alignment align = alignment();
@@ -301,7 +301,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     }
 
 
-setFocus();
+    setFocus();
 }
 
 //--------------------------------------------------------------------------------
@@ -329,8 +329,8 @@ void TextZone::setTextFont(QFont font)
 void TextZone::setTextHeight(int height)
 {
     QTextCharFormat fmt;
-        fmt.setFontPointSize(height);
-        mergeFormatOnWordOrSelection(fmt);
+    fmt.setFontPointSize(height);
+    mergeFormatOnWordOrSelection(fmt);
 
 }
 
@@ -341,8 +341,8 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 
 {
     QTextCursor cursor = textCursor();
-//    if(cursor.charFormat().fontItalic())
-//        format.setFontItalic(true);
+    //    if(cursor.charFormat().fontItalic())
+    //        format.setFontItalic(true);
 
     cursor.mergeCharFormat(format);
     mergeCurrentCharFormat(format);
@@ -356,22 +356,22 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 //--------------------------------------------------------------------------------
 void TextZone::centerCursor()
 {
-        QRect cursor = cursorRect();
-        QRect viewport =  this->viewport()->rect();
-        if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
-                QPoint offset = viewport.center() - cursor.center();
-                QScrollBar* scrollbar = verticalScrollBar();
-                scrollbar->setValue(scrollbar->value() - offset.y());
-        }
+    QRect cursor = cursorRect();
+    QRect viewport =  this->viewport()->rect();
+    if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
+        QPoint offset = viewport.center() - cursor.center();
+        QScrollBar* scrollbar = verticalScrollBar();
+        scrollbar->setValue(scrollbar->value() - offset.y());
+    }
 }
 
 //--------------------------------------------------------------------------------
 
 void TextZone::cursorPositionChangedSlot()
 {
-if (QApplication::mouseButtons() == Qt::NoButton) {
-    centerCursor();
-}
+    if (QApplication::mouseButtons() == Qt::NoButton) {
+        centerCursor();
+    }
 }
 
 
@@ -408,7 +408,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
     else if(source->hasText()){
         QString plainText = qvariant_cast<QString>(source->text());
         QTextCursor cursor = this->textCursor
-();
+                ();
         cursor.insertText(plainText);
         qDebug() << "insertFromMimeData plainText";
 
@@ -434,9 +434,9 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 //--------------------------------------------------------------------------------
 void TextZone::resizeEvent(QResizeEvent* event)
 {
-        centerCursor();
-        textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
-        QWidget::resizeEvent(event);
+    centerCursor();
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    QWidget::resizeEvent(event);
 }
 
 
@@ -460,7 +460,7 @@ void TextZone::applyConfig()
     centerCursor();
 
     if(showScrollbar)
-    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     else
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 

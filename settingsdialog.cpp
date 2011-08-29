@@ -122,11 +122,21 @@ showScrollbarBox = new QCheckBox(tr("Show scrollbar"));
 
 
 
+    QGroupBox *fullTextBox = new QGroupBox(tr("FullScreen Text Area :"));
+
+    QGridLayout *gridFullTextLayout = new QGridLayout;
+
+showFullScrollbarBox = new QCheckBox(tr("Show scrollbar"));
+
+     gridFullTextLayout->addWidget(showFullScrollbarBox,0,0);
+    fullTextBox->setLayout(gridFullTextLayout);
+
 
 
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(textBox);
+    mainLayout->addWidget(fullTextBox);
     setLayout(mainLayout);
 
     readSettings();
@@ -141,11 +151,19 @@ void TextSettingTab::readSettings()
     textSpinValue = settings.value("TextArea/textHeight", 12).toInt();
 textFont.setFamily(settings.value("TextArea/textFontFamily", "Liberation Serif").toString());
 showScrollbarBox->setChecked(settings.value("TextArea/showScrollbar", true).toBool());
-settings.endGroup();
-
 
 textSpin->setValue(textSpinValue);
 textFontCombo->setCurrentFont(textFont);
+
+
+
+
+showFullScrollbarBox->setChecked(settings.value("FullTextArea/showScrollbar", false).toBool());
+
+
+
+settings.endGroup();
+
 }
 
 //---------------------------------------------------------------------------------
@@ -156,6 +174,12 @@ void TextSettingTab::accept()
     settings.setValue("TextArea/textHeight", textSpin->value());
     settings.setValue("TextArea/textFontFamily", textFontCombo->currentFont());
     settings.setValue("TextArea/showScrollbar", showScrollbarBox->isChecked());
+
+
+
+settings.setValue("FullTextArea/showScrollbar", showFullScrollbarBox->isChecked());
+
+
     settings.endGroup();
 
  //   qDebug()<< "textFont" << textFont.family();

@@ -15,16 +15,16 @@ public:
     explicit SettingsDialog(QWidget *parent = 0);
 
 protected:
-   void accept();
+    void accept();
 
 signals:
 
 public slots:
 
 private:
-   QDialogButtonBox *buttonBox;
-GeneralSettingTab *generalSettingTab;
-TextSettingTab *textSettingTab;
+    QDialogButtonBox *buttonBox;
+    GeneralSettingTab *generalSettingTab;
+    TextSettingTab *textSettingTab;
 };
 
 
@@ -44,12 +44,12 @@ public slots:
     void accept();
 
 private slots:
-void readSettings();
+    void readSettings();
 
 private:
-QSettings settings;
-QSpinBox *autosaveTimeSpin;
-int autosaveTime;
+    QSettings settings;
+    QSpinBox *autosaveTimeSpin;
+    int autosaveTime;
 
 
 };
@@ -65,21 +65,24 @@ public:
 
 signals:
     void textHeightSignal(int textSpinValue);
-            void textFontSignal(QString textFont);
+    void textFontSignal(QString textFont);
 
 public slots:
     void accept();
 
-    private slots:
-void readSettings();
+private slots:
+    void readSettings();
 
 private:
-QSettings settings;
-QFontComboBox *textFontCombo;
+    QSettings settings;
+    QFontComboBox *textFontCombo;
     QFont textFont;
     QSpinBox *textSpin;
-int textSpinValue;
-QCheckBox *showScrollbarBox;
+    int textSpinValue;
+    QCheckBox *showScrollbarBox;
 
+
+
+    QCheckBox *showFullScrollbarBox;
 };
 #endif // SETTINGSDIALOG_H

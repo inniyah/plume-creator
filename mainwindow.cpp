@@ -47,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
     setTextTabConnections();
 
 
-// Config :
+    // Config :
     readSettings();
     connect(menu, SIGNAL(applyConfigSignal()), this,SLOT(applyConfig()));
-applyConfig();
+    applyConfig();
 
 
     // Welcome dialog at first start
@@ -128,7 +128,6 @@ void MainWindow::createMenuDock()
 
     toolBox->addItem(menu, tr("Menu"));
 
-    connect(menu,SIGNAL(goFullscreenSignal(bool)), this, SLOT(goFullscreenSlot(bool)));
     connect(menu, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
@@ -270,12 +269,12 @@ void MainWindow::createNoteDock()
     connect(tabFullscreenButton, SIGNAL(pressed()), this, SLOT(editFullscreen()));;
 
 
-//    QToolButton *keepVisibleButton = new QToolButton(this);
-//    keepVisibleButton->setText(tr("Visible"));
-//    keepVisibleButton->setShortcut(Qt::Key_F11);
-//    keepVisibleButton->setCheckable(true);
-//    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
-//    connect(keepVisibleButton, SIGNAL(toggled(bool)), tabWidget, SLOT(showFullScreen()));;
+    //    QToolButton *keepVisibleButton = new QToolButton(this);
+    //    keepVisibleButton->setText(tr("Visible"));
+    //    keepVisibleButton->setShortcut(Qt::Key_F11);
+    //    keepVisibleButton->setCheckable(true);
+    //    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
+    //    connect(keepVisibleButton, SIGNAL(toggled(bool)), tabWidget, SLOT(showFullScreen()));;
 
 
     QComboBox *stateCombo = new QComboBox;
@@ -311,24 +310,13 @@ void MainWindow::createNoteDock()
 }
 
 
-//---------------------------------------------------------------------------
 
-void MainWindow::goFullscreenSlot(bool m_fullscreen)
-{
-    if (m_fullscreen == true) {
-        showFullScreen();
-        //     setWindowFlags(Qt::FramelessWindowHint);
-    } else {
-        showNormal();
-        //    setWindowFlags(Qt::Window);
-    }
-}
 
 //---------------------------------------------------------------------------
 
 void MainWindow::openProjectSlot(QFile *projectFile)
 {
-
+    closeAllDocsSlot();
     file = projectFile;
     mainTree->read(projectFile);
 }
@@ -342,11 +330,11 @@ void MainWindow::closeProjectSlot()
 
     mainTree->write(file);
     mainTree->closeTree();
- firstOpen = true;
+    firstOpen = true;
 
-QSettings settings;
+    QSettings settings;
     settings.beginWriteArray("Manager/projects");
-settings.setArrayIndex(settingNumber);
+    settings.setArrayIndex(settingNumber);
     settings.setValue("lastModified", QDateTime::currentDateTime().toString());
     settings.endArray();
 
@@ -424,7 +412,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         tabWidget->setCurrentWidget(tab);
 
 
-//connect edit menu to tab
+        //connect edit menu to tab
         connect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
         editMenu->loadSliderValue();
 
@@ -435,7 +423,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
 
         //launch autosaving :
         if(firstOpen)
-        autosaveTimer();
+            autosaveTimer();
 
 
 
@@ -549,7 +537,7 @@ void MainWindow::setTextTabConnections()
     connect(menu, SIGNAL(openProjectNumberSignal(int)), this, SLOT(setProjectNumberSlot(int)));
 
     connect(this, SIGNAL(tabWidgetWidth(int)), editMenu,SLOT(tabWitdhChangedSlot(int)));
-emit tabWidgetWidth(tabWidget->width());
+    emit tabWidgetWidth(tabWidget->width());
 }
 
 
@@ -586,10 +574,10 @@ void MainWindow::tabChangeSlot(int tabNum)
         qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
 
 
-//to initialize edit menu fonts:
+        //to initialize edit menu fonts:
 
-    TextTab *tab = textWidgetList->at(tabNum);
-    editMenu->tabChangedSlot(tab->tabChangedSlot());
+        TextTab *tab = textWidgetList->at(tabNum);
+        editMenu->tabChangedSlot(tab->tabChangedSlot());
     }
 }
 //---------------------------------------------------------------------------
@@ -804,9 +792,9 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 void MainWindow::autosaveTimer()
 {
-timer = new QTimer(this);
-connect(timer, SIGNAL(timeout()), this, SLOT(textSlot()));
-timer->start(autosaveTime);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(textSlot()));
+    timer->start(autosaveTime);
 }
 
 
@@ -832,7 +820,7 @@ void MainWindow::applyConfig()
     settings.endGroup();
 
     if(!firstOpen)
-    configTimer();
+        configTimer();
 
 
     editMenu->applyConfig();
@@ -859,19 +847,18 @@ void MainWindow::editFullscreen()
 
 
 
-//    qDebug() << tabWidget->currentWidget()->objectName();
+    qDebug() << tabWidget->currentWidget()->objectName();
 
 
-QString tabName = tabWidget->currentWidget()->objectName();
-           TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
+    QString tabName = tabWidget->currentWidget()->objectName();
+    TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
 
-fullEditor = new FullscreenEditor(tab->document(), 0);
+    fullEditor = new FullscreenEditor(tab->document(), 0);
 
-qDebug() << "jalon";
 
-connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));
-connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
-connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
+    connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));
+    connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
+    connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
 
 
 }

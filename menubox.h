@@ -48,7 +48,6 @@ protected:
 
 signals:
 
-    void goFullscreenSignal(bool fullscreen);
     void exitSignal();
 
     void openProjectSignal(QFile *device);
@@ -73,7 +72,6 @@ private slots:
     void displayConfig();
     void print();
     void closeProject();
-    void goFullscreen();
     void aboutQt();
     void about();
     void exit();
@@ -92,12 +90,10 @@ private:
     *exitButton,
     *printButton,
     *aboutQtButton,
-    *aboutButton,
-    *goFullscreenButton;
+    *aboutButton;
 
 
 
-    bool m_fullscreen;
 
 
 

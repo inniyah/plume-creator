@@ -36,7 +36,7 @@ public:
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
-
+    void callColorDialogSignal();
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void insertFromMimeData (const QMimeData *source);
@@ -67,6 +67,7 @@ private slots:
     void center(bool centBool);
     void setWidth();
     void setColors();
+    void setZoom();
 
     void charFormat(QTextCharFormat cFormat);
 
@@ -96,14 +97,14 @@ private:
     *justifyAct,
     *centerAct,
     *setWidthAct,
-    *setColorsAct;
+    *setColorsAct,
+    *setZoomAct;
 
     QMenu *alignmentGroup,
     *optionGroup;
     QPoint mousePos;
 
 bool alwaysCenter;
-bool showScrollbar;
 
 QSlider *widthSlider;
 int sliderValue;

@@ -53,7 +53,6 @@ signals:
 
 
 public slots:
-    void goFullscreenSlot(bool m_fullscreen);
     void openProjectSlot(QFile *projectFile);
     void closeProjectSlot();
 

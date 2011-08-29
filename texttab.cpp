@@ -231,7 +231,6 @@ QTextCharFormat TextTab::tabChangedSlot()
 
 void TextTab::updateTextZone()
 {
-    qDebug() << "jalon 1";
     textZone->setFixedWidth(textZone->width()+1);
     textZone->setFixedWidth(textZone->width()-1);
 }

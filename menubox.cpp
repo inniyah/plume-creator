@@ -146,16 +146,6 @@ void MenuBox::closeProject()
 
 }
 
-//--------------------------------------------------------------------------
-
-
-void MenuBox::goFullscreen()
-{
-    m_fullscreen = !m_fullscreen;
-    emit goFullscreenSignal(m_fullscreen);
-    goFullscreenButton->setChecked(m_fullscreen);
-
-}
 
 //--------------------------------------------------------------------------
 
@@ -298,15 +288,6 @@ void MenuBox::createButtons()
     connect(exitButton, SIGNAL(pressed()), this, SLOT(exit()));
 
 
-    goFullscreenButton = new QToolButton(this);
-    goFullscreenButton->setMaximumSize(buttonSize);
-    goFullscreenButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    goFullscreenButton->setText(tr("&Fullscreen"));
-    goFullscreenButton->setCheckable(true);
-    goFullscreenButton->setShortcut(Qt::CTRL + Qt::Key_F11);
-    goFullscreenButton->setStatusTip(tr("Go fullscreen"));
-    connect(goFullscreenButton, SIGNAL(clicked()), this, SLOT(goFullscreen()));
-
     aboutButton = new QToolButton(this);
     aboutButton->setMaximumSize(buttonSize);
     aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -323,17 +304,16 @@ void MenuBox::createButtons()
     aboutQtButton->setToolTip(tr("aboutQt the application"));
     connect(aboutQtButton, SIGNAL(pressed()), this, SLOT(aboutQt()));
 
-    QSize size(60,30);
-    newProjectButton->setFixedSize(size);
-    projectManagerButton->setFixedSize(size);
- //   openButton->setFixedSize(size);
-    displayConfigButton->setFixedSize(size);
-    closeProjectButton->setFixedSize(size);
-    exitButton->setFixedSize(size);
-    goFullscreenButton->setFixedSize(size);
-    printButton->setFixedSize(size);
-    aboutQtButton->setFixedSize(size);
-    aboutButton->setFixedSize(size);
+//    QSize size(80,30);
+//    newProjectButton->setFixedSize(size);
+//    projectManagerButton->setFixedSize(size);
+// //   openButton->setFixedSize(size);
+//    displayConfigButton->setFixedSize(size);
+//    closeProjectButton->setFixedSize(size);
+//    exitButton->setFixedSize(size);
+//    printButton->setFixedSize(size);
+//    aboutQtButton->setFixedSize(size);
+//    aboutButton->setFixedSize(size);
 
 
 
@@ -347,8 +327,6 @@ void MenuBox::createButtons()
     baseGridLayout->addWidget(printButton);
     baseGridLayout->addSpacing(5);
 
-    baseGridLayout->addWidget(goFullscreenButton);
-    baseGridLayout->addSpacing(5);
 
     baseGridLayout->addWidget(aboutButton);
     baseGridLayout->addWidget(aboutQtButton);
@@ -371,13 +349,7 @@ void MenuBox::createButtons()
 
 void MenuBox::readSettings()
 {
-    QSettings settings;
-    settings.beginGroup( "MainWindow" );
-    m_fullscreen = settings.value("fullscreen", true).toBool();
-    settings.endGroup();
 
-    emit goFullscreenSignal(m_fullscreen);
-    goFullscreenButton->setChecked(m_fullscreen);
 
 }
 
@@ -386,11 +358,7 @@ void MenuBox::readSettings()
 void MenuBox::writeSettings()
 {
 
-    QSettings settings;
-    settings.beginGroup( "MainWindow" );
-    settings.setValue( "fullscreen", m_fullscreen);
-    settings.endGroup();
-    qDebug() << "menuDock write settings";
+
 
 }
 
@@ -448,21 +416,21 @@ void MenuBox::giveStyle()
 {
 
 
-    setStyleSheet(" QToolButton {"
-                  "background-color: grey;"
-                  "border-style: outset;"
-                  "border-width: 1px;"
-                  "border-radius: 0px;"
-                  "border-color: black;"
-                  "font: bold 12px;"
-                  "min-width: 10em;"
-                  "padding: 6px;"
-                  "}"
-                  "QToolButton:pressed {"
-                  "background-color: rgb(150, 150, 150);"
-                  "border-style: inset;"
-                  "}"
-);
+//    setStyleSheet(" QToolButton {"
+//                  "background-color: grey;"
+//                  "border-style: outset;"
+//                  "border-width: 1px;"
+//                  "border-radius: 0px;"
+//                  "border-color: black;"
+//                  "font: bold 12px;"
+//                  "min-width: 10em;"
+//                  "padding: 6px;"
+//                  "}"
+//                  "QToolButton:pressed {"
+//                  "background-color: rgb(150, 150, 150);"
+//                  "border-style: inset;"
+//                  "}"
+//);
 
 
 }

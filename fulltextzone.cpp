@@ -19,6 +19,7 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
     toHtml();
 
 
+setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     applyConfig();
 }
@@ -131,9 +132,15 @@ void FullTextZone::createActions()
     setColorsAct->setStatusTip(tr("Set text and background colors"));
     connect(setColorsAct, SIGNAL(triggered()), this, SLOT(setColors()));
 
+    setZoomAct = new QAction(tr("&Zoom"), this);
+    //    setColorsAct->setShortcuts(QKeySequence::Copy);
+    setZoomAct->setStatusTip(tr("Set text zoom"));
+    connect(setZoomAct, SIGNAL(triggered()), this, SLOT(setZoom()));
+
     optionGroup = new QMenu(tr("&Options"),this);
     optionGroup->addAction(setWidthAct);
     optionGroup->addAction(setColorsAct);
+    optionGroup->addAction(setZoomAct);
 
 
 
@@ -160,6 +167,7 @@ void FullTextZone::cut()
 void FullTextZone::copy()
 {
     QTextEdit::copy();
+
 }
 
 void FullTextZone::paste()
@@ -176,6 +184,9 @@ void FullTextZone::bold(bool boldBool)
     else{
         setFontWeight(50);
     }
+
+
+
 }
 
 void FullTextZone::italic(bool italBool)
@@ -273,7 +284,37 @@ void FullTextZone::setWidth()
 
 void FullTextZone::setColors()
 {
+    emit callColorDialogSignal();
+}
 
+void FullTextZone::setZoom()
+{
+
+    QWidget *zoomDialog = new QWidget(this, Qt::Dialog);
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QLabel *zoomLabel = new QLabel(tr("Text Zoom : (not yet implemented)"));
+
+    QHBoxLayout *zoomLayout = new QHBoxLayout;
+    QPushButton *zoomInButton = new QPushButton(tr("Zoom &In"),zoomDialog);
+    connect(zoomInButton,SIGNAL(clicked()), this, SLOT(zoomIn()));
+    QPushButton *zoomOutButton = new QPushButton(tr("Zoom &Out"),zoomDialog);
+    connect(zoomOutButton,SIGNAL(clicked()), this, SLOT(zoomOut()));
+
+    zoomLayout->addWidget(zoomInButton);
+    zoomLayout->addWidget(zoomOutButton);
+
+
+    QPushButton *closeButton = new QPushButton(tr("Ok"),zoomDialog);
+    connect(closeButton,SIGNAL(clicked()), zoomDialog, SLOT(close()));
+
+    layout->addWidget(zoomLabel);
+    layout->addLayout(zoomLayout);
+    layout->addWidget(closeButton);
+    zoomDialog->setLayout(layout);
+
+
+    zoomDialog->show();
 }
 
 //----------------------------------------------------------------------
@@ -494,6 +535,8 @@ void FullTextZone::resizeEvent(QResizeEvent* event)
 
 
 
+
+
 //----------------------------------------------------------------------------------------
 
 void FullTextZone::loadSliderValue()
@@ -554,7 +597,7 @@ void FullTextZone::applyConfig()
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("FullTextArea/alwaysCenter", true).toBool();
-    showScrollbar = settings.value("FullTextArea/showScrollbar", true).toBool();
+    bool showScrollbar = settings.value("FullTextArea/showScrollbar", false).toBool();
     settings.endGroup();
     setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
 
