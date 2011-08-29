@@ -10,7 +10,6 @@
 #include "statsbox.h"
 #include "itembox.h"
 #include "texttab.h"
-#include "fullscreeneditor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -866,8 +865,13 @@ void MainWindow::editFullscreen()
 QString tabName = tabWidget->currentWidget()->objectName();
            TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
 
-FullscreenEditor *fullEditor = new FullscreenEditor(0,tab->tabDocument());
+fullEditor = new FullscreenEditor(tab->document(), 0);
 
+qDebug() << "jalon";
+
+connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));
+connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
+connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
 
 
 }

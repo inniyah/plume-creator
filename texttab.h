@@ -59,7 +59,7 @@ void setCursorPos(int pos);
 int saveCursorPos();
 void applyConfig();
 QTextCharFormat tabChangedSlot();
-QTextDocument *tabDocument();
+void updateTextZone();
 
 private slots:
 

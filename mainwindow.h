@@ -29,6 +29,7 @@
 #include "itembox.h"
 #include "notezone.h"
 #include "texttab.h"
+#include "fullscreeneditor.h"
 
 class MainWindow : public QMainWindow
 {
@@ -115,6 +116,8 @@ private:
     QTimer *timer;
 
     void setEditMenuConnections();
+
+    FullscreenEditor *fullEditor;
 
 };
 

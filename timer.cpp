@@ -230,7 +230,8 @@ void Timer::showTime()
     //        timer->stop();
 
 
-
+//for fullscreen editor :
+    emit timerSignal(timeLabel->text());
 
 
 }

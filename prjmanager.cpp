@@ -78,7 +78,21 @@ void PrjManager::displayProjects(){
 
     QSettings settings;
 
-    int size = settings.value("Manager/projects/size").toInt();
+
+    settings.beginGroup("Manager/projects");
+
+    QStringList groups = settings.childGroups();
+    int size = groups.size();
+    settings.setValue("size", size);
+
+    settings.endGroup();
+    QString string;
+    qDebug() << "size : " << string.setNum(size,10);
+   // int size = settings.value("Manager/projects/size").toInt();
+
+
+
+
 
     settings.beginReadArray("Manager/projects");
 

@@ -34,7 +34,7 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
     //temporary config
 
 
-    textZone->setMinimumWidth(600);
+ //   textZone->setMinimumWidth(600);
 
 
     //    QFont synLiberationFont("Liberation Serif", 13);
@@ -229,11 +229,12 @@ QTextCharFormat TextTab::tabChangedSlot()
     return textZone->currentCharFormat();
 }
 
-QTextDocument* TextTab::tabDocument()
+void TextTab::updateTextZone()
 {
-    return textDocument;
+    qDebug() << "jalon 1";
+    textZone->setFixedWidth(textZone->width()+1);
+    textZone->setFixedWidth(textZone->width()-1);
 }
-
 
 
 void TextTab::applyConfig()

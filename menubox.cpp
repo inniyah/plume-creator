@@ -30,57 +30,57 @@ void MenuBox::newProject()
 
 //---------------------------------------------------------------------------
 
-void MenuBox::open()
-{
-    QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Open Project File"),
-                                         QDir::homePath(),
-                                         tr(".Plume Creator Files (*.plume)"));
+//void MenuBox::open()
+//{
+//    QString fileName =
+//            QFileDialog::getOpenFileName(this, tr("Open Project File"),
+//                                         QDir::homePath(),
+//                                         tr(".Plume Creator Files (*.plume)"));
 
 
 
-    if (fileName.isEmpty())
-        return;
+//    if (fileName.isEmpty())
+//        return;
 
-    closeProject();
-
-
-    //    tempDomFile = new QFile(fileName + ".temp");
-    //    if(tempDomFile->exists()){
-    //        if (!tempDomFile->open(QFile::ReadOnly | QFile::Text)) {
-    //            QMessageBox::warning(this, tr("Plume Creator File"),
-    //                                 tr("Cannot read file %1:\n%2.")
-    //                                 .arg(fileName)
-    //                                 .arg(tempDomFile->errorString()));
-    //            return;
-    //        }
+//    closeProject();
 
 
-    //        QMessageBox::warning(this, tr("Plume Creator File"),
-    //                             tr("This project has been closed abruptly. Plume Creator will try to recuperate this project."));
-    //        connect(this, SIGNAL(openProjectSignal(QFile*)), treeDock, SLOT(openProjectSlot(QFile*)));
-    //        emit openProjectSignal(tempDomFile);
+//    //    tempDomFile = new QFile(fileName + ".temp");
+//    //    if(tempDomFile->exists()){
+//    //        if (!tempDomFile->open(QFile::ReadOnly | QFile::Text)) {
+//    //            QMessageBox::warning(this, tr("Plume Creator File"),
+//    //                                 tr("Cannot read file %1:\n%2.")
+//    //                                 .arg(fileName)
+//    //                                 .arg(tempDomFile->errorString()));
+//    //            return;
+//    //        }
 
-    //        tempDomFile->close();
 
-    //    }
-    //    else{
+//    //        QMessageBox::warning(this, tr("Plume Creator File"),
+//    //                             tr("This project has been closed abruptly. Plume Creator will try to recuperate this project."));
+//    //        connect(this, SIGNAL(openProjectSignal(QFile*)), treeDock, SLOT(openProjectSlot(QFile*)));
+//    //        emit openProjectSignal(tempDomFile);
+
+//    //        tempDomFile->close();
+
+//    //    }
+//    //    else{
 
 
-    file = new QFile(fileName);
-    if (!file->open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Plume Creator File"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file->errorString()));
-        return;
-    }
-    emit openProjectSignal(file);
+//    file = new QFile(fileName);
+//    if (!file->open(QFile::ReadOnly | QFile::Text)) {
+//        QMessageBox::warning(this, tr("Plume Creator File"),
+//                             tr("Cannot read file %1:\n%2.")
+//                             .arg(fileName)
+//                             .arg(file->errorString()));
+//        return;
+//    }
+//    emit openProjectSignal(file);
 
-    file->close();
+//    file->close();
 
-    //    }
-}
+//    //    }
+//}
 
 //---------------------------------------------------------------------------
 
@@ -257,13 +257,13 @@ void MenuBox::createButtons()
     projectManagerButton->setToolTip(tr("Create a new project"));
     connect(projectManagerButton, SIGNAL(pressed()), this, SLOT(projectManager()));
 
-    openButton = new QToolButton(this);
-    openButton->setMaximumSize(buttonSize);
-    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    openButton->setText(tr("&Open..."));
-    openButton->setShortcut(QKeySequence::Open);
-    openButton->setToolTip(tr("Open an existing file"));
-    connect(openButton, SIGNAL(pressed()), this, SLOT(open()));
+//    openButton = new QToolButton(this);
+//    openButton->setMaximumSize(buttonSize);
+//    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    openButton->setText(tr("&Open..."));
+//    openButton->setShortcut(QKeySequence::Open);
+//    openButton->setToolTip(tr("Open an existing file"));
+//    connect(openButton, SIGNAL(pressed()), this, SLOT(open()));
 
     displayConfigButton = new QToolButton(this);
     displayConfigButton->setMaximumSize(buttonSize);
@@ -326,7 +326,7 @@ void MenuBox::createButtons()
     QSize size(60,30);
     newProjectButton->setFixedSize(size);
     projectManagerButton->setFixedSize(size);
-    openButton->setFixedSize(size);
+ //   openButton->setFixedSize(size);
     displayConfigButton->setFixedSize(size);
     closeProjectButton->setFixedSize(size);
     exitButton->setFixedSize(size);
@@ -340,7 +340,7 @@ void MenuBox::createButtons()
 
     baseGridLayout->addWidget(newProjectButton);
     baseGridLayout->addWidget(projectManagerButton);
-    baseGridLayout->addWidget(openButton);
+ //   baseGridLayout->addWidget(openButton);
     baseGridLayout->addSpacing(5);
 
     baseGridLayout->addWidget(displayConfigButton);

@@ -1,8 +1,14 @@
+Plume Creator - A Project Manager and Rich Text Editor for Writers.
+
+Version 0.25  Alpha
+
+
+
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
  *   terreville@google.com                                                 *
  *                                                                         *
- *  This file is part of Plume Creator.                                    *
+ *  					                                   *
  *                                                                         *
  *  Plume Creator is free software: you can redistribute it and/or modify  *
  *  it under the terms of the GNU General Public License as published by   *
@@ -17,45 +23,4 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
 
-#include <QtGui>
-#include <QWidget>
-
-class Timer : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit Timer(QWidget *parent = 0);
-
-signals:
-    void timerSignal(QString string);
-
-public slots:
-
-private slots:
-
-    void secSpinFormat(int sec);
-    void minSpinFormat(int min);
-    void startTime();
-    void resetTime();
-    void pauseTime(bool paused);
-    void showTime();
-
-private:
-
-    QTimer *timer;
-
-    QFrame *timerRunningFrame, *timerSettingFrame;
-    QSpinBox *hourEdit, *minEdit, *secEdit;
-    QLabel *timeLabel;
-    double timeValue;
-
-    int h;
-    int m;
-    int s;
-
-};
-
-#endif // TIMER_H

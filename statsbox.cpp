@@ -39,7 +39,8 @@ StatsBox::StatsBox(QWidget *parent) :
     setLayout(base);
 
 
-
+    //for fullscreen editor :
+    connect(timer,SIGNAL(timerSignal(QString)), this, SIGNAL(timerSignal(QString)));
 }
 
 

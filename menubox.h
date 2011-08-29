@@ -69,7 +69,7 @@ private slots:
 
     void newProject();
     void projectManager();
-    void open();
+ //   void open();
     void displayConfig();
     void print();
     void closeProject();
@@ -86,7 +86,7 @@ private:
 
     QToolButton *newProjectButton,
     *projectManagerButton,
-    *openButton,
+ //   *openButton,
     *displayConfigButton,
     *closeProjectButton,
     *exitButton,

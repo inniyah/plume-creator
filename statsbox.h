@@ -31,6 +31,7 @@ public:
     explicit StatsBox(QWidget *parent = 0);
 
 signals:
+    void timerSignal(QString);
 
 public slots:
     void setWordCount(int num);

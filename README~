@@ -5,8 +5,6 @@ v 0.27
 		- added timer label
 		- added wordcount
 		- added context menu
-		- added text area width option
-	- bug solved : project manager displayed wrong project number
 
 v 0.26
 	- added fullscreen editor (very basic)
