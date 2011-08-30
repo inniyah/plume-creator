@@ -14,7 +14,9 @@ NoteZone::NoteZone(QWidget *parent) :
 
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
 
+    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     //temporary config
     //    QFont liberationFont("Liberation Serif", 13);
@@ -65,6 +67,10 @@ bool NoteZone::openNote(QFile *noteFile, QString name)
 
 setContextMenuPolicy(Qt::DefaultContextMenu);
 
+
+
+applyNoteConfig();
+
     return true;
 }
 
@@ -111,6 +117,8 @@ bool NoteZone::openSyn(QFile *synFile, QString name)
 
 
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    applySynConfig();
 
     return true;
 }
@@ -541,4 +549,250 @@ void NoteZone::charFormat(QTextCharFormat cFormat)
 
 //}
 
+//--------------------------------------------------------------------------------
 
+
+
+
+void NoteZone::setTextFont(QFont font)
+{
+    //    QString currentFormat = settings->value("Settings/Text/textFontFamily", textCursor().charFormat().fontFamily() ).toString();
+    QTextCharFormat fmt;
+    fmt.setFontFamily(font.family());
+    //    QString fontcolor = settings->value("Settings/Text/FontColor", "000000").toString();
+    //    QColor color;
+    //    color.setNamedColor(fontcolor);
+    //    QBrush brush(color, Qt::SolidPattern);
+    //    QFont font;
+    //    font.fromString(currentFormat);
+    //    fmt.setForeground(brush);
+
+    mergeFormatOnWordOrSelection(fmt);
+}
+
+
+void NoteZone::setTextHeight(int height)
+{
+    QTextCharFormat fmt;
+    fmt.setFontPointSize(height);
+    mergeFormatOnWordOrSelection(fmt);
+
+}
+
+
+
+void NoteZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
+
+
+{
+    QTextCursor cursor = textCursor();
+    //    if(cursor.charFormat().fontItalic())
+    //        format.setFontItalic(true);
+
+    cursor.mergeCharFormat(format);
+    mergeCurrentCharFormat(format);
+}
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+void NoteZone::centerCursor()
+{
+//    QRect cursor = cursorRect();
+//    QRect viewport =  this->viewport()->rect();
+//    if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
+//        QPoint offset = viewport.center() - cursor.center();
+//        QScrollBar* scrollbar = verticalScrollBar();
+//        scrollbar->setValue(scrollbar->value() - offset.y());
+//    }
+}
+
+//--------------------------------------------------------------------------------
+
+void NoteZone::cursorPositionChangedSlot()
+{
+    if (QApplication::mouseButtons() == Qt::NoButton) {
+        centerCursor();
+    }
+}
+
+
+//--------------------------------------------------------------------------------
+
+void NoteZone::setCursorPos(int pos)
+{
+    for(int i = 0; i < pos ; i++)
+        moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
+
+
+    ensureCursorVisible();
+}
+
+//--------------------------------------------------------------------------------
+
+int NoteZone::saveCursorPos()
+{
+    QTextCursor cursor = this->textCursor();
+    return cursor.position();
+
+}
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+
+
+void NoteZone::insertFromMimeData (const QMimeData *source )
+{
+    if(source->hasHtml()){
+
+        //        QString htmlText = ;
+
+        //htmlText
+        QTextDocument document;
+        document.setHtml(qvariant_cast<QString>(source->html()));
+
+        QTextCursor cursor = this->textCursor();
+
+
+
+
+        cursor.insertHtml(document.toHtml("utf-8"));
+        qDebug() << "insertFromMimeData Html";
+
+    }
+    else if(source->hasText()){
+        QString plainText = qvariant_cast<QString>(source->text());
+        QTextCursor cursor = this->textCursor
+                ();
+        cursor.insertText(plainText);
+        qDebug() << "insertFromMimeData plainText";
+
+    }
+
+}
+
+//--------------------------------------------------------------------------------
+
+
+bool NoteZone::canInsertFromMimeData (const QMimeData *source) const
+{
+
+    if (source->hasHtml() || source->hasText())
+        return true;
+
+    else
+        return QTextEdit::canInsertFromMimeData(source);
+
+
+    qDebug() << "canInsertFromMimeData";
+}
+//--------------------------------------------------------------------------------
+void NoteZone::resizeEvent(QResizeEvent* event)
+{
+    centerCursor();
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    QWidget::resizeEvent(event);
+}
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+//-----------Apply Config-------------------------------------------------------
+//-------------------------------------------------------------------------------
+
+void NoteZone::applyNoteConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("NoteArea/alwaysCenter", true).toBool();
+    bool noteShowScrollbar = settings.value("NoteArea/showScrollbar", true).toBool();
+    int noteBottMargin = settings.value("NoteArea/bottomMargin", 20).toInt();
+    int noteTextIndent = settings.value("NoteArea/textIndent", 20).toInt();
+    settings.endGroup();
+
+
+    centerCursor();
+
+    if(noteShowScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+
+
+    QString debug;
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(noteBottMargin);
+    blockFormat.setTextIndent(noteTextIndent);
+    QTextCursor *tcursor = new QTextCursor(document());
+    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        int i = 1;
+        while(i <= document()->blockCount())
+        {
+
+            tcursor->mergeBlockFormat(blockFormat);
+
+            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
+            qDebug() << "mergeBlockFormat note : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
+            i += 1;
+        }
+
+
+
+}
+
+//-------------------------------------------------------------------------------
+void NoteZone::applySynConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("SynArea/alwaysCenter", true).toBool();
+bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
+int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
+int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
+settings.endGroup();
+
+
+    centerCursor();
+
+    if(synShowScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+
+
+    QString debug;
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(synBottMargin);
+    blockFormat.setTextIndent(synTextIndent);
+    QTextCursor *tcursor = new QTextCursor(document());
+    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        int i = 1;
+        while(i <= document()->blockCount())
+        {
+
+            tcursor->mergeBlockFormat(blockFormat);
+
+            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
+            qDebug() << "mergeBlockFormat syn : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
+            i += 1;
+        }
+}

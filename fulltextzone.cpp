@@ -14,7 +14,7 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-    setWordWrapMode(QTextOption::WordWrap);
+    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     //setMinimumWidth(600);
     toHtml();
 

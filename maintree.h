@@ -45,13 +45,13 @@ void mousePressEvent(QMouseEvent* event);
 void dragEnterEvent(QDragEnterEvent *event);
 
 signals:
-    void textAndNoteSignal(QFile *textFile,QFile *noteFile,QFile *synFile,int cursorPosition, QString name, int number, QString action);
+    void textAndNoteSignal(QFile *textFile,QFile *noteFile,QFile *synFile,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
     void textAndNoteSignal(int number, QString action);
     void nameChangedSignal(QString newName, int number);
 
 public slots:
 
-void saveCursorPos(int cursorPosition, int number);
+void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);

@@ -97,7 +97,7 @@ bool TextTab::openText(QFile *textFile, QString name)
 
 
 
-
+    applyConfig();
 
     return true;
 
@@ -239,4 +239,31 @@ void TextTab::updateTextZone()
 void TextTab::applyConfig()
 {
     textZone->applyConfig();
+
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    int bottMargin = settings.value("TextArea/bottomMargin", 20).toInt();
+    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
+    settings.endGroup();
+
+
+    QString debug;
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(bottMargin);
+    blockFormat.setTextIndent(textIndent);
+    QTextCursor *tcursor = new QTextCursor(document());
+    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        int i = 1;
+        while(i <= document()->blockCount())
+        {
+
+            tcursor->mergeBlockFormat(blockFormat);
+
+            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
+            qDebug() << "mergeBlockFormat : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
+            i += 1;
+        }
+
+
 }

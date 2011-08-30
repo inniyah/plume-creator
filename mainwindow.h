@@ -56,7 +56,7 @@ public slots:
     void openProjectSlot(QFile *projectFile);
     void closeProjectSlot();
 
-    void textSlot(QFile *textFile = 0, QFile *noteFile = 0, QFile *synFile = 0, int cursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
+    void textSlot(QFile *textFile = 0, QFile *noteFile = 0, QFile *synFile = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
     void secondTextSlot(int number = 0, QString action = "nothing");
 
 private slots:

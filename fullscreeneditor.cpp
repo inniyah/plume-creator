@@ -5,7 +5,7 @@
 #include "digitalclock.h"
 #include "timer.h"
 
-FullscreenEditor::FullscreenEditor(QTextDocument *doc, QWidget *parent) :
+FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *parent) :
     QWidget(parent)
 {
 
@@ -70,8 +70,15 @@ exitFullscreenButton->setFixedSize(50,20);
     // get screen width for fullscreen text width option :
     fullTextEdit->setXMax(QApplication::desktop()->screenGeometry().width() - 50);
 
+    //set cursor position :
+    for(int i = 0; i < cursorPos ; i++)
+        fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
+    fullTextEdit->ensureCursorVisible();
 }
+
+//------------------------------------------------------------------------------------
+
 
 void FullscreenEditor::setWordCount(int num)
 {

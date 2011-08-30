@@ -45,8 +45,19 @@ protected:
 
     void contextMenuEvent(QContextMenuEvent *event);
 // void keyPressEvent(QKeyEvent *event);
+    void insertFromMimeData (const QMimeData *source);
+    bool canInsertFromMimeData (const QMimeData *source) const;
+    void resizeEvent(QResizeEvent* event);
+
 public slots:
 
+    void setTextFont(QFont font);
+    void setTextHeight(int height);
+    void centerCursor();
+    void setCursorPos(int pos);
+    int saveCursorPos();
+    void applyNoteConfig();
+    void applySynConfig();
 
 private slots:
 
@@ -64,6 +75,10 @@ private slots:
 
 
    void charFormat(QTextCharFormat cFormat);
+
+
+   void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+   void cursorPositionChangedSlot();
 
 private:
 
@@ -87,6 +102,10 @@ private:
     QAction *centerAct;
 
     QMenu *alignmentGroup;
+
+
+
+bool alwaysCenter;
 
 };
 

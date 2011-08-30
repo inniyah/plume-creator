@@ -80,7 +80,9 @@ firstFile.close();
     bookElem.setAttribute("synPath","/text/S1.html");
     bookElem.setAttribute("name", projectNameFinish);
     bookElem.setAttribute("number", "1");
-     bookElem.setAttribute("cursorPos", "0");
+     bookElem.setAttribute("textCursorPos", "0");
+     bookElem.setAttribute("synCursorPos", "0");
+     bookElem.setAttribute("noteCursorPos", "0");
 
     root.appendChild(bookElem);
 
@@ -94,7 +96,9 @@ firstFile.close();
     chapterElem.setAttribute("synPath","/text/S2.html");
     chapterElem.setAttribute("name",tr("Chapter 1"));
     chapterElem.setAttribute("number", "2");
-    chapterElem.setAttribute("cursorPos", "0");
+    chapterElem.setAttribute("textCursorPos", "0");
+    chapterElem.setAttribute("synCursorPos", "0");
+    chapterElem.setAttribute("noteCursorPos", "0");
 
     bookElem.appendChild(chapterElem);
 
@@ -108,7 +112,9 @@ firstFile.close();
     sceneElem.setAttribute("synPath","/text/S3.html");
     sceneElem.setAttribute("name",tr("Scene 1"));
     sceneElem.setAttribute("number", "3");
-    sceneElem.setAttribute("cursorPos", "0");
+    sceneElem.setAttribute("textCursorPos", "0");
+    sceneElem.setAttribute("synCursorPos", "0");
+    sceneElem.setAttribute("noteCursorPos", "0");
 
     chapterElem.appendChild(sceneElem);
 

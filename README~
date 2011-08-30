@@ -1,4 +1,13 @@
 PLUME CREATOR
+
+v 0.29
+	- in fullscreen editor :
+		- SOLVED bug : same docs between projects displayed in fullscreen editor
+
+v 0.28
+	- in fullscreen editor :
+		- added colors
+
 v 0.27
 	- in fullscreen editor :
 		- added clock

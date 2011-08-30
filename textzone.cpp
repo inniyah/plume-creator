@@ -11,8 +11,9 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-    setWordWrapMode(QTextOption::WordWrap);
+    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     applyConfig();
 }
@@ -441,11 +442,16 @@ void TextZone::resizeEvent(QResizeEvent* event)
 
 
 
+
+
+
+
+
+
+
+
 //--------------------------------------------------------------------------------
-
-
-
-
+//-----------Apply Config-------------------------------------------------------
 //-------------------------------------------------------------------------------
 
 void TextZone::applyConfig()
@@ -463,5 +469,8 @@ void TextZone::applyConfig()
         setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     else
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+
 
 }

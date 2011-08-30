@@ -301,13 +301,15 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     synName = domItem.attribute("synPath");
     name = domItem.attribute("name");
     int number = domItem.attribute("number").toInt();
-    int cursorPos = domItem.attribute("cursorPos").toInt();
+    int textCursorPos = domItem.attribute("textCursorPos").toInt();
+    int synCursorPos = domItem.attribute("synCursorPos").toInt();
+    int noteCursorPos = domItem.attribute("noteCursorPos").toInt();
     textFile = new QFile(devicePath + textName);
     noteFile = new QFile(devicePath + noteName);
     synFile = new QFile(devicePath + synName);
 
 
-    emit textAndNoteSignal(textFile, noteFile, synFile, cursorPos, name, number,  action);
+    emit textAndNoteSignal(textFile, noteFile, synFile, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
 
     //    prjIsJustOpened = false;
 
@@ -1624,7 +1626,9 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     newElement.setAttribute("notePath", "/text/N" + textChar.setNum(freeNum, 10) + ".html");
     newElement.setAttribute("synPath", "/text/S" + textChar.setNum(freeNum, 10) + ".html");
     newElement.setAttribute("number", textChar.setNum(freeNum, 10));
-    newElement.setAttribute("cursorPos", textChar.setNum(0, 10));
+    newElement.setAttribute("textCursorPos", textChar.setNum(0, 10));
+    newElement.setAttribute("synCursorPos", textChar.setNum(0, 10));
+    newElement.setAttribute("noteCursorPos", textChar.setNum(0, 10));
 
 
     QFile textFile(devicePath + newElement.attribute("textPath"));
@@ -1953,10 +1957,12 @@ void MainTree::itemExpandedSlot(QTreeWidgetItem* item)
 
 }
 
-void MainTree::saveCursorPos(int cursorPosition, int number)
+void MainTree::saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number)
 {
     QDomElement element = domElementForNumber.value(number);
-           element.setAttribute("cursorPos", cursorPosition);
+           element.setAttribute("textCursorPos", textCursorPosition);
+           element.setAttribute("synCursorPos", synCursorPosition);
+           element.setAttribute("noteCursorPos", noteCursorPosition);
            this->write(deviceFile);
 
 }

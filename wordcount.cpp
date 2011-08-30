@@ -95,7 +95,6 @@ preBlockCount = doc->blockCount();
 
     connect(doc,SIGNAL(blockCountChanged(int)), this, SLOT(updateBlockCount(int)));
 
-//    qDebug() << "pre blockCount :" << debug.setNum(doc->blockCount(), 10);
 
 
 

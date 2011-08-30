@@ -13,7 +13,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), objectNum(1), firstOpen(true)
+    : QMainWindow(parent), firstOpen(true)
 {
     setMinimumSize(800, 600);
     setWindowTitle("Plume Creator");
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
     tabWidget->setTabShape(QTabWidget::Triangular);
-    tabWidget->setDocumentMode(false);
+    tabWidget->setDocumentMode(true);
     tabWidget->setMovable(true);
 
     setCentralWidget(tabWidget);
@@ -176,7 +176,7 @@ void MainWindow::createTreeDock()
 
     mainTree = new MainTree;
 
-    connect(mainTree, SIGNAL(textAndNoteSignal(QFile*,QFile*,QFile*, int, QString, int, QString)), this, SLOT(textSlot(QFile*,QFile*,QFile*, int, QString, int, QString)));
+    connect(mainTree, SIGNAL(textAndNoteSignal(QFile*,QFile*,QFile*, int, int, int, QString, int, QString)), this, SLOT(textSlot(QFile*,QFile*,QFile*, int,int,int, QString, int, QString)));
     connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
 
     treeDock->setWidget(mainTree);
@@ -355,7 +355,7 @@ void MainWindow::setProjectNumberSlot(int prjNumber)
 
 
 
-void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int cursorPosition, QString name, int number, QString action)
+void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action)
 {
     if(action == "open"){
 
@@ -405,7 +405,6 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         qDebug() << "added objectname value : " << string.setNum(number,10);
 
 
-        objectNum += 1;
 
         //display the opened tab (config setting)
 
@@ -431,10 +430,14 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         tab->setTextFocus();
 
         //set cursor position :
-        tab->setCursorPos(cursorPosition);
+        tab->setCursorPos(textCursorPosition);
+        synStack->setCursorPos(synCursorPosition);
+        noteStack->setCursorPos(noteCursorPosition);
 
         QString debug;
-        qDebug() << "cursorPosition : " << debug.setNum(cursorPosition);
+        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
+        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
+        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
         //other :
         firstOpen = false;
 
@@ -447,7 +450,6 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
 
 
 
-        //test fullscreen
 
 
 
@@ -591,7 +593,10 @@ void MainWindow::tabCloseRequest(int tabNum)
     bool noteBool = noteWidgetList->at(tabNum)->saveNote(noteFileList->at(tabNum),nameList->at(tabNum));
     bool synBool = synWidgetList->at(tabNum)->saveSyn(synFileList->at(tabNum), nameList->at(tabNum));
 
-    mainTree->saveCursorPos(textWidgetList->at(tabNum)->saveCursorPos(), numList->at(tabNum));
+    mainTree->saveCursorPos(textWidgetList->at(tabNum)->saveCursorPos(),
+                            synWidgetList->at(tabNum)->saveCursorPos(),
+                            noteWidgetList->at(tabNum)->saveCursorPos(),
+                            numList->at(tabNum));
 
 
     qDebug() << "tabCloseRequest textFile :" << textFileList->at(tabNum)->fileName() << "----------- saved :" << textBool;
@@ -638,7 +643,10 @@ void MainWindow::closeAllDocsSlot()
         bool noteBool = noteWidgetList->at(i)->saveNote(noteFileList->at(i),nameList->at(i));
         bool synBool = synWidgetList->at(i)->saveSyn(synFileList->at(i), nameList->at(i));
 
-        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(), numList->at(i));
+        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(),
+                                synWidgetList->at(i)->saveCursorPos(),
+                                noteWidgetList->at(i)->saveCursorPos(),
+                                numList->at(i));
 
         qDebug() << "tabCloseRequest name :" << nameList->at(i);
         qDebug() << "tabCloseRequest textFile n° " << i << " ---> " << textFileList->at(i)->fileName() << "----- saved :" << textBool;
@@ -654,6 +662,7 @@ void MainWindow::closeAllDocsSlot()
         noteWidgetList->at(i)->closeNote(noteFileList->at(i),nameList->at(i));
         synWidgetList->at(i)->closeSyn(synFileList->at(i), nameList->at(i));
 
+        tabWidget->widget(i)->setObjectName("");
         tabWidget->removeTab(i);
         noteLayout->removeWidget(noteLayout->widget(i));
         synLayout->removeWidget(synLayout->widget(i));
@@ -672,6 +681,7 @@ void MainWindow::closeAllDocsSlot()
     synWidgetList->clear();
     tabNumList->clear();
     numList->clear();
+
 
     connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
@@ -853,7 +863,7 @@ void MainWindow::editFullscreen()
     QString tabName = tabWidget->currentWidget()->objectName();
     TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
 
-    fullEditor = new FullscreenEditor(tab->document(), 0);
+    fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
 
 
     connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));

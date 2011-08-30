@@ -92,6 +92,7 @@ private:
 
 bool alwaysCenter;
 bool showScrollbar;
+
 };
 
 #endif // TEXTZONE_H

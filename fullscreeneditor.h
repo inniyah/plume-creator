@@ -31,7 +31,7 @@ class FullscreenEditor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FullscreenEditor(QTextDocument *doc = 0, QWidget *parent = 0);
+    explicit FullscreenEditor(QTextDocument *doc = 0, int cursorPos = 0, QWidget *parent = 0);
 
 protected:
     void closeEvent(QCloseEvent* event);
