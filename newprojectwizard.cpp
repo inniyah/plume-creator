@@ -197,7 +197,7 @@ SelectPage::SelectPage(QWidget *parent)
 
     projectNameLabel = new QLabel(tr("Project name :"));
     projectNameLabelLineEdit = new QLineEdit;
-    projectNameLabelLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\*\?\x0022<>|]+"), projectNameLabelLineEdit));
+    projectNameLabelLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\x002A\?\x0022<>|]+"), projectNameLabelLineEdit));
 
     //    directoryLabel = new QLabel(tr("Path : "));
     directoryLabelLineEdit = new QLineEdit;

@@ -243,27 +243,34 @@ void TextTab::applyConfig()
 
     QSettings settings;
     settings.beginGroup( "Settings" );
-    int bottMargin = settings.value("TextArea/bottomMargin", 20).toInt();
+    int bottMargin = settings.value("TextArea/bottomMargin", 10).toInt();
     int textIndent = settings.value("TextArea/textIndent", 20).toInt();
+    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
 
-    QString debug;
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(bottMargin);
     blockFormat.setTextIndent(textIndent);
-    QTextCursor *tcursor = new QTextCursor(document());
-    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        int i = 1;
-        while(i <= document()->blockCount())
-        {
+    QTextCursor *tCursor = new QTextCursor(document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+  tCursor->mergeBlockFormat(blockFormat);
 
-            tcursor->mergeBlockFormat(blockFormat);
 
-            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
-            qDebug() << "mergeBlockFormat : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
-            i += 1;
-        }
+
+
+  //apply default font in empty documents :
+
+      if(document()->isEmpty()){
+
+QFont font;
+font.setFamily(fontFamily);
+font.setPointSize(textHeight);
+document()->setDefaultFont(font);
+
+      }
 
 
 }

@@ -2,6 +2,7 @@
 #include "prjmanager.h"
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
+#include "exporter.h"
 
 MenuBox::MenuBox(QWidget *parent) :
     QFrame(parent)
@@ -146,6 +147,18 @@ void MenuBox::closeProject()
 
 }
 
+//--------------------------------------------------------------------------
+
+
+void MenuBox::exporter()
+{
+    if(file == 0)
+        return;
+
+   Exporter *exporterDialog = new Exporter(file, this);
+    exporterDialog->exec();
+
+}
 
 //--------------------------------------------------------------------------
 
@@ -226,7 +239,7 @@ void MenuBox::createActions()
 
 void MenuBox::createButtons()
 {
-    QSize buttonSize(120,40);
+    QSize buttonSize(120,60);
 
 
     QVBoxLayout *baseGridLayout = new QVBoxLayout;
@@ -262,6 +275,14 @@ void MenuBox::createButtons()
     //   displayConfigButton->setShortcut(QKeySequence::Print);
     displayConfigButton->setToolTip(tr("Display the configuration"));
     connect(displayConfigButton, SIGNAL(pressed()), this, SLOT(displayConfig()));
+
+    exportButton = new QToolButton(this);
+    exportButton->setMaximumSize(buttonSize);
+    exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    exportButton->setText(tr("&Export"));
+ //   exportButton->setShortcut(QKeySequence::Print);
+    exportButton->setToolTip(tr("Export the project"));
+    connect(exportButton, SIGNAL(pressed()), this, SLOT(exporter()));
 
     printButton = new QToolButton(this);
     printButton->setMaximumSize(buttonSize);
@@ -324,6 +345,7 @@ void MenuBox::createButtons()
     baseGridLayout->addSpacing(5);
 
     baseGridLayout->addWidget(displayConfigButton);
+    baseGridLayout->addWidget(exportButton);
     baseGridLayout->addWidget(printButton);
     baseGridLayout->addSpacing(5);
 

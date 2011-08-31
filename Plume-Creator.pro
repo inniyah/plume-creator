@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     wordcount.cpp \
     settingsdialog.cpp \
     fullscreeneditor.cpp \
-    fulltextzone.cpp
+    fulltextzone.cpp \
+    exporter.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     wordcount.h \
     settingsdialog.h \
     fullscreeneditor.h \
-    fulltextzone.h
+    fulltextzone.h \
+    exporter.h
 
 RESOURCES += \
     pics.qrc

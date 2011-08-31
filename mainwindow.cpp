@@ -445,6 +445,8 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         //apply config :
 
         connect(this, SIGNAL(applyConfigSignal()), tab,SLOT(applyConfig()));
+        connect(this, SIGNAL(applyConfigSignal()), synStack,SLOT(applySynConfig()));
+        connect(this, SIGNAL(applyConfigSignal()), noteStack,SLOT(applyNoteConfig()));
 
 
 

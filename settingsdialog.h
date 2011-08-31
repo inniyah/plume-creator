@@ -77,12 +77,28 @@ private:
     QSettings settings;
     QFontComboBox *textFontCombo;
     QFont textFont;
-    QSpinBox *textSpin;
+    QSpinBox *textSpin, *textIndentSpin, *textMarginSpin;
     int textSpinValue;
     QCheckBox *showScrollbarBox;
-
-
+    int textIndentValue,
+    textMarginValue;
 
     QCheckBox *showFullScrollbarBox;
+
+    QFontComboBox *synFontCombo;
+    QFont synFont;
+    QSpinBox *synSpin, *synIndentSpin, *synMarginSpin;
+    int synSpinValue;
+    QCheckBox *synShowScrollbarBox;
+    int synIndentValue,
+    synMarginValue;
+
+    QFontComboBox *noteFontCombo;
+    QFont noteFont;
+    QSpinBox *noteSpin, *noteIndentSpin, *noteMarginSpin;
+    int noteSpinValue;
+    QCheckBox *noteShowScrollbarBox;
+    int noteIndentValue,
+    noteMarginValue;
 };
 #endif // SETTINGSDIALOG_H

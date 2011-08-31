@@ -1,5 +1,9 @@
 PLUME CREATOR
 
+v 0.30
+	- font config for synopsys and notes
+	- config for indent and margin
+	- export in .odt .html and .txt
 
 v 0.29
 	- in fullscreen editor :

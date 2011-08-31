@@ -70,6 +70,7 @@ private slots:
     void projectManager();
  //   void open();
     void displayConfig();
+    void exporter();
     void print();
     void closeProject();
     void aboutQt();
@@ -89,6 +90,7 @@ private:
     *closeProjectButton,
     *exitButton,
     *printButton,
+    *exportButton,
     *aboutQtButton,
     *aboutButton;
 

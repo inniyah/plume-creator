@@ -723,6 +723,8 @@ void NoteZone::applyNoteConfig()
     bool noteShowScrollbar = settings.value("NoteArea/showScrollbar", true).toBool();
     int noteBottMargin = settings.value("NoteArea/bottomMargin", 20).toInt();
     int noteTextIndent = settings.value("NoteArea/textIndent", 20).toInt();
+    int noteTextHeight = settings.value("NoteArea/textHeight", 12).toInt();
+    QString noteFontFamily = settings.value("NoteArea/textFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
 
@@ -736,22 +738,31 @@ void NoteZone::applyNoteConfig()
 
 
 
-    QString debug;
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(noteBottMargin);
     blockFormat.setTextIndent(noteTextIndent);
-    QTextCursor *tcursor = new QTextCursor(document());
-    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        int i = 1;
-        while(i <= document()->blockCount())
-        {
+    QTextCharFormat charFormat;
+            charFormat.setFontPointSize(noteTextHeight);
+    charFormat.setFontFamily(noteFontFamily);
 
-            tcursor->mergeBlockFormat(blockFormat);
+    QTextCursor *tCursor = new QTextCursor(document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
 
-            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
-            qDebug() << "mergeBlockFormat note : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
-            i += 1;
-        }
+    qDebug() << "mergeBlockFormat note ";
+
+
+    //apply default font in empty documents :
+
+    if(document()->isEmpty()){
+    QFont font;
+    font.setFamily(noteFontFamily);
+    font.setPointSize(noteTextHeight);
+    document()->setDefaultFont(font);
+
+    }
 
 
 
@@ -766,6 +777,8 @@ void NoteZone::applySynConfig()
 bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
 int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
 int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
+int synTextHeight = settings.value("SynArea/textHeight", 12).toInt();
+QString synFontFamily = settings.value("SynArea/textFontFamily", "Liberation Serif").toString();
 settings.endGroup();
 
 
@@ -778,21 +791,31 @@ settings.endGroup();
 
 
 
-
-    QString debug;
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(synBottMargin);
     blockFormat.setTextIndent(synTextIndent);
-    QTextCursor *tcursor = new QTextCursor(document());
-    tcursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        int i = 1;
-        while(i <= document()->blockCount())
-        {
+    QTextCharFormat charFormat;
+            charFormat.setFontPointSize(synTextHeight);
+    charFormat.setFontFamily(synFontFamily);
+    QTextCursor *tCursor = new QTextCursor(document());
 
-            tcursor->mergeBlockFormat(blockFormat);
 
-            tcursor->movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor,1);
-            qDebug() << "mergeBlockFormat syn : " << debug.setNum(i) << "/" << debug.setNum(document()->blockCount());
-            i += 1;
-        }
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
+
+    qDebug() << "mergeBlockFormat syn ";
+
+
+
+    //apply default font in empty documents :
+
+    if(document()->isEmpty()){
+    QFont font;
+    font.setFamily(synFontFamily);
+    font.setPointSize(synTextHeight);
+    document()->setDefaultFont(font);
+
+    }
 }

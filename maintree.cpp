@@ -66,7 +66,7 @@ bool MainTree::read(QFile *device)
 
     QFileInfo *dirInfo = new QFileInfo(*device);
     devicePath = dirInfo->path();
-    qDebug() << "File path:" << devicePath;
+//    qDebug() << "File path:" << devicePath;
 
 
     root = domDocument.documentElement();
