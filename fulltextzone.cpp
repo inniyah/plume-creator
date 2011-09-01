@@ -21,7 +21,6 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
 
 setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    applyConfig();
 }
 
 
@@ -592,7 +591,7 @@ void FullTextZone::setXMax(int value)
 //-----------------------------------------------------------------------------------------------
 
 
-void FullTextZone::applyConfig()
+void FullTextZone::applyTextConfig()
 {
     QSettings settings;
     settings.beginGroup( "Settings" );
@@ -611,3 +610,44 @@ void FullTextZone::applyConfig()
 
 }
 
+//--------------------------------------------------------------------------------
+
+void FullTextZone::applySynConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("FullSynArea/alwaysCenter", true).toBool();
+    bool showScrollbar = settings.value("FullSynArea/showScrollbar", false).toBool();
+    settings.endGroup();
+ //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
+
+
+    centerCursor();
+
+    if(showScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+}
+
+//--------------------------------------------------------------------------------
+
+void FullTextZone::applyNoteConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("FullNoteArea/alwaysCenter", true).toBool();
+    bool showScrollbar = settings.value("FullNoteArea/showScrollbar", false).toBool();
+    settings.endGroup();
+ //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
+
+
+    centerCursor();
+
+    if(showScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+}

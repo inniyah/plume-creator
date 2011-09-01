@@ -418,7 +418,7 @@ void Exporter::exportDoc()
     if(fileTypeCombo->currentIndex() == 1)
         format = "odt";
     if(fileTypeCombo->currentIndex() == 2)
-        format = "plaintext";
+        format = "txt";
 
     for(int i = 0; i < itemList->size(); ++i){
         QDomElement element = domElementForItem.value(itemList->at(i));
@@ -438,6 +438,21 @@ void Exporter::exportDoc()
 
         edit->setDocument(textDocument);
 
+        if(element.tagName() == "book"){
+            textDocument->setMetaInformation(QTextDocument::DocumentTitle,element.attribute("name", ""));
+        edit->append("<h1>" + element.attribute("name", "") + "</h1>");
+edit->append("<br>");
+edit->append("<br>");
+}
+        if(element.tagName() == "chapter"){
+        edit->append("<center><h2>" + element.attribute("name", "") + "</h2></center>");
+        edit->append("<br>");
+        }
+
+        if(element.tagName() == "scene")
+        edit->append("<h3>" + element.attribute("name", "") + "</h3>");
+
+
         if(synCheckBox->isChecked())
         edit->append(synFrag->toHtml());
 
@@ -453,9 +468,13 @@ void Exporter::exportDoc()
     QTextDocumentWriter writer;
     QByteArray array;
     writer.setFormat(array.append(format));
-    writer.setFileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + format);
+    writer.setFileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + "." + format);
     writer.setCodec(QTextCodec::codecForName("UTF-8"));
     writer.write(textDocument);
+
+
+
+    QMessageBox::information(this, "Project exported", "This project was successfully exported !", QMessageBox::Ok);
 }
 
 //---------------------------------------------------------------------------------

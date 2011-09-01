@@ -67,6 +67,7 @@ void itemExpandedSlot(QTreeWidgetItem* item);
     void rename(QTreeWidgetItem *item);
     QTreeWidgetItem * addItemNext(QTreeWidgetItem * item = 0);
     QTreeWidgetItem * addChild(QTreeWidgetItem * item = 0);
+    QTreeWidgetItem * addSeparator(QTreeWidgetItem * item = 0);
     void moveUp();
     void moveDown();
     void delYesItem();
@@ -100,6 +101,7 @@ QList<int> freeNumList;
     QAction *renameAct,
     *addItemNextAct,
     *addChildAct,
+    *addSeparatorAct,
     *autoRenameChildsAct,
     *delYesAct,
     *moveUpAct,

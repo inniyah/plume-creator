@@ -251,7 +251,7 @@ void MainTree::parseFolderElement(const QDomElement &element,
         else if (child.tagName() == "separator") {
             QTreeWidgetItem *childItem = createItem(child, item);
             childItem->setFlags(item->flags() | Qt::ItemIsSelectable);
-            childItem->setText(0, QString(30, 0xB7));
+            childItem->setText(0, "             " + QString(10, 0xB7));
         }
         child = child.nextSiblingElement();
     }
@@ -329,6 +329,7 @@ void MainTree::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(renameAct);
     menu.addAction(addItemNextAct);
     menu.addAction(addChildAct);
+    menu.addAction(addSeparatorAct);
 
     menu.addSeparator();
 
@@ -370,6 +371,10 @@ void MainTree::prepareContextMenu()
     addChildAct = new QAction(tr("Add &child"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(addChildAct, SIGNAL(triggered()), this, SLOT(addChild()));
+
+    addSeparatorAct = new QAction(tr("Add &scene break"), this);
+    //renameAct->setShortcuts(QKeySequence::Rename);
+    connect(addSeparatorAct, SIGNAL(triggered()), this, SLOT(addSeparator()));
 
     moveUpAct = new QAction(tr("Move Up"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
@@ -466,14 +471,11 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
         item = m_itemEntered;
 
 
-    qDebug() << "jal a ";
 
     // adding to Dom
     qDebug() << "Item worked with:" << item->text(0);
-    qDebug() << "jal 1 ";
     QDomElement element = domElementForItem.value(item);
 
-    qDebug() << "jal b ";
 
 
 
@@ -495,7 +497,6 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
     modifyAttributes(element, newElement, "sibling");
 
 
-    qDebug() << "jal c ";
 
 
 
@@ -510,7 +511,6 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
 
     this->write(deviceFile);
 
-    qDebug() << "jal e ";
 
     buildTree();
 
@@ -635,6 +635,47 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     //    buildTree();
 
     qDebug() << "jal f ";
+
+    return domElementForItem.key(newElement);
+}
+
+//---------------------------------------------------------------------------------------
+
+QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
+{
+    if(item == 0)
+        item = m_itemEntered;
+
+
+
+    // adding to Dom
+    qDebug() << "Item worked with:" << item->text(0);
+    QDomElement element = domElementForItem.value(item);
+
+    if(element.tagName() == "chapter" || element.tagName() == "book")
+        return 0;
+
+
+
+    QDomElement newElement = domDocument.createElement("nothing");
+    element.parentNode().insertAfter(newElement, element);
+
+
+
+
+
+
+
+    modifyAttributes(element, newElement, "separator");
+
+
+
+
+
+    this->write(deviceFile);
+
+
+    buildTree();
 
     return domElementForItem.key(newElement);
 }
@@ -1501,9 +1542,30 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
 
 
 
+    if(level == "separator"){
 
 
 
+        newElement.setTagName("separator");
+        newElement.setAttribute("name", "----");//for config
+
+
+
+
+//        if(originalElement.tagName() == "book"){
+//            newElement.setTagName("separator");
+//            newElement.setAttribute("name", "----");//for config
+
+//        }
+//        if(originalElement.tagName() == "chapter"){
+//            newElement.setTagName("separator");
+//            newElement.setAttribute("name", "----");//for config
+
+//        }
+
+        return newElement;
+
+}
 
 
 

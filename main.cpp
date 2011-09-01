@@ -14,11 +14,15 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+Q_INIT_RESOURCE(pics);
+
+
+app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
 
 
 // splashscreen :
 
-   QPixmap pixmap(":/splash/Plume_pen_w.png");
+   QPixmap pixmap(":/pics/Plume_pen_w.png");
     QSplashScreen splash(pixmap);
     splash.show();
     app.processEvents();

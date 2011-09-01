@@ -67,6 +67,7 @@ bool NoteZone::openNote(QFile *noteFile, QString name)
 
 setContextMenuPolicy(Qt::DefaultContextMenu);
 
+setDocumentTitle("Note");
 
 
 applyNoteConfig();
@@ -117,6 +118,8 @@ bool NoteZone::openSyn(QFile *synFile, QString name)
 
 
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    setDocumentTitle("Synopsys");
 
     applySynConfig();
 
@@ -639,6 +642,28 @@ int NoteZone::saveCursorPos()
     return cursor.position();
 
 }
+
+
+//--------------------------------------------------------------------------------
+
+
+void NoteZone::updateTextZone()
+{
+    setFixedWidth(width()+1);
+    setFixedWidth(width()-1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

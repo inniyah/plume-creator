@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/splash">
+    <qresource prefix="/">
+        <file>pics/plume-creator.png</file>
         <file>pics/Plume_pen_w.png</file>
     </qresource>
 </RCC>

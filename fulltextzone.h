@@ -48,7 +48,9 @@ public slots:
     void setTextFont(QFont font);
     void setTextHeight(int height);
     void centerCursor();
-    void applyConfig();
+    void applyTextConfig();
+    void applySynConfig();
+    void applyNoteConfig();
     void loadSliderValue();
     void setXMax(int value);
 

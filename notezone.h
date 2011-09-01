@@ -56,6 +56,7 @@ public slots:
     void centerCursor();
     void setCursorPos(int pos);
     int saveCursorPos();
+    void updateTextZone();
     void applyNoteConfig();
     void applySynConfig();
 

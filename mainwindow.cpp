@@ -10,6 +10,9 @@
 #include "statsbox.h"
 #include "itembox.h"
 #include "texttab.h"
+#include "notezone.h"
+
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -375,15 +378,24 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         TextTab *tab = new TextTab(textFile, name);
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
         tab->openText(textFile, name);
+        //       tab->setAttribute(Qt::WA_DeleteOnClose);
         tabWidget->addTab(tab, name);
 
-        NoteZone *noteStack = new NoteZone;
+        QWidget *noteWidget = new QWidget(this);
+        QVBoxLayout *nLayout = new QVBoxLayout(noteWidget);
+        NoteZone *noteStack = new NoteZone(noteWidget);
+nLayout->addWidget(noteStack);
         noteStack->openNote(noteFile, name);
-        noteLayout->addWidget(noteStack);
+        noteWidget->setLayout(nLayout);
+        noteLayout->addWidget(noteWidget);
 
-        NoteZone *synStack = new NoteZone;
+        QWidget *synWidget = new QWidget(this);
+        QVBoxLayout *sLayout = new QVBoxLayout(synWidget);
+        NoteZone *synStack = new NoteZone(synWidget);
+        sLayout->addWidget(synStack);
         synStack->openSyn(synFile, name);
-        synLayout->addWidget(synStack);
+        synWidget->setLayout(sLayout);
+        synLayout->addWidget(synWidget);
 
         textFileList->append(textFile);
         noteFileList->append(noteFile);
@@ -398,8 +410,10 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         QString string;
 
         tab->setObjectName("tab_" + string.setNum(number,10));
-        noteStack->setObjectName("note_" + string.setNum(number,10));
-        synStack->setObjectName("syn_" + string.setNum(number,10));
+        noteWidget->setObjectName("note_" + string.setNum(number,10));
+        synWidget->setObjectName("syn_" + string.setNum(number,10));
+        noteStack->setObjectName(noteWidget->objectName() + "-NoteZone");
+     synStack->setObjectName(synWidget->objectName() + "-NoteZone");
 
         numList->append(number);
         qDebug() << "added objectname value : " << string.setNum(number,10);
@@ -507,13 +521,13 @@ void MainWindow::secondTextSlot(int number, QString action)
 
         QString string;
         TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
-        NoteZone *noteStack = noteLayout->findChild<NoteZone *>("note_" + string.setNum(number,10));
-        NoteZone *synStack = synLayout->findChild<NoteZone *>("syn_" + string.setNum(number,10));
+        QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
+        QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
         qDebug() << "objectname value : " << string.setNum(number,10);
 
         tabWidget->removeTab(tabWidget->indexOf(tab));
-        noteLayout->removeWidget(noteStack);
-        synLayout->removeWidget(synStack);
+        noteLayout->removeWidget(noteWidget);
+        synLayout->removeWidget(synWidget);
 
         connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
@@ -610,9 +624,16 @@ void MainWindow::tabCloseRequest(int tabNum)
 
     // Closing / removing
 
+    tabWidget->widget(tabNum)->setObjectName("");
     tabWidget->removeTab(tabNum);
+
+    noteLayout->widget(tabNum)->setObjectName("");
     noteLayout->removeWidget(noteLayout->widget(tabNum));
+
+    synLayout->widget(tabNum)->setObjectName("");
     synLayout->removeWidget(synLayout->widget(tabNum));
+
+
 
     textFileList->removeAt(tabNum);
     noteFileList->removeAt(tabNum);
@@ -666,10 +687,12 @@ void MainWindow::closeAllDocsSlot()
 
         tabWidget->widget(i)->setObjectName("");
         tabWidget->removeTab(i);
+
+        noteLayout->widget(i)->setObjectName("");
         noteLayout->removeWidget(noteLayout->widget(i));
+
+        synLayout->widget(i)->setObjectName("");
         synLayout->removeWidget(synLayout->widget(i));
-
-
 
     }
     tabWidget->clear();
@@ -865,12 +888,34 @@ void MainWindow::editFullscreen()
     QString tabName = tabWidget->currentWidget()->objectName();
     TextTab *tab = tabWidget->findChild<TextTab *>(tabName);
 
-    fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
+    QString synName = synLayout->currentWidget()->objectName();
+    QWidget *syn = this->findChild<QWidget *>(synName);
+
+    QString noteName = noteLayout->currentWidget()->objectName();
+    QWidget *note = this->findChild<QWidget *>(noteName);
+
+
+//    if(this->findChild<QWidget *>(noteName) == 0)
+//        qDebug() << "note == 0";
+
+    qDebug() << "noteName : " << noteName;
+
+NoteZone *synStack = syn->findChild<NoteZone *>(synName + "-NoteZone");
+NoteZone *noteStack = note->findChild<NoteZone *>(noteName + "-NoteZone");
+
+
+qDebug() << "synStack name : " << synStack->objectName();
+
+fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
+
+    fullEditor->setSyn(synStack->document(), synStack->textCursor().position());
+    fullEditor->setNote(noteStack->document(), noteStack->textCursor().position());
 
 
     connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
     connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
-
+    connect(fullEditor, SIGNAL(closeSignal()),synStack, SLOT(updateTextZone()));
+    connect(fullEditor, SIGNAL(closeSignal()),noteStack, SLOT(updateTextZone()));
 
 }

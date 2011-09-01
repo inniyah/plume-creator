@@ -33,6 +33,7 @@ class FullscreenEditor : public QWidget
 public:
     explicit FullscreenEditor(QTextDocument *doc = 0, int cursorPos = 0, QWidget *parent = 0);
 
+
 protected:
     void closeEvent(QCloseEvent* event);
 
@@ -43,6 +44,8 @@ public slots:
     void setWordCount(int num);
     void setTimer(QString);
     void applyConfig();
+    void setSyn(QTextDocument *synDocument, int cursorPos);
+    void setNote(QTextDocument *noteDocument, int cursorPos);
 
 private slots:
 void callColorDialog();
@@ -55,6 +58,8 @@ void setTextColorDialog();
 void setTextColor();
 void applyStyleSheet();
 
+void showSyn();
+void showNote();
 private:
     QLabel *wordCountLabel;
     QLabel *timerLabel;
@@ -65,6 +70,12 @@ private:
 
     QSettings settings;
 
+int synCursorPos;
+int noteCursorPos;
+//QTextDocument *synDoc;
+//QTextDocument *noteDoc;
+QWidget *synWidget;
+QWidget *noteWidget;
 
     // style sheets
     QString backColorString,
