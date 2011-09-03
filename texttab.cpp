@@ -226,7 +226,7 @@ int TextTab::saveCursorPos()
 
 QTextCharFormat TextTab::tabChangedSlot()
 {
-    return textZone->currentCharFormat();
+    return textZone->textCursor().charFormat();
 }
 
 void TextTab::updateTextZone()

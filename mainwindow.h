@@ -63,6 +63,7 @@ private slots:
     void tabChangeSlot(int tabNum);
     void tabCloseRequest(int tabNum);
     void closeAllDocsSlot();
+    void saveAllDocsSlot();
     void tabRenamingSlot(QString newName, int tabNum);
     void setProjectNumberSlot(int prjNumber);
     void editFullscreen();

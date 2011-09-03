@@ -52,6 +52,7 @@ signals:
 
     void openProjectSignal(QFile *device);
     void closeProjectSignal();
+void saveProjectSignal();
 
 void openProjectNumberSignal(int prjNumber);
 

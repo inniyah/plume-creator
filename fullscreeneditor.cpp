@@ -33,7 +33,7 @@ fullTextEdit->applyTextConfig();
     timerLabel = new QLabel;
     wordCountLabel = new QLabel;
 
-    QPushButton *showSynButton = new QPushButton(tr("Synopsys"), this);
+    QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
     connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
 showSynButton->setFixedSize(50,20);
 
@@ -167,7 +167,7 @@ void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
     layout->addWidget(fullSynEdit);
 
     synWidget->setLayout(layout);
-    synWidget->setWindowTitle(tr("Synopsys"));
+    synWidget->setWindowTitle(tr("Synopsis"));
 
     //set cursor position :
     for(int i = 0; i < cursorPos ; i++)

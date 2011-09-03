@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.2 !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.32 Beta !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -249,7 +249,7 @@ void MainWindow::createNoteDock()
 
     synLayout = new QStackedLayout;
     noteLayout = new QStackedLayout;
-    QGroupBox *synopsysBox = new QGroupBox;
+    QGroupBox *synopsisBox = new QGroupBox;
     QGroupBox *noteBox = new QGroupBox;
 
     QFrame *frame = new QFrame;
@@ -282,16 +282,16 @@ void MainWindow::createNoteDock()
 
     QComboBox *stateCombo = new QComboBox;
     midLayout->addWidget(tabFullscreenButton,0,0);
-    midLayout->addWidget(stateCombo);
+ //   midLayout->addWidget(stateCombo);
     midFrame->setLayout(midLayout);
 
-    synopsysBox->setLayout(synLayout);
+    synopsisBox->setLayout(synLayout);
 
     noteBox->setLayout(noteLayout);
 
 
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(synopsysBox);
+    layout->addWidget(synopsisBox);
     layout->addWidget(midFrame);
     layout->addWidget(noteBox);
     frame->setLayout(layout);
@@ -304,7 +304,7 @@ void MainWindow::createNoteDock()
     stateCombo->insertItems(0, list);
 
 
-    synopsysBox->setTitle(tr("Synopsys"));
+    synopsisBox->setTitle(tr("Synopsis"));
     noteBox->setTitle(tr("Note"));
 
     addDockWidget(Qt::BottomDockWidgetArea, noteDock);
@@ -384,7 +384,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         QWidget *noteWidget = new QWidget(this);
         QVBoxLayout *nLayout = new QVBoxLayout(noteWidget);
         NoteZone *noteStack = new NoteZone(noteWidget);
-nLayout->addWidget(noteStack);
+        nLayout->addWidget(noteStack);
         noteStack->openNote(noteFile, name);
         noteWidget->setLayout(nLayout);
         noteLayout->addWidget(noteWidget);
@@ -413,7 +413,7 @@ nLayout->addWidget(noteStack);
         noteWidget->setObjectName("note_" + string.setNum(number,10));
         synWidget->setObjectName("syn_" + string.setNum(number,10));
         noteStack->setObjectName(noteWidget->objectName() + "-NoteZone");
-     synStack->setObjectName(synWidget->objectName() + "-NoteZone");
+        synStack->setObjectName(synWidget->objectName() + "-NoteZone");
 
         numList->append(number);
         qDebug() << "added objectname value : " << string.setNum(number,10);
@@ -553,6 +553,7 @@ void MainWindow::setTextTabConnections()
     connect(tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(tabCloseRequest(int)));
     connect(mainTree, SIGNAL(nameChangedSignal(QString,int)), this, SLOT(tabRenamingSlot(QString, int)));
     connect(menu, SIGNAL(openProjectNumberSignal(int)), this, SLOT(setProjectNumberSlot(int)));
+    connect(menu, SIGNAL(saveProjectSignal()), this, SLOT(saveAllDocsSlot()));
 
     connect(this, SIGNAL(tabWidgetWidth(int)), editMenu,SLOT(tabWitdhChangedSlot(int)));
     emit tabWidgetWidth(tabWidget->width());
@@ -711,7 +712,37 @@ void MainWindow::closeAllDocsSlot()
     connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
 }
+
 //---------------------------------------------------------------------------
+
+void MainWindow::saveAllDocsSlot()
+{
+    mainTree->write(file);
+
+    for(int i = nameList->size()-1; i >= 0; --i){
+
+
+        // Saving
+
+
+        bool textBool = textWidgetList->at(i)->saveText(textFileList->at(i),nameList->at(i));
+        bool noteBool = noteWidgetList->at(i)->saveNote(noteFileList->at(i),nameList->at(i));
+        bool synBool = synWidgetList->at(i)->saveSyn(synFileList->at(i), nameList->at(i));
+
+        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(),
+                                synWidgetList->at(i)->saveCursorPos(),
+                                noteWidgetList->at(i)->saveCursorPos(),
+                                numList->at(i));
+
+        qDebug() << "tabSaveRequest name :" << nameList->at(i);
+        qDebug() << "tabSaveRequest textFile n° " << i << " ---> " << textFileList->at(i)->fileName() << "----- saved :" << textBool;
+        qDebug() << "tabSaveRequest noteFile n° " << i << " ---> " << noteFileList->at(i)->fileName() << "----- saved :" << noteBool;
+        qDebug() << "tabSaveRequest synFile  n° " << i << " ---> " << synFileList->at(i)->fileName() << "----- saved :" << synBool;
+    }
+}
+
+//---------------------------------------------------------------------------
+
 void MainWindow::tabRenamingSlot(QString newName, int number)
 {
 
@@ -895,18 +926,18 @@ void MainWindow::editFullscreen()
     QWidget *note = this->findChild<QWidget *>(noteName);
 
 
-//    if(this->findChild<QWidget *>(noteName) == 0)
-//        qDebug() << "note == 0";
+    //    if(this->findChild<QWidget *>(noteName) == 0)
+    //        qDebug() << "note == 0";
 
     qDebug() << "noteName : " << noteName;
 
-NoteZone *synStack = syn->findChild<NoteZone *>(synName + "-NoteZone");
-NoteZone *noteStack = note->findChild<NoteZone *>(noteName + "-NoteZone");
+    NoteZone *synStack = syn->findChild<NoteZone *>(synName + "-NoteZone");
+    NoteZone *noteStack = note->findChild<NoteZone *>(noteName + "-NoteZone");
 
 
-qDebug() << "synStack name : " << synStack->objectName();
+    qDebug() << "synStack name : " << synStack->objectName();
 
-fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
+    fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
 
     fullEditor->setSyn(synStack->document(), synStack->textCursor().position());
     fullEditor->setNote(noteStack->document(), noteStack->textCursor().position());

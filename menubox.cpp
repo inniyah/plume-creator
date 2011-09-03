@@ -117,8 +117,8 @@ void MenuBox::displayConfig()
 
 void MenuBox::closeProject()
 {
-    if(!file == 0){
-
+    if(file == 0)
+return;
 
         QMessageBox msgBox(this);
         msgBox.setText(tr("Do you want to close the current project ?"));
@@ -142,7 +142,7 @@ void MenuBox::closeProject()
         }
 
 
-    }
+
 
 
 }
@@ -154,6 +154,8 @@ void MenuBox::exporter()
 {
     if(file == 0)
         return;
+
+emit saveProjectSignal();
 
    Exporter *exporterDialog = new Exporter(file, this);
     exporterDialog->exec();
@@ -184,10 +186,10 @@ void MenuBox::aboutQt()
 void MenuBox::about()
 {
     QMessageBox::about(this, tr("About Plume Creator"),
-                       "<center><b>Plume Creator</b>"
-                       "<b>A Project Manager and Rich Text Editor for Writers.</b>"
+                       "<p><center><b>Plume Creator</b></p>"
+                       "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version 0.2  Alpha</p>"
+                       "<p>Version 0.32 Beta</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"

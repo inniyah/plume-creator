@@ -119,7 +119,7 @@ bool NoteZone::openSyn(QFile *synFile, QString name)
 
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
-    setDocumentTitle("Synopsys");
+    setDocumentTitle("Synopsis");
 
     applySynConfig();
 

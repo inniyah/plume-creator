@@ -14,15 +14,15 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-Q_INIT_RESOURCE(pics);
+    Q_INIT_RESOURCE(pics);
 
 
-app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
+    app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
 
 
-// splashscreen :
+    // splashscreen :
 
-   QPixmap pixmap(":/pics/Plume_pen_w.png");
+    QPixmap pixmap(":/pics/Plume_pen_w.png");
     QSplashScreen splash(pixmap);
     splash.show();
     app.processEvents();
@@ -31,8 +31,8 @@ app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
     // UTF-8 codec
 
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-        QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-        QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 
 
@@ -47,20 +47,29 @@ app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
 
     // Translator (temporary)
 
-    QString translatorFileName = QLatin1String("qt_");
-    translatorFileName += QLocale::system().name();
-    QTranslator *translator = new QTranslator(&app);
-    if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-        app.installTranslator(translator);
+        QString translatorFileName = QLatin1String("qt_");
+        translatorFileName += QLocale::system().name();
+        QTranslator *translator = new QTranslator(&app);
+        if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+            app.installTranslator(translator);
+
+        QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
+        plumeTranslatorFileName += QLocale::system().name();
+        QTranslator *plumeTranslator = new QTranslator(&app);
+        plumeTranslator->load(plumeTranslatorFileName);
+        app.installTranslator(plumeTranslator);
+
+
+    qDebug() << "locale : " << "plume-creator_" + QLocale::system().name();
 
 
     MainWindow w;
     w.show();
-w.setWindowState(Qt::WindowActive);
+    w.setWindowState(Qt::WindowActive);
 
 
     splash.finish(&w);
-//    delete splash;
+    //    delete splash;
 
 
     return app.exec();

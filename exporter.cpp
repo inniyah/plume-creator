@@ -13,7 +13,7 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     // odt or html
     // story ?
     // notes ?
-    // synopsys ?
+    // synopsis ?
 
     // add export characters/items/places
 
@@ -47,28 +47,43 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
 
     connect(directoryButton, SIGNAL(clicked()), this, SLOT(setExistingDirectory()));
 
-    textCheckBox = new QCheckBox("Insert story :", this);
-    synCheckBox = new QCheckBox("Insert synopsies :", this);
-    noteCheckBox = new QCheckBox("Insert notes :", this);
+    QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
+    QGridLayout *checkLayout = new QGridLayout;
+    textCheckBox = new QCheckBox(tr("Insert story"), this);
+    synCheckBox = new QCheckBox(tr("Insert synopsies"), this);
+    noteCheckBox = new QCheckBox(tr("Insert notes"), this);
+    sceneTitleCheckBox = new QCheckBox(tr("Insert scene titles"), this);
+
+    textCheckBox->setChecked(true);
+    synCheckBox->setChecked(true);
+    noteCheckBox->setChecked(true);
+    sceneTitleCheckBox->setChecked(true);
+
+checkLayout->addWidget(textCheckBox, 1,0);
+checkLayout->addWidget(synCheckBox, 2,0);
+checkLayout->addWidget(noteCheckBox, 3,0);
+checkLayout->addWidget(sceneTitleCheckBox, 4,0);
+checkGroupBox->setLayout(checkLayout);
+
 
     fileTypeCombo = new QComboBox;
     QStringList list;
     list << tr(".html") << tr(".odt") << tr(".txt");
     fileTypeCombo->insertItems(0, list);
 
-
+QWidget *stretcher = new QWidget;
+stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label, 0, 0);
+    layout->addWidget(label, 0, 0, 1, 2);
     //    layout->addWidget(directoryLabel, 1, 0);
     layout->addWidget(projectNameLabel, 1, 0);
     layout->addWidget(projectNameLabelLineEdit, 1, 1);
     layout->addWidget(directoryButton, 2, 0);
     layout->addWidget(directoryLabelLineEdit, 2, 1);
     layout->addWidget(fileTypeCombo, 3,1);
-    layout->addWidget(textCheckBox, 4,0);
-    layout->addWidget(synCheckBox, 5,0);
-    layout->addWidget(noteCheckBox, 6,0);
+layout->addWidget(checkGroupBox,4,0,1,2);
+layout->addWidget(stretcher,5,0,1,2);
 
     tree = new QTreeWidget;
     tree->setFixedWidth(width()/3);
@@ -163,7 +178,9 @@ void Exporter::createTree(QFile *device)
 bool Exporter::read(QFile *device)
 {
 
-
+    if(device->isReadable())
+        QMessageBox::information(this, tr("Plume Creator Tree"),
+                                 tr("The file is not readable."));
     QString errorStr;
     int errorLine;
     int errorColumn;
@@ -278,8 +295,9 @@ void Exporter::parseFolderElement(const QDomElement &element,
 
         else if (child.tagName() == "separator") {
             QTreeWidgetItem *childItem = createItem(child, item);
-            childItem->setFlags(item->flags() | Qt::ItemIsSelectable);
-            childItem->setText(0, QString(30, 0xB7));
+            childItem->setFlags(item->flags());
+            childItem->setText(0, "             " + QString(10, 0xB7));
+            childItem->setCheckState(0, Qt::Checked);
         }
         child = child.nextSiblingElement();
     }
@@ -403,8 +421,24 @@ void Exporter::exportDoc()
         iterator->operator ++();
 
     }
-    QString debug;
-    qDebug() << "itemList" << debug.setNum(itemList->size());
+
+    // set up the progress bar :
+    QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    QHBoxLayout *progressLayout = new QHBoxLayout(progressWidget);
+    QProgressBar *progressBar = new QProgressBar(progressWidget);
+    int progressValue = 0;
+
+    progressLayout->addWidget(progressBar);
+    progressWidget->setLayout(progressLayout);
+
+    progressBar->setMaximum(itemList->size());
+    progressBar->setValue(progressValue);
+progressWidget->show();
+
+
+
+    //    QString debug;
+    //    qDebug() << "itemList" << debug.setNum(itemList->size());
 
     QFileInfo *dirInfo = new QFileInfo(*targetDevice);
     QString devicePath = dirInfo->path();
@@ -422,47 +456,118 @@ void Exporter::exportDoc()
 
     for(int i = 0; i < itemList->size(); ++i){
         QDomElement element = domElementForItem.value(itemList->at(i));
-        QString textPath = element.attribute("textPath");
-        QString synPath = element.attribute("synPath");
-        QString notePath = element.attribute("notePath");
+        QTextCursor *tCursor = new QTextCursor(textDocument);
+                QTextBlockFormat blockFormatLeft;
+                QTextBlockFormat blockFormatCenter;
 
-        QFile *textFile = new QFile(devicePath + textPath);
-        QFile *synFile = new QFile(devicePath + synPath);
-        QFile *noteFile = new QFile(devicePath + notePath);
+                blockFormatLeft.setAlignment(Qt::AlignLeft);
+                blockFormatCenter.setAlignment(Qt::AlignCenter);
 
-        QTextDocumentFragment *textFrag = new QTextDocumentFragment(prepareTextDoc(textFile));
-        QTextDocumentFragment *synFrag = new QTextDocumentFragment(prepareSynDoc(synFile));
-        QTextDocumentFragment *noteFrag = new QTextDocumentFragment(prepareNoteDoc(noteFile));
+        if(element.tagName() != "separator"){
 
 
 
-        edit->setDocument(textDocument);
+            QString textPath = element.attribute("textPath");
+            QString synPath = element.attribute("synPath");
+            QString notePath = element.attribute("notePath");
 
-        if(element.tagName() == "book"){
-            textDocument->setMetaInformation(QTextDocument::DocumentTitle,element.attribute("name", ""));
-        edit->append("<h1>" + element.attribute("name", "") + "</h1>");
-edit->append("<br>");
-edit->append("<br>");
-}
-        if(element.tagName() == "chapter"){
-        edit->append("<center><h2>" + element.attribute("name", "") + "</h2></center>");
-        edit->append("<br>");
+            QFile *textFile = new QFile(devicePath + textPath);
+            QFile *synFile = new QFile(devicePath + synPath);
+            QFile *noteFile = new QFile(devicePath + notePath);
+
+            QTextDocumentFragment *textFrag = new QTextDocumentFragment(prepareTextDoc(textFile));
+            QTextDocumentFragment *synFrag = new QTextDocumentFragment(prepareSynDoc(synFile));
+            QTextDocumentFragment *noteFrag = new QTextDocumentFragment(prepareNoteDoc(noteFile));
+
+
+
+            edit->setDocument(textDocument);
+
+
+
+
+            if(element.tagName() == "book"){
+                textDocument->setMetaInformation(QTextDocument::DocumentTitle,element.attribute("name", ""));
+                edit->append("<h1>" + element.attribute("name", "") + "</h1>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<h4>" + QDateTime::currentDateTime().toString() + "</h4>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<br>");
+                edit->append("<br>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatLeft);
+            }
+            if(element.tagName() == "chapter"){
+                edit->append("<br>");
+                edit->append("<br>");
+                edit->append("<h2>" + element.attribute("name", "") + "</h2>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<br>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatLeft);
+            }
+
+            if(element.tagName() == "scene" && sceneTitleCheckBox->isChecked()){
+                edit->append("<br>");
+                edit->append("<h3>" + element.attribute("name", "") + "</h3>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<br>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatLeft);
+            }
+
+            if(synCheckBox->isChecked() && !synFrag->isEmpty()){
+                edit->append("<br>");
+                edit->append("<h4>" + tr("Synopsis") + "</h4>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<br>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatLeft);
+                edit->append(synFrag->toHtml());
+            }
+
+            if(noteCheckBox->isChecked() && !noteFrag->isEmpty()){
+                edit->append("<br>");
+                edit->append("<h4>" + tr("Note") + "</h4>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
+                edit->append("<br>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatLeft);
+                edit->append(noteFrag->toHtml());
+            }
+
+            if(textCheckBox->isChecked()){
+                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag->isEmpty()){
+                    edit->append("<br>");
+                    edit->append("<h4>" + tr("Story") + "</h4>");
+                    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                    tCursor->mergeBlockFormat(blockFormatCenter);
+                    edit->append("<br>");
+                    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                    tCursor->mergeBlockFormat(blockFormatLeft);
+                }
+                edit->append(textFrag->toHtml());
+            }
+        }
+        else if(element.tagName() == "separator"){
+            edit->append("<br>");
+            edit->append("<h3>~~~~~~</h3>");
+            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+            tCursor->mergeBlockFormat(blockFormatCenter);
+            edit->append("<br>");
+            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+            tCursor->mergeBlockFormat(blockFormatLeft);
         }
 
-        if(element.tagName() == "scene")
-        edit->append("<h3>" + element.attribute("name", "") + "</h3>");
+        progressValue += 1;
+        progressBar->setValue(progressValue);
 
-
-        if(synCheckBox->isChecked())
-        edit->append(synFrag->toHtml());
-
-        if(noteCheckBox->isChecked())
-        edit->append(noteFrag->toHtml());
-
-        if(textCheckBox->isChecked())
-       edit->append(textFrag->toHtml());
-
-        qDebug() << synFrag->toHtml() + noteFrag->toHtml() + textFrag->toHtml();
     }
 
     QTextDocumentWriter writer;
@@ -473,6 +578,7 @@ edit->append("<br>");
     writer.write(textDocument);
 
 
+    progressWidget->close();
 
     QMessageBox::information(this, "Project exported", "This project was successfully exported !", QMessageBox::Ok);
 }
@@ -481,11 +587,52 @@ edit->append("<br>");
 
 QTextDocument *Exporter::prepareTextDoc(QFile *textFile)
 {
+
+
+
     QTextDocument *textDocument = new QTextDocument;
 
     textFile->open(QFile::ReadOnly | QFile::Text);
     QTextStream textFileStream( textFile );
     textDocument->setHtml(textFileStream.readAll());
+
+    //cut blank spaces at the begining and end :
+
+
+
+    QTextCursor *tCursor = new QTextCursor(textDocument);
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    //set text config :
+
+    //    QTextBlockFormat blockFormat;
+    //    blockFormat.setBottomMargin(noteBottMargin);
+    //    blockFormat.setTextIndent(noteTextIndent);
+    //    QTextCharFormat charFormat;
+    //            charFormat.setFontPointSize(noteTextHeight);
+    //    charFormat.setFontFamily(noteFontFamily);
+
+    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    //    tCursor->mergeCharFormat(charFormat);
+    //    tCursor->mergeBlockFormat(blockFormat);
+
+
+
 
 
     return textDocument;
@@ -502,6 +649,43 @@ QTextDocument *Exporter::prepareSynDoc(QFile *synFile)
     QTextStream textFileStream( synFile );
     textDocument->setHtml(textFileStream.readAll());
 
+
+
+    //cut blank spaces at the begining and end :
+
+
+
+    QTextCursor *tCursor = new QTextCursor(textDocument);
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    //set text config :
+
+    //    QTextBlockFormat blockFormat;
+    //    blockFormat.setBottomMargin(noteBottMargin);
+    //    blockFormat.setTextIndent(noteTextIndent);
+    //    QTextCharFormat charFormat;
+    //            charFormat.setFontPointSize(noteTextHeight);
+    //    charFormat.setFontFamily(noteFontFamily);
+
+    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    //    tCursor->mergeCharFormat(charFormat);
+    //    tCursor->mergeBlockFormat(blockFormat);
+
     return textDocument;
 }
 
@@ -514,6 +698,44 @@ QTextDocument *Exporter::prepareNoteDoc(QFile *noteFile)
     noteFile->open(QFile::ReadOnly | QFile::Text);
     QTextStream textFileStream( noteFile );
     textDocument->setHtml(textFileStream.readAll());
+
+
+
+
+    //cut blank spaces at the begining and end :
+
+
+
+    QTextCursor *tCursor = new QTextCursor(textDocument);
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+
+    while(tCursor->selectedText() == " "){
+        tCursor->deleteChar();
+        tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+    }
+
+    //set text config :
+
+    //    QTextBlockFormat blockFormat;
+    //    blockFormat.setBottomMargin(noteBottMargin);
+    //    blockFormat.setTextIndent(noteTextIndent);
+    //    QTextCharFormat charFormat;
+    //            charFormat.setFontPointSize(noteTextHeight);
+    //    charFormat.setFontFamily(noteFontFamily);
+
+    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    //    tCursor->mergeCharFormat(charFormat);
+    //    tCursor->mergeBlockFormat(blockFormat);
 
     return textDocument;
 }

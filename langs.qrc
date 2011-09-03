@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>langs/plume-creator_fr_FR.qm</file>
+    </qresource>
+</RCC>

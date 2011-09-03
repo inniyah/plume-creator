@@ -144,6 +144,7 @@ bool MainTree::write(QFile *device)
         QTextStream out(device);
         out.flush();
         domDocument.save(out, IndentSize);
+        device->close();
 
 
         qDebug() << "Dom saved in xml via write(QFile *device)";
@@ -217,7 +218,7 @@ void MainTree::parseFolderElement(const QDomElement &element,
     if (title.isEmpty())
         title = QObject::tr("XML problem : parseFolderElement(const QDomElement &element, QTreeWidgetItem *parentItem)");
 
-    item->setFlags(item->flags());
+    item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
     item->setIcon(0, folderIcon);
     item->setText(0, title);
 
@@ -227,11 +228,11 @@ void MainTree::parseFolderElement(const QDomElement &element,
     QDomElement child = element.firstChildElement();
     while (!child.isNull()) {
         if (child.tagName() == "book") {
-            item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
+            item->setFlags(item->flags());
             parseFolderElement(child, item);
 
         } else if (child.tagName() == "chapter") {
-            item->setFlags( item->flags() /*| Qt::ItemIsEditable*/);
+            item->setFlags(item->flags());
             parseFolderElement(child, item);
 
 
@@ -250,7 +251,7 @@ void MainTree::parseFolderElement(const QDomElement &element,
 
         else if (child.tagName() == "separator") {
             QTreeWidgetItem *childItem = createItem(child, item);
-            childItem->setFlags(item->flags() | Qt::ItemIsSelectable);
+            childItem->setFlags(item->flags());
             childItem->setText(0, "             " + QString(10, 0xB7));
         }
         child = child.nextSiblingElement();
@@ -286,6 +287,10 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     //        emit textAndNoteSignal(textFile, noteFile, synFile, name, action_Save);
 
     //    }
+    if(domElementForItem.value(treeItem).tagName() == "separator")
+        return true;
+
+
     qDebug() << "itemOpened :" << treeItem->text(0);
 
 
@@ -447,7 +452,8 @@ void MainTree::itemEnteredSlot(QTreeWidgetItem *treeItemPressed,int column)
 void MainTree::rename(QTreeWidgetItem *item)
 {
 
-
+    if(domElementForItem.value(item).tagName() == "separator")
+        return;
 
     bool ok;
     QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),

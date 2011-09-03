@@ -52,7 +52,7 @@ private:
     QLineEdit *projectNameLabelLineEdit;
     QDialogButtonBox *buttonBox;
     QTreeWidget *tree;
-    QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox;
+    QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
     QComboBox *fileTypeCombo;
 QFile *targetDevice;
 

@@ -9,7 +9,6 @@ QT       += core gui xml
 TARGET = Plume-Creator
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     newprojectwizard.cpp \
@@ -50,4 +49,9 @@ HEADERS  += mainwindow.h \
     exporter.h
 
 RESOURCES += \
-    pics.qrc
+    pics.qrc \
+    langs.qrc
+
+CODECFORTR = UTF-8
+
+TRANSLATIONS = plume-creator_fr_FR.ts

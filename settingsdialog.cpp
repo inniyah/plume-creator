@@ -142,11 +142,11 @@ showFullScrollbarBox = new QCheckBox(tr("Show scrollbar"));
 
 
 
-    // Synopsys :
+    // Synopsis :
 
 
 
-    QGroupBox *synBox = new QGroupBox(tr("Synopsys Area :"));
+    QGroupBox *synBox = new QGroupBox(tr("Synopsis Area :"));
     QGridLayout *gridSynLayout = new QGridLayout;
     QLabel *synFontLabel = new QLabel(tr("Default Text Font :"));
     synFontCombo = new QFontComboBox;
@@ -249,7 +249,7 @@ textMarginSpin->setValue(textMarginValue);
 
 showFullScrollbarBox->setChecked(settings.value("FullTextArea/showScrollbar", false).toBool());
 
-// Synopsys :
+// Synopsis :
 
 synSpinValue = settings.value("SynArea/textHeight", 12).toInt();
 synFont.setFamily(settings.value("SynArea/textFontFamily", "Liberation Serif").toString());
@@ -296,7 +296,7 @@ void TextSettingTab::accept()
 settings.setValue("FullTextArea/showScrollbar", showFullScrollbarBox->isChecked());
 
 
-// Synopsys :
+// Synopsis :
 
 settings.setValue("SynArea/textHeight", synSpin->value());
 settings.setValue("SynArea/textFontFamily", synFontCombo->currentFont());
