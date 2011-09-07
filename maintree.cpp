@@ -293,7 +293,6 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
 
     qDebug() << "itemOpened :" << treeItem->text(0);
 
-
     QString action;
     action = "open";
 
@@ -312,6 +311,18 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     textFile = new QFile(devicePath + textName);
     noteFile = new QFile(devicePath + noteName);
     synFile = new QFile(devicePath + synName);
+
+    qDebug() << "jal 1";
+QString debug;
+      qDebug() << "jal textCursorPos: " << debug.setNum(textCursorPos);
+     qDebug() << "jal synCursorPos: " <<  debug.setNum(synCursorPos);
+     qDebug() << "jal noteCursorPos: " <<  debug.setNum(noteCursorPos);
+
+     qDebug() << "jal : " << textFile->fileName();
+     qDebug() << "jal : " << noteFile->fileName();
+     qDebug() << "jal : " << synFile->fileName();
+
+
 
 
     emit textAndNoteSignal(textFile, noteFile, synFile, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
@@ -413,7 +424,8 @@ void MainTree::prepareContextMenu()
 
 void MainTree::itemActivatedSlot(QTreeWidgetItem *treeItemPressed,int column)
 {
-    openTextFile(treeItemPressed, column);
+qDebug() << "jal itemActivatedSlot";
+            openTextFile(treeItemPressed, column);
 
 
     qDebug() << "item activated : " << m_itemEntered->text(0);
@@ -1955,8 +1967,8 @@ void MainTree::dragEnterEvent( QDragEnterEvent *event )
                this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
 
-    draggedItem= itemAt(event->pos());
 
+    draggedItem= m_itemEntered;
 
 
     if(mParent != 1)

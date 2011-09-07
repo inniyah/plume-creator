@@ -1,14 +1,29 @@
 PLUME CREATOR
 
+
+v 0.33
+	- tree : drag & drop selects the good item now
+	- in fullscreen editor : removed the blank line below the main edit zone
+	- added new splash screen icon
+
+v 0.32
+	- added french translation (fr_FR)
+	- exported document is more neat
+	- progress bar when exporting
+
+v 0.31
+	- added fast access to synopsies and notes in fullscreen editor
+	- added application icon and a sample splash screen
+
 v 0.30
-	- font config for synopsys and notes
+	- font config for synopsies and notes
 	- config for indent and margin
 	- export in .odt .html and .txt
 
 v 0.29
 	- in fullscreen editor :
 		- SOLVED bug : same docs between projects displayed in fullscreen editor
-	- cursor position saved in notes and synopsys
+	- cursor position saved in notes and synopsies
 	- basic indent and margin for all editors (no config)
 
 v 0.28

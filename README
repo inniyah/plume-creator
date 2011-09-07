@@ -1,5 +1,11 @@
 PLUME CREATOR
 
+
+v 0.33
+	- tree : drag & drop selects the good item now
+	- in fullscreen editor : removed the blank line below the main edit zone
+	- added new splash screen icon
+
 v 0.32
 	- added french translation (fr_FR)
 	- exported document is more neat

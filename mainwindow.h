@@ -72,6 +72,9 @@ private slots:
     void applyConfig();
     void configTimer();
 
+
+void reconnectAFterTabClose();
+
 private:
 
     void createMenuDock();

@@ -322,6 +322,12 @@ void MainWindow::openProjectSlot(QFile *projectFile)
     closeAllDocsSlot();
     file = projectFile;
     mainTree->read(projectFile);
+
+
+    // enable outliner :
+    QPushButton *outlinerButton = new QPushButton(tr("Outliner"),tabWidget);
+    tabWidget->setCornerWidget(outlinerButton, Qt::TopRightCorner);
+    connect(outlinerButton, SIGNAL(clicked()), SIGNAL(launchOutliner));
 }
 
 //---------------------------------------------------------------------------
@@ -341,7 +347,8 @@ void MainWindow::closeProjectSlot()
     settings.setValue("lastModified", QDateTime::currentDateTime().toString());
     settings.endArray();
 
-
+//disable outliner :
+    tabWidget->setCornerWidget(0, Qt::TopRightCorner);
 }
 
 void MainWindow::setProjectNumberSlot(int prjNumber)
@@ -373,13 +380,37 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
                 }
             }
         }
+        if(textFileList->isEmpty()){
+            tabWidget->clear();
+            textFileList->clear();
+            noteFileList->clear();
+            synFileList->clear();
+            nameList->clear();
+            textWidgetList->clear();
+            noteWidgetList->clear();
+            synWidgetList->clear();
+            tabNumList->clear();
+            numList->clear();
+        }
+
+
+        qDebug() << "jal 2";
+
         // open and mem in :
 
         TextTab *tab = new TextTab(textFile, name);
+        tab->setObjectName("z");
+        qDebug() << "jal 2a";
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
+        qDebug() << "jal 2b";
         tab->openText(textFile, name);
         //       tab->setAttribute(Qt::WA_DeleteOnClose);
+        qDebug() << "jal 2c";
+        qDebug() << "tab : " << tab->objectName();
+        qDebug() << "name : " << name;
         tabWidget->addTab(tab, name);
+
+        qDebug() << "jal 2222222222222222é";
 
         QWidget *noteWidget = new QWidget(this);
         QVBoxLayout *nLayout = new QVBoxLayout(noteWidget);
@@ -389,6 +420,8 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         noteWidget->setLayout(nLayout);
         noteLayout->addWidget(noteWidget);
 
+        qDebug() << "jal 2b";
+
         QWidget *synWidget = new QWidget(this);
         QVBoxLayout *sLayout = new QVBoxLayout(synWidget);
         NoteZone *synStack = new NoteZone(synWidget);
@@ -396,6 +429,8 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         synStack->openSyn(synFile, name);
         synWidget->setLayout(sLayout);
         synLayout->addWidget(synWidget);
+
+        qDebug() << "jal 2c";
 
         textFileList->append(textFile);
         noteFileList->append(noteFile);
@@ -405,6 +440,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         noteWidgetList->append(noteStack);
         synWidgetList->append(synStack);
 
+        qDebug() << "jal 3";
 
         //set objectnames
         QString string;
@@ -418,6 +454,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         numList->append(number);
         qDebug() << "added objectname value : " << string.setNum(number,10);
 
+        qDebug() << "jal 4";
 
 
         //display the opened tab (config setting)
@@ -433,6 +470,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         connect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
+        qDebug() << "jal 5";
 
         //launch autosaving :
         if(firstOpen)
@@ -455,6 +493,7 @@ void MainWindow::textSlot(QFile *textFile, QFile *noteFile, QFile *synFile, int 
         //other :
         firstOpen = false;
 
+        qDebug() << "jal 6";
 
         //apply config :
 
@@ -648,9 +687,18 @@ void MainWindow::tabCloseRequest(int tabNum)
 
     qDebug() << "tabCloseRequest post :" << tabNum;
 
-    connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+    QTimer::singleShot(500, this, SLOT(reconnectAFterTabClose()));
+
+//    connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)),Qt::UniqueConnection);
 
 }
+
+void MainWindow::reconnectAFterTabClose()
+{
+    connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)),Qt::UniqueConnection);
+
+}
+
 //---------------------------------------------------------------------------
 
 void MainWindow::closeAllDocsSlot()

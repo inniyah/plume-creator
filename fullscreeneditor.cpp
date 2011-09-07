@@ -11,6 +11,7 @@ FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *p
 
     FullTextZone *fullTextEdit = new FullTextZone(doc, this);
 fullTextEdit->applyTextConfig();
+fullTextEdit->setFrameShape(QFrame::NoFrame);
 
     QHBoxLayout *baseLayout= new QHBoxLayout;
     baseLayout->setMargin(0);

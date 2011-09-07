@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>pics/plume-creator.png</file>
-        <file>pics/Plume_pen_w.png</file>
+        <file>pics/plume-creator-splash.png</file>
     </qresource>
 </RCC>

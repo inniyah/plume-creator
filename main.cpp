@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(pics);
+    Q_INIT_RESOURCE(langs);
 
 
     app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
 
     // splashscreen :
 
-    QPixmap pixmap(":/pics/Plume_pen_w.png");
+    QPixmap pixmap(":/pics/plume-creator-splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
     app.processEvents();
@@ -69,7 +70,6 @@ int main(int argc, char *argv[])
 
 
     splash.finish(&w);
-    //    delete splash;
 
 
     return app.exec();
