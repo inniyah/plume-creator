@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     settingsdialog.cpp \
     fullscreeneditor.cpp \
     fulltextzone.cpp \
-    exporter.cpp
+    exporter.cpp \
+    outlineitem.cpp \
+    outline.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -46,7 +48,9 @@ HEADERS  += mainwindow.h \
     settingsdialog.h \
     fullscreeneditor.h \
     fulltextzone.h \
-    exporter.h
+    exporter.h \
+    outlineitem.h \
+    outline.h
 
 RESOURCES += \
     pics.qrc \
@@ -55,3 +59,7 @@ RESOURCES += \
 CODECFORTR = UTF-8
 
 TRANSLATIONS = plume-creator_fr_FR.ts
+
+
+
+

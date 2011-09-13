@@ -19,19 +19,19 @@
  ***************************************************************************/
 
 #ifndef DIGITALCLOCK_H
- #define DIGITALCLOCK_H
+#define DIGITALCLOCK_H
 
- #include <QLabel>
+#include <QLabel>
 
- class DigitalClock : public QLabel
- {
-     Q_OBJECT
+class DigitalClock : public QLabel
+{
+    Q_OBJECT
 
- public:
-     DigitalClock(QWidget *parent = 0);
+public:
+    DigitalClock(QWidget *parent = 0);
 
- private slots:
-     void showTime();
- };
+private slots:
+    void showTime();
+};
 
- #endif
+#endif

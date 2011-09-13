@@ -31,10 +31,10 @@ class TextTab : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TextTab(QFile *textFile, QString name, QWidget *parent = 0);
+    explicit TextTab(QWidget *parent = 0);
 
-    bool openText(QFile *textFile, QString name);
-    bool saveText(QFile *textFile, QString name);
+    bool openText(QTextDocument *doc);
+    //    bool saveText(QFile *textFile, QString name);
 
     //for wordcount:
     QTextDocument* document();
@@ -51,21 +51,21 @@ protected:
 
 
 public slots:
-void changeWidthSlot(int width);
-void changeTextFontSlot(QFont font);
-void changeTextHeightSlot(int height);
-void setTextFocus();
-void setCursorPos(int pos);
-int saveCursorPos();
-void applyConfig();
-QTextCharFormat tabChangedSlot();
-void updateTextZone();
+    void changeWidthSlot(int width);
+    void changeTextFontSlot(QFont font);
+    void changeTextHeightSlot(int height);
+    void setTextFocus();
+    void setCursorPos(int pos);
+    int saveCursorPos();
+    void applyConfig();
+    QTextCharFormat tabChangedSlot();
+    void updateTextZone();
 
 private slots:
 
-void wordCountUpdated(int wordCount);
-//void charCountUpdated(int charCount);
-void blockCountUpdated(int blockCount);
+    void wordCountUpdated(int wordCount);
+    //void charCountUpdated(int charCount);
+    void blockCountUpdated(int blockCount);
 
 private:
 

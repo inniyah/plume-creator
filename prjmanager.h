@@ -38,10 +38,10 @@ public:
 
 signals:
 
-void openPrjManagerSignal(); // relay from deletePrjButton to MainWindow
-void newPrjSignal();
-void openProjectSignal(QFile *device);
-void openProjectNumberSignal(int prjNumber);
+    void openPrjManagerSignal(); // relay from deletePrjButton to MainWindow
+    void newPrjSignal();
+    void openProjectSignal(QFile *device);
+    void openProjectNumberSignal(int prjNumber);
 
 public slots:
 
@@ -109,7 +109,7 @@ signals:
 
 public slots:
     void openProjectFile(QFile *device);
-void openProjectSettingNumber(int prjNumber);
+    void openProjectSettingNumber(int prjNumber);
 
 private slots:
     void opProject();

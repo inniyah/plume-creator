@@ -8,14 +8,14 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
     textFontCombo = new QFontComboBox;
     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
 
-            textSpin = new QSpinBox;
+    textSpin = new QSpinBox;
     textSpin->setRange(6,30);
     connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
     QLabel *textZoneWidthLabel = new QLabel(tr("Text Area Width :"));
     widthSlider = new QSlider(Qt::Horizontal);
-QWidget *stretcher = new QWidget;
-stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    QWidget *stretcher = new QWidget;
+    stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 
     QGridLayout *baseGridLayout = new QGridLayout;
@@ -25,40 +25,40 @@ stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     baseGridLayout->addWidget(textSpin,3,0);
     baseGridLayout->addWidget(textZoneWidthLabel,4,0);
     baseGridLayout->addWidget(widthSlider,5,0);
-baseGridLayout->addWidget(stretcher,6,0);
+    baseGridLayout->addWidget(stretcher,6,0);
     setLayout(baseGridLayout);
 
     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-   connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+    connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
     applyConfig();
 }
 
 //----------------------------------------------------------------------------------------
- void EditMenuBox::charFormatChangedSlot(QTextCharFormat format)
- {
-     disconnect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-     disconnect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+void EditMenuBox::charFormatChangedSlot(QTextCharFormat format)
+{
+    disconnect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+    disconnect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
 
-     textSpin->setValue(format.fontPointSize());
-     textFontCombo->setCurrentFont(format.fontFamily());
+    textSpin->setValue(format.fontPointSize());
+    textFontCombo->setCurrentFont(format.fontFamily());
 
 
-     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+    connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
     connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
- }
+}
 
- //----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 
 void EditMenuBox::loadSliderValue()
 {
-int sliderValue = settings.value("TextArea/areaWidth", 400).toInt();
+    int sliderValue = settings.value("TextArea/areaWidth", 400).toInt();
     widthSlider->setSliderPosition(sliderValue);
     widthSlider->setValue(sliderValue);
 
-QString debug;
+    QString debug;
     qDebug() << "loadSliderValue : " << debug.setNum(sliderValue);
     sliderValueChanged(sliderValue);
     connect(widthSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)), Qt::UniqueConnection);
@@ -85,14 +85,14 @@ void EditMenuBox::tabWitdhChangedSlot(int value)
         widthSlider->setValue(xMax);
 
     widthSlider->setRange(200, xMax);
-oldXMax = xMax;
+    oldXMax = xMax;
 }
 
 void EditMenuBox::tabChangedSlot(QTextCharFormat newTabFormat)
 {
 
 
-charFormatChangedSlot(newTabFormat);
+    charFormatChangedSlot(newTabFormat);
 }
 //---------------------------------------------------------------------------
 //----------Apply Config---------------------------------------------------------------------
@@ -108,8 +108,8 @@ void EditMenuBox::applyConfig()
     settings.endGroup();
 
 
-textSpin->setValue(textSpinValue);
-textFontCombo->setCurrentFont(textFont);
+    textSpin->setValue(textSpinValue);
+    textFontCombo->setCurrentFont(textFont);
 
 }
 

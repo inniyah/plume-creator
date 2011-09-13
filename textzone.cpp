@@ -460,7 +460,7 @@ void TextZone::applyConfig()
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("TextArea/alwaysCenter", true).toBool();
     showScrollbar = settings.value("TextArea/showScrollbar", true).toBool();
-     settings.endGroup();
+    settings.endGroup();
 
 
     centerCursor();

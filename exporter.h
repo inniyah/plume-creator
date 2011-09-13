@@ -54,7 +54,7 @@ private:
     QTreeWidget *tree;
     QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
     QComboBox *fileTypeCombo;
-QFile *targetDevice;
+    QFile *targetDevice;
 
 
     //tree :
@@ -74,12 +74,12 @@ QFile *targetDevice;
     QIcon sceneIcon;
 
 
-// accept :
+    // accept :
 
     void exportDoc();
-QTextDocument* prepareTextDoc(QFile *textFile);
-QTextDocument* prepareSynDoc(QFile *synFile);
-QTextDocument* prepareNoteDoc(QFile *noteFile);
+    QTextDocument* prepareTextDoc(QFile *textFile);
+    QTextDocument* prepareSynDoc(QFile *synFile);
+    QTextDocument* prepareNoteDoc(QFile *noteFile);
 
 };
 

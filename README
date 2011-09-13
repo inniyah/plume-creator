@@ -1,5 +1,17 @@
 PLUME CREATOR
 
+v 0.34
+	- set default style to Qt's "Plastique"
+	- set default save time to 20 000 ms, not 20 ms
+	- "auto rename children" repaired
+ 	- load / save more centralized. 
+	- "rename" context menu action repaired
+	- tree : added drag / drop of scene breaks
+	- added very basic Outliner :
+		- title editing
+		- synopsys editing
+		- note editing
+		(no "drag / drop" or "add item" yet)
 
 v 0.33
 	- tree : drag & drop selects the good item now

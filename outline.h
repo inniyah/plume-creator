@@ -17,43 +17,49 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef EDITMENUBOX_H
-#define EDITMENUBOX_H
+#ifndef OUTLINE_H
+#define OUTLINE_H
 
-#include <QtGui>
 #include <QWidget>
-#include <QFrame>
-#include <QToolButton>
+#include <QtGui>
 
-class EditMenuBox : public QFrame
+class Outline : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EditMenuBox(QWidget *parent = 0);
+    explicit Outline(QWidget *parent = 0);
+
+
+protected:
+    void resizeEvent (QResizeEvent *event);
+    void closeEvent(QCloseEvent* event);
 
 signals:
-    void widthChangedSignal(int sliderValue);
-    void textFontChangedSignal(QFont font);
-    void textHeightChangedSignal(int textHeight);
-public slots:
-    void tabWitdhChangedSlot(int value);
-    void loadSliderValue();
-    void applyConfig();
-    void charFormatChangedSlot(QTextCharFormat format);
-    void tabChangedSlot(QTextCharFormat newTabFormat);
+    void showListsSignal(bool buttonToggled);
+    void showNotesSignal(bool buttonToggled);
+    void expandAllTextsSignal(bool buttonToggled);
+    void updateSizeSignal();
+    void newOutlineTitleSignal(QString newTitle, int number);
 
+public slots:
+    void buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,QString title, int number, QString tagName);
+    void buildSeparator();
+    void buildStretcher();
+    void applyConfig();
+    void setItemTitle(QString newTitle, int number);
+    void cleanArea();
 private slots:
-    void sliderValueChanged(int sliderValue);
+
+    void resizingSlot();
 
 private:
-    int xMax;
-    QSlider *widthSlider;
-    int sliderValue;
-    QSettings settings;
-    QFontComboBox *textFontCombo;
-    QFont textFont;
-    QSpinBox *textSpin;
-    int textSpinValue;
+    QScrollArea *area;
+    QWidget *areaWidget;
+    QVBoxLayout *areaLayout;
+
+    QAction *showListsAct;
+    QAction *showNotesAct;
+    QAction *expandAllTextsAct;
 };
 
-#endif // EDITMENUBOX_H
+#endif // OUTLINE_H

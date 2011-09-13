@@ -41,11 +41,10 @@ NoteZone::NoteZone(QWidget *parent) :
 //-----------------------------------------------------
 
 
-bool NoteZone::openNote(QFile *noteFile, QString name)
+bool NoteZone::openNote(QTextDocument *noteDoc)
 {
 
-    noteStackName = name;
-
+    textDocument = noteDoc;
 
     this->setEnabled(true);
 
@@ -54,23 +53,28 @@ bool NoteZone::openNote(QFile *noteFile, QString name)
 
 
 
-    noteFile->open(QFile::ReadOnly | QFile::Text);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    QTextStream noteFileStream( noteFile );
-    textDocument->setHtml(noteFileStream.readAll());
-    //  this->setText( noteFileStream.readAll() );
-    QApplication::restoreOverrideCursor();
-    noteFile->close();
+    //    noteFile->open(QFile::ReadOnly | QFile::Text);
+    //    QApplication::setOverrideCursor(Qt::WaitCursor);
+    //    QTextStream noteFileStream( noteFile );
+    //    textDocument->setHtml(noteFileStream.readAll());
+    //    //  this->setText( noteFileStream.readAll() );
+    //    QApplication::restoreOverrideCursor();
+    //    noteFile->close();
+
 
 
     setDocument(textDocument);
 
-setContextMenuPolicy(Qt::DefaultContextMenu);
-
-setDocumentTitle("Note");
 
 
-applyNoteConfig();
+
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    setDocumentTitle("Note");
+
+
+    applyNoteConfig();
+
 
     return true;
 }
@@ -78,41 +82,21 @@ applyNoteConfig();
 //------------------------------------------------------------------------------
 
 
-bool NoteZone::openSyn(QFile *synFile, QString name)
+bool NoteZone::openSyn(QTextDocument *synDoc)
 {
 
-    synStackName = name;
-
+    textDocument = synDoc;
 
     this->setEnabled(true);
 
+    //    synFile->open(QFile::ReadOnly | QFile::Text);
+    //    QApplication::setOverrideCursor(Qt::WaitCursor);
+    //    QTextStream synFileStream( synFile );
+    //    textDocument->setHtml(synFileStream.readAll());
 
+    //    QApplication::restoreOverrideCursor();
 
-    //    QFile *tempNoteFile = new QFile(noteFile->fileName() + ".temp");
-    //    if(tempNoteFile->exists()){
-    //        tempNoteFile->open(QFile::ReadOnly | QFile::Text);
-    //        QApplication::setOverrideCursor(Qt::WaitCursor);
-    //        QTextStream tempNoteFileStream( tempNoteFile );
-    //        this->setText( tempNoteFileStream.readAll() );
-    //        QApplication::restoreOverrideCursor();
-
-    //        //        this->setHtml(tempNoteFileArray);
-    //        tempNoteFile->close();
-    //    }
-    //    else{
-    synFile->open(QFile::ReadOnly | QFile::Text);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    QTextStream synFileStream( synFile );
-    textDocument->setHtml(synFileStream.readAll());
-    //this->setText( synFileStream.readAll() );
-    QApplication::restoreOverrideCursor();
-
-    //        this->setHtml(noteFileArray);
-    synFile->close();
-    //    }
-    //    noteOpened = true;
-
-    //    noteFileOpened = noteFile;
+    //    synFile->close();
 
     setDocument(textDocument);
 
@@ -129,87 +113,43 @@ bool NoteZone::openSyn(QFile *synFile, QString name)
 //------------------------------------------------------------------------------
 
 
-bool NoteZone::saveSyn(QFile *synFile, QString name)
-{
-    if(name != synStackName)
-        return false;
+//bool NoteZone::saveSyn(QFile *synFile, QString name)
+//{
+//    if(name != synStackName)
+//        return false;
 
 
-    //    synFile->setFileName(synFile->fileName());
-    //    synFile->open(QFile::WriteOnly | QFile::Text);
+//    QTextDocumentWriter docWriter(synFile, "HTML");
+//    bool written = docWriter.write(textDocument);
 
-    //    if(synFile->isWritable())
-    //    {
-
-
-    //        QTextStream stream(synFile);
-    //        stream << this->toHtml();
-    //        stream.flush();
-    //        synFile->close();
-
-    //        return true;
-
-    //    }
-    //    else{
-
-
-    //        qDebug() << synFile->fileName() << " isn't Writtable.";
-    //        return false;
-    //    }
-
-    QTextDocumentWriter docWriter(synFile, "HTML");
-    bool written = docWriter.write(textDocument);
-
-    return written;
-}
+//    return written;
+//}
 
 
 
 //------------------------------------------------------------------------------
 
-bool NoteZone::saveNote(QFile *noteFile, QString name)
-{
-    if(name != noteStackName)
-        return false;
+//bool NoteZone::saveNote(QFile *noteFile, QString name)
+//{
+//    if(name != noteStackName)
+//        return false;
 
 
-    //    QFile file;
-    //    file.setFileName(noteFile->fileName());
-    //    file.open(QFile::WriteOnly | QFile::Text);
 
-    //    if(file.isWritable())
-    //    {
+//    QTextDocumentWriter docWriter(noteFile, "HTML");
+//    bool written = docWriter.write(textDocument);
 
-    //        QTextStream stream(&file);
-    //        stream << this->toHtml();
-    //        stream.flush();
-    //        file.close();
-
-    //        return true;
-    //    }
-    //    else{
-    //        qDebug() << noteFile->fileName() << " isn't Writtable.";
-
-    //        return false;
-    //    }
-
-    QTextDocumentWriter docWriter(noteFile, "HTML");
-    bool written = docWriter.write(textDocument);
-
-    return written;
-}
+//    return written;
+//}
 
 
 
 //------------------------------------------------------------------------------
 
-bool NoteZone::closeSyn(QFile *synFile, QString name)
+bool NoteZone::closeSyn()
 {
 
-    if(name != synStackName)
-        return false;
 
-    this->clear();
     this->setEnabled(false);
 
     setContextMenuPolicy(Qt::PreventContextMenu);
@@ -220,13 +160,10 @@ bool NoteZone::closeSyn(QFile *synFile, QString name)
 //------------------------------------------------------------------------------
 
 
-bool NoteZone::closeNote(QFile *noteFile, QString name)
+bool NoteZone::closeNote()
 {
-    if(name != noteStackName)
-        return false;
 
 
-    this->clear();
     this->setEnabled(false);
 
     setContextMenuPolicy(Qt::PreventContextMenu);
@@ -316,15 +253,15 @@ void NoteZone::createActions()
     italicFont.setItalic(true);
     italicAct->setFont(italicFont);
 
-//    setLineSpacingAct = new QAction(tr("Set &Line Spacing..."), this);
-//    setLineSpacingAct->setStatusTip(tr("Change the gap between the lines of a "
-//                                       "paragraph"));
-//    connect(setLineSpacingAct, SIGNAL(triggered()), this, SLOT(setLineSpacing()));
+    //    setLineSpacingAct = new QAction(tr("Set &Line Spacing..."), this);
+    //    setLineSpacingAct->setStatusTip(tr("Change the gap between the lines of a "
+    //                                       "paragraph"));
+    //    connect(setLineSpacingAct, SIGNAL(triggered()), this, SLOT(setLineSpacing()));
 
-//    setParagraphSpacingAct = new QAction(tr("Set &Paragraph Spacing..."), this);
-//    setParagraphSpacingAct->setStatusTip(tr("Change the gap between paragraphs"));
-//    connect(setParagraphSpacingAct, SIGNAL(triggered()),
-//            this, SLOT(setParagraphSpacing()));
+    //    setParagraphSpacingAct = new QAction(tr("Set &Paragraph Spacing..."), this);
+    //    setParagraphSpacingAct->setStatusTip(tr("Change the gap between paragraphs"));
+    //    connect(setParagraphSpacingAct, SIGNAL(triggered()),
+    //            this, SLOT(setParagraphSpacing()));
 
     leftAlignAct = new QAction(tr("&Left Align"), this);
     leftAlignAct->setCheckable(true);
@@ -604,13 +541,13 @@ void NoteZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 //--------------------------------------------------------------------------------
 void NoteZone::centerCursor()
 {
-//    QRect cursor = cursorRect();
-//    QRect viewport =  this->viewport()->rect();
-//    if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
-//        QPoint offset = viewport.center() - cursor.center();
-//        QScrollBar* scrollbar = verticalScrollBar();
-//        scrollbar->setValue(scrollbar->value() - offset.y());
-//    }
+    //    QRect cursor = cursorRect();
+    //    QRect viewport =  this->viewport()->rect();
+    //    if (alwaysCenter || (cursor.bottom() >= viewport.bottom()) || (cursor.top() <= viewport.top())) {
+    //        QPoint offset = viewport.center() - cursor.center();
+    //        QScrollBar* scrollbar = verticalScrollBar();
+    //        scrollbar->setValue(scrollbar->value() - offset.y());
+    //    }
 }
 
 //--------------------------------------------------------------------------------
@@ -767,7 +704,7 @@ void NoteZone::applyNoteConfig()
     blockFormat.setBottomMargin(noteBottMargin);
     blockFormat.setTextIndent(noteTextIndent);
     QTextCharFormat charFormat;
-            charFormat.setFontPointSize(noteTextHeight);
+    charFormat.setFontPointSize(noteTextHeight);
     charFormat.setFontFamily(noteFontFamily);
 
     QTextCursor *tCursor = new QTextCursor(document());
@@ -782,10 +719,10 @@ void NoteZone::applyNoteConfig()
     //apply default font in empty documents :
 
     if(document()->isEmpty()){
-    QFont font;
-    font.setFamily(noteFontFamily);
-    font.setPointSize(noteTextHeight);
-    document()->setDefaultFont(font);
+        QFont font;
+        font.setFamily(noteFontFamily);
+        font.setPointSize(noteTextHeight);
+        document()->setDefaultFont(font);
 
     }
 
@@ -799,12 +736,12 @@ void NoteZone::applySynConfig()
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("SynArea/alwaysCenter", true).toBool();
-bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
-int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
-int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
-int synTextHeight = settings.value("SynArea/textHeight", 12).toInt();
-QString synFontFamily = settings.value("SynArea/textFontFamily", "Liberation Serif").toString();
-settings.endGroup();
+    bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
+    int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
+    int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
+    int synTextHeight = settings.value("SynArea/textHeight", 12).toInt();
+    QString synFontFamily = settings.value("SynArea/textFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
 
 
     centerCursor();
@@ -820,7 +757,7 @@ settings.endGroup();
     blockFormat.setBottomMargin(synBottMargin);
     blockFormat.setTextIndent(synTextIndent);
     QTextCharFormat charFormat;
-            charFormat.setFontPointSize(synTextHeight);
+    charFormat.setFontPointSize(synTextHeight);
     charFormat.setFontFamily(synFontFamily);
     QTextCursor *tCursor = new QTextCursor(document());
 
@@ -837,10 +774,10 @@ settings.endGroup();
     //apply default font in empty documents :
 
     if(document()->isEmpty()){
-    QFont font;
-    font.setFamily(synFontFamily);
-    font.setPointSize(synTextHeight);
-    document()->setDefaultFont(font);
+        QFont font;
+        font.setFamily(synFontFamily);
+        font.setPointSize(synTextHeight);
+        document()->setDefaultFont(font);
 
     }
 }

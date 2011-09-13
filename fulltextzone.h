@@ -106,11 +106,11 @@ private:
     *optionGroup;
     QPoint mousePos;
 
-bool alwaysCenter;
+    bool alwaysCenter;
 
-QSlider *widthSlider;
-int sliderValue;
-int xMax;
+    QSlider *widthSlider;
+    int sliderValue;
+    int xMax;
 };
 
 

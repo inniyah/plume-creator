@@ -59,11 +59,11 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     noteCheckBox->setChecked(true);
     sceneTitleCheckBox->setChecked(true);
 
-checkLayout->addWidget(textCheckBox, 1,0);
-checkLayout->addWidget(synCheckBox, 2,0);
-checkLayout->addWidget(noteCheckBox, 3,0);
-checkLayout->addWidget(sceneTitleCheckBox, 4,0);
-checkGroupBox->setLayout(checkLayout);
+    checkLayout->addWidget(textCheckBox, 1,0);
+    checkLayout->addWidget(synCheckBox, 2,0);
+    checkLayout->addWidget(noteCheckBox, 3,0);
+    checkLayout->addWidget(sceneTitleCheckBox, 4,0);
+    checkGroupBox->setLayout(checkLayout);
 
 
     fileTypeCombo = new QComboBox;
@@ -71,8 +71,8 @@ checkGroupBox->setLayout(checkLayout);
     list << tr(".html") << tr(".odt") << tr(".txt");
     fileTypeCombo->insertItems(0, list);
 
-QWidget *stretcher = new QWidget;
-stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QWidget *stretcher = new QWidget;
+    stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(label, 0, 0, 1, 2);
@@ -82,8 +82,8 @@ stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     layout->addWidget(directoryButton, 2, 0);
     layout->addWidget(directoryLabelLineEdit, 2, 1);
     layout->addWidget(fileTypeCombo, 3,1);
-layout->addWidget(checkGroupBox,4,0,1,2);
-layout->addWidget(stretcher,5,0,1,2);
+    layout->addWidget(checkGroupBox,4,0,1,2);
+    layout->addWidget(stretcher,5,0,1,2);
 
     tree = new QTreeWidget;
     tree->setFixedWidth(width()/3);
@@ -433,7 +433,7 @@ void Exporter::exportDoc()
 
     progressBar->setMaximum(itemList->size());
     progressBar->setValue(progressValue);
-progressWidget->show();
+    progressWidget->show();
 
 
 
@@ -457,11 +457,11 @@ progressWidget->show();
     for(int i = 0; i < itemList->size(); ++i){
         QDomElement element = domElementForItem.value(itemList->at(i));
         QTextCursor *tCursor = new QTextCursor(textDocument);
-                QTextBlockFormat blockFormatLeft;
-                QTextBlockFormat blockFormatCenter;
+        QTextBlockFormat blockFormatLeft;
+        QTextBlockFormat blockFormatCenter;
 
-                blockFormatLeft.setAlignment(Qt::AlignLeft);
-                blockFormatCenter.setAlignment(Qt::AlignCenter);
+        blockFormatLeft.setAlignment(Qt::AlignLeft);
+        blockFormatCenter.setAlignment(Qt::AlignCenter);
 
         if(element.tagName() != "separator"){
 

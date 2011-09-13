@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>pics/plume-creator.png</file>
         <file>pics/plume-creator-splash.png</file>
+        <file>pics/parchemin_double.png</file>
     </qresource>
 </RCC>

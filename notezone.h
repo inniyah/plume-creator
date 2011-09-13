@@ -30,21 +30,21 @@ public:
     explicit NoteZone(QWidget *parent = 0);
 
 
-    bool openNote(QFile *noteFile, QString name);
-    bool saveNote(QFile *noteFile, QString name);
-    bool closeNote(QFile *noteFile, QString name);
+    bool openNote(QTextDocument *noteDoc);
+    //    bool saveNote(QFile *noteFile, QString name);
+    bool closeNote();
 
 
-    bool openSyn(QFile *synFile, QString name);
-    bool saveSyn(QFile *synFile, QString name);
-    bool closeSyn(QFile *synFile, QString name);
+    bool openSyn(QTextDocument *synDoc);
+    //    bool saveSyn(QFile *synFile, QString name);
+    bool closeSyn();
 
 signals:
 
 protected:
 
     void contextMenuEvent(QContextMenuEvent *event);
-// void keyPressEvent(QKeyEvent *event);
+    // void keyPressEvent(QKeyEvent *event);
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
@@ -75,18 +75,19 @@ private slots:
     void center(bool centBool);
 
 
-   void charFormat(QTextCharFormat cFormat);
+    void charFormat(QTextCharFormat cFormat);
 
 
-   void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
-   void cursorPositionChangedSlot();
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+    void cursorPositionChangedSlot();
+
 
 private:
 
-   QTextDocument *textDocument;
+    QTextDocument *textDocument;
 
-    QString synStackName;
-    QString noteStackName;
+    //    QString synStackName;
+    //    QString noteStackName;
 
     void createActions();
 
@@ -105,8 +106,7 @@ private:
     QMenu *alignmentGroup;
 
 
-
-bool alwaysCenter;
+    bool alwaysCenter;
 
 };
 

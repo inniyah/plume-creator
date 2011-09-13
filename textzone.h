@@ -90,8 +90,8 @@ private:
 
     QPoint mousePos;
 
-bool alwaysCenter;
-bool showScrollbar;
+    bool alwaysCenter;
+    bool showScrollbar;
 
 };
 

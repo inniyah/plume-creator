@@ -48,18 +48,18 @@ public slots:
     void setNote(QTextDocument *noteDocument, int cursorPos);
 
 private slots:
-void callColorDialog();
-void setBaseStyleSheet();
-void setBackColorDialog();
-void setBackColor();
-void setTextBackColorDialog();
-void setTextBackColor();
-void setTextColorDialog();
-void setTextColor();
-void applyStyleSheet();
+    void callColorDialog();
+    void setBaseStyleSheet();
+    void setBackColorDialog();
+    void setBackColor();
+    void setTextBackColorDialog();
+    void setTextBackColor();
+    void setTextColorDialog();
+    void setTextColor();
+    void applyStyleSheet();
 
-void showSyn();
-void showNote();
+    void showSyn();
+    void showNote();
 private:
     QLabel *wordCountLabel;
     QLabel *timerLabel;
@@ -70,12 +70,12 @@ private:
 
     QSettings settings;
 
-int synCursorPos;
-int noteCursorPos;
-//QTextDocument *synDoc;
-//QTextDocument *noteDoc;
-QWidget *synWidget;
-QWidget *noteWidget;
+    int synCursorPos;
+    int noteCursorPos;
+    //QTextDocument *synDoc;
+    //QTextDocument *noteDoc;
+    QWidget *synWidget;
+    QWidget *noteWidget;
 
     // style sheets
     QString backColorString,

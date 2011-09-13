@@ -4,7 +4,7 @@
 #include "maintree.h"
 
 MainTree::MainTree(QWidget *parent) :
-    QTreeWidget(parent)
+    QTreeWidget(parent), outlinerLaunched(false)
 {
     // The tree can accept drops
     setAcceptDrops( true );
@@ -63,10 +63,9 @@ bool MainTree::read(QFile *device)
         return false;
     }
 
-
     QFileInfo *dirInfo = new QFileInfo(*device);
     devicePath = dirInfo->path();
-//    qDebug() << "File path:" << devicePath;
+    //    qDebug() << "File path:" << devicePath;
 
 
     root = domDocument.documentElement();
@@ -109,6 +108,111 @@ bool MainTree::read(QFile *device)
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
 
+
+    // test : open all docs :
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+    //                 set up the progress bar :
+    QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    QHBoxLayout *progressLayout = new QHBoxLayout(progressWidget);
+    QProgressBar *progressBar = new QProgressBar(progressWidget);
+    int progressValue = 0;
+
+    progressLayout->addWidget(progressBar);
+    progressWidget->setLayout(progressLayout);
+
+    progressBar->setMaximum(domDocument.elementsByTagName("book").size()
+                            + domDocument.elementsByTagName("chapter").size()
+                            + domDocument.elementsByTagName("scene").size()
+                            );
+    progressBar->setValue(progressValue);
+    progressWidget->show();
+
+
+
+
+
+
+    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
+    QDomElement element;
+    QString textPath;
+    QString synPath;
+    QString notePath;
+
+
+    while(iterator->operator *() != 0){
+
+
+        //      itemList->append(iterator->operator *());
+        element = domElementForItem.value(iterator->operator *());
+        if(element.tagName() != "separator")
+        {
+            textPath = devicePath + element.attribute("textPath");
+            synPath = devicePath + element.attribute("synPath");
+            notePath = devicePath + element.attribute("notePath");
+
+            QFile *textFile = new QFile;
+            textFile->setFileName(textPath);
+            textFile->open(QFile::ReadOnly | QFile::Text);
+            QTextStream textFileStream( textFile );
+            QTextDocument *textDocument = new QTextDocument(this);
+            textDocument->setHtml(textFileStream.readAll());
+            textFile->close();
+            textDocument->setObjectName("textDoc_" + element.attribute("number"));
+            fileForDoc.insert(textDocument, textFile);
+
+            QFile *synFile = new QFile;
+            synFile->setFileName(synPath);
+            synFile->open(QFile::ReadOnly | QFile::Text);
+            QTextStream synFileStream( synFile );
+            QTextDocument *synDocument = new QTextDocument(this);
+            synDocument->setHtml(synFileStream.readAll());
+            synFile->close();
+            synDocument->setObjectName("synDoc_" + element.attribute("number"));
+            fileForDoc.insert(synDocument, synFile);
+
+            QFile *noteFile = new QFile;
+            noteFile->setFileName(notePath);
+            noteFile->open(QFile::ReadOnly | QFile::Text);
+            QTextStream noteFileStream( noteFile );
+            QTextDocument *noteDocument = new QTextDocument(this);
+            noteDocument->setHtml(noteFileStream.readAll());
+            noteFile->close();
+            noteDocument->setObjectName("noteDoc_" + element.attribute("number"));
+            fileForDoc.insert(noteDocument, noteFile);
+
+            qDebug() << "doc opened : "<< element.attribute("number");
+
+            QFile *file = fileForDoc.value(noteDocument);
+            qDebug() << "saveDoc : " << file->fileName();
+        }
+
+        progressValue += 1;
+        progressBar->setValue(progressValue);
+
+        iterator->operator ++();
+
+    }
+    QApplication::restoreOverrideCursor();
+    progressWidget->close();
+    QString debug;
+    qDebug() << "fileForDoc : " << debug.setNum(fileForDoc.size());
+
+    for (u = fileForDoc.begin(); u != fileForDoc.end(); ++u){
+
+        QFile *file = u.value();
+        qDebug() << "saveDoc iterator : " << file->fileName();
+        QString debug;
+        qDebug() << "doc witdh iterator : " << debug.setNum(u.key()->textWidth());
+
+    }
+
+
+
+
+
     //open first book
 
 
@@ -129,6 +233,7 @@ bool MainTree::read(QFile *device)
 
 bool MainTree::write(QFile *device)
 {
+    domDocument.documentElement().setAttribute("lastModified", QDateTime::currentDateTime().toString());
 
 
     device->waitForBytesWritten(500);
@@ -149,6 +254,53 @@ bool MainTree::write(QFile *device)
 
         qDebug() << "Dom saved in xml via write(QFile *device)";
 
+
+        // save all docs :
+
+
+
+        //       QDomElement element;
+        QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
+
+        while (i != fileForDoc.end()) {
+
+
+            QTextDocument *doc = i.key();
+            //            QString objName = doc->objectName();
+            //            int number = objName.mid(objName.indexOf("_")).toInt() + 1;
+            //            element = domElementForNumber.value(number);
+
+            //            if(element.tagName() != "separator"){
+
+
+
+
+
+
+            //                QString num = element.attribute("number");
+            //                QTextDocument *document = this->findChild<QTextDocument *>("textDoc_" + num);
+            //                QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
+            //                QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+
+            saveDoc(doc);
+            //                saveDoc(synDocument);
+            //                saveDoc(noteDocument);
+
+
+
+
+
+
+            //            }
+            ++i;
+
+
+        }
+
+
+
+
+
         return true;
 
     }
@@ -168,12 +320,67 @@ void MainTree::closeTree()
 
     clear();
 
+
+    if(outlinerLaunched)
+        outliner->close();
+
+    outlinerLaunched = false;
+
+
+
+    QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
+
+    while (i != fileForDoc.end()) {
+        QTextDocument *doc = i.key();
+        doc->setObjectName("");
+
+        ++i;
+
+    }
+    qDebug() << "closeTree";
+
+
+    //    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
+    //    QDomElement element;
+
+    //    while(iterator->operator *() != 0){
+
+    //        QTextDocument *doc = i.key();
+    //        element = domElementForItem.value(iterator->operator *());
+    //        if(element.tagName() != "separator")
+    //        {
+    //            if(element.tagName() != "separator"){
+    //                QString num = element.attribute("number");
+    //                QTextDocument *textDocument = this->findChild<QTextDocument *>("textDoc_" + num);
+    //                QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
+    //                QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+
+    //                textDocument->setObjectName("");
+    //                synDocument->setObjectName("");
+    //                noteDocument->setObjectName("");
+
+
+
+    //            }
+
+
+    //        }
+
+    //        iterator->operator ++();
+
+    //    }
+
+
+
     treeOpened = false;
     setEnabled(false);
     setContextMenuPolicy(Qt::PreventContextMenu);
 
 
 
+    fileForDoc.clear();
+    domElementForItem.clear();
+    domElementForNumber.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -273,8 +480,8 @@ QTreeWidgetItem *MainTree::createItem(const QDomElement &element,
     }
     domElementForItem.insert(item, element);
 
-   int number = element.attribute("number").toInt();
-   domElementForNumber[number] = element;
+    int number = element.attribute("number").toInt();
+    domElementForNumber.insert(number, element);
     return item;
 }
 
@@ -308,24 +515,22 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     int textCursorPos = domItem.attribute("textCursorPos").toInt();
     int synCursorPos = domItem.attribute("synCursorPos").toInt();
     int noteCursorPos = domItem.attribute("noteCursorPos").toInt();
-    textFile = new QFile(devicePath + textName);
-    noteFile = new QFile(devicePath + noteName);
-    synFile = new QFile(devicePath + synName);
+    QString string;
+    QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number,10));
+    QTextDocument *noteDoc = this->findChild<QTextDocument *>("noteDoc_" + string.setNum(number,10));
+    QTextDocument *synDoc = this->findChild<QTextDocument *>("synDoc_" + string.setNum(number,10));
 
     qDebug() << "jal 1";
-QString debug;
-      qDebug() << "jal textCursorPos: " << debug.setNum(textCursorPos);
-     qDebug() << "jal synCursorPos: " <<  debug.setNum(synCursorPos);
-     qDebug() << "jal noteCursorPos: " <<  debug.setNum(noteCursorPos);
-
-     qDebug() << "jal : " << textFile->fileName();
-     qDebug() << "jal : " << noteFile->fileName();
-     qDebug() << "jal : " << synFile->fileName();
+    QString debug;
+    qDebug() << "jal textCursorPos: " << debug.setNum(textCursorPos);
+    qDebug() << "jal synCursorPos: " <<  debug.setNum(synCursorPos);
+    qDebug() << "jal noteCursorPos: " <<  debug.setNum(noteCursorPos);
 
 
+    qDebug() << "doc witdh : " << debug.setNum(textDoc->textWidth());
 
 
-    emit textAndNoteSignal(textFile, noteFile, synFile, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
+    emit textAndNoteSignal(textDoc, noteDoc, synDoc, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
 
     //    prjIsJustOpened = false;
 
@@ -424,8 +629,8 @@ void MainTree::prepareContextMenu()
 
 void MainTree::itemActivatedSlot(QTreeWidgetItem *treeItemPressed,int column)
 {
-qDebug() << "jal itemActivatedSlot";
-            openTextFile(treeItemPressed, column);
+    qDebug() << "jal itemActivatedSlot";
+    openTextFile(treeItemPressed, column);
 
 
     qDebug() << "item activated : " << m_itemEntered->text(0);
@@ -460,27 +665,33 @@ void MainTree::itemEnteredSlot(QTreeWidgetItem *treeItemPressed,int column)
     //    }
 }
 
+void MainTree::rename()
+{
+    // it's for context menu
+    rename(m_itemEntered);
+}
 
 void MainTree::rename(QTreeWidgetItem *item)
 {
+
 
     if(domElementForItem.value(item).tagName() == "separator")
         return;
 
     bool ok;
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+    QString text = QInputDialog::getText(this, tr("Rename sheet"),
                                          tr("Sheet name :"), QLineEdit::Normal,
                                          item->text(0), &ok);
     if (ok && !text.isEmpty()){
         item->setText(0, text);
 
 
-    //  m_itemPressed->setFlags(m_itemPressed->flags());
-    //editItem(m_itemPressed, 0);
-    //  m_itemPressed->setFlags(m_preFlagItemPressed->flags());
-    m_itemEntered = item;
-    emit nameChangedSignal(text, domElementForItem.value(item).attribute("number").toInt());
-}
+        //  m_itemPressed->setFlags(m_itemPressed->flags());
+        //editItem(m_itemPressed, 0);
+        //  m_itemPressed->setFlags(m_preFlagItemPressed->flags());
+        m_itemEntered = item;
+        emit nameChangedSignal(text, domElementForItem.value(item).attribute("number").toInt());
+    }
 }
 
 QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
@@ -489,49 +700,31 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
         item = m_itemEntered;
 
 
-
     // adding to Dom
     qDebug() << "Item worked with:" << item->text(0);
     QDomElement element = domElementForItem.value(item);
 
 
 
-
     QDomElement newElement = domDocument.createElement("nothing");
+
+    qDebug() << "newElement : " << newElement.tagName();
+
     element.parentNode().insertAfter(newElement, element);
-
-
-
-
-
-    //    QDomNode parentElement = element.parentNode();
-    //    QDomNode newNode = element.cloneNode(false);
-    //    parentElement.insertAfter(newNode, element);
-
-    //    QDomElement newElement = element.nextSiblingElement();
-
 
 
     modifyAttributes(element, newElement, "sibling");
 
-
-
-
-
-
-    //    qDebug() << "jal d ";
-
-
-
-    //    //adding to QHash
-
-    //    domElementForItem.insert(treeNewItem, newElement);
 
     this->write(deviceFile);
 
 
     buildTree();
 
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
 
     return domElementForItem.key(newElement);
 
@@ -544,14 +737,11 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
 {
     if(item == 0)
         item = m_itemEntered;
-    qDebug() << "jal a ";
 
     // adding to Dom
 
-    qDebug() << "jal b ";
-
     QDomElement element = domElementForItem.value(item);
-    if(element.tagName() == "scene")
+    if(element.tagName() == "scene" || element.tagName() == "separator")
         return 0;
 
 
@@ -569,6 +759,8 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
 
     newElement = modifyAttributes(element, newElement, "child");
 
+    // expand the parent in order to see the child :
+    itemExpandedSlot(item);
 
 
     this->write(deviceFile);
@@ -577,7 +769,10 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     buildTree();
 
 
-
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
 
 
 
@@ -695,6 +890,11 @@ QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
 
     buildTree();
 
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
+
     return domElementForItem.key(newElement);
 }
 
@@ -750,6 +950,10 @@ void MainTree::moveUp()
 
     buildTree();
 
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
 
     //    disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
     //               this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
@@ -818,7 +1022,10 @@ void MainTree::moveDown()
 
     buildTree();
 
-
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
 
 }
 
@@ -965,7 +1172,7 @@ void MainTree::delYesItem()
             }
 
 
-            emit(textAndNoteSignal(element.firstChild().toElement().attribute("number").toInt(),"close"));
+            emit textAndNoteSignal(element.firstChild().toElement().attribute("number").toInt(),"close");
             QFile textFil(devicePath + element.firstChild().toElement().attribute("textPath"));
             QFile noteFil(devicePath + element.firstChild().toElement().attribute("notePath"));
             QFile synFil(devicePath + element.firstChild().toElement().attribute("synPath"));
@@ -984,7 +1191,7 @@ void MainTree::delYesItem()
 
         }
 
-        emit(textAndNoteSignal(element.attribute("number").toInt(),"close"));
+        emit textAndNoteSignal(element.attribute("number").toInt(),"close");
         QFile textFile(devicePath + element.attribute("textPath"));
         QFile noteFile(devicePath + element.attribute("notePath"));
         QFile synFile(devicePath + element.attribute("synPath"));
@@ -1056,8 +1263,14 @@ void MainTree::delYesItem()
 
 
         buildTree();
+
+        if(outlinerLaunched){
+            outliner->cleanArea();
+            buildOutliner();
+        }
+
     }
-    break;
+        break;
     case QMessageBox::Cancel:
         return;
 
@@ -1094,18 +1307,22 @@ void MainTree::autoRenameChilds()
         QDomElement first = element.firstChildElement("chapter");
 
         first.setAttribute("name", chapterName + " " + numString.setNum(num,10));
+        emit nameChangedSignal(chapterName + " " + numString.setNum(num,10), first.attribute("number").toInt());
 
         while(!first.nextSiblingElement("chapter").isNull()){
 
             num = preNum + 1;
             newName = chapterName + " " + numString.setNum(num,10);
-            first.nextSiblingElement("chapter").setAttribute("name", newName);
+            QDomElement next = first.nextSiblingElement("chapter");
+            next.setAttribute("name", newName);
 
-            emit nameChangedSignal(newName, first.attribute("number").toInt());
-            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(first.nextSiblingElement("scene").attribute("number").toInt(),10);
+            emit nameChangedSignal(newName, next.attribute("number").toInt());
+            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(next.attribute("number").toInt(),10);
 
             preNum = num;
-            first = first.nextSiblingElement("chapter");
+            first = next;
+
+
 
         }
 
@@ -1116,18 +1333,20 @@ void MainTree::autoRenameChilds()
         QDomElement first = element.firstChildElement("scene");
 
         first.setAttribute("name", sceneName + " " + numString.setNum(num,10));
+        emit nameChangedSignal(sceneName + " " + numString.setNum(num,10), first.attribute("number").toInt());
 
         while(!first.nextSiblingElement("scene").isNull()){
 
             num = preNum + 1;
             newName = sceneName + " " + numString.setNum(num,10);
-            first.nextSiblingElement("scene").setAttribute("name", newName);
+            QDomElement next = first.nextSiblingElement("scene");
+            next.setAttribute("name", newName);
 
-            emit nameChangedSignal(newName, first.attribute("number").toInt());
-            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(first.nextSiblingElement("scene").attribute("number").toInt(),10);
+            emit nameChangedSignal(newName, next.attribute("number").toInt());
+            qDebug() << "renamingSlot : " << newName << " " << numString.setNum(next.attribute("number").toInt(),10);
 
             preNum = num;
-            first = first.nextSiblingElement("scene");
+            first = next;
 
 
         }
@@ -1203,7 +1422,7 @@ void MainTree::split()
         QDomElement domItem = domElementForItem.value(itemOfWork);
 
 
-
+        QFile *textFile = new QFile;
         textFile->open(QFile::ReadOnly | QFile::Text);
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTextStream textFileStream( textFile );
@@ -1496,7 +1715,7 @@ void MainTree::split()
 
 
     }
-    break;
+        break;
 
     case QMessageBox::Cancel:
         return;
@@ -1515,9 +1734,13 @@ void MainTree::split()
 
 void MainTree::addMulti()
 {
+    bool ok;
     int numSheets = QInputDialog::getInt(this, tr("Add X Children"),
                                          tr("Please enter a number :"),
-                                         1, 1, 100, 1);
+                                         1, 1, 100, 1, &ok);
+
+    if (!ok || numSheets == 0)
+        return;
 
     for(int i = 1; i <= numSheets; ++i){
         QTreeWidgetItem *item = m_itemEntered;
@@ -1540,7 +1763,10 @@ void MainTree::addMulti()
 
     buildTree();
 
-
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        buildOutliner();
+    }
 }
 
 
@@ -1570,20 +1796,20 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
 
 
 
-//        if(originalElement.tagName() == "book"){
-//            newElement.setTagName("separator");
-//            newElement.setAttribute("name", "----");//for config
+        //        if(originalElement.tagName() == "book"){
+        //            newElement.setTagName("separator");
+        //            newElement.setAttribute("name", "----");//for config
 
-//        }
-//        if(originalElement.tagName() == "chapter"){
-//            newElement.setTagName("separator");
-//            newElement.setAttribute("name", "----");//for config
+        //        }
+        //        if(originalElement.tagName() == "chapter"){
+        //            newElement.setTagName("separator");
+        //            newElement.setAttribute("name", "----");//for config
 
-//        }
+        //        }
 
         return newElement;
 
-}
+    }
 
 
 
@@ -1711,43 +1937,58 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     newElement.setAttribute("noteCursorPos", textChar.setNum(0, 10));
 
 
-    QFile textFile(devicePath + newElement.attribute("textPath"));
-    QFile noteFile(devicePath + newElement.attribute("notePath"));
-    QFile synFile(devicePath + newElement.attribute("synPath"));
+    QFile *textFile = new QFile(devicePath + newElement.attribute("textPath"));
+    QFile *noteFile = new QFile(devicePath + newElement.attribute("notePath"));
+    QFile *synFile = new QFile(devicePath + newElement.attribute("synPath"));
 
-    textFile.remove();
-    textFile.open(QFile::WriteOnly | QFile::Text);
-    QTextStream out(&textFile);
-    out << "";
-    textFile.close();
+    //    textFile.remove();
+    //    textFile.open(QFile::WriteOnly | QFile::Text);
+    //    QTextStream out(&textFile);
+    //    out << "";
+    //    textFile.close();
 
-    noteFile.remove();
-    noteFile.open(QFile::WriteOnly | QFile::Text);
-    QTextStream out_(&noteFile);
-    out_ << "";
-    noteFile.close();
+    QTextDocument *textDocument = new QTextDocument(this);
+    textDocument->toHtml();
+    QTextDocumentWriter textDocWriter(textFile, "HTML");
+    textDocWriter.write(textDocument);
+    textDocument->setObjectName("textDoc_" + newElement.attribute("number"));
+    fileForDoc.insert(textDocument, textFile);
 
-    synFile.remove();
-    synFile.open(QFile::WriteOnly | QFile::Text);
-    QTextStream out__(&synFile);
-    out__ << "";
-    synFile.close();
 
+
+    QTextDocument *noteDocument = new QTextDocument(this);
+    noteDocument->toHtml();
+    QTextDocumentWriter noteDocWriter(noteFile, "HTML");
+    noteDocWriter.write(noteDocument);
+    noteDocument->setObjectName("noteDoc_" + newElement.attribute("number"));
+    fileForDoc.insert(noteDocument, noteFile);
+
+
+    QTextDocument *synDocument = new QTextDocument(this);
+    synDocument->toHtml();
+    QTextDocumentWriter synDocWriter(synFile, "HTML");
+    synDocWriter.write(synDocument);
+    synDocument->setObjectName("synDoc_" + newElement.attribute("number"));
+    fileForDoc.insert(synDocument, synFile);
 
     if(level == "sibling"){
         newElement.setTagName(originalElement.tagName());
         if(originalElement.tagName() == "book"){
+            newElement.setTagName("book");
             newElement.setAttribute("name", "New Book"); //for config
 
         }
         if(originalElement.tagName() == "chapter"){
+            newElement.setTagName("chapter");
             newElement.setAttribute("name", "New Chapter");//for config
 
         }
-        if(originalElement.tagName() == "scene"){
+        if(originalElement.tagName() == "scene" || originalElement.tagName() == "separator"){
+            newElement.setTagName("scene");
             newElement.setAttribute("name", "New Scene");//for config
 
         }
+
     }
     if(level == "child"){
         if(originalElement.tagName() == "book"){
@@ -1837,6 +2078,13 @@ void MainTree::dropEvent(QDropEvent* event)
                 return;
         }
 
+        if(draggedElement.tagName() == "separator"){
+            if(targetElement.tagName() == "chapter")
+                targetNode.appendChild(draggedNode);
+            else
+                return;
+        }
+
         if(draggedElement.tagName() == "chapter"){
             if(targetElement.tagName() == "book")
                 targetNode.appendChild(draggedNode);
@@ -1857,6 +2105,11 @@ void MainTree::dropEvent(QDropEvent* event)
         this->write(deviceFile);
         buildTree();
 
+        if(outlinerLaunched){
+            outliner->cleanArea();
+            buildOutliner();
+        }
+
     }
     else if ( mParent == getQTreeWidgetItemDepth(targetItem) && dropIndicatorPosition() == QAbstractItemView::AboveItem )
     {
@@ -1872,7 +2125,9 @@ void MainTree::dropEvent(QDropEvent* event)
 
 
         //check
-        if(draggedElement.tagName() == targetElement.tagName())
+        if(draggedElement.tagName() == targetElement.tagName()
+                || (draggedElement.tagName() == "separator" && targetElement.tagName() == "scene")
+                || (draggedElement.tagName() == "scene" && targetElement.tagName() == "separator"))
             parentElement->insertBefore(draggedNode, targetNode);
         else
             return;
@@ -1884,6 +2139,12 @@ void MainTree::dropEvent(QDropEvent* event)
 
         this->write(deviceFile);
         buildTree();
+
+
+        if(outlinerLaunched){
+            outliner->cleanArea();
+            buildOutliner();
+        }
 
     }
     else if ( mParent == getQTreeWidgetItemDepth(targetItem) && dropIndicatorPosition() == QAbstractItemView::BelowItem)
@@ -1897,7 +2158,10 @@ void MainTree::dropEvent(QDropEvent* event)
 
         QDomNode *parentElement = new QDomNode(targetNode.parentNode());
 
-        if(draggedElement.tagName() == targetElement.tagName())
+        if(draggedElement.tagName() == targetElement.tagName()
+                || (draggedElement.tagName() == "separator" && targetElement.tagName() == "scene")
+                || (draggedElement.tagName() == "scene" && targetElement.tagName() == "separator")
+                )
             parentElement->insertAfter(draggedNode, targetNode);
         else
             return;
@@ -1912,6 +2176,10 @@ void MainTree::dropEvent(QDropEvent* event)
         this->write(deviceFile);
         buildTree();
 
+        if(outlinerLaunched){
+            outliner->cleanArea();
+            buildOutliner();
+        }
 
     }
     else
@@ -2036,13 +2304,145 @@ void MainTree::itemExpandedSlot(QTreeWidgetItem* item)
     element.setAttribute("folded", "no");
 
 }
+//-----------------------------------------------------------------------------------------
 
 void MainTree::saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number)
 {
     QDomElement element = domElementForNumber.value(number);
-           element.setAttribute("textCursorPos", textCursorPosition);
-           element.setAttribute("synCursorPos", synCursorPosition);
-           element.setAttribute("noteCursorPos", noteCursorPosition);
-           this->write(deviceFile);
+    element.setAttribute("textCursorPos", textCursorPosition);
+    element.setAttribute("synCursorPos", synCursorPosition);
+    element.setAttribute("noteCursorPos", noteCursorPosition);
+    //   this->write(deviceFile);
 
+}
+
+
+//-----------------------------------------------------------------------------------------
+
+
+bool MainTree::saveDoc(QTextDocument *doc)
+{
+    qDebug() << "saveDoc";
+
+    QFile *file = fileForDoc.value(doc);
+    qDebug() << "saveDoc : " << doc->objectName();
+    qDebug() << "saveDoc : " << file->fileName();
+    file->close();
+    QTextDocumentWriter docWriter(file, "HTML");
+    bool written = docWriter.write(doc);
+
+    qDebug() << "saveDoc finished";
+
+    return written;
+}
+
+
+//-----------------------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//------------Outliner-----------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+
+void MainTree::launchOutliner()
+{
+    if(outlinerLaunched){
+        outliner->cleanArea();
+        outliner->show();
+    }
+    else{
+        outliner = new Outline(0);
+    }
+
+    buildOutliner();
+
+
+    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
+    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
+
+    outlinerLaunched = true;
+}
+
+//-----------------------------------------------------------------------------------------
+
+
+
+void MainTree::buildOutliner()
+{
+    // build outline :
+
+    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
+    QDomElement element;
+
+    while(iterator->operator *() != 0){
+
+
+        element = domElementForItem.value(iterator->operator *());
+        if(element.tagName() != "separator")
+        {
+
+            QString num = element.attribute("number");
+            QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
+            QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+
+            outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
+
+
+
+
+
+        }
+        if(element.tagName() == "separator")
+        {
+            outliner->buildSeparator();
+        }
+
+        iterator->operator ++();
+
+    }
+    outliner->buildStretcher();
+
+}
+
+
+
+//-----------------------------------------------------------------------------------------
+
+void MainTree::newOutlineTitleSlot(QString newTitle,int number)
+{
+    QDomElement element = domElementForNumber.value(number);
+    element.setAttribute("name", newTitle);
+
+    this->write(deviceFile);
+
+
+    buildTree();
 }

@@ -5,7 +5,7 @@
 DigitalClock::DigitalClock(QWidget *parent) :
     QLabel(parent)
 {
-  //  setSegmentStyle(Filled);
+    //  setSegmentStyle(Filled);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
@@ -21,6 +21,6 @@ void DigitalClock::showTime()
     QString text = time.toString("hh:mm");
     if ((time.second() % 2) == 0)
         text[2] = ' ';
-   // display(text);
+    // display(text);
     setText(text);
 }

@@ -21,6 +21,10 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/pics/plume-creator.png"));
 
 
+    // style :
+
+    QApplication::setStyle(new QPlastiqueStyle);
+
     // splashscreen :
 
     QPixmap pixmap(":/pics/plume-creator-splash.png");
@@ -48,17 +52,17 @@ int main(int argc, char *argv[])
 
     // Translator (temporary)
 
-        QString translatorFileName = QLatin1String("qt_");
-        translatorFileName += QLocale::system().name();
-        QTranslator *translator = new QTranslator(&app);
-        if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-            app.installTranslator(translator);
+    QString translatorFileName = QLatin1String("qt_");
+    translatorFileName += QLocale::system().name();
+    QTranslator *translator = new QTranslator(&app);
+    if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+        app.installTranslator(translator);
 
-        QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
-        plumeTranslatorFileName += QLocale::system().name();
-        QTranslator *plumeTranslator = new QTranslator(&app);
-        plumeTranslator->load(plumeTranslatorFileName);
-        app.installTranslator(plumeTranslator);
+    QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
+    plumeTranslatorFileName += QLocale::system().name();
+    QTranslator *plumeTranslator = new QTranslator(&app);
+    plumeTranslator->load(plumeTranslatorFileName);
+    app.installTranslator(plumeTranslator);
 
 
     qDebug() << "locale : " << "plume-creator_" + QLocale::system().name();

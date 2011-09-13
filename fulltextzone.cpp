@@ -19,7 +19,7 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
     toHtml();
 
 
-setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 }
 
@@ -540,17 +540,17 @@ void FullTextZone::resizeEvent(QResizeEvent* event)
 
 void FullTextZone::loadSliderValue()
 {
-QSettings settings;
+    QSettings settings;
     int sliderValue = settings.value("FullTextArea/areaWidth", 600).toInt();
-   widthSlider->setSliderPosition(sliderValue);
-   widthSlider->setValue(sliderValue);
+    widthSlider->setSliderPosition(sliderValue);
+    widthSlider->setValue(sliderValue);
 
-QString debug;
-   qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
+    QString debug;
+    qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
 
 
-   sliderValueChanged(sliderValue);
-   connect(widthSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)), Qt::UniqueConnection);
+    sliderValueChanged(sliderValue);
+    connect(widthSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)), Qt::UniqueConnection);
 
 }
 
@@ -558,9 +558,9 @@ QString debug;
 
 void FullTextZone::sliderValueChanged(int value)
 {
-QSettings settings;
-   settings.setValue( "FullTextArea/areaWidth", value);
-setFixedWidth(value);
+    QSettings settings;
+    settings.setValue( "FullTextArea/areaWidth", value);
+    setFixedWidth(value);
 }
 //--------------------------------------------------------------------------------
 
@@ -619,7 +619,7 @@ void FullTextZone::applySynConfig()
     alwaysCenter = settings.value("FullSynArea/alwaysCenter", true).toBool();
     bool showScrollbar = settings.value("FullSynArea/showScrollbar", false).toBool();
     settings.endGroup();
- //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
+    //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
 
 
     centerCursor();
@@ -640,7 +640,7 @@ void FullTextZone::applyNoteConfig()
     alwaysCenter = settings.value("FullNoteArea/alwaysCenter", true).toBool();
     bool showScrollbar = settings.value("FullNoteArea/showScrollbar", false).toBool();
     settings.endGroup();
- //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
+    //   setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
 
 
     centerCursor();

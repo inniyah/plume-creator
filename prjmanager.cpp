@@ -88,7 +88,7 @@ void PrjManager::displayProjects(){
     settings.endGroup();
     QString string;
     qDebug() << "size : " << string.setNum(size,10);
-   // int size = settings.value("Manager/projects/size").toInt();
+    // int size = settings.value("Manager/projects/size").toInt();
 
 
 
@@ -154,7 +154,7 @@ void PrjManager::displayProjects(){
 
 
         connect(deleteButton, SIGNAL(openProjectManagerSignal()), this, SIGNAL(openPrjManagerSignal()));
-       //is used to update the manager display
+        //is used to update the manager display
 
         itemLayout->addWidget(nameLabel,0,0);
         itemLayout->addWidget(projNameLabel,0,1);
@@ -165,8 +165,8 @@ void PrjManager::displayProjects(){
         itemLayout->addWidget(lastModLabel,3,0);
         itemLayout->addWidget(projLastModifiedTime,3,1);
         itemLayout->addWidget(stretcher,0,2,3,2);
-        itemLayout->addWidget(openButton,0,3,1,3);
-        itemLayout->addWidget(deleteButton,2,3,3,3);
+        itemLayout->addWidget(openButton,0,3,1,3,Qt::AlignRight);
+        itemLayout->addWidget(deleteButton,2,3,3,3,Qt::AlignRight);
 
         stackItem->setLayout(itemLayout);
 
@@ -192,7 +192,7 @@ void PrjManager::displayProjects(){
     QLabel *newPrjLabel = new QLabel(tr("<b>You can also create a new project :</b>"));
     newPrjLabel->setAlignment(Qt::AlignCenter);
     QPushButton *newPrjButton = new QPushButton(tr("Add project"));
-  //  connect(newPrjButton,SIGNAL(clicked()), this, SIGNAL(newPrjSignal()));
+    //  connect(newPrjButton,SIGNAL(clicked()), this, SIGNAL(newPrjSignal()));
     connect(newPrjButton,SIGNAL(clicked()), this, SLOT(newPrj()));
 
     newPrjStackLayout->addWidget(newPrjLabel);
@@ -228,6 +228,7 @@ void PrjManager::newPrj()
 DeletePrjButton::DeletePrjButton(QWidget *parent) :
     QPushButton(parent)
 {
+    setFixedSize(120, 30);
     setText(tr("&Delete"));
     connect(this,SIGNAL(clicked()),this,SLOT(deleteProjectQuestion()));
 
@@ -272,6 +273,8 @@ void DeletePrjButton::deleteProjectQuestion()
 
 void DeletePrjButton::delProject()
 {
+
+
     QMultiMap<int, QString> projName, projPath, projWorkPath, projLastModifiedTime, projCreationDate;
 
 
@@ -303,7 +306,7 @@ void DeletePrjButton::delProject()
     projCreationDate.remove(del_numPrj);
 
 
-//raise of 1 the next rows in the list
+    //raise of 1 the next rows in the list
 
     for(int i = del_numPrj; i < size; ++i){
 
@@ -396,6 +399,7 @@ bool DeletePrjButton::removeDir(const QString &dirName)
 OpenPrjButton::OpenPrjButton(QWidget *parent) :
     QPushButton(parent)
 {
+    setFixedSize(120, 30);
     setText(tr("&Open"));
     connect(this,SIGNAL(clicked()),this,SLOT(opProject()));
 }
@@ -404,7 +408,7 @@ OpenPrjButton::OpenPrjButton(QWidget *parent) :
 
 void OpenPrjButton::openProjectFile(QFile *device)
 {
-prjFile = device;
+    prjFile = device;
 
 }
 
@@ -412,14 +416,14 @@ prjFile = device;
 
 void OpenPrjButton::openProjectSettingNumber(int prjNumber)
 {
-  projectNumber = prjNumber;
+    projectNumber = prjNumber;
 }
 
 //-----------------------------------------------------------------------------------
 
 void OpenPrjButton::opProject()
 {
-emit openProjectSignal(prjFile);
-emit openProjectNumberSignal(projectNumber);
+    emit openProjectSignal(prjFile);
+    emit openProjectNumberSignal(projectNumber);
 }
 

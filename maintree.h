@@ -25,6 +25,8 @@
 #include <QtGui>
 #include <QDomDocument>
 
+#include <outline.h>
+
 class MainTree : public QTreeWidget
 {
     Q_OBJECT
@@ -37,21 +39,25 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-//    void keyPressEvent(QKeyEvent *event);
+    //    void keyPressEvent(QKeyEvent *event);
 
     //drag drop :
-void dropEvent(QDropEvent* event);
-void mousePressEvent(QMouseEvent* event);
-void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void dragEnterEvent(QDragEnterEvent *event);
 
 signals:
-    void textAndNoteSignal(QFile *textFile,QFile *noteFile,QFile *synFile,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
+    void textAndNoteSignal(QTextDocument *textDoc, QTextDocument *noteDoc, QTextDocument *synDoc,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
     void textAndNoteSignal(int number, QString action);
     void nameChangedSignal(QString newName, int number);
 
 public slots:
 
-void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
+    void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
+    bool saveDoc(QTextDocument *doc);
+
+    // Outline :
+    void launchOutliner();
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);
@@ -60,10 +66,11 @@ private slots:
     void itemEnteredSlot(QTreeWidgetItem *treeItemPressed,int column);
     void itemActivatedSlot(QTreeWidgetItem *treeItemPressed,int column);
 
-void itemCollapsedSlot(QTreeWidgetItem* item);
-void itemExpandedSlot(QTreeWidgetItem* item);
+    void itemCollapsedSlot(QTreeWidgetItem* item);
+    void itemExpandedSlot(QTreeWidgetItem* item);
 
     void prepareContextMenu();
+    void rename();
     void rename(QTreeWidgetItem *item);
     QTreeWidgetItem * addItemNext(QTreeWidgetItem * item = 0);
     QTreeWidgetItem * addChild(QTreeWidgetItem * item = 0);
@@ -76,6 +83,10 @@ void itemExpandedSlot(QTreeWidgetItem* item);
     void addMulti();
 
     void buildTree();
+
+    void buildOutliner();
+    void newOutlineTitleSlot(QString newTitle,int number);
+
 
 private:
     void parseFolderElement(const QDomElement &element,
@@ -93,7 +104,7 @@ private:
     QIcon folderIcon;
     QIcon sceneIcon;
 
-QList<int> freeNumList;
+    QList<int> freeNumList;
 
     QTreeWidgetItem *m_itemEntered,
     *m_preItemEntered;
@@ -113,29 +124,42 @@ QList<int> freeNumList;
 
     QString devicePath;
     QFile *deviceFile;
-    QFile *textFile;
-    QFile *noteFile;
-    QFile *synFile;
-QString name;
+
+    QString name;
 
     bool prjIsJustOpened;
     bool treeOpened;
 
     QDomElement lastSiblingElement;
-QString level_;
-QDomElement siblingElement_;
-QDomElement preElement;
+    QString level_;
+    QDomElement siblingElement_;
+    QDomElement preElement;
 
 
-QTreeWidgetItem *itemOfWork;
+    QTreeWidgetItem *itemOfWork;
 
-int number;
+    int number;
 
 
-//drag drop :
-int getQTreeWidgetItemDepth(QTreeWidgetItem*item);
-int mParent;
-QTreeWidgetItem *draggedItem, *targetItem;
+    //drag drop :
+    int getQTreeWidgetItemDepth(QTreeWidgetItem*item);
+    int mParent;
+    QTreeWidgetItem *draggedItem, *targetItem;
+
+
+
+
+
+
+    QHash<QTextDocument *, QFile *> fileForDoc;
+    QHash<QTextDocument *, QFile *>::iterator u;
+
+
+    //Outline :
+
+    Outline *outliner;
+    bool outlinerLaunched;
+
 };
 
 #endif // MAINTREE_H

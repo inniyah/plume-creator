@@ -5,7 +5,7 @@
 
 
 
-TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
+TextTab::TextTab(QWidget *parent) :
     QWidget(parent)
 {
     textDocument = new QTextDocument(this);
@@ -34,7 +34,7 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
     //temporary config
 
 
- //   textZone->setMinimumWidth(600);
+    //   textZone->setMinimumWidth(600);
 
 
     //    QFont synLiberationFont("Liberation Serif", 13);
@@ -62,31 +62,14 @@ TextTab::TextTab(QFile *textFile, QString name, QWidget *parent) :
 
 //---------------------------------------------------------------------------------------
 
-bool TextTab::openText(QFile *textFile, QString name)
+bool TextTab::openText(QTextDocument *doc)
 {
 
-    stackName = name;
+    //  stackName = name;
 
-
-
-
-
-
-
-    textFile->open(QFile::ReadOnly | QFile::Text);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    QTextStream textFileStream( textFile );
-    textDocument->setHtml(textFileStream.readAll());
-    //   textZone->setText( textFileStream.readAll() );
-    QApplication::restoreOverrideCursor();
-
-
-    textFile->close();
-
+    textDocument = doc;
     textZone->setDocument(textDocument);
-
-
-
+    textZone->document()->adjustSize();
 
     //for wordcount :
     tabWordCount = new WordCount(textDocument, this);
@@ -95,7 +78,9 @@ bool TextTab::openText(QFile *textFile, QString name)
     connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
     tabWordCount->updateAll();
 
-
+    QString debug;
+    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
+    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
 
     applyConfig();
 
@@ -106,44 +91,24 @@ bool TextTab::openText(QFile *textFile, QString name)
 //---------------------------------------------------------------------------------------
 
 
-bool TextTab::saveText(QFile *textFile, QString name)
-{
+//bool TextTab::saveText(QFile *textFile, QString name)
+//{
 
-    if(name != stackName)
-        return false;
-
-
-
-    //    textFile->setFileName(textFile->fileName());
-    //    textFile->open(QFile::WriteOnly | QFile::Text);
-
-    //    if(textFile->isWritable())
-    //    {
-
-    //        QTextStream stream(textFile);
-    //        stream << textZone->toHtml();
-    //        stream.flush();
-    //        textFile->close();
+//    if(name != stackName)
+//        return false;
 
 
-    //        return true;
-    //    }
-    //    else{
-    //        qDebug() << textFile->fileName() << " isn't Writtable.";
 
-    //        return false;
-    //    }
-
-    QTextDocumentWriter docWriter(textFile, "HTML");
-    bool written = docWriter.write(textDocument);
+//    QTextDocumentWriter docWriter(textFile, "HTML");
+//    bool written = docWriter.write(textDocument);
 
 
 
 
-    return written;
+//    return written;
 
 
-}
+//}
 
 
 
@@ -171,8 +136,8 @@ void TextTab::wordCountUpdated(int wordCount)
 
 void TextTab::blockCountUpdated(int blockCount)
 {
-//    QString debug;
-//    qDebug() << "blockCount : " << debug.setNum(blockCount,10);
+    //    QString debug;
+    //    qDebug() << "blockCount : " << debug.setNum(blockCount,10);
 
 
     emit blockCountSignal(blockCount);
@@ -189,6 +154,7 @@ void TextTab::updateWordCounts()
 void TextTab::changeWidthSlot(int width)
 {
     textZone->setFixedWidth(width);
+    textZone->document()->setTextWidth(textZone->width() - 20);
 }
 
 void TextTab::changeTextFontSlot(QFont font)
@@ -231,8 +197,10 @@ QTextCharFormat TextTab::tabChangedSlot()
 
 void TextTab::updateTextZone()
 {
-    textZone->setFixedWidth(textZone->width()+1);
-    textZone->setFixedWidth(textZone->width()-1);
+
+    textZone->document()->setTextWidth(textZone->width() - 20);
+
+    qDebug() << "updateTextZone";
 }
 
 
@@ -256,21 +224,21 @@ void TextTab::applyConfig()
     QTextCursor *tCursor = new QTextCursor(document());
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
     tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-  tCursor->mergeBlockFormat(blockFormat);
+    tCursor->mergeBlockFormat(blockFormat);
 
 
 
 
-  //apply default font in empty documents :
+    //apply default font in empty documents :
 
-      if(document()->isEmpty()){
+    if(document()->isEmpty()){
 
-QFont font;
-font.setFamily(fontFamily);
-font.setPointSize(textHeight);
-document()->setDefaultFont(font);
+        QFont font;
+        font.setFamily(fontFamily);
+        font.setPointSize(textHeight);
+        document()->setDefaultFont(font);
 
-      }
+    }
 
 
 }

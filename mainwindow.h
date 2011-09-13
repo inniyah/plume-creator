@@ -30,6 +30,7 @@
 #include "notezone.h"
 #include "texttab.h"
 #include "fullscreeneditor.h"
+#include "outline.h"
 
 class MainWindow : public QMainWindow
 {
@@ -56,7 +57,7 @@ public slots:
     void openProjectSlot(QFile *projectFile);
     void closeProjectSlot();
 
-    void textSlot(QFile *textFile = 0, QFile *noteFile = 0, QFile *synFile = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
+    void textSlot(QTextDocument *textDoc = 0, QTextDocument *noteDoc = 0, QTextDocument *synDoc = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
     void secondTextSlot(int number = 0, QString action = "nothing");
 
 private slots:
@@ -67,13 +68,14 @@ private slots:
     void tabRenamingSlot(QString newName, int tabNum);
     void setProjectNumberSlot(int prjNumber);
     void editFullscreen();
+    void launchOutliner();
 
     //config :
     void applyConfig();
     void configTimer();
 
 
-void reconnectAFterTabClose();
+    void reconnectAFterTabClose();
 
 private:
 
@@ -96,9 +98,9 @@ private:
 
     QTabWidget *tabWidget;
     void setTextTabConnections();
-    QList<QFile *> *textFileList;
-    QList<QFile *> *noteFileList;
-    QList<QFile *> *synFileList;
+    QList<QTextDocument *> *textDocList;
+    QList<QTextDocument *> *noteDocList;
+    QList<QTextDocument *> *synDocList;
     QStringList *nameList;
     QList<TextTab *> *textWidgetList;
     QList<NoteZone *> *noteWidgetList;
@@ -121,7 +123,6 @@ private:
     void setEditMenuConnections();
 
     FullscreenEditor *fullEditor;
-
 };
 
 #endif // MAINWINDOW_H

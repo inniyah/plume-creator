@@ -10,8 +10,8 @@ FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *p
 {
 
     FullTextZone *fullTextEdit = new FullTextZone(doc, this);
-fullTextEdit->applyTextConfig();
-fullTextEdit->setFrameShape(QFrame::NoFrame);
+    fullTextEdit->applyTextConfig();
+    fullTextEdit->setFrameShape(QFrame::NoFrame);
 
     QHBoxLayout *baseLayout= new QHBoxLayout;
     baseLayout->setMargin(0);
@@ -36,15 +36,15 @@ fullTextEdit->setFrameShape(QFrame::NoFrame);
 
     QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
     connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
-showSynButton->setFixedSize(50,20);
+    showSynButton->setFixedSize(50,20);
 
-QPushButton *showNoteButton = new QPushButton(tr("Note"), this);
-connect(showNoteButton, SIGNAL(clicked()),this,SLOT(showNote()));
-showNoteButton->setFixedSize(50,20);
+    QPushButton *showNoteButton = new QPushButton(tr("Note"), this);
+    connect(showNoteButton, SIGNAL(clicked()),this,SLOT(showNote()));
+    showNoteButton->setFixedSize(50,20);
 
     QPushButton *exitFullscreenButton = new QPushButton(tr("Exit"), this);
     connect(exitFullscreenButton, SIGNAL(clicked()),this,SLOT(close()));
-exitFullscreenButton->setFixedSize(50,20);
+    exitFullscreenButton->setFixedSize(50,20);
 
 
 
@@ -55,8 +55,8 @@ exitFullscreenButton->setFixedSize(50,20);
     statsLayout->addWidget(timerLabel);
     statsLayout->addWidget(clock);
     statsLayout->addWidget(showSynButton);
-                statsLayout->addWidget(showNoteButton);
-                    statsLayout->addWidget(exitFullscreenButton);
+    statsLayout->addWidget(showNoteButton);
+    statsLayout->addWidget(exitFullscreenButton);
 
 
 
@@ -76,7 +76,7 @@ exitFullscreenButton->setFixedSize(50,20);
 
     applyConfig();
 
-showFullScreen();
+    showFullScreen();
 
     // get screen width for fullscreen text width option :
     fullTextEdit->setXMax(QApplication::desktop()->screenGeometry().width() - 50);
@@ -108,11 +108,11 @@ void FullscreenEditor::setTimer(QString text)
 
 void FullscreenEditor::closeEvent(QCloseEvent* event)
 {
-synWidget->close();
-noteWidget->close();
+    synWidget->close();
+    noteWidget->close();
 
     emit closeSignal();
-     event->accept();
+    event->accept();
 
 
 }
@@ -176,8 +176,8 @@ void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
 
     fullSynEdit->ensureCursorVisible();
 
-//    synDoc = doc;
-//    synCursorPos = cursorPos;
+    //    synDoc = doc;
+    //    synCursorPos = cursorPos;
 
 }
 
@@ -202,13 +202,13 @@ void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
         fullNoteEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
     fullNoteEdit->ensureCursorVisible();
-//    noteDoc = doc;
-//    noteCursorPos = cursorPos;
+    //    noteDoc = doc;
+    //    noteCursorPos = cursorPos;
 }
 
 void FullscreenEditor::showSyn()
 {
-synWidget->show();
+    synWidget->show();
 }
 
 void FullscreenEditor::showNote()

@@ -52,11 +52,11 @@ signals:
 
     void openProjectSignal(QFile *device);
     void closeProjectSignal();
-void saveProjectSignal();
+    void saveProjectSignal();
 
-void openProjectNumberSignal(int prjNumber);
+    void openProjectNumberSignal(int prjNumber);
 
-void applyConfigSignal();
+    void applyConfigSignal();
 
 public slots:
 
@@ -69,7 +69,7 @@ private slots:
 
     void newProject();
     void projectManager();
- //   void open();
+    //   void open();
     void displayConfig();
     void exporter();
     void print();
@@ -86,7 +86,7 @@ private:
 
     QToolButton *newProjectButton,
     *projectManagerButton,
- //   *openButton,
+    //   *openButton,
     *displayConfigButton,
     *closeProjectButton,
     *exitButton,

@@ -36,7 +36,7 @@ public:
 
 signals:
 
-//    void charCountSignal(int charCount);
+    //    void charCountSignal(int charCount);
     void wordCountSignal(int wordCount);
     void blockCountSignal(int blockCount);
 public slots:
@@ -44,7 +44,7 @@ public slots:
 private slots:
 
 
-//    void updateCharCount(/*int position,int charsRemoved,int charsAdded*/);
+    //    void updateCharCount(/*int position,int charsRemoved,int charsAdded*/);
     void updateWordCount();
     void updateCursorPosition(QTextCursor textCursor);
     void updateBlockCount(int blockCount);
@@ -55,8 +55,8 @@ private:
     QTextDocument *document;
     QStringList wordsList;
 
-//    int finalCharCount;
-//    int preCharCount;
+    //    int finalCharCount;
+    //    int preCharCount;
 
 
     int finalWordCount;

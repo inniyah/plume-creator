@@ -18,6 +18,7 @@ NewProjectWizard::NewProjectWizard(QWidget *parent)
 void NewProjectWizard::accept()
 
 {
+    QString creationDate(QDateTime::currentDateTime().toString());
 
     QString projectNameFinish = field("projectNameField").toString();
     QString projectDirectoryFinish = field("projectDirectoryField").toString().toUtf8();
@@ -35,41 +36,43 @@ void NewProjectWizard::accept()
     path.mkdir("objects");
     path.mkdir("text");
 
-QStringList firstFiles;
-firstFiles << "/text/T1.html"
-           << "/text/N1.html"
-           << "/text/S1.html"
-           << "/text/T2.html"
-           << "/text/N2.html"
-           << "/text/S2.html"
-           << "/text/T3.html"
-           << "/text/N3.html"
-           << "/text/S3.html" ;
+    QStringList firstFiles;
+    firstFiles << "/text/T1.html"
+               << "/text/N1.html"
+               << "/text/S1.html"
+               << "/text/T2.html"
+               << "/text/N2.html"
+               << "/text/S2.html"
+               << "/text/T3.html"
+               << "/text/N3.html"
+               << "/text/S3.html" ;
 
-              for (int i = 0; i < firstFiles.size(); ++i){
-    QFile firstFile(path.path() + firstFiles.at(i).toLocal8Bit().constData());
-firstFile.open(QFile::WriteOnly | QFile::Text);
-QTextStream out(&firstFile);
-out << "";
-firstFile.close();
-//qDebug() << "File written :" << firstFile.fileName();
-}
+    for (int i = 0; i < firstFiles.size(); ++i){
+        QFile firstFile(path.path() + firstFiles.at(i).toLocal8Bit().constData());
+        firstFile.open(QFile::WriteOnly | QFile::Text);
+        QTextStream out(&firstFile);
+        out << "";
+        firstFile.close();
+        //qDebug() << "File written :" << firstFile.fileName();
+    }
 
 
     QDomDocument domDoc("plume");
 
 
-//    QDomNode xmlNode = domDoc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
-//    domDoc.insertBefore(xmlNode, domDoc.firstChild());
+    //    QDomNode xmlNode = domDoc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
+    //    domDoc.insertBefore(xmlNode, domDoc.firstChild());
 
 
     QFile file(field("projectNameField").toString() + ".plume");
     file.open(QIODevice::ReadWrite | QIODevice::Text);
 
     QDomElement root = domDoc.createElement("root");
+    root.setTagName("plume");
+    root.setAttribute("projectName", projectNameFinish);
+    root.setAttribute("creationDate", creationDate);
     root.setAttribute("theme","");
     root.setAttribute("version","0.2");
-    root.setTagName("plume");
     domDoc.appendChild(root);
 
     QDomElement bookElem = domDoc.createElement("book");
@@ -80,9 +83,9 @@ firstFile.close();
     bookElem.setAttribute("synPath","/text/S1.html");
     bookElem.setAttribute("name", projectNameFinish);
     bookElem.setAttribute("number", "1");
-     bookElem.setAttribute("textCursorPos", "0");
-     bookElem.setAttribute("synCursorPos", "0");
-     bookElem.setAttribute("noteCursorPos", "0");
+    bookElem.setAttribute("textCursorPos", "0");
+    bookElem.setAttribute("synCursorPos", "0");
+    bookElem.setAttribute("noteCursorPos", "0");
 
     root.appendChild(bookElem);
 
@@ -147,11 +150,11 @@ firstFile.close();
     settings.setValue("path", projectDirectoryFinish);
     settings.setValue("workPath", workingPath);
     settings.setValue("lastModified", QString(tr("not modified")));
-    settings.setValue("creationDate", QDateTime::currentDateTime().toString());
+    settings.setValue("creationDate", creationDate);
 
     settings.endArray();
 
-// future : place the new project to top ?
+    // future : place the new project to top ?
 
     QDialog::accept();
 

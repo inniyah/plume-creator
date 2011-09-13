@@ -17,11 +17,11 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
     //Character Count:
 
 
-//    preCharCount = docText.length();
+    //    preCharCount = docText.length();
 
-//    emit charCountSignal(preCharCount);
+    //    emit charCountSignal(preCharCount);
 
-//    connect(doc,SIGNAL(contentsChanged()), this, SLOT(updateCharCount()));
+    //    connect(doc,SIGNAL(contentsChanged()), this, SLOT(updateCharCount()));
 
 
 
@@ -45,7 +45,7 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
     finalWordCount = wordsList.size();
 
- //   emit wordCountSignal(finalWordCount);
+    //   emit wordCountSignal(finalWordCount);
 
 
 
@@ -54,21 +54,21 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
     QString blockText;
 
     QTextCursor textCursor(doc);
-          textCursor.setPosition(0);
+    textCursor.setPosition(0);
     blockNum = textCursor.blockNumber();
 
     blockText = document->findBlockByNumber(blockNum).text();
     blockWordsList = blockText.split(" ", QString::SkipEmptyParts);
 
-preWordCount = finalWordCount - blockWordsList.size();
+    preWordCount = finalWordCount - blockWordsList.size();
 
-preBlockNum = blockNum;
+    preBlockNum = blockNum;
 
-//    QString debug;
-//     qDebug() << "first finalWordCount : " << debug.setNum(finalWordCount,10);
-//    qDebug() << "pre wordCount :" << debug.setNum(preWordCount, 10);
-//    qDebug() << "textCursor position :" << debug.setNum(textCursor.position(), 10);
-//    qDebug() << "constructor blockNumber : " << debug.setNum(blockNum,10);
+    //    QString debug;
+    //     qDebug() << "first finalWordCount : " << debug.setNum(finalWordCount,10);
+    //    qDebug() << "pre wordCount :" << debug.setNum(preWordCount, 10);
+    //    qDebug() << "textCursor position :" << debug.setNum(textCursor.position(), 10);
+    //    qDebug() << "constructor blockNumber : " << debug.setNum(blockNum,10);
 
 
 
@@ -89,16 +89,16 @@ preBlockNum = blockNum;
 
     //Paragraph Count:
 
-preBlockCount = doc->blockCount();
+    preBlockCount = doc->blockCount();
 
- //   emit blockCountSignal(preBlockCount);
+    //   emit blockCountSignal(preBlockCount);
 
     connect(doc,SIGNAL(blockCountChanged(int)), this, SLOT(updateBlockCount(int)));
 
 
 
 
-this->updateAll();
+    this->updateAll();
 
 
 }
@@ -109,11 +109,11 @@ this->updateAll();
 void WordCount::updateAll()
 {
 
-   //     emit charCountSignal(preCharCount);
+    //     emit charCountSignal(preCharCount);
 
-emit wordCountSignal(finalWordCount);
+    emit wordCountSignal(finalWordCount);
 
-emit blockCountSignal(preBlockCount);
+    emit blockCountSignal(preBlockCount);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
@@ -159,14 +159,14 @@ void WordCount::updateWordCount()
 
         preWordCount = finalWordCount - wordsList.size();;
 
-finalWordCount = preWordCount + wordsList.size();
+        finalWordCount = preWordCount + wordsList.size();
 
         emit wordCountSignal(finalWordCount);
 
 
         preBlockNum = blockNum;
 
-}
+    }
 
 }
 
@@ -176,8 +176,8 @@ void WordCount::updateCursorPosition(QTextCursor textCursor)
     blockNum = textCursor.blockNumber();
 
 
-//    QString debug;
-//     qDebug() << "new cursor position : " << debug.setNum(blockNum,10);
+    //    QString debug;
+    //     qDebug() << "new cursor position : " << debug.setNum(blockNum,10);
 
 
 
@@ -190,22 +190,22 @@ void WordCount::updateBlockCount(int blockCount)
 
     //new block
 
-        QString docText = document->toPlainText();
-        QStringList wordsList;
+    QString docText = document->toPlainText();
+    QStringList wordsList;
 
-        wordsList = docText.split(" ", QString::SkipEmptyParts);
+    wordsList = docText.split(" ", QString::SkipEmptyParts);
 
-        finalWordCount = wordsList.size();
-
-
-        emit wordCountSignal(finalWordCount);
+    finalWordCount = wordsList.size();
 
 
-        preBlockNum =  blockNum + 1;
+    emit wordCountSignal(finalWordCount);
 
 
-        finalBlockCount = blockCount;
-        emit blockCountSignal(blockCount);
+    preBlockNum =  blockNum + 1;
+
+
+    finalBlockCount = blockCount;
+    emit blockCountSignal(blockCount);
 
 
 }
