@@ -126,6 +126,19 @@ void TextTab::wordCountUpdated(int wordCount)
     emit wordCountSignal(wordCount);
 
 
+
+    if(wordCount == 0){
+        QSettings settings;
+        settings.beginGroup( "Settings" );
+        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+        settings.endGroup();
+
+        QFont font;
+        font.setFamily(fontFamily);
+        changeTextFontSlot(font);
+        changeTextHeightSlot(textHeight);
+    }
 }
 
 //void TextTab::charCountUpdated(int charCount)
@@ -232,12 +245,14 @@ void TextTab::applyConfig()
     //apply default font in empty documents :
 
     if(document()->isEmpty()){
-
         QFont font;
         font.setFamily(fontFamily);
         font.setPointSize(textHeight);
         document()->setDefaultFont(font);
+        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
 
+        changeTextFontSlot(font);
+        changeTextHeightSlot(textHeight);
     }
 
 

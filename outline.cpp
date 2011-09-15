@@ -11,8 +11,7 @@ Outline::Outline(QWidget *parent) :
 
     setMinimumSize(600, 600);
     setWindowTitle(tr("Outliner"));
-    setWindowFlags(Qt::Window);
-
+    setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
 
 
     areaWidget = new QWidget;
@@ -57,10 +56,94 @@ Outline::Outline(QWidget *parent) :
     connect(expandAllTextsAct, SIGNAL(toggled(bool)), this, SIGNAL(expandAllTextsSignal(bool)));
 
 
+    // sizes menu :
+
+    QWidgetAction *listSliderAct = new QWidgetAction(this);
+    QGroupBox *listSliderBox = new QGroupBox(tr("Attendances width"), this);
+    QVBoxLayout *listSliderLayout = new QVBoxLayout(listSliderBox);
+    listSlider = new QSlider(Qt::Horizontal, this);
+    listSlider->setRange(200, 600);
+    listSliderLayout->addWidget(listSlider);
+    listSliderBox->setLayout(listSliderLayout);
+    listSliderAct->setDefaultWidget(listSliderBox);
+
+    QWidgetAction *synSliderAct = new QWidgetAction(this);
+    QGroupBox *synSliderBox = new QGroupBox(tr("Synopsies width"), this);
+    QVBoxLayout *synSliderLayout = new QVBoxLayout(synSliderBox);
+    synSlider = new QSlider(Qt::Horizontal, this);
+    synSlider->setRange(200, 600);
+    synSliderLayout->addWidget(synSlider);
+    listSliderBox->setLayout(synSliderLayout);
+    synSliderAct->setDefaultWidget(synSliderBox);
+
+    QWidgetAction *noteSliderAct = new QWidgetAction(this);
+    QGroupBox *noteSliderBox = new QGroupBox(tr("Notes width"), this);
+    QVBoxLayout *noteSliderLayout = new QVBoxLayout(noteSliderBox);
+    noteSlider = new QSlider(Qt::Horizontal, this);
+    noteSlider->setRange(200, 600);
+    noteSliderLayout->addWidget(noteSlider);
+    noteSliderBox->setLayout(noteSliderLayout);
+    noteSliderAct->setDefaultWidget(noteSliderBox);
+
+    QMenu *sizeMenu = new QMenu(this);
+    sizeMenu->addAction(listSliderAct);
+    sizeMenu->addAction(synSliderAct);
+    sizeMenu->addAction(noteSliderAct);
+
+
+    QToolButton *sizeMenuButton = new QToolButton(this);
+    sizeMenuButton->setText(tr("Size"));
+    sizeMenuButton->setPopupMode(QToolButton::InstantPopup);
+    sizeMenuButton->setMenu(sizeMenu);
+
+
+
+    // fonts menu :
+
+    QWidgetAction *synFontAct = new QWidgetAction(this);
+    QGroupBox *synFontBox = new QGroupBox(tr("Synopsies font"), this);
+    QGridLayout *synFontLayout = new QGridLayout(synFontBox);
+    synFontCombo = new QFontComboBox(this);
+    synTextHeightSpin = new QSpinBox;
+    synTextHeightSpin->setRange(6,30);
+    synTextHeightSpin->setValue(12);
+    synFontLayout->addWidget(synFontCombo, 0,0);
+    synFontLayout->addWidget(synTextHeightSpin, 0,1);
+    synFontBox->setLayout(synFontLayout);
+    synFontAct->setDefaultWidget(synFontBox);
+
+    QWidgetAction *noteFontAct = new QWidgetAction(this);
+    QGroupBox *noteFontBox = new QGroupBox(tr("Notes font"), this);
+    QGridLayout *noteFontLayout = new QGridLayout(noteFontBox);
+    noteFontCombo = new QFontComboBox(this);
+    noteTextHeightSpin = new QSpinBox;
+    noteTextHeightSpin->setRange(6,30);
+    noteTextHeightSpin->setValue(12);
+    noteFontLayout->addWidget(noteFontCombo, 0,0);
+    noteFontLayout->addWidget(noteTextHeightSpin, 0,1);
+    noteFontBox->setLayout(noteFontLayout);
+    noteFontAct->setDefaultWidget(noteFontBox);
+
+    QMenu *fontMenu = new QMenu(this);
+    fontMenu->addAction(synFontAct);
+    fontMenu->addAction(noteFontAct);
+
+
+    QToolButton *fontsMenuButton = new QToolButton(this);
+    fontsMenuButton->setText(tr("Fonts"));
+    fontsMenuButton->setPopupMode(QToolButton::InstantPopup);
+    fontsMenuButton->setMenu(fontMenu);
+
+
+    // toolbar :
+
     QToolBar *toolBar = new QToolBar("Outliner Tools",this);
     toolBar->addAction(showListsAct);
     toolBar->addAction(showNotesAct);
     toolBar->addAction(expandAllTextsAct);
+
+    toolBar->addWidget(sizeMenuButton);
+    toolBar->addWidget(fontsMenuButton);
 
     layout->addWidget(toolBar);
     layout->addWidget(area);
@@ -94,6 +177,15 @@ void Outline::buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,
     connect(this,SIGNAL(expandAllTextsSignal(bool)), item, SLOT(expandTexts(bool)));
     connect(item,SIGNAL(resizingSignal()), this, SLOT(resizingSlot()));
     connect(this,SIGNAL(updateSizeSignal()), item, SLOT(updateSizeSlot()));
+    connect(listSlider,SIGNAL(valueChanged(int)), item, SLOT(changeListWidth(int)));
+    connect(synSlider,SIGNAL(valueChanged(int)), item, SLOT(changeSynWidth(int)));
+    connect(noteSlider,SIGNAL(valueChanged(int)), item, SLOT(changeNoteWidth(int)));
+    connect(synFontCombo, SIGNAL(currentFontChanged(QFont)), item, SLOT(changeSynFont(QFont)));
+    connect(synTextHeightSpin, SIGNAL(valueChanged(int)), item, SLOT(changeSynTextHeight(int)));
+    connect(noteFontCombo, SIGNAL(currentFontChanged(QFont)), item, SLOT(changeNoteFont(QFont)));
+    connect(noteTextHeightSpin, SIGNAL(valueChanged(int)), item, SLOT(changeNoteTextHeight(int)));
+    connect(this, SIGNAL(connectUpdateTextsSignal()), item, SLOT(connectUpdateTextsSlot()));
+    connect(this, SIGNAL(disconnectUpdateTextsSignal()), item, SLOT(disconnectUpdateTextsSlot()));
 
     connect(item,SIGNAL(newOutlineTitleSignal(QString,int)), this, SIGNAL(newOutlineTitleSignal(QString,int)));
 
@@ -130,7 +222,6 @@ void Outline::buildSeparator()
 }
 void Outline::buildStretcher()
 {
-    //  areaLayout->addStretch();
     QFrame *stretcher = new QFrame();
     stretcher->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -151,7 +242,7 @@ void Outline::setItemTitle(QString newTitle, int number)
     QString string;
     OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(number));
 
-    qDebug() << "setItemTitle on : " << "outlineItem_" << string.setNum(number);
+//    qDebug() << "setItemTitle on : " << "outlineItem_" << string.setNum(number);
 
     item->setTitle(newTitle);
 }
@@ -169,7 +260,7 @@ void Outline::cleanArea()
 
 
     while(!allOutlineItems.isEmpty()){
-        //       qDebug() << "cleanArea : " << areaLayout->children().first()->objectName();
+        qDebug() << "cleanArea ";
 
         OutlineItem *item = allOutlineItems.takeFirst();
         item->setObjectName("");
@@ -238,8 +329,8 @@ void Outline::resizeEvent(QResizeEvent *event)
     areaWidget->adjustSize();
 
     QString debug;
-    qDebug() << "w : " << debug.setNum(areaWidget->size().width());
-    qDebug() << "h : " << debug.setNum(areaWidget->size().height());
+//    qDebug() << "w : " << debug.setNum(areaWidget->size().width());
+//    qDebug() << "h : " << debug.setNum(areaWidget->size().height());
 }
 
 
@@ -256,30 +347,64 @@ void Outline::applyConfig()
 {
     QSettings settings;
     settings.beginGroup( "Outline" );
+    resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
+    move(settings.value( "pos" ).toPoint() );
     bool showListsBool = settings.value("showLists", false).toBool();
     bool showNotesBool = settings.value("showNotes", false).toBool();
     bool expandAllTextsBool = settings.value("expandAllTexts", false).toBool();
+    int listsWidth = settings.value("listsWidth", 250).toInt();
+    int synsWidth = settings.value("synsWidth", 250).toInt();
+    int notesWidth = settings.value("notesWidth", 250).toInt();
+    int synTextHeight = settings.value("synTextHeight", 12).toInt();
+    QFont synFont;
+    synFont.setFamily(settings.value("synFontFamily", "Liberation Serif").toString());
+    int noteTextHeight = settings.value("noteTextHeight", 12).toInt();
+    QFont noteFont;
+    noteFont.setFamily(settings.value("noteFontFamily", "Liberation Serif").toString());
     settings.endGroup();
 
-
+    synTextHeightSpin->setValue(synTextHeight);
+    synFontCombo->setCurrentFont(synFont);
+    noteTextHeightSpin->setValue(noteTextHeight);
+    noteFontCombo->setCurrentFont(noteFont);
+    listSlider->setValue(listsWidth);
+    synSlider->setValue(synsWidth);
+    noteSlider->setValue(notesWidth);
+    showListsAct->setChecked(!showListsBool);
     showListsAct->setChecked(showListsBool);
+    showNotesAct->setChecked(!showNotesBool);
     showNotesAct->setChecked(showNotesBool);
+    expandAllTextsAct->setChecked(!expandAllTextsBool);
     expandAllTextsAct->setChecked(expandAllTextsBool);
 
 
+    resizingSlot();
+
 }
+
+//------------------------------------------------------------------------------------
+
 void Outline::closeEvent(QCloseEvent* event)
 {
 
     QSettings settings;
     settings.beginGroup( "Outline");
+    settings.setValue( "size", size() );
+    settings.setValue( "pos", pos() );
     settings.setValue("showLists", showListsAct->isChecked());
     settings.setValue("showNotes", showNotesAct->isChecked());
     settings.setValue("expandAllTexts", expandAllTextsAct->isChecked());
+    settings.setValue("listsWidth", listSlider->value());
+    settings.setValue("synsWidth", synSlider->value());
+    settings.setValue("notesWidth", noteSlider->value());
+    settings.setValue("synTextHeight", synTextHeightSpin->value());
+    settings.setValue("synFontFamily", synFontCombo->currentFont());
+    settings.setValue("noteTextHeight", noteTextHeightSpin->value());
+    settings.setValue("noteFontFamily", noteFontCombo->currentFont());
     settings.endGroup();
 
 
-    qDebug() << "Outline closeEvent";
+//    qDebug() << "Outline closeEvent";
 
 
 

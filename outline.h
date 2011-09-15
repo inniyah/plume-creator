@@ -40,6 +40,8 @@ signals:
     void expandAllTextsSignal(bool buttonToggled);
     void updateSizeSignal();
     void newOutlineTitleSignal(QString newTitle, int number);
+    void disconnectUpdateTextsSignal();
+    void connectUpdateTextsSignal();
 
 public slots:
     void buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,QString title, int number, QString tagName);
@@ -48,6 +50,9 @@ public slots:
     void applyConfig();
     void setItemTitle(QString newTitle, int number);
     void cleanArea();
+
+
+
 private slots:
 
     void resizingSlot();
@@ -60,6 +65,13 @@ private:
     QAction *showListsAct;
     QAction *showNotesAct;
     QAction *expandAllTextsAct;
+    QSlider *listSlider;
+    QSlider *synSlider;
+    QSlider *noteSlider;
+    QFontComboBox *synFontCombo;
+    QSpinBox *synTextHeightSpin;
+    QFontComboBox *noteFontCombo;
+    QSpinBox *noteTextHeightSpin;
 };
 
 #endif // OUTLINE_H

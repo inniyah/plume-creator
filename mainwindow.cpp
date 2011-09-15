@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.34 Beta !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.35 Beta !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -287,8 +287,8 @@ void MainWindow::createNoteDock()
 
 
     QComboBox *stateCombo = new QComboBox;
-    midLayout->addWidget(tabFullscreenButton,0,0);
-    midLayout->addWidget(outlinerButton,1,0);
+    midLayout->addWidget(tabFullscreenButton,0,0, Qt::AlignHCenter);
+    midLayout->addWidget(outlinerButton,1,0, Qt::AlignHCenter);
     //   midLayout->addWidget(stateCombo);
     midFrame->setLayout(midLayout);
 
@@ -405,7 +405,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
         tab->openText(textDoc);
         //       tab->setAttribute(Qt::WA_DeleteOnClose);
-        qDebug() << "name : " << name;
+//        qDebug() << "name : " << name;
         tabWidget->addTab(tab, name);
 
 
@@ -417,7 +417,6 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         noteWidget->setLayout(nLayout);
         noteLayout->addWidget(noteWidget);
 
-        qDebug() << "jal 2b";
 
         QWidget *synWidget = new QWidget(this);
         QVBoxLayout *sLayout = new QVBoxLayout(synWidget);
@@ -427,7 +426,6 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         synWidget->setLayout(sLayout);
         synLayout->addWidget(synWidget);
 
-        qDebug() << "jal 2c";
 
         textDocList->append(textDoc);
         noteDocList->append(noteDoc);
@@ -437,7 +435,6 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         noteWidgetList->append(noteStack);
         synWidgetList->append(synStack);
 
-        qDebug() << "jal 3";
 
         //set objectnames
         QString string;
@@ -449,9 +446,8 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         synStack->setObjectName(synWidget->objectName() + "-NoteZone");
 
         numList->append(number);
-        qDebug() << "added objectname value : " << string.setNum(number,10);
+//        qDebug() << "added objectname value : " << string.setNum(number,10);
 
-        qDebug() << "jal 4";
 
 
         //display the opened tab (config setting)
@@ -467,7 +463,6 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
-        qDebug() << "jal 5";
 
         //launch autosaving :
         if(firstOpen)
@@ -484,13 +479,12 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         synStack->setCursorPos(synCursorPosition);
         noteStack->setCursorPos(noteCursorPosition);
 
-        QString debug;
-        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
-        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
-        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
+//        QString debug;
+//        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
+//        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
+//        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
 
 
-        qDebug() << "jal 6";
 
         //apply config :
 
@@ -538,7 +532,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
     }
 
 
-    qDebug() << "Action Note :" << action;
+//    qDebug() << "Action Note :" << action;
 
 }
 
@@ -558,7 +552,7 @@ void MainWindow::secondTextSlot(int number, QString action)
         TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
         QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
         QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
-        qDebug() << "objectname value : " << string.setNum(number,10);
+//        qDebug() << "objectname value : " << string.setNum(number,10);
 
         tabWidget->removeTab(tabWidget->indexOf(tab));
         noteLayout->removeWidget(noteWidget);
@@ -681,7 +675,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     numList->removeAt(tabNum);
     tabNumList->removeAt(tabNum);
 
-    qDebug() << "tabCloseRequest post :" << tabNum;
+//    qDebug() << "tabCloseRequest post :" << tabNum;
 
     QTimer::singleShot(500, this, SLOT(reconnectAFterTabClose()));
 

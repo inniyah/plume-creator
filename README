@@ -1,5 +1,14 @@
 PLUME CREATOR
 
+
+
+v 0.35
+	- Outliner :
+		- font family & size menu added
+		- size menu added
+		- item scroll bars color blend more 
+	- french translation updated
+
 v 0.34
 	- set default style to Qt's "Plastique"
 	- set default save time to 20 000 ms, not 20 ms

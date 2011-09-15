@@ -321,9 +321,10 @@ void MainTree::closeTree()
     clear();
 
 
-    if(outlinerLaunched)
-        outliner->close();
-
+    if(outlinerLaunched){
+        outliner->deleteLater();
+outliner->close();
+    }
     outlinerLaunched = false;
 
 
@@ -335,9 +336,8 @@ void MainTree::closeTree()
         doc->setObjectName("");
 
         ++i;
-
     }
-    qDebug() << "closeTree";
+//    qDebug() << "closeTree";
 
 
     //    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
@@ -494,7 +494,10 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     //        emit textAndNoteSignal(textFile, noteFile, synFile, name, action_Save);
 
     //    }
-    if(domElementForItem.value(treeItem).tagName() == "separator")
+emit disconnectUpdateTextsSignal();
+
+
+         if(domElementForItem.value(treeItem).tagName() == "separator")
         return true;
 
 
@@ -534,7 +537,7 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
 
     //    prjIsJustOpened = false;
 
-
+emit connectUpdateTextsSignal();
     return true;
 }
 
@@ -1920,7 +1923,7 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
         freeNum = freeNumList.takeFirst();
     }
     if(freeNum == 0 && !freeNumList.isEmpty())
-        freeNum == freeNumList.takeFirst();
+        freeNum = freeNumList.takeFirst();
 
 
 
@@ -2377,16 +2380,20 @@ void MainTree::launchOutliner()
     if(outlinerLaunched){
         outliner->cleanArea();
         outliner->show();
+        buildOutliner();
     }
     else{
         outliner = new Outline(0);
+
+        buildOutliner();
+
+        connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
+        connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
+        connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
+        connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
     }
 
-    buildOutliner();
 
-
-    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
-    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
 
     outlinerLaunched = true;
 }

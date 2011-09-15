@@ -129,7 +129,7 @@ void Exporter::accept()
 void Exporter::setExistingDirectory()
 {
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
-    QString directory = QFileDialog::getExistingDirectory(this, tr("QFileDialog::getExistingDirectory()"),
+    QString directory = QFileDialog::getExistingDirectory(this, tr("Select a directory"),
                                                           directoryLabelLineEdit->text(),
                                                           options);
     if (!directory.isEmpty())

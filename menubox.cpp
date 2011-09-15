@@ -189,7 +189,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version 0.34 Beta</p>"
+                       "<p>Version 0.35 Beta</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
@@ -299,7 +299,7 @@ void MenuBox::createButtons()
     closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     closeProjectButton->setText(tr("&Close project"));
     closeProjectButton->setShortcut(QKeySequence::Close);
-    closeProjectButton->setToolTip(tr("Print the dprintocument"));
+    closeProjectButton->setToolTip(tr("Print the document"));
     connect(closeProjectButton, SIGNAL(pressed()), this, SLOT(closeProject()));;
 
     exitButton = new QToolButton(this);

@@ -51,6 +51,10 @@ signals:
     void textAndNoteSignal(int number, QString action);
     void nameChangedSignal(QString newName, int number);
 
+    // for Outliner :
+    void disconnectUpdateTextsSignal();
+    void connectUpdateTextsSignal();
+
 public slots:
 
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);

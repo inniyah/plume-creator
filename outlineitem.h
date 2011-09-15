@@ -46,6 +46,16 @@ public slots:
     void updateSizeSlot();
     void setDocuments(QTextDocument *synDocument, QTextDocument *noteDocument);
     void setTitle(QString title);
+    void changeListWidth(int width);
+    void changeSynWidth(int width);
+    void changeNoteWidth(int width);
+    void changeSynFont(QFont font);
+    void changeSynTextHeight(int height);
+    void changeNoteFont(QFont font);
+    void changeNoteTextHeight(int height);
+void connectUpdateTextsSlot();
+void disconnectUpdateTextsSlot();
+
 
 private slots:
     void writeThis();
@@ -59,7 +69,9 @@ private slots:
     void updateNote(int position, int removed, int added);
 
     void editTitleSlot();
+    void applyConfig();
 
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
 private:
     int itemWidth;
 

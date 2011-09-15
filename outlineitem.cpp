@@ -15,8 +15,6 @@ OutlineItem::OutlineItem(QWidget *parent) :
     titleEdit = new QLineEdit;
     synEdit = new QTextEdit;
 
-    synLineCount = synEdit->document()->lineCount();
-
     QPushButton *writeButton = new QPushButton("w");
     writeButton->setObjectName("writeButton");
     expandButton = new QPushButton("e");
@@ -31,8 +29,6 @@ OutlineItem::OutlineItem(QWidget *parent) :
 
     noteEdit = new QTextEdit;
 
-    noteLineCount = noteEdit->document()->lineCount();
-
     noteLabel = new QLabel(tr("Note :"));
     showNoteButton = new QPushButton(">>");
     hideNoteButton = new QPushButton("<<");
@@ -41,23 +37,42 @@ OutlineItem::OutlineItem(QWidget *parent) :
     vSeparator1 = new QFrame;
     vSeparator2 = new QFrame;
 
+
+    synLineCount = synEdit->document()->size().rheight();
+    noteLineCount = noteEdit->document()->size().rheight();
+
+
     connect(synEdit, SIGNAL(textChanged()), this, SLOT(resizeExpandedText()));
     connect(noteEdit, SIGNAL(textChanged()), this, SLOT(resizeExpandedText()));
+
+
     int buttonsWidth(20);
     fixedHeight = 100;
     fixedWidth = 200;
-    titleEdit->setFixedSize(fixedWidth - buttonsWidth,20);
-    synEdit->setFixedSize(fixedWidth,fixedHeight);
+    //    titleEdit->setFixedSize(fixedWidth - buttonsWidth,20);
+    titleEdit->setFixedHeight(20);
+    //    synEdit->setFixedSize(fixedWidth,fixedHeight);
     writeButton->setFixedSize(buttonsWidth,titleEdit->height());
     expandButton->setFixedSize(buttonsWidth,titleEdit->height());
     collapseButton->setFixedSize(buttonsWidth,titleEdit->height());
     expandButton1->setFixedSize(buttonsWidth,titleEdit->height());
-    collapseButton1->setFixedSize(buttonsWidth,titleEdit->height());    listWidget->setFixedSize(200,fixedHeight);
-    showListButton->setFixedSize(buttonsWidth,fixedHeight);
-    hideListButton->setFixedSize(buttonsWidth,fixedHeight);
-    noteEdit->setFixedSize(fixedWidth,fixedHeight);
-    showNoteButton->setFixedSize(buttonsWidth,fixedHeight);
-    hideNoteButton->setFixedSize(buttonsWidth,fixedHeight);
+    collapseButton1->setFixedSize(buttonsWidth,titleEdit->height());
+    //    listWidget->setFixedSize(200,fixedHeight);
+    listWidget->setFixedHeight(noteEdit->height());
+    //    showListButton->setFixedSize(buttonsWidth,fixedHeight);
+    //    hideListButton->setFixedSize(buttonsWidth,fixedHeight);
+    showListButton->setFixedWidth(buttonsWidth);
+    showListButton->setMinimumHeight(fixedHeight);
+    //    showListButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    hideListButton->setFixedWidth(buttonsWidth);
+    hideListButton->setMinimumHeight(fixedHeight);
+    //    noteEdit->setFixedSize(fixedWidth,fixedHeight);
+    //    showNoteButton->setFixedSize(buttonsWidth,fixedHeight);
+    //    hideNoteButton->setFixedSize(buttonsWidth,fixedHeight);
+    showNoteButton->setFixedWidth(buttonsWidth);
+    showNoteButton->setMinimumHeight(fixedHeight);
+    hideNoteButton->setFixedWidth(buttonsWidth);
+    hideNoteButton->setMinimumHeight(fixedHeight);
     hSeparator->setFixedHeight(2);
     vSeparator1->setFixedWidth(2);
     vSeparator2->setFixedWidth(2);
@@ -123,10 +138,10 @@ OutlineItem::OutlineItem(QWidget *parent) :
 
 
     layout->addWidget(vSeparator2, 2, 6, 2, 1);
-    layout->addWidget(showNoteButton, 2, 7, 2, 1);
+    layout->addWidget(showNoteButton, 2, 7, 2, 1, Qt::AlignVCenter);
     layout->addWidget(noteLabel, 0, 8);
     layout->addWidget(noteEdit, 2, 8, 2, 1, Qt::AlignTop);
-    layout->addWidget(hideNoteButton, 2, 9, 2, 1);
+    layout->addWidget(hideNoteButton, 2, 9, 2, 1, Qt::AlignVCenter);
 
     layout->setSpacing(0);
     layout->setMargin(0);
@@ -149,7 +164,45 @@ OutlineItem::OutlineItem(QWidget *parent) :
                                  "border: 2px solid rgba(0, 0, 0, 10%);"
                                  "}");
 
-    setStyleSheet(baseStyleSheet + backgroundStyleSheet);
+    QString scrollbarStyleSheet("  QScrollBar:vertical {"
+                                "border: 0px solid beige;"
+                                "background-image: url(:/pics/parchemin_double.png);"
+                                "width: 10px;"
+                                "margin: 22px 0 22px 0;"
+                                "}"
+                                "QScrollBar::handle:vertical {"
+                                "border: 2px solid brown;"
+                                "background-image: url(:/pics/parchemin_double.png);"
+                                "min-height: 10px;"
+                                "}"
+                                "QScrollBar::add-line:vertical {"
+                                "border: 2px solid beige;"
+                                "background-image: url(:/pics/parchemin_double.png);"
+                                "height: 10px;"
+                                "subcontrol-position: bottom;"
+                                "subcontrol-origin: margin;"
+                                "}"
+
+                                "QScrollBar::sub-line:vertical {"
+                                "border: 2px solid beige;"
+                                "background-image: url(:/pics/parchemin_double.png);"
+                                "height: 10px;"
+                                "subcontrol-position: top;"
+                                "subcontrol-origin: margin;"
+                                "}"
+                                "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {"
+                                "border: 0px solid beige;"
+                                "width: 3px;"
+                                "height: 3px;"
+                                "background: black;"
+                                "}"
+                                " QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
+                                "background: none;"
+                                "}"
+                                );
+
+
+    setStyleSheet(baseStyleSheet + backgroundStyleSheet + scrollbarStyleSheet);
 
 
 
@@ -194,7 +247,7 @@ OutlineItem::OutlineItem(QWidget *parent) :
 
 
 
-
+    applyConfig();
 
 
 }
@@ -324,7 +377,13 @@ void OutlineItem::expandTexts(bool expand)
 
         synEdit->setFixedHeight(synEdit->document()->size().rheight() + 40);
         noteEdit->setFixedHeight(noteEdit->document()->size().rheight() + 40);
+        listWidget->setFixedHeight(noteEdit->height());
 
+        // force a good display without scrollbars :
+        synEdit->append("ooo");
+        synEdit->undo();
+        noteEdit->append("ooo");
+        noteEdit->undo();
 
 
         if(listWidget->isHidden()){
@@ -344,7 +403,7 @@ void OutlineItem::expandTexts(bool expand)
     else{
         synEdit->setFixedHeight(fixedHeight);
         noteEdit->setFixedHeight(fixedHeight);
-
+        listWidget->setFixedHeight(noteEdit->height());
         if(listWidget->isHidden()){
             expandButton->hide();
             collapseButton->hide();
@@ -362,8 +421,8 @@ void OutlineItem::expandTexts(bool expand)
 
 
 
-    QString debug;
-    qDebug() << "synEdit doc height = " << debug.setNum(synEdit->document()->size().rheight());
+//    QString debug;
+//    qDebug() << "synEdit doc height = " << debug.setNum(synEdit->document()->size().rheight());
 }
 
 
@@ -371,29 +430,28 @@ void OutlineItem::expandTexts(bool expand)
 
 void OutlineItem::resizeExpandedText()
 {
-    int maxCount = qMax(synEdit->document()->lineCount(), noteEdit->document()->lineCount());
     int maxHeight = qMax(synEdit->document()->size().rheight(), noteEdit->document()->size().rheight());
 
 
-    if(m_expand && maxCount > qMax(synLineCount, noteLineCount)){
-        qDebug() << "resizing expanded text";
+    if(m_expand && maxHeight != qMax(synLineCount, noteLineCount)){
+//        qDebug() << "resizing expanded text";
         synEdit->setFixedHeight(maxHeight + 40);
         noteEdit->setFixedHeight(maxHeight + 40);
-
+        listWidget->setFixedHeight(noteEdit->height());
         updateSizeSlot();
         //  emit resizingSignal();
     }
 
 
-    synLineCount = synEdit->document()->lineCount();
-    noteLineCount = noteEdit->document()->lineCount();
+    synLineCount = synEdit->document()->size().rheight();
+    noteLineCount = noteEdit->document()->size().rheight();
 }
 
 //--------------------------------------------------------------------
 
 void OutlineItem::updateSizeSlot()
 {
-    qDebug() << "resizing slot" ;
+//    qDebug() << "resizing slot" ;
     //   frame->adjustSize();
     adjustSize();
 }
@@ -420,25 +478,123 @@ void OutlineItem::editTitleSlot()
 }
 
 //--------------------------------------------------------------------
+void OutlineItem::changeListWidth(int width)
+{
+    listWidget->setFixedWidth(width);
+}
+
+//--------------------------------------------------------------------
+
+void OutlineItem::changeSynWidth(int width)
+{
+    synEdit->setFixedWidth(width);
+}
+
+//--------------------------------------------------------------------
+
+void OutlineItem::changeNoteWidth(int width)
+{
+    noteEdit->setFixedWidth(width);
+}
 
 
+//--------------------------------------------------------------------
+void OutlineItem::changeSynFont(QFont font)
+{
+    disconnect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    disconnect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+
+    QTextCharFormat charFormat;
+    charFormat.setFontFamily(font.family());
+
+    QTextCursor *tCursor = new QTextCursor(synEdit->document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+
+    connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+}
+
+//--------------------------------------------------------------------
+void OutlineItem::changeSynTextHeight(int height)
+{
+    disconnect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    disconnect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(height);
+
+    QTextCursor *tCursor = new QTextCursor(synEdit->document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+
+    connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+}
+//--------------------------------------------------------------------
+void OutlineItem::changeNoteFont(QFont font)
+{
+    disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+
+    QTextCharFormat charFormat;
+    charFormat.setFontFamily(font.family());
+
+    QTextCursor *tCursor = new QTextCursor(noteEdit->document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+
+    connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+}
+
+//--------------------------------------------------------------------
+void OutlineItem::changeNoteTextHeight(int height)
+{
+    disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(height);
+
+    QTextCursor *tCursor = new QTextCursor(noteEdit->document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+
+    connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+}
+//--------------------------------------------------------------------
+
+void OutlineItem::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
+{
+    QTextCursor cursor = synEdit->textCursor();
+    cursor.mergeCharFormat(format);
+    synEdit->mergeCurrentCharFormat(format);
+}
+
+//--------------------------------------------------------------------
 
 void OutlineItem::setDocuments(QTextDocument *synDocument, QTextDocument *noteDocument)
 {
     synDoc = synDocument;
     noteDoc = noteDocument;
-    qDebug() << "jalon 1a";
-    qDebug() << "jalon 1a" << synDocument->objectName();
-    qDebug() << "jalon 1a" << noteDocument->objectName();
+    //    qDebug() << "jalon 1a";
+    //    qDebug() << "jalon 1a" << synDocument->objectName();
+    //    qDebug() << "jalon 1a" << noteDocument->objectName();
 
     synOutlineDoc = synDocument->clone(this);
     noteOutlineDoc = noteDocument->clone(this);
-    qDebug() << "jalon 1b";
+    //    qDebug() << "jalon 1b";
 
     synEdit->setDocument(synOutlineDoc);
     noteEdit->setDocument(noteOutlineDoc);
 
-    qDebug() << "jalon 1c";
+    //    qDebug() << "jalon 1c";
 
     synEdit->setObjectName(this->objectName() + "-synEdit");
     noteEdit->setObjectName(this->objectName() + "-noteEdit");
@@ -454,6 +610,10 @@ void OutlineItem::setDocuments(QTextDocument *synDocument, QTextDocument *noteDo
     QString objName = this->objectName();
     number = objName.mid(objName.indexOf("_") + 1).toInt();
 
+
+
+
+
 }
 
 
@@ -464,12 +624,20 @@ void OutlineItem::updateSynClone(int position, int removed, int added)
 {
 
     disconnect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+disconnect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
 
 
     QTextCursor *cursor = new QTextCursor(synDoc);
     QTextCursor *cloneCursor = new QTextCursor(synOutlineDoc);
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
+
+    int synHeight = cloneCursor->charFormat().fontPointSize();
+    QString family = cloneCursor->charFormat().fontFamily();
+
+//    QString debug4;
+//    qDebug() << "synHeight : " << debug4.setNum(synHeight);
+//    qDebug() << "family : " << family;
 
     if(removed != 0){
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,removed);
@@ -482,20 +650,34 @@ void OutlineItem::updateSynClone(int position, int removed, int added)
         cloneCursor->setPosition(position);
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,added);
 
-        cloneCursor->insertFragment(cursor->selection());
+        QTextEdit *editor = new QTextEdit;
+        QTextDocumentFragment fragment = cursor->selection();
+        editor->append(fragment.toHtml());
+
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(synHeight);
+        charFormat.setFontFamily(family);
+
+        QTextCursor *tCursor = new QTextCursor(editor->document());
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+        tCursor->mergeCharFormat(charFormat);
+
+        cloneCursor->insertHtml(editor->document()->toHtml());
     }
     //    if(added == 0)
     //        this->textCursor().setPosition(position);
 
 
     connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
 
-    QString debug;
-    QString debug1;
-    QString debug2;
-    qDebug() << "updateSynClone  " << debug.setNum(position) << " , "  << debug1.setNum(removed) << " , "  << debug2.setNum(added);
+//    QString debug;
+//    QString debug1;
+//    QString debug2;
+//    qDebug() << "updateSynClone  " << debug.setNum(position) << " , "  << debug1.setNum(removed) << " , "  << debug2.setNum(added);
 
-    qDebug() << "updateSynClone  " << this->objectName();
+//    qDebug() << "updateSynClone  " << this->objectName();
 }
 
 
@@ -505,6 +687,7 @@ void OutlineItem::updateSynClone(int position, int removed, int added)
 void OutlineItem::updateSyn(int position, int removed, int added)
 {
     disconnect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+    disconnect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
 
 
 
@@ -512,6 +695,9 @@ void OutlineItem::updateSyn(int position, int removed, int added)
     QTextCursor *cloneCursor = new QTextCursor(synOutlineDoc);
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
+
+    int synHeight = cursor->blockCharFormat().fontPointSize();
+    QString family = cursor->blockCharFormat().fontFamily();
 
     if(removed != 0){
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,removed);
@@ -524,13 +710,33 @@ void OutlineItem::updateSyn(int position, int removed, int added)
         cloneCursor->setPosition(position);
         cloneCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,added);
 
-        cursor->insertFragment(cloneCursor->selection());
+        QTextEdit *editor = new QTextEdit;
+        QTextDocumentFragment fragment = cloneCursor->selection();
+        editor->append(fragment.toHtml());
+
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(synHeight);
+        charFormat.setFontFamily(family);
+
+        QTextCursor *tCursor = new QTextCursor(editor->document());
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+        tCursor->mergeCharFormat(charFormat);
+
+        cursor->insertHtml(editor->document()->toHtml());
     }
 
 
     connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+    connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
 
-    qDebug() << "updateSyn  " << this->objectName();
+
+//    QString debug;
+//    QString debug1;
+//    QString debug2;
+//    qDebug() << "updateSyn :  " << debug.setNum(position) << " , "  << debug1.setNum(removed) << " , "  << debug2.setNum(added);
+
+//    qDebug() << "updateSyn  " << this->objectName();
 }
 //-----------------------------------------------------------------------------------------
 
@@ -539,12 +745,16 @@ void OutlineItem::updateNoteClone(int position, int removed, int added)
 {
 
     disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
 
 
     QTextCursor *cursor = new QTextCursor(noteDoc);
     QTextCursor *cloneCursor = new QTextCursor(noteOutlineDoc);
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
+
+    int noteHeight = cloneCursor->charFormat().fontPointSize();
+    QString family = cloneCursor->charFormat().fontFamily();
 
     if(removed != 0){
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,removed);
@@ -557,15 +767,29 @@ void OutlineItem::updateNoteClone(int position, int removed, int added)
         cloneCursor->setPosition(position);
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,added);
 
-        cloneCursor->insertFragment(cursor->selection());
+        QTextEdit *editor = new QTextEdit;
+        QTextDocumentFragment fragment = cursor->selection();
+        editor->append(fragment.toHtml());
+
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(noteHeight);
+        charFormat.setFontFamily(family);
+
+        QTextCursor *tCursor = new QTextCursor(editor->document());
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+        tCursor->mergeCharFormat(charFormat);
+
+        cloneCursor->insertHtml(editor->document()->toHtml());
     }
     //    if(added == 0)
     //        this->textCursor().setPosition(position);
 
 
     connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+    connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
 
-    qDebug() << "updateNoteClone  " << this->objectName();
+//    qDebug() << "updateNoteClone  " << this->objectName();
 }
 
 
@@ -575,6 +799,7 @@ void OutlineItem::updateNoteClone(int position, int removed, int added)
 void OutlineItem::updateNote(int position, int removed, int added)
 {
     disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+    disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
 
 
 
@@ -582,6 +807,9 @@ void OutlineItem::updateNote(int position, int removed, int added)
     QTextCursor *cloneCursor = new QTextCursor(noteOutlineDoc);
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
+
+    int noteHeight = cursor->blockCharFormat().fontPointSize();
+    QString family = cursor->blockCharFormat().fontFamily();
 
     if(removed != 0){
         cursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,removed);
@@ -594,25 +822,70 @@ void OutlineItem::updateNote(int position, int removed, int added)
         cloneCursor->setPosition(position);
         cloneCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,added);
 
-        cursor->insertFragment(cloneCursor->selection());
+        QTextEdit *editor = new QTextEdit;
+        QTextDocumentFragment fragment = cloneCursor->selection();
+        editor->append(fragment.toHtml());
+
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(noteHeight);
+        charFormat.setFontFamily(family);
+
+        QTextCursor *tCursor = new QTextCursor(editor->document());
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+        tCursor->mergeCharFormat(charFormat);
+
+        cursor->insertHtml(editor->document()->toHtml());
     }
 
 
     connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+    connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
 
-    qDebug() << "updateNote  " << this->objectName();
+//    qDebug() << "updateNote  " << this->objectName();
 
 
 }
 
+//-------------------------------------------------------------------
+
+void OutlineItem::connectUpdateTextsSlot()
+{
+    connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+    connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+    connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+
+}
+//-------------------------------------------------------------------
+void OutlineItem::disconnectUpdateTextsSlot()
+{
+    disconnect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
+    disconnect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
+    disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
+    disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
+
+}
 
 //--------------------------------------------------------------------
 
 void OutlineItem::resizeEvent (QResizeEvent *event)
 {
-    qDebug() << "resizing" ;
+ //   qDebug() << "resizing" ;
     //   frame->adjustSize();
     adjustSize();
     emit resizingSignal();
     event->accept();
+}
+
+
+
+
+//---------------------------------------------------------------------------------
+//--------------Apply Config----------------------------------------------------
+//---------------------------------------------------------------------------------
+
+void OutlineItem::applyConfig()
+{
+
 }

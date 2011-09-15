@@ -62,8 +62,9 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
     //    noteFile->close();
 
 
-
+    qDebug() << "Ttttttttttttttttttttttttttttttttttttt";
     setDocument(textDocument);
+    qDebug() << "Uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 
 
 
@@ -522,8 +523,6 @@ void NoteZone::setTextHeight(int height)
 
 
 void NoteZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
-
-
 {
     QTextCursor cursor = textCursor();
     //    if(cursor.charFormat().fontItalic())
@@ -718,13 +717,14 @@ void NoteZone::applyNoteConfig()
 
     //apply default font in empty documents :
 
-    if(document()->isEmpty()){
+//    if(document()->isEmpty()){
         QFont font;
         font.setFamily(noteFontFamily);
         font.setPointSize(noteTextHeight);
         document()->setDefaultFont(font);
+        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
 
-    }
+//    }
 
 
 
@@ -773,11 +773,11 @@ void NoteZone::applySynConfig()
 
     //apply default font in empty documents :
 
-    if(document()->isEmpty()){
+//    if(document()->isEmpty()){
         QFont font;
         font.setFamily(synFontFamily);
         font.setPointSize(synTextHeight);
         document()->setDefaultFont(font);
-
-    }
+document()->firstBlock().blockFormat().toCharFormat().setFont(font);
+ //   }
 }
