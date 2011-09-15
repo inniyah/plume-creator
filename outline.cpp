@@ -14,12 +14,12 @@ Outline::Outline(QWidget *parent) :
     setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
 
 
-    areaWidget = new QWidget;
-    areaLayout = new QVBoxLayout;
     area = new QScrollArea;
+    areaWidget = new QWidget(area);
+    areaLayout = new QVBoxLayout;
 
     areaWidget->setMinimumSize(600,600);
-    areaWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding );
+    areaWidget->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding );
 
 
     areaLayout->setSpacing(30);
@@ -188,6 +188,7 @@ void Outline::buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,
     connect(this, SIGNAL(disconnectUpdateTextsSignal()), item, SLOT(disconnectUpdateTextsSlot()));
 
     connect(item,SIGNAL(newOutlineTitleSignal(QString,int)), this, SIGNAL(newOutlineTitleSignal(QString,int)));
+    connect(item, SIGNAL(writeThisSignal(int)), this, SIGNAL(writeThisSignal(int)));
 
     if(tagName == "scene")
         areaLayout->addWidget(item,0,Qt::AlignRight);
@@ -214,7 +215,7 @@ void Outline::buildSeparator()
     separator->setFrameShape(QFrame::HLine);
     separator->setFrameShadow(QFrame::Raised);
     separator->setLineWidth(4);
-    separator->setFixedWidth(100);
+    separator->setFixedWidth(400);
     areaLayout->addWidget(separator,0,Qt::AlignRight);
 
     //            emit updateSizeSignal();
@@ -227,11 +228,14 @@ void Outline::buildStretcher()
 
     areaLayout->addWidget(stretcher);
 
-    applyConfig();
+
 
     emit updateSizeSignal();
     resizingSlot();
     area->update();
+
+    applyConfig();
+
 
 }
 //------------------------------------------------------------------------------
@@ -242,7 +246,7 @@ void Outline::setItemTitle(QString newTitle, int number)
     QString string;
     OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(number));
 
-//    qDebug() << "setItemTitle on : " << "outlineItem_" << string.setNum(number);
+    //    qDebug() << "setItemTitle on : " << "outlineItem_" << string.setNum(number);
 
     item->setTitle(newTitle);
 }
@@ -315,6 +319,7 @@ void Outline::cleanArea()
 void Outline::resizingSlot()
 {
     //    QWidget *widget = areaWidget->findChild<QWidget *>(objectName);
+    areaWidget->setMinimumSize(area->viewport()->width(), area->viewport()->height());
     areaWidget->adjustSize();
 
 }
@@ -324,13 +329,12 @@ void Outline::resizingSlot()
 
 void Outline::resizeEvent(QResizeEvent *event)
 {
-    if(area->viewport()->width() > 600 && area->viewport()->height() > 600)
-        areaWidget->setMinimumSize(area->viewport()->width(), area->viewport()->height());
-    areaWidget->adjustSize();
-
-    QString debug;
-//    qDebug() << "w : " << debug.setNum(areaWidget->size().width());
-//    qDebug() << "h : " << debug.setNum(areaWidget->size().height());
+    //   if(area->viewport()->width() > 600 && area->viewport()->height() > 600)
+    //        areaWidget->setMinimumSize(area->viewport()->width(), area->viewport()->height());
+    //areaWidget->setMinimumSize(area->viewport()->width(), area->viewport()->height());
+    //    QString debug;
+    //    qDebug() << "w : " << debug.setNum(areaWidget->size().width());
+    //    qDebug() << "h : " << debug.setNum(areaWidget->size().height());
 }
 
 
@@ -370,13 +374,9 @@ void Outline::applyConfig()
     listSlider->setValue(listsWidth);
     synSlider->setValue(synsWidth);
     noteSlider->setValue(notesWidth);
-    showListsAct->setChecked(!showListsBool);
     showListsAct->setChecked(showListsBool);
-    showNotesAct->setChecked(!showNotesBool);
     showNotesAct->setChecked(showNotesBool);
-    expandAllTextsAct->setChecked(!expandAllTextsBool);
     expandAllTextsAct->setChecked(expandAllTextsBool);
-
 
     resizingSlot();
 
@@ -384,9 +384,8 @@ void Outline::applyConfig()
 
 //------------------------------------------------------------------------------------
 
-void Outline::closeEvent(QCloseEvent* event)
+void Outline::saveConfig()
 {
-
     QSettings settings;
     settings.beginGroup( "Outline");
     settings.setValue( "size", size() );
@@ -404,7 +403,30 @@ void Outline::closeEvent(QCloseEvent* event)
     settings.endGroup();
 
 
-//    qDebug() << "Outline closeEvent";
+
+}
+
+//------------------------------------------------------------------------------------
+void Outline::setOutlinerViewportPos(int number)
+{
+    QString string;
+    QWidget *widget = areaWidget->findChild<QWidget *>("outlineItem_" + string.setNum(number));
+    area->ensureWidgetVisible(widget);
+
+    qDebug() << "setOutlinerViewportPos : " << widget->objectName();
+    QString debug;
+    qDebug() << "setOutlinerViewportPos x : " << debug.setNum(widget->mapToParent(QPoint(0,0)).x());
+    qDebug() << "setOutlinerViewportPos y : " << debug.setNum(widget->mapToParent(QPoint(0,0)).y());
+
+
+}
+//------------------------------------------------------------------------------------
+void Outline::closeEvent(QCloseEvent* event)
+{
+
+    saveConfig();
+
+    //    qDebug() << "Outline closeEvent";
 
 
 

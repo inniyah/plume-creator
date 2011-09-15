@@ -678,6 +678,9 @@ void NoteZone::resizeEvent(QResizeEvent* event)
 
 void NoteZone::applyNoteConfig()
 {
+//    emit disconnectUpdateTextsSignal();
+
+
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("NoteArea/alwaysCenter", true).toBool();
@@ -726,6 +729,7 @@ void NoteZone::applyNoteConfig()
 
 //    }
 
+//        emit connectUpdateTextsSignal();
 
 
 }
@@ -733,6 +737,9 @@ void NoteZone::applyNoteConfig()
 //-------------------------------------------------------------------------------
 void NoteZone::applySynConfig()
 {
+//    emit disconnectUpdateTextsSignal();
+
+
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("SynArea/alwaysCenter", true).toBool();
@@ -780,4 +787,8 @@ void NoteZone::applySynConfig()
         document()->setDefaultFont(font);
 document()->firstBlock().blockFormat().toCharFormat().setFont(font);
  //   }
+
+//emit connectUpdateTextsSignal();
+
+
 }

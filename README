@@ -1,6 +1,13 @@
 PLUME CREATOR
 
-
+v 0.36
+	- Outliner :
+		- display bugs solved
+		- notes and synopsies keep the good fonts when their entire first line is deleted 
+		- the outline is updated when the main tree is modified
+		- outline titles are more visible
+		- "write" button ("w") opens the respective sheet
+		
 
 v 0.35
 	- Outliner :

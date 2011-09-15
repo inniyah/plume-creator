@@ -88,9 +88,15 @@ private slots:
 
     void buildTree();
 
-    void buildOutliner();
-    void newOutlineTitleSlot(QString newTitle,int number);
 
+    //outliner :
+    void buildOutliner();
+    void  killOutliner();
+    void newOutlineTitleSlot(QString newTitle,int number);
+    void writeThisSlot(int number);
+    void deletedSlot();
+    void setOutlineViewPos();
+    void saveOutlineSettings();
 
 private:
     void parseFolderElement(const QDomElement &element,
@@ -142,7 +148,7 @@ private:
 
     QTreeWidgetItem *itemOfWork;
 
-    int number;
+    //    int number;
 
 
     //drag drop :
@@ -163,7 +169,8 @@ private:
 
     Outline *outliner;
     bool outlinerLaunched;
-
+    int widgetTargetedNumber;
+    QTreeWidgetItem *itemTargetedForOutliner;
 };
 
 #endif // MAINTREE_H

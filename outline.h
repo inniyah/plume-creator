@@ -42,16 +42,18 @@ signals:
     void newOutlineTitleSignal(QString newTitle, int number);
     void disconnectUpdateTextsSignal();
     void connectUpdateTextsSignal();
+    void writeThisSignal(int number);
 
 public slots:
     void buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,QString title, int number, QString tagName);
     void buildSeparator();
     void buildStretcher();
     void applyConfig();
+    void saveConfig();
     void setItemTitle(QString newTitle, int number);
     void cleanArea();
 
-
+    void setOutlinerViewportPos(int number);
 
 private slots:
 

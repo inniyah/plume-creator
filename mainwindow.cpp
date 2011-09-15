@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.35 Beta !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.36 Beta !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -463,6 +463,12 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
+
+        //connect note & syn to maintree :
+        connect(synStack, SIGNAL(connectUpdateTextsSignal()), mainTree, SIGNAL(connectUpdateTextsSignal()));
+        connect(synStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
+        connect(noteStack, SIGNAL(connectUpdateTextsSignal()), mainTree, SIGNAL(connectUpdateTextsSignal()));
+        connect(noteStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
 
         //launch autosaving :
         if(firstOpen)

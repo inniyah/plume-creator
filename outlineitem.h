@@ -35,6 +35,8 @@ protected:
 signals:
     void resizingSignal();
     void newOutlineTitleSignal(QString newTitle, int number);
+    void writeThisSignal(int number);
+
 public slots:
     void showList();
     void hideList();
@@ -72,6 +74,11 @@ private slots:
     void applyConfig();
 
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+
+   void setSynDefaultFont();
+
+   void setNoteDefaultFont();
+
 private:
     int itemWidth;
 
@@ -111,6 +118,11 @@ private:
     QTextDocument *synOutlineDoc;
     QTextDocument *noteOutlineDoc;
 
+QFont synDefaultFont;
+int synDefaultHeight;
+
+QFont  noteDefaultFont;
+int noteDefaultHeight;
 
     int number;
 };

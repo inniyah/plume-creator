@@ -40,6 +40,8 @@ public:
     bool closeSyn();
 
 signals:
+void connectUpdateTextsSignal();
+void disconnectUpdateTextsSignal();
 
 protected:
 

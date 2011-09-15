@@ -323,7 +323,6 @@ void MainTree::closeTree()
 
     if(outlinerLaunched){
         outliner->deleteLater();
-outliner->close();
     }
     outlinerLaunched = false;
 
@@ -337,7 +336,7 @@ outliner->close();
 
         ++i;
     }
-//    qDebug() << "closeTree";
+    //    qDebug() << "closeTree";
 
 
     //    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
@@ -423,7 +422,7 @@ void MainTree::parseFolderElement(const QDomElement &element,
 
     QString title = element.attribute("name");
     if (title.isEmpty())
-        title = QObject::tr("XML problem : parseFolderElement(const QDomElement &element, QTreeWidgetItem *parentItem)");
+        title = QObject::tr("No Title");
 
     item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
     item->setIcon(0, folderIcon);
@@ -494,11 +493,15 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     //        emit textAndNoteSignal(textFile, noteFile, synFile, name, action_Save);
 
     //    }
-emit disconnectUpdateTextsSignal();
 
 
-         if(domElementForItem.value(treeItem).tagName() == "separator")
+    if(domElementForItem.value(treeItem).tagName() == "separator")
         return true;
+
+    itemTargetedForOutliner = treeItem;
+
+
+    emit disconnectUpdateTextsSignal();
 
 
     qDebug() << "itemOpened :" << treeItem->text(0);
@@ -537,7 +540,7 @@ emit disconnectUpdateTextsSignal();
 
     //    prjIsJustOpened = false;
 
-emit connectUpdateTextsSignal();
+    emit connectUpdateTextsSignal();
     return true;
 }
 
@@ -725,8 +728,8 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
     buildTree();
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+        killOutliner();
+        launchOutliner();
     }
 
     return domElementForItem.key(newElement);
@@ -773,8 +776,8 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
 
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+        killOutliner();
+        launchOutliner();
     }
 
 
@@ -894,8 +897,9 @@ QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
     buildTree();
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+
+        killOutliner();
+        launchOutliner();
     }
 
     return domElementForItem.key(newElement);
@@ -954,8 +958,9 @@ void MainTree::moveUp()
     buildTree();
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+
+        killOutliner();
+        launchOutliner();
     }
 
     //    disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
@@ -1026,8 +1031,9 @@ void MainTree::moveDown()
     buildTree();
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+
+        killOutliner();
+        launchOutliner();
     }
 
 }
@@ -1268,8 +1274,9 @@ void MainTree::delYesItem()
         buildTree();
 
         if(outlinerLaunched){
-            outliner->cleanArea();
-            buildOutliner();
+
+            killOutliner();
+            launchOutliner();
         }
 
     }
@@ -1717,6 +1724,12 @@ void MainTree::split()
         scenesList.clear();
 
 
+        if(outlinerLaunched){
+
+            killOutliner();
+            launchOutliner();
+        }
+
     }
         break;
 
@@ -1767,8 +1780,9 @@ void MainTree::addMulti()
     buildTree();
 
     if(outlinerLaunched){
-        outliner->cleanArea();
-        buildOutliner();
+
+        killOutliner();
+        launchOutliner();
     }
 }
 
@@ -2109,8 +2123,8 @@ void MainTree::dropEvent(QDropEvent* event)
         buildTree();
 
         if(outlinerLaunched){
-            outliner->cleanArea();
-            buildOutliner();
+            outliner->saveConfig();
+            outliner->deleteLater();
         }
 
     }
@@ -2377,21 +2391,24 @@ bool MainTree::saveDoc(QTextDocument *doc)
 
 void MainTree::launchOutliner()
 {
-    if(outlinerLaunched){
-        outliner->cleanArea();
-        outliner->show();
-        buildOutliner();
-    }
-    else{
-        outliner = new Outline(0);
+    //    if(outlinerLaunched){
 
-        buildOutliner();
+    //       outliner->cleanArea();
+    //       outliner->show();
+    //    }
+    //    else{
+    outliner = new Outline(0);
 
-        connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
-        connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
-        connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
-        connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
-    }
+    buildOutliner();
+
+    connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
+    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
+    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
+    connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
+    connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
+    connect(outliner, SIGNAL(writeThisSignal(int)), this, SLOT(writeThisSlot(int)));
+
+    //    }
 
 
 
@@ -2399,7 +2416,6 @@ void MainTree::launchOutliner()
 }
 
 //-----------------------------------------------------------------------------------------
-
 
 
 void MainTree::buildOutliner()
@@ -2436,13 +2452,27 @@ void MainTree::buildOutliner()
 
     }
     outliner->buildStretcher();
-
+    setOutlineViewPos();
 }
-
-
 
 //-----------------------------------------------------------------------------------------
 
+void MainTree::killOutliner()
+{
+    saveOutlineSettings();
+    outliner->saveConfig();
+    outliner->deleteLater();
+    outlinerLaunched = false;
+
+}
+
+//-----------------------------------------------------------------------------------------
+
+void MainTree::deletedSlot()
+{
+    qDebug() << "Outliner destroyed !!!!!!!!!!!!!!" ;
+}
+//-----------------------------------------------------------------------------------------
 void MainTree::newOutlineTitleSlot(QString newTitle,int number)
 {
     QDomElement element = domElementForNumber.value(number);
@@ -2452,4 +2482,77 @@ void MainTree::newOutlineTitleSlot(QString newTitle,int number)
 
 
     buildTree();
+}
+//-----------------------------------------------------------------------------------------
+void MainTree::writeThisSlot(int number)
+{
+  openTextFile(domElementForItem.key(domElementForNumber.value(number)), 0);
+}
+
+
+
+
+void MainTree::setOutlineViewPos()
+{
+    //               QString objName = doc->objectName();
+    //                            int number = objName.mid(objName.indexOf("_")).toInt();
+    QDomElement enteredElement = domElementForItem.value(itemTargetedForOutliner);
+    widgetTargetedNumber = enteredElement.attribute("number", "1").toInt();
+    outliner->setOutlinerViewportPos(widgetTargetedNumber);
+
+    qDebug() << "widgetTargetedNumber : " << enteredElement.attribute("number", "1");
+
+    //    QDomElement targetElement;
+
+
+
+    //    QDomNodeList nodeList = domDocument.childNodes();
+    //    for (i = 0; i < nodeList.size(); ++i){
+
+    //        QDomNode node = nodeList.at(i);
+
+    //        if(node.toElement().tagName() == "outlinerSettings"){
+    //            targetElement = node.toElement();
+    //        }
+    //    }
+
+    //    if(targetElement.tagName() == "outlinerSettings"){
+    //        QString num = targetElement.attribute("widgetTargetedNumber", "1");
+
+    //         outliner->setOutlinerViewportPos(num.toInt());
+    //    }
+    //    else{  // if there isn't an element "outlinerSettings" :
+    //        QDomElement element = domDocument.createElement("outlinerSettings");
+    //        element.setAttribute("widgetTargetedNumber", "1");
+
+    //        domDocument.appendChild(element);
+    //        QString num = targetElement.attribute("widgetTargetedNumber", "1");
+
+    //         outliner->setOutlinerViewportPos(num.toInt());
+    //    }
+}
+
+//-----------------------------------------------------------------------------------------
+void MainTree::saveOutlineSettings()
+{
+
+
+
+    //    QDomElement targetElement;
+    //    QString string;
+    //    QDomNodeList nodeList = domDocument.childNodes();
+    //    for (int i = 0; i < nodeList.size(); ++i){
+
+    //        QDomNode node = nodeList.at(i);
+
+    //        if(node.toElement().tagName() == "outlinerSettings"){
+    //            targetElement = node.toElement();
+    //        }
+    //    }
+
+
+    //        targetElement.setAttribute("widgetTargetedNumber", string.setNum(widgetTargetedNumber));
+
+
+
 }
