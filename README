@@ -1,5 +1,12 @@
 PLUME CREATOR
 
+
+v 0.37  - Outliner :
+		- paragraph indent & margin menu added
+		- bug solved: the outliner crashed when closed
+		- outliner centers on the opened sheet
+	- Exporter can give a preview
+
 v 0.36
 	- Outliner :
 		- display bugs solved

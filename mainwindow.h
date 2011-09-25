@@ -116,7 +116,7 @@ private:
     int settingNumber;
 
     void autosaveTimer();
-    bool firstOpen;
+    bool NoProjectOpened;
     int autosaveTime;
     QTimer *timer;
 

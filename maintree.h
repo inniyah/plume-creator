@@ -82,7 +82,8 @@ private slots:
     void moveUp();
     void moveDown();
     void delYesItem();
-    void autoRenameChilds();
+  void removeItem(QDomElement element);
+  void autoRenameChilds();
     void split();
     void addMulti();
 
@@ -97,6 +98,8 @@ private slots:
     void deletedSlot();
     void setOutlineViewPos();
     void saveOutlineSettings();
+ void insertOutlinerItem(int newNumber, int numberOfRef);
+ void outlinerClosed(){outlinerLaunched = false;}
 
 private:
     void parseFolderElement(const QDomElement &element,

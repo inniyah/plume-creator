@@ -38,7 +38,8 @@ public slots:
 
 private slots:
     void setExistingDirectory();
-
+    void seePreview();
+    void closePreview(){previewDialog->close();}
     //tree :
     void createTree(QFile *device);
     bool read(QFile *device);
@@ -55,7 +56,7 @@ private:
     QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
     QComboBox *fileTypeCombo;
     QFile *targetDevice;
-
+QDialog *previewDialog;
 
     //tree :
 
@@ -75,7 +76,7 @@ private:
 
 
     // accept :
-
+    QTextDocument * buildFinalDoc();
     void exportDoc();
     QTextDocument* prepareTextDoc(QFile *textFile);
     QTextDocument* prepareSynDoc(QFile *synFile);

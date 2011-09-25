@@ -322,9 +322,8 @@ void MainTree::closeTree()
 
 
     if(outlinerLaunched){
-        outliner->deleteLater();
+        killOutliner();
     }
-    outlinerLaunched = false;
 
 
 
@@ -727,6 +726,8 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
 
     buildTree();
 
+    qDebug() << "outlinerLaunched : " << outlinerLaunched;
+
     if(outlinerLaunched){
         killOutliner();
         launchOutliner();
@@ -744,9 +745,11 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     if(item == 0)
         item = m_itemEntered;
 
-    // adding to Dom
 
+    qDebug() << "pre jal c";
+    // adding to Dom
     QDomElement element = domElementForItem.value(item);
+    qDebug() << element.tagName();
     if(element.tagName() == "scene" || element.tagName() == "separator")
         return 0;
 
@@ -771,13 +774,13 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
 
     this->write(deviceFile);
 
-
     buildTree();
 
 
     if(outlinerLaunched){
         killOutliner();
         launchOutliner();
+        //        insertOutlinerItem(newElement.attribute("number").toInt(), element.attribute("number").toInt());
     }
 
 
@@ -1081,6 +1084,36 @@ void MainTree::delYesItem()
             //        else
             //            parentItem = headerItem();
         }
+
+
+        while(element.hasChildNodes()){
+
+            //            while(element.hasChildNodes()){
+
+
+            //                removeItem(element.firstChild().firstChild().toElement());
+            //                element.removeChild(element.firstChild().firstChild());
+
+
+
+            //            }
+            removeItem(element.firstChild().toElement());
+            element.removeChild(element.firstChild());
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
         //    if(element.hasChildNodes()){
 
 
@@ -1103,110 +1136,105 @@ void MainTree::delYesItem()
 
 
 
-        while(element.hasChildNodes()){
-
-            QDomNodeList nodeList = element.childNodes();
-
-            int numFile;
-            int numOriginalTextChar_point = 0;
-            QString originalTextFile = element.firstChild().toElement().attribute("textPath");
 
 
+        //        while(element.hasChildNodes()){
 
-            originalTextFile = originalTextFile.mid(7);
+        //            QDomNodeList nodeList = element.childNodes();
 
-            for (int j = 0; j < originalTextFile.size(); ++j) {
-                if (originalTextFile.at(j) == QChar('.'))
-                    numOriginalTextChar_point = j;
+        //            int numFile;
+        //            int numOriginalTextChar_point = 0;
+        //            QString originalTextFile = element.firstChild().toElement().attribute("textPath");
 
 
 
-            }
-            qDebug()<< "erase childs parent";
+        //            originalTextFile = originalTextFile.mid(7);
 
-            originalTextFile = originalTextFile.left(numOriginalTextChar_point);
-
-            numFile = originalTextFile.toInt();
-
-
-            freeNumList.append(numFile);
+        //            for (int j = 0; j < originalTextFile.size(); ++j) {
+        //                if (originalTextFile.at(j) == QChar('.'))
+        //                    numOriginalTextChar_point = j;
 
 
 
+        //            }
+        //            qDebug()<< "erase childs parent";
+
+        //            originalTextFile = originalTextFile.left(numOriginalTextChar_point);
+
+        //            numFile = originalTextFile.toInt();
 
 
-            while(element.firstChild().hasChildNodes()){
-
-
-
-
-                int numFil;
-                int numOriginalTxtChar_point = 0;
-                QString originalTxtFile = element.firstChild().firstChild().toElement().attribute("textPath");
-
-
-
-                originalTxtFile = originalTxtFile.mid(7);
-
-                for (int p = 0; p < originalTxtFile.size(); ++p) {
-                    if (originalTxtFile.at(p) == QChar('.'))
-                        numOriginalTxtChar_point = p;
-
-
-
-                }
-
-
-                qDebug()<< "erase childs 3";
-
-                originalTxtFile = originalTxtFile.left(numOriginalTxtChar_point);
-
-                numFil = originalTxtFile.toInt();
-
-
-                freeNumList.append(numFil);
-
-                QString string = element.firstChild().firstChild().toElement().attribute("number");
-                emit(textAndNoteSignal(string.toInt(),"close"));
-                QFile txtFile(devicePath + element.firstChild().firstChild().toElement().attribute("textPath"));
-                QFile notFile(devicePath + element.firstChild().firstChild().toElement().attribute("notePath"));
-                QFile syFile(devicePath + element.firstChild().firstChild().toElement().attribute("synPath"));
-                txtFile.remove();
-                notFile.remove();
-                syFile.remove();
-
-                element.firstChild().removeChild(element.firstChild().firstChild());
-
-
-            }
-
-
-            emit textAndNoteSignal(element.firstChild().toElement().attribute("number").toInt(),"close");
-            QFile textFil(devicePath + element.firstChild().toElement().attribute("textPath"));
-            QFile noteFil(devicePath + element.firstChild().toElement().attribute("notePath"));
-            QFile synFil(devicePath + element.firstChild().toElement().attribute("synPath"));
-            textFil.remove();
-            noteFil.remove();
-            synFil.remove();
-
-            element.removeChild(element.firstChild());
+        //            freeNumList.append(numFile);
 
 
 
 
 
-            //    QString debug;
-            qDebug()<< "erase childs 1";
+        //            while(element.firstChild().hasChildNodes()){
 
-        }
 
-        emit textAndNoteSignal(element.attribute("number").toInt(),"close");
-        QFile textFile(devicePath + element.attribute("textPath"));
-        QFile noteFile(devicePath + element.attribute("notePath"));
-        QFile synFile(devicePath + element.attribute("synPath"));
-        textFile.remove();
-        noteFile.remove();
-        synFile.remove();
+
+
+        //                int numFil;
+        //                int numOriginalTxtChar_point = 0;
+        //                QString originalTxtFile = element.firstChild().firstChild().toElement().attribute("textPath");
+
+
+
+        //                originalTxtFile = originalTxtFile.mid(7);
+
+        //                for (int p = 0; p < originalTxtFile.size(); ++p) {
+        //                    if (originalTxtFile.at(p) == QChar('.'))
+        //                        numOriginalTxtChar_point = p;
+
+
+
+        //                }
+
+
+        //                qDebug()<< "erase childs 3";
+
+        //                originalTxtFile = originalTxtFile.left(numOriginalTxtChar_point);
+
+        //                numFil = originalTxtFile.toInt();
+
+
+        //                freeNumList.append(numFil);
+
+        //                QString string = element.firstChild().firstChild().toElement().attribute("number");
+        //                emit(textAndNoteSignal(string.toInt(),"close"));
+        //                QFile txtFile(devicePath + element.firstChild().firstChild().toElement().attribute("textPath"));
+        //                QFile notFile(devicePath + element.firstChild().firstChild().toElement().attribute("notePath"));
+        //                QFile syFile(devicePath + element.firstChild().firstChild().toElement().attribute("synPath"));
+        //                txtFile.remove();
+        //                notFile.remove();
+        //                syFile.remove();
+
+        //                element.firstChild().removeChild(element.firstChild().firstChild());
+
+
+        //            }
+
+
+        //            emit textAndNoteSignal(element.firstChild().toElement().attribute("number").toInt(),"close");
+        //            QFile textFil(devicePath + element.firstChild().toElement().attribute("textPath"));
+        //            QFile noteFil(devicePath + element.firstChild().toElement().attribute("notePath"));
+        //            QFile synFil(devicePath + element.firstChild().toElement().attribute("synPath"));
+        //            textFil.remove();
+        //            noteFil.remove();
+        //            synFil.remove();
+
+        //            element.removeChild(element.firstChild());
+
+
+
+
+
+        //            //    QString debug;
+        //            qDebug()<< "erase childs 1";
+
+        //        }
+
         //    textFile.setFileName(devicePath + element.attribute("textPath") + ".temp");
         //    noteFile.setFileName(devicePath + element.attribute("notePath") + ".temp");
         //    synFile.setFileName(devicePath + element.attribute("synPath") + ".temp");
@@ -1221,22 +1249,10 @@ void MainTree::delYesItem()
 
 
         //   domElementForItem.remove(m_itemEntered);
+
+        removeItem(element);
+
         element.parentNode().removeChild(element);
-
-
-        QTreeWidgetItem *parentItem;
-        QTreeWidgetItem *current;
-
-
-        current = m_itemEntered;
-        if(current->parent())
-            parentItem = current->parent();
-        else
-            parentItem = headerItem();
-
-        //  int numIndex = parentItem->indexOfChild(current);
-
-        parentItem->removeChild(current);
 
         //       takeChild(numIndex);
 
@@ -1245,28 +1261,6 @@ void MainTree::delYesItem()
 
         //free freeNumList
 
-
-        int numFile;
-        int numOriginalTextChar_point = 0;
-        QString originalTextFile = element.attribute("textPath");
-
-
-        originalTextFile = originalTextFile.mid(7);
-
-        for (int i = 0; i < originalTextFile.size(); ++i) {
-            if (originalTextFile.at(i) == QChar('.'))
-                numOriginalTextChar_point = i;
-
-
-
-        }
-
-        originalTextFile = originalTextFile.left(numOriginalTextChar_point);
-
-        numFile = originalTextFile.toInt();
-
-
-        freeNumList.append(numFile);
 
         this->write(deviceFile);
 
@@ -1292,6 +1286,42 @@ void MainTree::delYesItem()
 
     }
 
+
+}
+
+
+
+void MainTree::removeItem(QDomElement element)
+{
+    int number = domElementForNumber.key(element.toElement());
+
+
+    freeNumList.append(number);
+
+    emit(textAndNoteSignal(number,"close"));
+
+    QString string;
+    QTextDocument *text = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number));
+    QTextDocument *note = this->findChild<QTextDocument *>("noteDoc_" + string.setNum(number));
+    QTextDocument *syn = this->findChild<QTextDocument *>("synDoc_" + string.setNum(number));
+
+
+
+    QFile *textFile = fileForDoc.value(text);
+    QFile *noteFile = fileForDoc.value(note);
+    QFile *synFile = fileForDoc.value(syn);
+
+    textFile->remove();
+    noteFile->remove();
+    synFile->remove();
+
+    fileForDoc.remove(text);
+    fileForDoc.remove(note);
+    fileForDoc.remove(syn);
+
+    text->deleteLater();
+    note->deleteLater();
+    syn->deleteLater();
 
 }
 
@@ -1418,31 +1448,25 @@ void MainTree::split()
         QString txtPath;
         QTreeWidgetItem *childItem;
         QTreeWidgetItem *item;
-        QTreeWidgetItem *lastItem = new QTreeWidgetItem;
+        QTreeWidgetItem *childItemOfWork;
+        QTreeWidgetItem *itemOfWork2;
+                QTreeWidgetItem *lastItem = new QTreeWidgetItem;
         QTreeWidgetItem *nextItem = new QTreeWidgetItem;
         QStringList chaptersList, scenesList, allScenesList;
         QList<bool> resultsList;
         QList<QTreeWidgetItem *> childsList;
-        QTextDocument *textDocument = new QTextDocument;
         QTextDocumentWriter *docWriter = new QTextDocumentWriter;
         docWriter->setFormat("HTML");
 
 
-
         QDomElement domItem = domElementForItem.value(itemOfWork);
 
+        int number = domItem.attribute("number").toInt();
 
-        QFile *textFile = new QFile;
-        textFile->open(QFile::ReadOnly | QFile::Text);
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        QTextStream textFileStream( textFile );
-        textDocument->setHtml(textFileStream.readAll());
-        QString mainString = textDocument->toHtml("utf-8");
-        textFile->close();
+        QString string;
+        QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number,10));
+        QString mainString = textDoc->toHtml("utf-8");
 
-        //  QMessageBox msgBox;
-        //  msgBox.setText(mainString);
-        //  msgBox.exec();
 
         if(domItem.tagName() == "scene"){
 
@@ -1456,15 +1480,9 @@ void MainTree::split()
             for(int i = 0; i < scenesList.size(); ++i){
 
                 item = addItemNext(itemOfWork);
-                txtPath = domElementForItem.value(item).toElement().attribute("textPath");
-                qDebug() << "item text : " << item->text(0);
-                txtFile->setFileName(devicePath + txtPath);
-                qDebug() <<"(devicePath + txtPath) : "<< devicePath + txtPath;
-                textDocument->setHtml(scenesList.at(i));
-                docWriter->setDevice(txtFile);
-                bool written = docWriter->write(textDocument);
-                resultsList.append(written);
-
+                int num = domElementForItem.value(item).toElement().attribute("number").toInt();
+                QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
+                doc->setHtml(scenesList.at(i));
 
                 itemOfWork = item;
 
@@ -1472,8 +1490,60 @@ void MainTree::split()
 
 
         }
+if(domItem.tagName() == "chapter"){
+                chaptersList = mainString.split("###", QString::KeepEmptyParts);
+    for(int i = 0; i < chaptersList.size(); ++i){
+        itemOfWork = addItemNext(itemOfWork);
 
 
+    }
+}
+//        if(domItem.tagName() == "chapter"){
+
+//            chaptersList = mainString.split("###", QString::KeepEmptyParts);
+//            //            if(scenesList.size() == 1){
+//            //                QMessageBox::information(this, tr("Splitting Task"), tr("This sheet does not contain *** ."));
+//            //                return;
+//            //            }
+
+//            QString debug;
+//            qDebug() << "chaptersList.size() : " << debug.setNum(chaptersList.size(), 10);
+
+//            for(int i = 0; i < chaptersList.size(); ++i){
+
+
+//                itemOfWork2 = addItemNext(itemOfWork);
+//                QString chapterString = chaptersList.at(i);
+
+//                scenesList = chapterString.split("***", QString::SkipEmptyParts);
+//                qDebug() << "scenesList.size() : " << debug.setNum(scenesList.size(), 10);
+
+//                qDebug() << "scenesList.first() : " << scenesList.first();
+//                childItem = addChild(itemOfWork2);
+//                qDebug() << "childItem->text(0)  : " << childItem->text(0);
+//                int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
+//                QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
+//                qDebug() << "doc : " << doc->objectName();
+//                if(doc == 0)
+//                    qDebug() <<"doc == 0" ;
+//                doc->setHtml(scenesList.first());
+//childItemOfWork = childItem;
+
+//                if(scenesList.size() != 1)
+//                    for(int t = 1; t < scenesList.size(); ++t){
+//                        item = addItemNext(childItemOfWork);
+//                        int num = domElementForItem.value(item).toElement().attribute("number").toInt();
+//                        QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
+//                        doc->setHtml(scenesList.at(t));
+
+//                        childItemOfWork = item;
+//                    }
+
+
+//            }
+
+
+//        }
 
 
         /*
@@ -1705,20 +1775,11 @@ void MainTree::split()
 
         QApplication::restoreOverrideCursor();
 
-        int resultsErrorsNum = 0;
-
-        for(int l = 0; l < resultsList.size(); ++l)
-            if(resultsList.at(l) == false)
-                resultsErrorsNum += 1;
 
 
         connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
                 this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
-        if(resultsList.size() == 0)
-            QMessageBox::critical(this, tr("Splitting Task"), tr("Splitting critical error !"));
-        else
-            QMessageBox::information(this, tr("Splitting Task"), tr("Splitting done with %1 errors !").arg(resultsErrorsNum));
 
         chaptersList.clear();
         scenesList.clear();
@@ -2123,8 +2184,9 @@ void MainTree::dropEvent(QDropEvent* event)
         buildTree();
 
         if(outlinerLaunched){
-            outliner->saveConfig();
-            outliner->deleteLater();
+
+            killOutliner();
+            launchOutliner();
         }
 
     }
@@ -2159,8 +2221,9 @@ void MainTree::dropEvent(QDropEvent* event)
 
 
         if(outlinerLaunched){
-            outliner->cleanArea();
-            buildOutliner();
+
+            killOutliner();
+            launchOutliner();
         }
 
     }
@@ -2194,8 +2257,9 @@ void MainTree::dropEvent(QDropEvent* event)
         buildTree();
 
         if(outlinerLaunched){
-            outliner->cleanArea();
-            buildOutliner();
+
+            killOutliner();
+            launchOutliner();
         }
 
     }
@@ -2391,17 +2455,19 @@ bool MainTree::saveDoc(QTextDocument *doc)
 
 void MainTree::launchOutliner()
 {
-    //    if(outlinerLaunched){
-
+    if(outlinerLaunched)
+        return;
     //       outliner->cleanArea();
     //       outliner->show();
     //    }
     //    else{
     outliner = new Outline(0);
 
+    outliner->applyConfig();
     buildOutliner();
 
     connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
+    connect(outliner, SIGNAL(outlinerClosedSignal()), this, SLOT(outlinerClosed()));
     connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
     connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
     connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
@@ -2452,7 +2518,7 @@ void MainTree::buildOutliner()
 
     }
     outliner->buildStretcher();
-    setOutlineViewPos();
+    QTimer::singleShot( 5, this, SLOT(setOutlineViewPos()) );
 }
 
 //-----------------------------------------------------------------------------------------
@@ -2460,7 +2526,7 @@ void MainTree::buildOutliner()
 void MainTree::killOutliner()
 {
     saveOutlineSettings();
-    outliner->saveConfig();
+    outliner->close();
     outliner->deleteLater();
     outlinerLaunched = false;
 
@@ -2484,9 +2550,27 @@ void MainTree::newOutlineTitleSlot(QString newTitle,int number)
     buildTree();
 }
 //-----------------------------------------------------------------------------------------
+void MainTree::insertOutlinerItem(int newNumber, int numberOfRef)
+{
+
+
+    QDomElement element = domElementForNumber.value(newNumber);
+
+    QString string;
+    QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + string.setNum(newNumber));
+    QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + string.setNum(newNumber));
+
+    OutlineItem *newWidget = outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
+
+
+    outliner->insertItemInOutliner(newWidget,numberOfRef,element.tagName());
+}
+//-----------------------------------------------------------------------------------------
+
+
 void MainTree::writeThisSlot(int number)
 {
-  openTextFile(domElementForItem.key(domElementForNumber.value(number)), 0);
+    openTextFile(domElementForItem.key(domElementForNumber.value(number)), 0);
 }
 
 
@@ -2496,7 +2580,7 @@ void MainTree::setOutlineViewPos()
 {
     //               QString objName = doc->objectName();
     //                            int number = objName.mid(objName.indexOf("_")).toInt();
-    QDomElement enteredElement = domElementForItem.value(itemTargetedForOutliner);
+    QDomElement enteredElement = domElementForItem.value(/*itemTargetedForOutliner*/m_itemEntered);
     widgetTargetedNumber = enteredElement.attribute("number", "1").toInt();
     outliner->setOutlinerViewportPos(widgetTargetedNumber);
 

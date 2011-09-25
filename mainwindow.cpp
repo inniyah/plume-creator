@@ -17,7 +17,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), firstOpen(true)
+    : QMainWindow(parent), NoProjectOpened(true)
 {
     setMinimumSize(800, 600);
     setWindowTitle("Plume Creator");
@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.36 Beta !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.37 Beta !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -332,7 +332,7 @@ void MainWindow::openProjectSlot(QFile *projectFile)
     file = projectFile;
     mainTree->read(projectFile);
 
-
+    configTimer();
 }
 
 //---------------------------------------------------------------------------
@@ -344,7 +344,7 @@ void MainWindow::closeProjectSlot()
     mainTree->write(file);
 
     mainTree->closeTree();
-    firstOpen = true;
+    NoProjectOpened = true;
 
     QSettings settings;
     settings.beginWriteArray("Manager/projects");
@@ -352,7 +352,7 @@ void MainWindow::closeProjectSlot()
     settings.setValue("lastModified", QDateTime::currentDateTime().toString());
     settings.endArray();
 
-
+    timer->stop();
 }
 
 void MainWindow::setProjectNumberSlot(int prjNumber)
@@ -405,7 +405,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
         tab->openText(textDoc);
         //       tab->setAttribute(Qt::WA_DeleteOnClose);
-//        qDebug() << "name : " << name;
+        //        qDebug() << "name : " << name;
         tabWidget->addTab(tab, name);
 
 
@@ -446,7 +446,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         synStack->setObjectName(synWidget->objectName() + "-NoteZone");
 
         numList->append(number);
-//        qDebug() << "added objectname value : " << string.setNum(number,10);
+        //        qDebug() << "added objectname value : " << string.setNum(number,10);
 
 
 
@@ -471,11 +471,11 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(noteStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
 
         //launch autosaving :
-        if(firstOpen)
+        if(NoProjectOpened)
             autosaveTimer();
 
         //other :
-        firstOpen = false;
+        NoProjectOpened = false;
 
         //focus on text :
         tab->setTextFocus();
@@ -485,10 +485,10 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         synStack->setCursorPos(synCursorPosition);
         noteStack->setCursorPos(noteCursorPosition);
 
-//        QString debug;
-//        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
-//        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
-//        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
+        //        QString debug;
+        //        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
+        //        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
+        //        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
 
 
 
@@ -538,7 +538,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
     }
 
 
-//    qDebug() << "Action Note :" << action;
+    //    qDebug() << "Action Note :" << action;
 
 }
 
@@ -558,7 +558,7 @@ void MainWindow::secondTextSlot(int number, QString action)
         TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
         QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
         QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
-//        qDebug() << "objectname value : " << string.setNum(number,10);
+        //        qDebug() << "objectname value : " << string.setNum(number,10);
 
         tabWidget->removeTab(tabWidget->indexOf(tab));
         noteLayout->removeWidget(noteWidget);
@@ -617,15 +617,15 @@ void MainWindow::tabChangeSlot(int tabNum)
 
     if(preTabNum != -1){
 
-        bool textBool = mainTree->saveDoc(textWidgetList->at(preTabNum)->document());
-        bool noteBool = mainTree->saveDoc(noteWidgetList->at(preTabNum)->document());
-        bool synBool = mainTree->saveDoc(synWidgetList->at(preTabNum)->document());
+        //        bool textBool = mainTree->saveDoc(textWidgetList->at(preTabNum)->document());
+        //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(preTabNum)->document());
+        //        bool synBool = mainTree->saveDoc(synWidgetList->at(preTabNum)->document());
 
-        qDebug() << "tabChangeRequest textName :" << textWidgetList->at(preTabNum)->objectName() << "----------- saved :" << textBool;
-        qDebug() << "tabChangeRequest noteName :" << noteWidgetList->at(preTabNum)->objectName() << "----------- saved :" << noteBool;
-        qDebug() << "tabChangeRequest synName :" << synWidgetList->at(preTabNum)->objectName() << "----------- saved :" << synBool;
-        qDebug() << "tabChangeRequest pre :" << preTabNum;
-        qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
+        //        qDebug() << "tabChangeRequest textName :" << textWidgetList->at(preTabNum)->objectName() << "----------- saved :" << textBool;
+        //        qDebug() << "tabChangeRequest noteName :" << noteWidgetList->at(preTabNum)->objectName() << "----------- saved :" << noteBool;
+        //        qDebug() << "tabChangeRequest synName :" << synWidgetList->at(preTabNum)->objectName() << "----------- saved :" << synBool;
+        //        qDebug() << "tabChangeRequest pre :" << preTabNum;
+        //        qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
 
 
         //to initialize edit menu fonts:
@@ -681,7 +681,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     numList->removeAt(tabNum);
     tabNumList->removeAt(tabNum);
 
-//    qDebug() << "tabCloseRequest post :" << tabNum;
+    //    qDebug() << "tabCloseRequest post :" << tabNum;
 
     QTimer::singleShot(500, this, SLOT(reconnectAFterTabClose()));
 
@@ -927,7 +927,7 @@ void MainWindow::applyConfig()
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     settings.endGroup();
 
-    if(!firstOpen)
+    if(!NoProjectOpened)
         configTimer();
 
 

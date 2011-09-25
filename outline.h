@@ -23,6 +23,8 @@
 #include <QWidget>
 #include <QtGui>
 
+#include "outlineitem.h"
+
 class Outline : public QWidget
 {
     Q_OBJECT
@@ -43,9 +45,10 @@ signals:
     void disconnectUpdateTextsSignal();
     void connectUpdateTextsSignal();
     void writeThisSignal(int number);
+    void outlinerClosedSignal();
 
 public slots:
-    void buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,QString title, int number, QString tagName);
+    OutlineItem * buildItem(QTextDocument *synDocument, QTextDocument *noteDocument,QString title, int number, QString tagName);
     void buildSeparator();
     void buildStretcher();
     void applyConfig();
@@ -54,6 +57,7 @@ public slots:
     void cleanArea();
 
     void setOutlinerViewportPos(int number);
+void insertItemInOutliner(QWidget *newWidget, int number, QString tagName);
 
 private slots:
 
@@ -71,9 +75,9 @@ private:
     QSlider *synSlider;
     QSlider *noteSlider;
     QFontComboBox *synFontCombo;
-    QSpinBox *synTextHeightSpin;
+    QSpinBox *synTextHeightSpin, *synTextIndentSpin, *synTextMarginSpin;
     QFontComboBox *noteFontCombo;
-    QSpinBox *noteTextHeightSpin;
+    QSpinBox *noteTextHeightSpin, *noteTextIndentSpin, *noteTextMarginSpin;
 };
 
 #endif // OUTLINE_H

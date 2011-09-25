@@ -53,8 +53,12 @@ public slots:
     void changeNoteWidth(int width);
     void changeSynFont(QFont font);
     void changeSynTextHeight(int height);
-    void changeNoteFont(QFont font);
+void changeSynIndent(int indent);
+void changeSynMargin(int margin);
+void changeNoteFont(QFont font);
     void changeNoteTextHeight(int height);
+    void changeNoteIndent(int indent);
+void changeNoteMargin(int margin);
 void connectUpdateTextsSlot();
 void disconnectUpdateTextsSlot();
 
@@ -120,9 +124,13 @@ private:
 
 QFont synDefaultFont;
 int synDefaultHeight;
+int synDefaultIndent;
+int synDefaultMargin;
 
 QFont  noteDefaultFont;
 int noteDefaultHeight;
+int noteDefaultIndent;
+int noteDefaultMargin;
 
     int number;
 };

@@ -74,6 +74,8 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     QWidget *stretcher = new QWidget;
     stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
+    QPushButton *previewButton = new QPushButton(tr("Preview"), this);
+
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(label, 0, 0, 1, 2);
     //    layout->addWidget(directoryLabel, 1, 0);
@@ -84,7 +86,7 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     layout->addWidget(fileTypeCombo, 3,1);
     layout->addWidget(checkGroupBox,4,0,1,2);
     layout->addWidget(stretcher,5,0,1,2);
-
+layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
     tree = new QTreeWidget;
     tree->setFixedWidth(width()/3);
 
@@ -96,6 +98,7 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel);
 
+    connect(previewButton, SIGNAL(clicked()), this, SLOT(seePreview()));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -115,6 +118,11 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
 
 void Exporter::accept()
 {
+    if(directoryLabelLineEdit->text() == "" || projectNameLabelLineEdit->text() == "" ){
+        QMessageBox::information(this, "Project Exporter", "The destiantions fields must be completed  !", QMessageBox::Ok);
+return;
+            }
+
     QApplication::setOverrideCursor(Qt::WaitCursor);
     exportDoc();
     QApplication::restoreOverrideCursor();
@@ -405,10 +413,7 @@ void Exporter::itemClickedSlot(QTreeWidgetItem* item, int column)
 
 
 
-
-
-
-void Exporter::exportDoc()
+QTextDocument * Exporter::buildFinalDoc()
 {
     //search for checked QTreeWidgetItems :
 
@@ -446,13 +451,7 @@ void Exporter::exportDoc()
     QTextDocument *textDocument = new QTextDocument;
     QTextEdit *edit = new QTextEdit;
 
-    QString format;
-    if(fileTypeCombo->currentIndex() == 0)
-        format = "html";
-    if(fileTypeCombo->currentIndex() == 1)
-        format = "odt";
-    if(fileTypeCombo->currentIndex() == 2)
-        format = "txt";
+
 
     for(int i = 0; i < itemList->size(); ++i){
         QDomElement element = domElementForItem.value(itemList->at(i));
@@ -569,16 +568,32 @@ void Exporter::exportDoc()
         progressBar->setValue(progressValue);
 
     }
+    progressWidget->close();
+
+    return textDocument;
+}
+
+void Exporter::exportDoc()
+{
+
+    QTextDocument *document = buildFinalDoc();
+
+    QString format;
+    if(fileTypeCombo->currentIndex() == 0)
+        format = "html";
+    if(fileTypeCombo->currentIndex() == 1)
+        format = "odt";
+    if(fileTypeCombo->currentIndex() == 2)
+        format = "txt";
 
     QTextDocumentWriter writer;
     QByteArray array;
     writer.setFormat(array.append(format));
     writer.setFileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + "." + format);
     writer.setCodec(QTextCodec::codecForName("UTF-8"));
-    writer.write(textDocument);
+    writer.write(document);
 
 
-    progressWidget->close();
 
     QMessageBox::information(this, "Project exported", "This project was successfully exported !", QMessageBox::Ok);
 }
@@ -738,4 +753,44 @@ QTextDocument *Exporter::prepareNoteDoc(QFile *noteFile)
     //    tCursor->mergeBlockFormat(blockFormat);
 
     return textDocument;
+}
+
+
+void Exporter::seePreview()
+{
+    QTextDocument *document = buildFinalDoc();
+
+    qDebug() << "jal 1";
+
+
+    previewDialog = new QDialog(this);
+    previewDialog->setAttribute(Qt::WA_DeleteOnClose);
+    previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
+previewDialog->setMinimumSize(600,800);
+qDebug() << "jal 2";
+
+QVBoxLayout *layout = new QVBoxLayout;
+
+
+    QTextBrowser *browser = new QTextBrowser;
+        if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
+            browser->setPlainText(document->toPlainText());
+        }
+        else{
+        browser->setDocument(document);
+        QMessageBox::information(this, "Project Exporter", "You have selected the .txt format. There is no formatting !", QMessageBox::Ok);
+
+}
+
+        qDebug() << "jal 3";
+
+    QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
+                                         | QDialogButtonBox::Cancel), Qt::Horizontal);
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttons, SIGNAL(rejected()), this, SLOT(closePreview()));
+
+layout->addWidget(browser);
+layout->addWidget(buttons);
+previewDialog->setLayout(layout);
+previewDialog->show();
 }
