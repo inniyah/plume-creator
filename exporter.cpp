@@ -119,7 +119,7 @@ layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
 void Exporter::accept()
 {
     if(directoryLabelLineEdit->text() == "" || projectNameLabelLineEdit->text() == "" ){
-        QMessageBox::information(this, "Project Exporter", "The destiantions fields must be completed  !", QMessageBox::Ok);
+        QMessageBox::information(this, tr("Project Exporter"), tr("The destination fields must be completed !"), QMessageBox::Ok);
 return;
             }
 
@@ -583,8 +583,10 @@ void Exporter::exportDoc()
         format = "html";
     if(fileTypeCombo->currentIndex() == 1)
         format = "odt";
-    if(fileTypeCombo->currentIndex() == 2)
+    if(fileTypeCombo->currentIndex() == 2){
         format = "txt";
+        QMessageBox::information(this, "Project Exporter", "You have selected the .txt format. There is no formatting !", QMessageBox::Ok);
+    }
 
     QTextDocumentWriter writer;
     QByteArray array;
@@ -760,14 +762,12 @@ void Exporter::seePreview()
 {
     QTextDocument *document = buildFinalDoc();
 
-    qDebug() << "jal 1";
 
 
     previewDialog = new QDialog(this);
     previewDialog->setAttribute(Qt::WA_DeleteOnClose);
     previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
 previewDialog->setMinimumSize(600,800);
-qDebug() << "jal 2";
 
 QVBoxLayout *layout = new QVBoxLayout;
 
@@ -778,11 +778,9 @@ QVBoxLayout *layout = new QVBoxLayout;
         }
         else{
         browser->setDocument(document);
-        QMessageBox::information(this, "Project Exporter", "You have selected the .txt format. There is no formatting !", QMessageBox::Ok);
 
 }
 
-        qDebug() << "jal 3";
 
     QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
                                          | QDialogButtonBox::Cancel), Qt::Horizontal);

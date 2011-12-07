@@ -32,6 +32,7 @@ public:
 protected:
     void resizeEvent (QResizeEvent *event);
 
+
 signals:
     void resizingSignal();
     void newOutlineTitleSignal(QString newTitle, int number);
@@ -79,9 +80,11 @@ private slots:
 
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
 
-   void setSynDefaultFont();
+   void setSynFirstLineFont();
+   void setNoteFirstLineFont();
 
-   void setNoteDefaultFont();
+   void applySynFont();
+   void applyNoteFont();
 
 private:
     int itemWidth;

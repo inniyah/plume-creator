@@ -55,10 +55,15 @@ signals:
     void disconnectUpdateTextsSignal();
     void connectUpdateTextsSignal();
 
+    // for attendance :
+
+    void attendStringSignal(int number, QString attendString);
+
 public slots:
 
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
     bool saveDoc(QTextDocument *doc);
+    QTextDocument * prevText(int num);
 
     // Outline :
     void launchOutliner();

@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     app.installTranslator(plumeTranslator);
 
 
-    qDebug() << "locale : " << "plume-creator_" + QLocale::system().name();
+//    qDebug() << "locale : " << "plume-creator_" + QLocale::system().name();
 
 
     MainWindow w;

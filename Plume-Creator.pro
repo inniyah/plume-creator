@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     fulltextzone.cpp \
     exporter.cpp \
     outlineitem.cpp \
-    outline.cpp
+    outline.cpp \
+    attendbox.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwindow.h \
     fulltextzone.h \
     exporter.h \
     outlineitem.h \
-    outline.h
+    outline.h \
+    attendbox.h
 
 RESOURCES += \
     pics.qrc \
@@ -59,6 +61,12 @@ RESOURCES += \
 CODECFORTR = UTF-8
 
 TRANSLATIONS = plume-creator_fr_FR.ts
+
+
+
+
+
+
 
 
 

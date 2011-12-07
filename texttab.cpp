@@ -8,7 +8,11 @@
 TextTab::TextTab(QWidget *parent) :
     QWidget(parent)
 {
+prevTextDocument = new QTextDocument(this);
     textDocument = new QTextDocument(this);
+
+prevTextZone = new TextZone(prevTextDocument, this);
+    prevTextZone->toHtml();
 
 
     textZone = new TextZone(textDocument, this);
@@ -16,9 +20,17 @@ TextTab::TextTab(QWidget *parent) :
 
 
     QHBoxLayout *layout = new QHBoxLayout;
+//QVBoxLayout *vLayout = new QVBoxLayout;
+QSplitter *splitter = new QSplitter;
+splitter->setOrientation(Qt::Vertical);
+splitter->addWidget(prevTextZone);
+splitter->addWidget(textZone);
+
+
 
     layout->addStretch();
-    layout->addWidget(textZone);
+//    layout->addLayout(vLayout);
+layout->addWidget(splitter);
     layout->addStretch();
 
     setLayout(layout);
@@ -28,6 +40,12 @@ TextTab::TextTab(QWidget *parent) :
 
 
     connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
+
+
+    prevTextZone->hide();
+
+
+
 
     //config
 
@@ -70,6 +88,8 @@ bool TextTab::openText(QTextDocument *doc)
     textDocument = doc;
     textZone->setDocument(textDocument);
     textZone->document()->adjustSize();
+
+
 
     //for wordcount :
     tabWordCount = new WordCount(textDocument, this);
@@ -168,6 +188,8 @@ void TextTab::changeWidthSlot(int width)
 {
     textZone->setFixedWidth(width);
     textZone->document()->setTextWidth(textZone->width() - 20);
+    prevTextZone->setFixedWidth(width);
+    prevTextZone->document()->setTextWidth(textZone->width() - 20);
 }
 
 void TextTab::changeTextFontSlot(QFont font)
@@ -203,7 +225,7 @@ int TextTab::saveCursorPos()
 
 }
 
-QTextCharFormat TextTab::tabChangedSlot()
+QTextCharFormat TextTab::tabFontChangedSlot()
 {
     return textZone->textCursor().charFormat();
 }
@@ -212,9 +234,56 @@ void TextTab::updateTextZone()
 {
 
     textZone->document()->setTextWidth(textZone->width() - 20);
+    prevTextZone->document()->setTextWidth(prevTextZone->width() - 20);
 
     qDebug() << "updateTextZone";
 }
+
+
+
+
+void TextTab::showPrevText(bool showPrevTextBool)
+{
+    prevTextZone->setHidden(!showPrevTextBool);
+    prevTextZone->setMaximumHeight(textZone->height()/3);
+    textZone->setFocus();
+    textZone->ensureCursorVisible();
+}
+
+
+bool TextTab::setShowPrevTextButton()
+{
+    return !prevTextZone->isHidden();
+}
+
+
+void  TextTab::setPrevText(QTextDocument *prevDoc)
+{
+prevTextDocument = prevDoc;
+prevTextZone->setDocument(prevTextDocument);
+prevTextZone->document()->adjustSize();
+qDebug() << "verticalScrollBar()->maximum() : " << prevTextZone->verticalScrollBar()->maximum();
+prevTextZone->verticalScrollBar()->setSliderPosition(prevTextZone->verticalScrollBar()->maximum());
+
+
+QTextCursor tCursor = prevTextZone->textCursor();
+tCursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+
+QPoint prevDocCursorPoint = prevTextZone->cursorRect(tCursor).topLeft();
+
+//QString debug;
+//qDebug() << "prevDocCursorPoint x : " << debug.setNum(prevDocCursorPoint.x,10);
+//qDebug() << "prevDocCursorPoint y : " << debug.setNum(prevDocCursorPoint.y,10);
+
+prevTextZone->scrollBy(prevDocCursorPoint);
+
+
+
+}
+
+
+
+
 
 
 void TextTab::applyConfig()

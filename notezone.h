@@ -84,6 +84,12 @@ private slots:
     void cursorPositionChangedSlot();
 
 
+void forceSynFirstCharFont();
+void forceNoteFirstCharFont();
+
+    void applySynFontConfig();
+    void applyNoteFontConfig();
+
 private:
 
     QTextDocument *textDocument;

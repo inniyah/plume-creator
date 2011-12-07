@@ -12,6 +12,7 @@
 #include "texttab.h"
 #include "notezone.h"
 #include "outline.h"
+#include "attendbox.h"
 
 
 
@@ -36,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget->setTabsClosable(true);
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->setDocumentMode(true);
-    tabWidget->setMovable(true);
+    tabWidget->setMovable(false);
 
     setCentralWidget(tabWidget);
 
@@ -62,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.37 Beta !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.38 !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -152,6 +153,15 @@ void MainWindow::createMenuDock()
 
     toolBox->addItem(editMenu, tr("Edit Menu"));
 
+    //page 3
+
+    attendList = new AttendBox;
+
+    attendList->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    attendList->setLineWidth(2);
+    attendList->setMidLineWidth(3);
+
+    toolBox->addItem(attendList, tr("Attendance"));
 
     toolBox->setCurrentWidget(menu);
 
@@ -331,7 +341,7 @@ void MainWindow::openProjectSlot(QFile *projectFile)
     closeAllDocsSlot();
     file = projectFile;
     mainTree->read(projectFile);
-
+attendList->readProjectAttendance(projectFile);
     configTimer();
 }
 
@@ -592,7 +602,18 @@ void MainWindow::setTextTabConnections()
 
     connect(this, SIGNAL(tabWidgetWidth(int)), editMenu,SLOT(tabWitdhChangedSlot(int)));
     emit tabWidgetWidth(tabWidget->width());
+
+    ////to show previous text :
+    connect(editMenu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
+
+//for attendance :
+
+    connect(mainTree, SIGNAL(attendStringSignal(int,QString)), attendList, SLOT(openSheetAttendList(int,QString)));
+
 }
+
+
+
 
 
 //---------------------------------------------------------------------------
@@ -631,7 +652,12 @@ void MainWindow::tabChangeSlot(int tabNum)
         //to initialize edit menu fonts:
 
         TextTab *tab = textWidgetList->at(tabNum);
-        editMenu->tabChangedSlot(tab->tabChangedSlot());
+        editMenu->tabChangedSlot(tab->tabFontChangedSlot());
+
+
+    setCurrentAttendList(tabNum);
+
+
     }
 }
 //---------------------------------------------------------------------------
@@ -946,7 +972,30 @@ void MainWindow::configTimer()
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //----------------------------------------------------------------------------
+
 
 
 void MainWindow::editFullscreen()
@@ -1002,4 +1051,29 @@ void MainWindow::launchOutliner()
 
 
 
+}
+
+//----------------------------------------------------------------------------
+
+
+void MainWindow::showPrevText(bool showPrevTextBool)
+{
+
+    int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
+
+    QString string;
+    TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
+
+   tab->showPrevText(showPrevTextBool);
+
+    tab->setPrevText(mainTree->prevText(number));
+}
+
+//----------------------------------------------------------------------------
+
+void MainWindow::setCurrentAttendList(int tabNum)
+{
+    int number = tabWidget->widget(tabNum)->objectName().mid(tabWidget->widget(tabNum)->objectName().indexOf("_") + 1).toInt();
+
+attendList->setCurrentList(number);
 }

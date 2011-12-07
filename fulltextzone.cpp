@@ -6,7 +6,8 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
     QTextEdit(parent)
 {
     setDocument(doc);
-
+    this->setMouseTracking(true);
+this->viewport()->setMouseTracking(true);
 
     textDocument = doc;
     createActions();
@@ -490,7 +491,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
 
 
         cursor.insertHtml(document.toHtml("utf-8"));
-        qDebug() << "insertFromMimeData Html";
+//        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -498,7 +499,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
         QTextCursor cursor = this->textCursor
                 ();
         cursor.insertText(plainText);
-        qDebug() << "insertFromMimeData plainText";
+//        qDebug() << "insertFromMimeData plainText";
 
     }
 
@@ -517,7 +518,7 @@ bool FullTextZone::canInsertFromMimeData (const QMimeData *source) const
         return QTextEdit::canInsertFromMimeData(source);
 
 
-    qDebug() << "canInsertFromMimeData";
+//    qDebug() << "canInsertFromMimeData";
 }
 //--------------------------------------------------------------------------------
 void FullTextZone::resizeEvent(QResizeEvent* event)
@@ -545,8 +546,8 @@ void FullTextZone::loadSliderValue()
     widthSlider->setSliderPosition(sliderValue);
     widthSlider->setValue(sliderValue);
 
-    QString debug;
-    qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
+//    QString debug;
+//    qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
 
 
     sliderValueChanged(sliderValue);
@@ -570,12 +571,16 @@ void FullTextZone::setXMax(int value)
     xMax = value;
 
     QString string;
-    qDebug() << "xMax : " << string.setNum(xMax,10);
+//    qDebug() << "xMax : " << string.setNum(xMax,10);
 }
 
 
 
+void FullTextZone::mouseMoveEvent(QMouseEvent* event)
+{
+event->ignore();
 
+}
 
 
 

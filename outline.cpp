@@ -316,7 +316,7 @@ void Outline::cleanArea()
 
 
     while(!allOutlineItems.isEmpty()){
-        qDebug() << "cleanArea ";
+//        qDebug() << "cleanArea ";
 
         OutlineItem *item = allOutlineItems.takeFirst();
         item->setObjectName("");
@@ -490,7 +490,7 @@ void Outline::insertItemInOutliner(QWidget *newWidget, int number, QString tagNa
     QString string;
     QWidget *refWidget = areaWidget->findChild<QWidget *>("outlineItem_" + string.setNum(number + 1));
 
-    qDebug() << "insertItemInOutliner  : " << refWidget->objectName();
+//    qDebug() << "insertItemInOutliner  : " << refWidget->objectName();
 
 
     if(tagName == "scene")

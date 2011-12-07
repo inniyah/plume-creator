@@ -1,5 +1,11 @@
 PLUME CREATOR
 
+v 0.38  
+	- in fullscreen editor :
+		- mouse cursor hide when idle for 3 seconds
+	- very basic character/item/place manager (not finished and not useable yet)
+	- tabs not moveable anymore (it solves a few bugs)
+	- bug solved: font problem for text zone at the first line
 
 v 0.37  - Outliner :
 		- paragraph indent & margin menu added

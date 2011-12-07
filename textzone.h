@@ -45,6 +45,7 @@ public slots:
     void setTextHeight(int height);
     void centerCursor();
     void applyConfig();
+void scrollBy(QPoint viewportPoint);
 
 private slots:
 

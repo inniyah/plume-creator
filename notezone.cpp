@@ -62,9 +62,7 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
     //    noteFile->close();
 
 
-    qDebug() << "Ttttttttttttttttttttttttttttttttttttt";
     setDocument(textDocument);
-    qDebug() << "Uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 
 
 
@@ -76,6 +74,9 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
 
     applyNoteConfig();
 
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceNoteFirstCharFont()));
+
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
 
     return true;
 }
@@ -107,6 +108,11 @@ bool NoteZone::openSyn(QTextDocument *synDoc)
     setDocumentTitle("Synopsis");
 
     applySynConfig();
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceSynFirstCharFont()));
+
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+
 
     return true;
 }
@@ -175,9 +181,22 @@ bool NoteZone::closeNote()
 
 
 
+void NoteZone::forceSynFirstCharFont()
+{
+    // force the 1 st line to be the correct font
+
+    if(this->textCursor().atStart() == true || this->textCursor().position() == 1 )
+        applySynFontConfig();
+}
+
+void NoteZone::forceNoteFirstCharFont()
+{
+    // force the 1 st line to be the correct font
 
 
-
+    if(this->textCursor().atStart() == true || this->textCursor().position() == 1 )
+        applyNoteFontConfig();
+}
 
 
 
@@ -625,17 +644,23 @@ void NoteZone::insertFromMimeData (const QMimeData *source )
 
 
         cursor.insertHtml(document.toHtml("utf-8"));
-        qDebug() << "insertFromMimeData Html";
+        //        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
         QString plainText = qvariant_cast<QString>(source->text());
-        QTextCursor cursor = this->textCursor
-                ();
+        QTextCursor cursor = this->textCursor();
         cursor.insertText(plainText);
-        qDebug() << "insertFromMimeData plainText";
+        //        qDebug() << "insertFromMimeData plainText";
 
     }
+
+
+    if(this->objectName().mid(0,3) == "syn")
+        applySynFontConfig();
+
+    if(this->objectName().mid(0,4) == "note")
+        applyNoteFontConfig();
 
 }
 
@@ -652,7 +677,7 @@ bool NoteZone::canInsertFromMimeData (const QMimeData *source) const
         return QTextEdit::canInsertFromMimeData(source);
 
 
-    qDebug() << "canInsertFromMimeData";
+    //    qDebug() << "canInsertFromMimeData";
 }
 //--------------------------------------------------------------------------------
 void NoteZone::resizeEvent(QResizeEvent* event)
@@ -678,17 +703,12 @@ void NoteZone::resizeEvent(QResizeEvent* event)
 
 void NoteZone::applyNoteConfig()
 {
-//    emit disconnectUpdateTextsSignal();
 
 
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("NoteArea/alwaysCenter", true).toBool();
     bool noteShowScrollbar = settings.value("NoteArea/showScrollbar", true).toBool();
-    int noteBottMargin = settings.value("NoteArea/bottomMargin", 20).toInt();
-    int noteTextIndent = settings.value("NoteArea/textIndent", 20).toInt();
-    int noteTextHeight = settings.value("NoteArea/textHeight", 12).toInt();
-    QString noteFontFamily = settings.value("NoteArea/textFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
 
@@ -702,6 +722,27 @@ void NoteZone::applyNoteConfig()
 
 
 
+
+
+
+
+    applyNoteFontConfig();
+}
+
+void NoteZone::applyNoteFontConfig()
+{
+    emit disconnectUpdateTextsSignal();
+
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    int noteBottMargin = settings.value("NoteArea/bottomMargin", 20).toInt();
+    int noteTextIndent = settings.value("NoteArea/textIndent", 20).toInt();
+    int noteTextHeight = settings.value("NoteArea/textHeight", 12).toInt();
+    QString noteFontFamily = settings.value("NoteArea/textFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
+
+
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(noteBottMargin);
     blockFormat.setTextIndent(noteTextIndent);
@@ -712,42 +753,25 @@ void NoteZone::applyNoteConfig()
     QTextCursor *tCursor = new QTextCursor(document());
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
     tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
-    qDebug() << "mergeBlockFormat note ";
 
-
-    //apply default font in empty documents :
-
-//    if(document()->isEmpty()){
-        QFont font;
-        font.setFamily(noteFontFamily);
-        font.setPointSize(noteTextHeight);
-        document()->setDefaultFont(font);
-        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
-
-//    }
-
-//        emit connectUpdateTextsSignal();
-
+    emit connectUpdateTextsSignal();
 
 }
+
 
 //-------------------------------------------------------------------------------
 void NoteZone::applySynConfig()
 {
-//    emit disconnectUpdateTextsSignal();
 
 
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("SynArea/alwaysCenter", true).toBool();
     bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
-    int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
-    int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
-    int synTextHeight = settings.value("SynArea/textHeight", 12).toInt();
-    QString synFontFamily = settings.value("SynArea/textFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
 
@@ -759,6 +783,27 @@ void NoteZone::applySynConfig()
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 
+    applySynFontConfig();
+
+}
+
+
+void NoteZone::applySynFontConfig()
+{
+
+
+    emit disconnectUpdateTextsSignal();
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    int synBottMargin = settings.value("SynArea/bottomMargin", 20).toInt();
+    int synTextIndent = settings.value("SynArea/textIndent", 20).toInt();
+    int synTextHeight = settings.value("SynArea/textHeight", 12).toInt();
+    QString synFontFamily = settings.value("SynArea/textFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
+
+
+
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(synBottMargin);
@@ -767,28 +812,15 @@ void NoteZone::applySynConfig()
     charFormat.setFontPointSize(synTextHeight);
     charFormat.setFontFamily(synFontFamily);
     QTextCursor *tCursor = new QTextCursor(document());
-
-
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
     tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
-    qDebug() << "mergeBlockFormat syn ";
 
+    emit connectUpdateTextsSignal();
 
-
-    //apply default font in empty documents :
-
-//    if(document()->isEmpty()){
-        QFont font;
-        font.setFamily(synFontFamily);
-        font.setPointSize(synTextHeight);
-        document()->setDefaultFont(font);
-document()->firstBlock().blockFormat().toCharFormat().setFont(font);
- //   }
-
-//emit connectUpdateTextsSignal();
-
+    qDebug() << "applySynFontConfig";
 
 }

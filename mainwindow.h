@@ -31,6 +31,7 @@
 #include "texttab.h"
 #include "fullscreeneditor.h"
 #include "outline.h"
+#include "attendbox.h"
 
 class MainWindow : public QMainWindow
 {
@@ -76,6 +77,11 @@ private slots:
 
 
     void reconnectAFterTabClose();
+ void showPrevText(bool showPrevTextBool);
+
+ //attendance :
+void setCurrentAttendList(int tabNum);
+
 
 private:
 
@@ -91,6 +97,7 @@ private:
     QStackedLayout *noteLayout;
     StatsBox *stats;
     ItemBox *items;
+    AttendBox *attendList;
 
     QFile *file;
 

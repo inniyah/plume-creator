@@ -3,7 +3,16 @@
 EditMenuBox::EditMenuBox(QWidget *parent) :
     QFrame(parent), xMax(0)
 {
-    QToolButton *button = new QToolButton;
+    showPreviousTextButton = new QToolButton();
+    showPreviousTextButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    showPreviousTextButton->setCheckable(true);
+    showPreviousTextButton->setText(tr("&Show Previous Scene"));
+    showPreviousTextButton->setToolTip(tr("Show the end of the previous scene"));
+    connect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
+
+
+
+
 
     textFontCombo = new QFontComboBox;
     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
@@ -20,7 +29,7 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
 
     QGridLayout *baseGridLayout = new QGridLayout;
 
-    baseGridLayout->addWidget(button,0,0);
+    baseGridLayout->addWidget(showPreviousTextButton,0,0);
     baseGridLayout->addWidget(textFontCombo,2,0);
     baseGridLayout->addWidget(textSpin,3,0);
     baseGridLayout->addWidget(textZoneWidthLabel,4,0);
@@ -58,8 +67,8 @@ void EditMenuBox::loadSliderValue()
     widthSlider->setSliderPosition(sliderValue);
     widthSlider->setValue(sliderValue);
 
-    QString debug;
-    qDebug() << "loadSliderValue : " << debug.setNum(sliderValue);
+//    QString debug;
+//    qDebug() << "loadSliderValue : " << debug.setNum(sliderValue);
     sliderValueChanged(sliderValue);
     connect(widthSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)), Qt::UniqueConnection);
 
@@ -94,6 +103,36 @@ void EditMenuBox::tabChangedSlot(QTextCharFormat newTabFormat)
 
     charFormatChangedSlot(newTabFormat);
 }
+
+
+
+void EditMenuBox::showPreviousText(bool showPrevTextBool)
+{
+
+        emit showPrevTextSignal(showPrevTextBool);
+
+}
+
+
+void EditMenuBox::setShowPreviousTextButton(bool showPrevTextBool)
+{
+    disconnect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
+
+
+
+        showPreviousTextButton->setChecked(showPrevTextBool);
+
+
+
+    connect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
+}
+
+
+
+
+
+
+
 //---------------------------------------------------------------------------
 //----------Apply Config---------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------

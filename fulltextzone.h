@@ -42,6 +42,7 @@ protected:
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
 
 public slots:
 

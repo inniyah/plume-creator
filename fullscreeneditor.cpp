@@ -8,8 +8,9 @@
 FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *parent) :
     QWidget(parent)
 {
+this->setMouseTracking(true);
 
-    FullTextZone *fullTextEdit = new FullTextZone(doc, this);
+    fullTextEdit = new FullTextZone(doc, this);
     fullTextEdit->applyTextConfig();
     fullTextEdit->setFrameShape(QFrame::NoFrame);
 
@@ -18,7 +19,7 @@ FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *p
 
     QWidget *mainWidget = new QWidget;
     mainWidget->setObjectName("mainBackground");
-
+mainWidget->setMouseTracking(true);
 
     QHBoxLayout *textLayout = new QHBoxLayout;
 
@@ -31,6 +32,7 @@ FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *p
 
     DigitalClock *clock = new DigitalClock(this);
     //    Timer *timer = new Timer(this);
+    clock->setMouseTracking(true);
     timerLabel = new QLabel;
     wordCountLabel = new QLabel;
 
@@ -85,7 +87,16 @@ FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *p
     for(int i = 0; i < cursorPos ; i++)
         fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
+
+    this->setWindowState(this->windowState() | Qt::WindowActive);
     fullTextEdit->ensureCursorVisible();
+
+
+
+    mouseTimer = new QTimer(this);
+    connect(mouseTimer, SIGNAL(timeout()), this, SLOT(hideMouse()));
+mouseTimer->start(3000);
+
 }
 
 //------------------------------------------------------------------------------------
@@ -110,12 +121,41 @@ void FullscreenEditor::closeEvent(QCloseEvent* event)
 {
     synWidget->close();
     noteWidget->close();
-
+mouseTimer->stop();
     emit closeSignal();
     event->accept();
 
 
 }
+
+
+void FullscreenEditor::mouseMoveEvent(QMouseEvent* event)
+{
+
+
+this->unsetCursor();
+ fullTextEdit->viewport()->setCursor(QCursor(Qt::IBeamCursor));
+
+
+    mouseTimer->stop();
+    mouseTimer->start();
+    event->accept();
+
+}
+
+void FullscreenEditor::hideMouse()
+{
+
+this->setCursor(QCursor(Qt::BlankCursor));
+   fullTextEdit->viewport()->setCursor(QCursor(Qt::BlankCursor));
+
+
+}
+
+
+
+
+
 
 
 

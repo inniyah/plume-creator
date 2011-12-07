@@ -354,7 +354,7 @@ void OutlineItem::hideNote()
 //--------------------------------------------------------------------
 void OutlineItem::writeThis()
 {
-    qDebug() << "writeThis name : " << this->objectName();
+//    qDebug() << "writeThis name : " << this->objectName();
     emit writeThisSignal(number);
 }
 
@@ -399,7 +399,7 @@ void OutlineItem::expandTexts(bool expand)
         noteEdit->setFixedHeight(noteEdit->document()->size().rheight() + 40);
         listWidget->setFixedHeight(noteEdit->height());
 
-        qDebug() << "expandTexts";
+//        qDebug() << "expandTexts";
 
         synEdit->append("o");
         QTextCursor *synCursor = new QTextCursor(synEdit->document());
@@ -732,8 +732,8 @@ void OutlineItem::setDocuments(QTextDocument *synDocument, QTextDocument *noteDo
     connect(synDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSynClone(int, int, int)));
     connect(synOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateSyn(int, int, int)));
 
-    connect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynDefaultFont()));
-    connect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteDefaultFont()));
+    connect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynFirstLineFont()));
+    connect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteFirstLineFont()));
 
 
     // number :
@@ -763,32 +763,32 @@ void OutlineItem::updateSynClone(int position, int removed, int added)
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
 
-    if(synEdit->textCursor().blockNumber() == 0 || synEdit->textCursor().block().text() == ""){
-        QTextBlockFormat blockFormat;
-        blockFormat.setBottomMargin(synDefaultMargin);
-        blockFormat.setTextIndent(synDefaultIndent);
+//    if(synEdit->textCursor().blockNumber() == 0 || synEdit->textCursor().block().text() == ""){
+//        QTextBlockFormat blockFormat;
+//        blockFormat.setBottomMargin(synDefaultMargin);
+//        blockFormat.setTextIndent(synDefaultIndent);
 
-        QTextCharFormat charFormat;
-        charFormat.setFontPointSize(synDefaultHeight);
-        charFormat.setFontFamily(synDefaultFont.family());
+//        QTextCharFormat charFormat;
+//        charFormat.setFontPointSize(synDefaultHeight);
+//        charFormat.setFontFamily(synDefaultFont.family());
 
-        QTextCursor *ctCursor = new QTextCursor(synOutlineDoc);
-        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        ctCursor->mergeCharFormat(charFormat);
-        ctCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *ctCursor = new QTextCursor(synOutlineDoc);
+//        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        ctCursor->mergeCharFormat(charFormat);
+//        ctCursor->mergeBlockFormat(blockFormat);
 
-        blockFormat.setBottomMargin(synDoc->firstBlock().blockFormat().bottomMargin());
-        blockFormat.setTextIndent(synDoc->firstBlock().blockFormat().textIndent());
-        charFormat.setFont(synDoc->defaultFont());
+//        blockFormat.setBottomMargin(synDoc->firstBlock().blockFormat().bottomMargin());
+//        blockFormat.setTextIndent(synDoc->firstBlock().blockFormat().textIndent());
+//        charFormat.setFont(synDoc->defaultFont());
 
-        QTextCursor *tCursor = new QTextCursor(synDoc);
-        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        tCursor->mergeCharFormat(charFormat);
-        tCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *tCursor = new QTextCursor(synDoc);
+//        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        tCursor->mergeCharFormat(charFormat);
+//        tCursor->mergeBlockFormat(blockFormat);
 
-    }
+//    }
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(synDefaultMargin);
@@ -859,32 +859,32 @@ void OutlineItem::updateSyn(int position, int removed, int added)
     cloneCursor->setPosition(position);
 
 
-    if(synEdit->textCursor().blockNumber() == 0 || synEdit->textCursor().block().text() == "" ){
-        QTextBlockFormat blockFormat;
-        blockFormat.setBottomMargin(synDefaultMargin);
-        blockFormat.setTextIndent(synDefaultIndent);
+//    if(synEdit->textCursor().blockNumber() == 0 || synEdit->textCursor().block().text() == "" ){
+//        QTextBlockFormat blockFormat;
+//        blockFormat.setBottomMargin(synDefaultMargin);
+//        blockFormat.setTextIndent(synDefaultIndent);
 
-        QTextCharFormat charFormat;
-        charFormat.setFontPointSize(synDefaultHeight);
-        charFormat.setFontFamily(synDefaultFont.family());
+//        QTextCharFormat charFormat;
+//        charFormat.setFontPointSize(synDefaultHeight);
+//        charFormat.setFontFamily(synDefaultFont.family());
 
-        QTextCursor *ctCursor = new QTextCursor(synOutlineDoc);
-        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        ctCursor->mergeCharFormat(charFormat);
-        ctCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *ctCursor = new QTextCursor(synOutlineDoc);
+//        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        ctCursor->mergeCharFormat(charFormat);
+//        ctCursor->mergeBlockFormat(blockFormat);
 
-        blockFormat.setBottomMargin(synDoc->firstBlock().blockFormat().bottomMargin());
-        blockFormat.setTextIndent(synDoc->firstBlock().blockFormat().textIndent());
-        charFormat.setFont(synDoc->defaultFont());
+//        blockFormat.setBottomMargin(synDoc->firstBlock().blockFormat().bottomMargin());
+//        blockFormat.setTextIndent(synDoc->firstBlock().blockFormat().textIndent());
+//        charFormat.setFont(synDoc->defaultFont());
 
-        QTextCursor *tCursor = new QTextCursor(synDoc);
-        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        tCursor->mergeCharFormat(charFormat);
-        tCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *tCursor = new QTextCursor(synDoc);
+//        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        tCursor->mergeCharFormat(charFormat);
+//        tCursor->mergeBlockFormat(blockFormat);
 
-    }
+//    }
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(synDoc->firstBlock().blockFormat().bottomMargin());
@@ -947,33 +947,33 @@ void OutlineItem::updateNoteClone(int position, int removed, int added)
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
 
-    if(noteDoc->firstBlock().text() != noteOutlineDoc->firstBlock().text() || noteEdit->textCursor().block().text() == ""){
+//    if(noteDoc->firstBlock().text() != noteOutlineDoc->firstBlock().text() || noteEdit->textCursor().block().text() == ""){
 
-        QTextBlockFormat blockFormat;
-        blockFormat.setBottomMargin(noteDefaultMargin);
-        blockFormat.setTextIndent(noteDefaultIndent);
+//        QTextBlockFormat blockFormat;
+//        blockFormat.setBottomMargin(noteDefaultMargin);
+//        blockFormat.setTextIndent(noteDefaultIndent);
 
-        QTextCharFormat charFormat;
-        charFormat.setFontPointSize(noteDefaultHeight);
-        charFormat.setFontFamily(noteDefaultFont.family());
+//        QTextCharFormat charFormat;
+//        charFormat.setFontPointSize(noteDefaultHeight);
+//        charFormat.setFontFamily(noteDefaultFont.family());
 
-        QTextCursor *ctCursor = new QTextCursor(noteOutlineDoc);
-        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        ctCursor->mergeCharFormat(charFormat);
-        ctCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *ctCursor = new QTextCursor(noteOutlineDoc);
+//        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        ctCursor->mergeCharFormat(charFormat);
+//        ctCursor->mergeBlockFormat(blockFormat);
 
-        blockFormat.setBottomMargin(noteDoc->firstBlock().blockFormat().bottomMargin());
-        blockFormat.setTextIndent(noteDoc->firstBlock().blockFormat().textIndent());
-        charFormat.setFont(noteDoc->defaultFont());
+//        blockFormat.setBottomMargin(noteDoc->firstBlock().blockFormat().bottomMargin());
+//        blockFormat.setTextIndent(noteDoc->firstBlock().blockFormat().textIndent());
+//        charFormat.setFont(noteDoc->defaultFont());
 
-        QTextCursor *tCursor = new QTextCursor(noteDoc);
-        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        tCursor->mergeCharFormat(charFormat);
-        tCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *tCursor = new QTextCursor(noteDoc);
+//        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        tCursor->mergeCharFormat(charFormat);
+//        tCursor->mergeBlockFormat(blockFormat);
 
-    }
+//    }
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(noteDefaultMargin);
@@ -1034,33 +1034,33 @@ void OutlineItem::updateNote(int position, int removed, int added)
     cursor->setPosition(position);
     cloneCursor->setPosition(position);
 
-    if(noteDoc->firstBlock().text() != noteOutlineDoc->firstBlock().text() || noteEdit->textCursor().block().text() == ""){
+//    if(noteDoc->firstBlock().text() != noteOutlineDoc->firstBlock().text() || noteEdit->textCursor().block().text() == ""){
 
-        QTextBlockFormat blockFormat;
-        blockFormat.setBottomMargin(noteDefaultMargin);
-        blockFormat.setTextIndent(noteDefaultIndent);
+//        QTextBlockFormat blockFormat;
+//        blockFormat.setBottomMargin(noteDefaultMargin);
+//        blockFormat.setTextIndent(noteDefaultIndent);
 
-        QTextCharFormat charFormat;
-        charFormat.setFontPointSize(noteDefaultHeight);
-        charFormat.setFontFamily(noteDefaultFont.family());
+//        QTextCharFormat charFormat;
+//        charFormat.setFontPointSize(noteDefaultHeight);
+//        charFormat.setFontFamily(noteDefaultFont.family());
 
-        QTextCursor *ctCursor = new QTextCursor(noteOutlineDoc);
-        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        ctCursor->mergeCharFormat(charFormat);
-        ctCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *ctCursor = new QTextCursor(noteOutlineDoc);
+//        ctCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        ctCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        ctCursor->mergeCharFormat(charFormat);
+//        ctCursor->mergeBlockFormat(blockFormat);
 
-        blockFormat.setBottomMargin(noteDoc->firstBlock().blockFormat().bottomMargin());
-        blockFormat.setTextIndent(noteDoc->firstBlock().blockFormat().textIndent());
-        charFormat.setFont(noteDoc->defaultFont());
+//        blockFormat.setBottomMargin(noteDoc->firstBlock().blockFormat().bottomMargin());
+//        blockFormat.setTextIndent(noteDoc->firstBlock().blockFormat().textIndent());
+//        charFormat.setFont(noteDoc->defaultFont());
 
-        QTextCursor *tCursor = new QTextCursor(noteDoc);
-        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-        tCursor->mergeCharFormat(charFormat);
-        tCursor->mergeBlockFormat(blockFormat);
+//        QTextCursor *tCursor = new QTextCursor(noteDoc);
+//        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+//        tCursor->mergeCharFormat(charFormat);
+//        tCursor->mergeBlockFormat(blockFormat);
 
-    }
+//    }
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(noteDoc->firstBlock().blockFormat().bottomMargin());
@@ -1114,8 +1114,8 @@ void OutlineItem::connectUpdateTextsSlot()
     connect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
     connect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
 
-    connect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteDefaultFont()));
-    connect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynDefaultFont()));
+    connect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteFirstLineFont()));
+    connect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynFirstLineFont()));
 
 }
 //-------------------------------------------------------------------
@@ -1126,8 +1126,8 @@ void OutlineItem::disconnectUpdateTextsSlot()
     disconnect(noteDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNoteClone(int, int, int)));
     disconnect(noteOutlineDoc, SIGNAL(contentsChange(int,int,int)), this, SLOT(updateNote(int, int, int)));
 
-    disconnect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteDefaultFont()));
-    disconnect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynDefaultFont()));
+    disconnect(noteOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setNoteFirstLineFont()));
+    disconnect(synOutlineDoc,SIGNAL(contentsChanged()), this, SLOT(setSynFirstLineFont()));
 
 }
 
@@ -1144,56 +1144,80 @@ void OutlineItem::resizeEvent (QResizeEvent *event)
 
 //--------------------------------------------------------------------
 
-void OutlineItem::setSynDefaultFont()
+void OutlineItem::setSynFirstLineFont()
 {
-    //        if(synEdit->textCursor().blockNumber() == 0){
-    //    disconnectUpdateTextsSlot();
-    //            qDebug() << "setSynDefaultFont";
-    //        //    synDefaultFont.setPointSize(synDefaultHeight);
-    //        //    synOutlineDoc->setDefaultFont(synDefaultFont);
-    //        // synOutlineDoc->firstBlock().blockFormat().toCharFormat().setFont(synDefaultFont);
+            if(synEdit->textCursor().atStart() == true
+                    || synEdit->textCursor().position() == 1
+                    || synEdit->canPaste() == true)
+applySynFont();
 
-    //        QTextCharFormat charFormat;
-    //        charFormat.setFontPointSize(synDefaultHeight);
-    //        charFormat.setFontFamily(synDefaultFont.family());
-
-    //        synEdit->textCursor().mergeCharFormat(charFormat);
-
-    //        QTextCursor *tCursor = new QTextCursor(synOutlineDoc);
-    //        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    //        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    //        tCursor->mergeCharFormat(charFormat);
-
-    //        connectUpdateTextsSlot();
-
-    //        }
 }
 //--------------------------------------------------------------------
 
-void OutlineItem::setNoteDefaultFont()
+void OutlineItem::setNoteFirstLineFont()
 {
-    //        if(noteEdit->textCursor().blockNumber() == 0){
-    //    disconnectUpdateTextsSlot();
-    //        //        noteDefaultFont.setPointSize(noteDefaultHeight);
-    //        //        noteOutlineDoc->setDefaultFont(noteDefaultFont);
-    //        //     noteOutlineDoc->firstBlock().blockFormat().toCharFormat().setFont(noteDefaultFont);
+            if(noteEdit->textCursor().atStart() == true
+                    || noteEdit->textCursor().position() == 1
+                    || synEdit->canPaste() == true)
+    applyNoteFont();
 
-    //        QTextCharFormat charFormat;
-    //        charFormat.setFontPointSize(noteDefaultHeight);
-    //        charFormat.setFontFamily(noteDefaultFont.family());
-
-    //      noteEdit->textCursor().mergeCharFormat(charFormat);
-
-    //      QTextCursor *tCursor = new QTextCursor(noteOutlineDoc);
-    //      tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    //      tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    //      tCursor->mergeCharFormat(charFormat);
-
-
-
-    //    connectUpdateTextsSlot();
-    //    }
 }
+
+//--------------------------------------------------------------------------------
+
+
+
+void OutlineItem::applySynFont()
+{
+    disconnectUpdateTextsSlot();
+
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(synDefaultHeight);
+    charFormat.setFontFamily(synDefaultFont.family());
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(synDefaultMargin);
+    blockFormat.setTextIndent(synDefaultIndent);
+
+
+
+
+    QTextCursor *tCursor = new QTextCursor(synOutlineDoc);
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+    tCursor->mergeCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
+
+    connectUpdateTextsSlot();
+}
+
+//--------------------------------------------------------------------------------
+
+
+void OutlineItem::applyNoteFont()
+{
+    disconnectUpdateTextsSlot();
+
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(noteDefaultHeight);
+        charFormat.setFontFamily(noteDefaultFont.family());
+        QTextBlockFormat blockFormat;
+        blockFormat.setBottomMargin(noteDefaultMargin);
+        blockFormat.setTextIndent(noteDefaultIndent);
+
+      QTextCursor *tCursor = new QTextCursor(noteOutlineDoc);
+      tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+      tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+      tCursor->mergeCharFormat(charFormat);
+      tCursor->mergeBlockFormat(blockFormat);
+
+
+
+    connectUpdateTextsSlot();
+}
+
+
+
+
 
 //---------------------------------------------------------------------------------
 //--------------Apply Config----------------------------------------------------

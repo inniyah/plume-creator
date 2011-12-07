@@ -58,8 +58,11 @@ public slots:
     void setCursorPos(int pos);
     int saveCursorPos();
     void applyConfig();
-    QTextCharFormat tabChangedSlot();
+    QTextCharFormat tabFontChangedSlot();
     void updateTextZone();
+void showPrevText(bool showPrevTextBool);
+bool setShowPrevTextButton();
+void setPrevText(QTextDocument *prevDoc);
 
 private slots:
 
@@ -69,10 +72,12 @@ private slots:
 
 private:
 
+QTextDocument *prevTextDocument;
     QTextDocument *textDocument;
 
     QString stackName;
 
+TextZone *prevTextZone;
     TextZone *textZone;
 
 

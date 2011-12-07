@@ -444,9 +444,10 @@ void TextZone::resizeEvent(QResizeEvent* event)
 
 
 
-
-
-
+void TextZone::scrollBy(QPoint viewportPoint)
+{
+this->scrollContentsBy(viewportPoint.x(), viewportPoint.y());
+}
 
 
 

@@ -26,6 +26,7 @@
 #include <QTextDocument>
 #include <QPushButton>
 #include <QSettings>
+#include <fulltextzone.h>
 
 class FullscreenEditor : public QWidget
 {
@@ -36,6 +37,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
 
 signals:
     void closeSignal();
@@ -56,11 +58,14 @@ private slots:
     void setTextBackColor();
     void setTextColorDialog();
     void setTextColor();
+    void hideMouse();
     void applyStyleSheet();
 
     void showSyn();
     void showNote();
 private:
+
+    FullTextZone *fullTextEdit;
     QLabel *wordCountLabel;
     QLabel *timerLabel;
 
@@ -76,6 +81,9 @@ private:
     //QTextDocument *noteDoc;
     QWidget *synWidget;
     QWidget *noteWidget;
+
+    QTimer *mouseTimer;
+
 
     // style sheets
     QString backColorString,

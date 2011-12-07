@@ -1,5 +1,44 @@
 PLUME CREATOR
 
+v 0.38  
+	- in fullscreen editor :
+		- mouse cursor hide when idle for 3 seconds
+
+
+v 0.37  - Outliner :
+		- paragraph indent & margin menu added
+		- bug solved: the outliner crashed when closed
+		- outliner centers on the opened sheet
+	- Exporter can give a preview
+
+v 0.36
+	- Outliner :
+		- display bugs solved
+		- notes and synopsies keep the good fonts when their entire first line is deleted 
+		- the outline is updated when the main tree is modified
+		- outline titles are more visible
+		- "write" button ("w") opens the respective sheet
+		
+
+v 0.35
+	- Outliner :
+		- font family & size menu added
+		- size menu added
+		- item scroll bars color blend more 
+	- french translation updated
+
+v 0.34
+	- set default style to Qt's "Plastique"
+	- set default save time to 20 000 ms, not 20 ms
+	- "auto rename children" repaired
+ 	- load / save more centralized. 
+	- "rename" context menu action repaired
+	- tree : added drag / drop of scene breaks
+	- added very basic Outliner :
+		- title editing
+		- synopsys editing
+		- note editing
+		(no "drag / drop" or "add item" yet)
 
 v 0.33
 	- tree : drag & drop selects the good item now
