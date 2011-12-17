@@ -1,5 +1,11 @@
 PLUME CREATOR
 
+v 0.39  
+	- character/item/place manager :
+		- it's working !
+		- option menu will be implemented shortly
+	- bug solved : crash when opening a new sheet after deleting one
+
 v 0.38  
 	- in fullscreen editor :
 		- mouse cursor hide when idle for 3 seconds

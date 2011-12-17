@@ -189,7 +189,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version 0.37 Beta</p>"
+                       "<p>Version 0.39</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"

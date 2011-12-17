@@ -64,6 +64,9 @@ void connectUpdateTextsSlot();
 void disconnectUpdateTextsSlot();
 
 
+//for attendance :
+bool showSheetAttendanceList(QList<QListWidgetItem *> *itemList);
+
 private slots:
     void writeThis();
     void resizeExpandedText();

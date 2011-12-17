@@ -39,6 +39,10 @@ public:
     //    bool saveSyn(QFile *synFile, QString name);
     bool closeSyn();
 
+    bool openAttendDetail(QTextDocument *attendDoc);
+    bool closeAttendDetail();
+
+
 signals:
 void connectUpdateTextsSignal();
 void disconnectUpdateTextsSignal();
@@ -61,6 +65,7 @@ public slots:
     void updateTextZone();
     void applyNoteConfig();
     void applySynConfig();
+    void applyAttendConfig();
 
 private slots:
 
@@ -86,9 +91,11 @@ private slots:
 
 void forceSynFirstCharFont();
 void forceNoteFirstCharFont();
+void forceAttendFirstCharFont();
 
     void applySynFontConfig();
     void applyNoteFontConfig();
+    void applyAttendFontConfig();
 
 private:
 

@@ -35,6 +35,7 @@ void NewProjectWizard::accept()
 
     path.mkdir("objects");
     path.mkdir("text");
+    path.mkdir("attend");
 
     QStringList firstFiles;
     firstFiles << "/text/T1.html"

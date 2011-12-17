@@ -58,6 +58,8 @@ signals:
     // for attendance :
 
     void attendStringSignal(int number, QString attendString);
+    void allAttendancesSignal(QHash<int, QString> attendStringForNumber);
+    void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
 
 public slots:
 
@@ -67,6 +69,14 @@ public slots:
 
     // Outline :
     void launchOutliner();
+
+    // for attendance :
+    void readAllAttendances();
+    void setOutlinerProjectAttendList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
+    void removeAttendNumberSlot(int itemNumber);
+void addAttendNumberToSheetSlot(QList<int> list);
+void removeAttendNumberFromSheetSlot(QList<int> list);
+
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);
@@ -87,8 +97,8 @@ private slots:
     void moveUp();
     void moveDown();
     void delYesItem();
-  void removeItem(QDomElement element);
-  void autoRenameChilds();
+    void removeItem(QDomElement element);
+    void autoRenameChilds();
     void split();
     void addMulti();
 
@@ -103,8 +113,8 @@ private slots:
     void deletedSlot();
     void setOutlineViewPos();
     void saveOutlineSettings();
- void insertOutlinerItem(int newNumber, int numberOfRef);
- void outlinerClosed(){outlinerLaunched = false;}
+    void insertOutlinerItem(int newNumber, int numberOfRef);
+    void outlinerClosed(){outlinerLaunched = false;}
 
 private:
     void parseFolderElement(const QDomElement &element,
@@ -179,6 +189,14 @@ private:
     bool outlinerLaunched;
     int widgetTargetedNumber;
     QTreeWidgetItem *itemTargetedForOutliner;
+
+
+
+    //attendance :
+    QHash<QListWidgetItem *, QDomElement> attend_domElementForItem;
+    QHash<int, QDomElement> attend_domElementForItemNumber;
+
+
 };
 
 #endif // MAINTREE_H

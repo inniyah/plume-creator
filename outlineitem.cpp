@@ -253,7 +253,6 @@ OutlineItem::OutlineItem(QWidget *parent) :
     updateSizeSlot();
 
     titleEdit->setPlaceholderText(tr("Title"));
-    listWidget->addItem("List item sample");
 
 
 
@@ -1217,6 +1216,50 @@ void OutlineItem::applyNoteFont()
 
 
 
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------
+//------Attendance----------------------------------------------------------
+//-------------------------------------------------------------------------
+
+bool OutlineItem::showSheetAttendanceList(QList<QListWidgetItem *> *itemList)
+{
+//    qDebug() << "outlineItem";
+
+    // clear list :
+    while(listWidget->count() != 0)
+        listWidget->takeItem(0);
+
+//qDebug() << "outlineItem --";
+
+    while(!itemList->isEmpty()){
+        listWidget->addItem(itemList->takeFirst()->clone());
+    }
+
+
+
+//    QString string;
+//    qDebug() << "outlineItem -- itemList->size() : " << string.setNum(itemList->size());
+
+
+
+
+
+//    addAttendManagerButton();
+
+//    connect(attendList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+//            this, SLOT(itemDoubleClick(QListWidgetItem*)));
+
+
+    return true;
+
+}
 
 
 //---------------------------------------------------------------------------------

@@ -11,8 +11,9 @@ Outline::Outline(QWidget *parent) :
 
     setMinimumSize(600, 600);
     setWindowTitle(tr("Outliner"));
-    setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_DeleteOnClose);
+    QApplication::setActiveWindow(this);
+    this->raise();
 
     area = new QScrollArea;
     areaWidget = new QWidget(area);
@@ -367,6 +368,305 @@ void Outline::cleanArea()
     //    areaWidget->setLayout(areaLayout);
 }
 
+
+
+
+
+//------------------------------------------------------------------------------------
+//-------Attendance :-----------------------------------------------------------------
+//------------------------------------------------------------------------------------
+
+
+
+void Outline::setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_)
+{
+    domElementForItem = domElementForItem_;
+            domElementForItemNumber = domElementForItemNumber_;
+
+
+            QString string;
+
+
+//                 qDebug() << "*** domElementForItemNumber_.size() : " << string.setNum(domElementForItemNumber_.size());
+//                 qDebug() << "*** domElementForItem_.size() : " << string.setNum(domElementForItem_.size());
+
+}
+
+
+//------------------------------------------------------------------------------------
+
+void Outline::updateAttendances(QHash<int, QString> attendStringForNumber)
+{
+    QString string;
+
+
+//         qDebug() << "domElementForItemNumber.size() : " << string.setNum(domElementForItemNumber.size());
+
+    QHash<int , QString>::const_iterator i = attendStringForNumber.constBegin();
+     while (i != attendStringForNumber.constEnd()) {
+
+
+
+
+
+         OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(i.key()));
+
+         if(!item == 0)
+         item->showSheetAttendanceList(openSheetAttendList(i.key(), i.value()));
+
+
+
+
+//         QString string;
+
+//         qDebug() << "i.key() : " << string.setNum(i.key());
+//     qDebug() << "i.value() : " << i.value();
+
+
+         ++i;
+     }
+
+}
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------------------
+
+QList<QListWidgetItem *> *Outline::sortAttendItems(QList<int> *attend, QString sorting)
+{
+
+
+
+
+
+    QList<QListWidgetItem *> *list = new QList<QListWidgetItem *>;
+    QList<QListWidgetItem *> charList;
+    QList<QListWidgetItem *> charList_level_zero;
+    QList<QListWidgetItem *> charList_level_one;
+    QList<QListWidgetItem *> charList_level_two;
+    QList<QListWidgetItem *> itemList;
+    QList<QListWidgetItem *> itemList_level_zero;
+    QList<QListWidgetItem *> itemList_level_one;
+    QList<QListWidgetItem *> itemList_level_two;
+    QList<QListWidgetItem *> placeList;
+    QList<QListWidgetItem *> placeList_level_zero;
+    QList<QListWidgetItem *> placeList_level_one;
+    QList<QListWidgetItem *> placeList_level_two;
+
+    if(attend->isEmpty()){
+
+        list->append(attendSeparator(tr("empty")));
+        return list;
+}
+
+
+
+
+
+    //        QHashIterator<QListWidgetItem *, QDomElement> i(domElementForItem);
+    //        while (i.hasNext()) {
+    //            i.next();
+    //            list->append(i.key());
+
+    //    }
+
+    for (int i = 0; i < attend->size(); ++i) {
+    }
+
+    QMap<QString, QDomElement> map;
+
+    for (int i = 0; i < attend->size(); ++i){
+        QDomElement element = domElementForItemNumber.value(attend->at(i));
+        if(element.tagName() == "char"){
+            map.insert(element.attribute("lastName", "ZZZ") + " " + element.attribute("firstName", "ZZZ"),element);
+        }
+        if(element.tagName() == "item"){
+            map.insert(element.attribute("name", "ZZZ"),element);
+        }
+        if(element.tagName() == "place"){
+            map.insert(element.attribute("name", "ZZZ"),element);
+        }
+
+    }
+
+    QMap<QString, QDomElement>::const_iterator i = map.constBegin();
+    while (i != map.constEnd()) {
+
+        QDomElement mapElement = i.value();
+        if(mapElement.tagName() == "char"){
+
+            charList.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "0")
+                charList_level_zero.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "1")
+                charList_level_one.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "2")
+                charList_level_two.append(domElementForItem.key(mapElement));
+        }
+
+        if(mapElement.tagName() == "item"){
+
+            itemList.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "0")
+                itemList_level_zero.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "1")
+                itemList_level_one.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "2")
+                itemList_level_two.append(domElementForItem.key(mapElement));
+        }
+
+        if(mapElement.tagName() == "place"){
+
+            placeList.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "0")
+                placeList_level_zero.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "1")
+                placeList_level_one.append(domElementForItem.key(mapElement));
+
+            if(mapElement.attribute("level") == "2")
+                placeList_level_two.append(domElementForItem.key(mapElement));
+        }
+
+        ++i;
+    }
+
+    // set the different fonts :
+
+    QFont textFont;
+    textFont.setBold(true);
+
+    for(int i = 0; i < charList_level_zero.size(); ++i)
+        charList_level_zero.at(i)->setFont(textFont);
+
+    for(int i = 0; i < itemList_level_zero.size(); ++i)
+        itemList_level_zero.at(i)->setFont(textFont);
+
+    for(int i = 0; i < placeList_level_zero.size(); ++i)
+        placeList_level_zero.at(i)->setFont(textFont);
+
+
+
+
+    //    list->append(charList);
+    //    list->append(itemList);
+    //    list->append(placeList);
+    list->append(attendSeparator(tr("Characters")));
+    list->append(charList_level_zero);
+    list->append(charList_level_one);
+    list->append(charList_level_two);
+    list->append(attendSeparator(tr("Items")));
+    list->append(itemList_level_zero);
+    list->append(itemList_level_one);
+    list->append(itemList_level_two);
+    list->append(attendSeparator(tr("Places")));
+    list->append(placeList_level_zero);
+    list->append(placeList_level_one);
+    list->append(placeList_level_two);
+
+
+//    QString string;
+//    qDebug() << "post domElementForItem ->size() : " << string.setNum(domElementForItem.size());
+
+//    qDebug() << "post list->size() : " << string.setNum(list->size());
+
+
+
+    return list;
+}
+
+
+//--------------------------------------------------------------------------------------
+
+QListWidgetItem *Outline::attendSeparator(QString separatorName)
+{
+    QListWidgetItem *separatorItem = new QListWidgetItem();
+    separatorItem->setFlags(Qt::NoItemFlags);
+    separatorItem->setText(separatorName);
+    separatorItem->setTextAlignment(Qt::AlignHCenter);
+
+
+
+    QFont textFont(separatorItem->font());
+    textFont.setBold(true);
+    textFont.setPointSize(separatorItem->font().pointSize() + 2);
+
+    separatorItem->setFont(textFont);
+
+    return separatorItem;
+}
+//--------------------------------------------------------------------------------------
+
+
+//--------------------------------------------------------------------------------------
+
+
+
+QList<QListWidgetItem *> *Outline::openSheetAttendList(int number ,QString attendString)
+{
+
+//    qDebug() << "attendString : " << attendString;
+
+
+
+    QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
+
+
+    QList<int> *attendIntList = new QList<int>;
+
+    while(!thisAttendStringList.isEmpty()){
+        attendIntList->append(thisAttendStringList.takeFirst().toInt());
+    }
+
+    if(attendIntList->contains(0))
+        attendIntList->removeAt(attendIntList->indexOf(0));
+
+
+//    QString string;
+//    qDebug() << "openSheetAttendList attendIntList->size() : " << string.setNum(attendIntList->size());
+
+    QList<QListWidgetItem *> *itemList = sortAttendItems(attendIntList);
+
+//    qDebug() << "openSheetAttendList itemList->size() : " << string.setNum(itemList->size());
+
+    return itemList;
+
+}
+//--------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //------------------------------------------------------------------------------
 void Outline::resizingSlot()
 {
@@ -523,3 +823,5 @@ void Outline::closeEvent(QCloseEvent* event)
 
     event->accept();
 }
+
+

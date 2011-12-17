@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QtGui>
+#include <QDomElement>
 
 #include "outlineitem.h"
 
@@ -59,9 +60,20 @@ public slots:
     void setOutlinerViewportPos(int number);
 void insertItemInOutliner(QWidget *newWidget, int number, QString tagName);
 
+//for attendances :
+void updateAttendances(QHash<int, QString> attendStringForNumber);
+void setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
+
 private slots:
 
     void resizingSlot();
+
+
+    //for attendance :
+    QList<QListWidgetItem *> *sortAttendItems(QList<int> *attend, QString sorting = "nothing");
+    QListWidgetItem *attendSeparator(QString separatorName);
+    QList<QListWidgetItem *> *openSheetAttendList(int number ,QString attendString);
+
 
 private:
     QScrollArea *area;
@@ -78,6 +90,9 @@ private:
     QSpinBox *synTextHeightSpin, *synTextIndentSpin, *synTextMarginSpin;
     QFontComboBox *noteFontCombo;
     QSpinBox *noteTextHeightSpin, *noteTextIndentSpin, *noteTextMarginSpin;
+
+    QHash<QListWidgetItem *, QDomElement> domElementForItem;
+    QHash<int, QDomElement> domElementForItemNumber;
 };
 
 #endif // OUTLINE_H

@@ -119,6 +119,41 @@ bool NoteZone::openSyn(QTextDocument *synDoc)
 
 //------------------------------------------------------------------------------
 
+bool NoteZone::openAttendDetail(QTextDocument *attendDoc)
+{
+
+    textDocument = attendDoc;
+
+    this->setEnabled(true);
+
+    //    synFile->open(QFile::ReadOnly | QFile::Text);
+    //    QApplication::setOverrideCursor(Qt::WaitCursor);
+    //    QTextStream synFileStream( synFile );
+    //    textDocument->setHtml(synFileStream.readAll());
+
+    //    QApplication::restoreOverrideCursor();
+
+    //    synFile->close();
+
+    setDocument(textDocument);
+
+
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    setDocumentTitle("Attendance detail");
+
+    applyAttendConfig();
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceAttendFirstCharFont()));
+
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
 
 //bool NoteZone::saveSyn(QFile *synFile, QString name)
 //{
@@ -178,6 +213,18 @@ bool NoteZone::closeNote()
     return true;
 }
 
+//------------------------------------------------------------------------------
+
+bool NoteZone::closeAttendDetail()
+{
+
+
+    this->setEnabled(false);
+
+    setContextMenuPolicy(Qt::PreventContextMenu);
+
+    return true;
+}
 
 
 
@@ -198,7 +245,14 @@ void NoteZone::forceNoteFirstCharFont()
         applyNoteFontConfig();
 }
 
+void NoteZone::forceAttendFirstCharFont()
+{
+    // force the 1 st line to be the correct font
 
+
+    if(this->textCursor().atStart() == true || this->textCursor().position() == 1 )
+        applyAttendFontConfig();
+}
 
 
 
@@ -822,5 +876,65 @@ void NoteZone::applySynFontConfig()
     emit connectUpdateTextsSignal();
 
     qDebug() << "applySynFontConfig";
+
+}
+
+
+//-------------------------------------------------------------------------------
+
+
+
+void NoteZone::applyAttendConfig()
+{
+
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    alwaysCenter = settings.value("AttendArea/alwaysCenter", true).toBool();
+    bool synShowScrollbar = settings.value("AttendArea/showScrollbar", true).toBool();
+    settings.endGroup();
+
+
+    centerCursor();
+
+    if(synShowScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+    applyAttendFontConfig();
+
+}
+
+
+void NoteZone::applyAttendFontConfig()
+{
+
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    int attendBottMargin = settings.value("AttendArea/bottomMargin", 20).toInt();
+    int attendTextIndent = settings.value("AttendArea/textIndent", 20).toInt();
+    int attendTextHeight = settings.value("AttendArea/textHeight", 12).toInt();
+    QString attendFontFamily = settings.value("AttendArea/textFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
+
+
+
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(attendBottMargin);
+    blockFormat.setTextIndent(attendTextIndent);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(attendTextHeight);
+    charFormat.setFontFamily(attendFontFamily);
+    QTextCursor *tCursor = new QTextCursor(document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+    tCursor->mergeCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
+
 
 }

@@ -341,7 +341,7 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 
 
 {
-    QTextCursor cursor = textCursor();
+    QTextCursor cursor = this->textCursor();
     //    if(cursor.charFormat().fontItalic())
     //        format.setFontItalic(true);
 

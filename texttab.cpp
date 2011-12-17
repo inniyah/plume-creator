@@ -98,9 +98,11 @@ bool TextTab::openText(QTextDocument *doc)
     connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
     tabWordCount->updateAll();
 
-    QString debug;
-    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
-    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
+    connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+
+//    QString debug;
+//    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
+//    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
 
     applyConfig();
 
@@ -131,12 +133,12 @@ bool TextTab::openText(QTextDocument *doc)
 //}
 
 
-
+//-------------------------------------------------------------------------------
 QTextDocument* TextTab::document()
 {
     return textDocument;
 }
-
+//-------------------------------------------------------------------------------
 void TextTab::wordCountUpdated(int wordCount)
 {
     //    QString debug;
@@ -147,18 +149,18 @@ void TextTab::wordCountUpdated(int wordCount)
 
 
 
-    if(wordCount == 0){
-        QSettings settings;
-        settings.beginGroup( "Settings" );
-        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
-        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
-        settings.endGroup();
+//    if(wordCount == 0){
+//        QSettings settings;
+//        settings.beginGroup( "Settings" );
+//        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+//        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+//        settings.endGroup();
 
-        QFont font;
-        font.setFamily(fontFamily);
-        changeTextFontSlot(font);
-        changeTextHeightSlot(textHeight);
-    }
+//        QFont font;
+//        font.setFamily(fontFamily);
+//        changeTextFontSlot(font);
+//        changeTextHeightSlot(textHeight);
+//    }
 }
 
 //void TextTab::charCountUpdated(int charCount)
@@ -166,7 +168,7 @@ void TextTab::wordCountUpdated(int wordCount)
 ////    QString debug;
 ////    qDebug() << "charCount : " << debug.setNum(charCount,10);
 //}
-
+//-------------------------------------------------------------------------------
 void TextTab::blockCountUpdated(int blockCount)
 {
     //    QString debug;
@@ -176,39 +178,40 @@ void TextTab::blockCountUpdated(int blockCount)
     emit blockCountSignal(blockCount);
 
 }
-
+//-------------------------------------------------------------------------------
 void TextTab::updateWordCounts()
 {
     tabWordCount->updateAll();
 
 }
-
+//-------------------------------------------------------------------------------
 
 void TextTab::changeWidthSlot(int width)
 {
     textZone->setFixedWidth(width);
-    textZone->document()->setTextWidth(textZone->width() - 20);
+   textZone->document()->setTextWidth(width - 20);
     prevTextZone->setFixedWidth(width);
-    prevTextZone->document()->setTextWidth(textZone->width() - 20);
+    prevTextZone->document()->setTextWidth(width - 20);
 }
-
+//-------------------------------------------------------------------------------
 void TextTab::changeTextFontSlot(QFont font)
 {
     textZone->setTextFont(font);
 }
-
+//-------------------------------------------------------------------------------
 void TextTab::changeTextHeightSlot(int height)
 {
     textZone->setTextHeight(height);
 }
 
-
+//-------------------------------------------------------------------------------
 void TextTab::setTextFocus()
 {
+    if(textZone->isVisible())
     textZone->setFocus();
 
 }
-
+//-------------------------------------------------------------------------------
 void TextTab::setCursorPos(int pos)
 {
     for(int i = 0; i < pos ; i++)
@@ -224,11 +227,23 @@ int TextTab::saveCursorPos()
     return cursor.position();
 
 }
-
+//-------------------------------------------------------------------------------
 QTextCharFormat TextTab::tabFontChangedSlot()
 {
     return textZone->textCursor().charFormat();
 }
+
+//-------------------------------------------------------------------------------
+void TextTab::cursorPositionChangedSlot()
+{
+            if(textZone->textCursor().atStart() == true
+                    || textZone->textCursor().position() == 1
+                    || textZone->canPaste() == true)
+                applyConfig();
+}
+
+//-------------------------------------------------------------------------------
+
 
 void TextTab::updateTextZone()
 {
@@ -240,7 +255,7 @@ void TextTab::updateTextZone()
 }
 
 
-
+//-------------------------------------------------------------------------------
 
 void TextTab::showPrevText(bool showPrevTextBool)
 {
@@ -250,13 +265,13 @@ void TextTab::showPrevText(bool showPrevTextBool)
     textZone->ensureCursorVisible();
 }
 
-
+//-------------------------------------------------------------------------------
 bool TextTab::setShowPrevTextButton()
 {
     return !prevTextZone->isHidden();
 }
 
-
+//-------------------------------------------------------------------------------
 void  TextTab::setPrevText(QTextDocument *prevDoc)
 {
 prevTextDocument = prevDoc;
@@ -283,7 +298,7 @@ prevTextZone->scrollBy(prevDocCursorPoint);
 
 
 
-
+//-------------------------------------------------------------------------------
 
 
 void TextTab::applyConfig()

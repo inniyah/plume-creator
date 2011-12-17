@@ -69,6 +69,7 @@ private slots:
     void wordCountUpdated(int wordCount);
     //void charCountUpdated(int charCount);
     void blockCountUpdated(int blockCount);
+void cursorPositionChangedSlot();
 
 private:
 
