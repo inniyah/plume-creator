@@ -27,7 +27,7 @@
 #include <QTextEdit>
 #include <QSettings>
 #include <QSlider>
-
+//
 class FullTextZone : public QTextEdit
 {
     Q_OBJECT

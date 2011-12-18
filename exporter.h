@@ -22,7 +22,7 @@
 
 #include <QtGui>
 #include <QDomDocument>
-
+//
 class Exporter : public QDialog
 {
     Q_OBJECT

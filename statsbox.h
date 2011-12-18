@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QLabel>
-
+//
 class StatsBox : public QFrame
 {
     Q_OBJECT

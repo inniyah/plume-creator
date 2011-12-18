@@ -2,7 +2,7 @@
 
 #include "outline.h"
 #include "outlineitem.h"
-
+//
 Outline::Outline(QWidget *parent) :
     QWidget(parent), newAttendName("*" + tr("new"))
 {

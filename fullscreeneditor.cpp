@@ -4,7 +4,7 @@
 #include "fullscreeneditor.h"
 #include "digitalclock.h"
 #include "timer.h"
-
+//
 FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *parent) :
     QWidget(parent)
 {

@@ -1,5 +1,5 @@
 #include "editmenubox.h"
-
+//
 EditMenuBox::EditMenuBox(QWidget *parent) :
     QFrame(parent), xMax(0)
 {

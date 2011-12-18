@@ -3,7 +3,7 @@
 
 
 #include "newprojectwizard.h"
-
+//
 NewProjectWizard::NewProjectWizard(QWidget *parent)
     : QWizard(parent)
 {

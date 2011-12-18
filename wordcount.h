@@ -24,7 +24,7 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include <QProcess>
-
+//
 
 class WordCount : public QObject
 {

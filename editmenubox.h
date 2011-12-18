@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QToolButton>
-
+//
 class EditMenuBox : public QFrame
 {
     Q_OBJECT

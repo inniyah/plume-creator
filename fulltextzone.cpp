@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "fulltextzone.h"
-
+//
 FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
     QTextEdit(parent)
 {

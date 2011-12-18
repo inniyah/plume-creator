@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #include "wordcount.h"
-
+//
 WordCount::WordCount(QTextDocument *doc, QObject *parent) :
     QObject(parent)
 {

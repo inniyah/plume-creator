@@ -6,7 +6,7 @@
 #include <QDomDocument>
 
 #include "notezone.h"
-
+//
 class AttendBox : public QFrame
 {
     Q_OBJECT

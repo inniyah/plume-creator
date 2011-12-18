@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QTextEdit>
 #include <QSettings>
-
+//
 class TextZone : public QTextEdit
 {
     Q_OBJECT

@@ -22,7 +22,7 @@
 
 #include <QFrame>
 #include <QWidget>
-
+//
 class ItemBox : public QFrame
 {
     Q_OBJECT

@@ -27,7 +27,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include <fulltextzone.h>
-
+//
 class FullscreenEditor : public QWidget
 {
     Q_OBJECT

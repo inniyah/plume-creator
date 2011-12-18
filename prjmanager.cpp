@@ -8,7 +8,7 @@
 
 
 #include "newprojectwizard.h"
-
+//
 
 
 PrjManager::PrjManager(QWidget *parent) :

@@ -2,7 +2,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QtGui>
-
+//
 QT_BEGIN_NAMESPACE
 class GeneralSettingTab;
 class TextSettingTab;

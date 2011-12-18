@@ -25,7 +25,7 @@
 
 #include "textzone.h"
 #include "wordcount.h"
-
+//
 
 class TextTab : public QWidget
 {

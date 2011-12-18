@@ -26,7 +26,7 @@
 
 #include "prjmanager.h"
 #include "settingsdialog.h"
-
+//
 class MenuBox : public QFrame
 {
     Q_OBJECT

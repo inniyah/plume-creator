@@ -2,7 +2,7 @@
 
 #include "texttab.h"
 #include "wordcount.h"
-
+//
 
 
 TextTab::TextTab(QWidget *parent) :

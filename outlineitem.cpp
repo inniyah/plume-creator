@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "outlineitem.h"
-
+//
 OutlineItem::OutlineItem(QWidget *parent) :
     QWidget(parent)
 {

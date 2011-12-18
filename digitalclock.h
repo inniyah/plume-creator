@@ -22,7 +22,7 @@
 #define DIGITALCLOCK_H
 
 #include <QLabel>
-
+//
 class DigitalClock : public QLabel
 {
     Q_OBJECT

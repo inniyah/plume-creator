@@ -22,7 +22,7 @@
 
 #include <QtGui>
 #include <QWidget>
-
+//
 class OutlineItem : public QWidget
 {
     Q_OBJECT

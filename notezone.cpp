@@ -1,5 +1,5 @@
 #include "notezone.h"
-
+//
 NoteZone::NoteZone(QWidget *parent) :
     QTextEdit(parent)
 {

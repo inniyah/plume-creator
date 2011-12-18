@@ -25,7 +25,7 @@
 #include <QDomElement>
 
 #include "outlineitem.h"
-
+//
 class Outline : public QWidget
 {
     Q_OBJECT

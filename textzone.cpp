@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "textzone.h"
-
+//
 TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     QTextEdit(parent)
 {

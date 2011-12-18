@@ -3,7 +3,7 @@
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter.h"
-
+//
 MenuBox::MenuBox(QWidget *parent) :
     QFrame(parent)
 {

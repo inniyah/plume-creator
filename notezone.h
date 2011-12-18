@@ -22,7 +22,7 @@
 
 #include <QtGui>
 #include <QTextEdit>
-
+//
 class NoteZone : public QTextEdit
 {
     Q_OBJECT

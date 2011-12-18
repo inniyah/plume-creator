@@ -1,5 +1,5 @@
 #include "exporter.h"
-
+//
 Exporter::Exporter(QFile *device, QWidget *parent) :
     QDialog(parent)
 {

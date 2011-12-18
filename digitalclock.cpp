@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "digitalclock.h"
-
+//
 DigitalClock::DigitalClock(QWidget *parent) :
     QLabel(parent)
 {

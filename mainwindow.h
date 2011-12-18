@@ -32,7 +32,7 @@
 #include "fullscreeneditor.h"
 #include "outline.h"
 #include "attendbox.h"
-
+//
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

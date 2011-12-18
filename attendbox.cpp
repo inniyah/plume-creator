@@ -2,7 +2,7 @@
 #include <QDomElement>
 
 #include "attendbox.h"
-
+//
 AttendBox::AttendBox(QWidget *parent) :
     QFrame(parent), attendManagerLaunched(false), newAttendName("*" + tr("new"))
 {

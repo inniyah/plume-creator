@@ -22,7 +22,7 @@
 
 #include <QtGui>
 #include <QWidget>
-
+//
 class Timer : public QWidget
 {
     Q_OBJECT

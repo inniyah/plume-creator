@@ -2,7 +2,7 @@
 
 
 #include "maintree.h"
-
+//
 MainTree::MainTree(QWidget *parent) :
     QTreeWidget(parent), outlinerLaunched(false)
 {

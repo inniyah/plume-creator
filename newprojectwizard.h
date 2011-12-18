@@ -24,7 +24,7 @@
 #include <QWizard>
 #include <QtXml>
 #include <QtGui>
-
+//
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGroupBox;
