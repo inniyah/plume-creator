@@ -1230,22 +1230,19 @@ void OutlineItem::applyNoteFont()
 
 bool OutlineItem::showSheetAttendanceList(QList<QListWidgetItem *> *itemList)
 {
-//    qDebug() << "outlineItem";
 
     // clear list :
     while(listWidget->count() != 0)
         listWidget->takeItem(0);
 
-//qDebug() << "outlineItem --";
 
     while(!itemList->isEmpty()){
-        listWidget->addItem(itemList->takeFirst()->clone());
+        QListWidgetItem *item = itemList->takeFirst()->clone();
+        listWidget->addItem(item);
     }
 
 
 
-//    QString string;
-//    qDebug() << "outlineItem -- itemList->size() : " << string.setNum(itemList->size());
 
 
 

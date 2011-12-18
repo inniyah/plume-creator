@@ -220,7 +220,7 @@ void TextTab::setCursorPos(int pos)
 
     textZone->ensureCursorVisible();
 }
-
+//-------------------------------------------------------------------------------
 int TextTab::saveCursorPos()
 {
     QTextCursor cursor = textZone->textCursor();
@@ -237,8 +237,7 @@ QTextCharFormat TextTab::tabFontChangedSlot()
 void TextTab::cursorPositionChangedSlot()
 {
             if(textZone->textCursor().atStart() == true
-                    || textZone->textCursor().position() == 1
-                    || textZone->canPaste() == true)
+                    || textZone->textCursor().position() == 1)
                 applyConfig();
 }
 
@@ -274,26 +273,19 @@ bool TextTab::setShowPrevTextButton()
 //-------------------------------------------------------------------------------
 void  TextTab::setPrevText(QTextDocument *prevDoc)
 {
+    if(prevDoc == 0){
+        prevTextZone->setHidden(true);
+        return;
+}
+
 prevTextDocument = prevDoc;
 prevTextZone->setDocument(prevTextDocument);
 prevTextZone->document()->adjustSize();
-qDebug() << "verticalScrollBar()->maximum() : " << prevTextZone->verticalScrollBar()->maximum();
-prevTextZone->verticalScrollBar()->setSliderPosition(prevTextZone->verticalScrollBar()->maximum());
 
 
-QTextCursor tCursor = prevTextZone->textCursor();
-tCursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-
-QPoint prevDocCursorPoint = prevTextZone->cursorRect(tCursor).topLeft();
-
-//QString debug;
-//qDebug() << "prevDocCursorPoint x : " << debug.setNum(prevDocCursorPoint.x,10);
-//qDebug() << "prevDocCursorPoint y : " << debug.setNum(prevDocCursorPoint.y,10);
-
-prevTextZone->scrollBy(prevDocCursorPoint);
-
-
-
+QTextCursor curs =  prevTextZone->textCursor();
+curs.movePosition(QTextCursor::End);
+prevTextZone->setTextCursor(curs);
 }
 
 
@@ -328,7 +320,8 @@ void TextTab::applyConfig()
 
     //apply default font in empty documents :
 
-    if(document()->isEmpty()){
+    if(textZone->textCursor().atStart() == true
+          || textZone->textCursor().position() == 1){
         QFont font;
         font.setFamily(fontFamily);
         font.setPointSize(textHeight);

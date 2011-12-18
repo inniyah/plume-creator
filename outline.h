@@ -93,6 +93,8 @@ private:
 
     QHash<QListWidgetItem *, QDomElement> domElementForItem;
     QHash<int, QDomElement> domElementForItemNumber;
+
+    QString newAttendName;
 };
 
 #endif // OUTLINE_H

@@ -170,8 +170,12 @@ void FullscreenEditor::callColorDialog()
 
     QFormLayout *colorsLayout = new QFormLayout;
     backColorButton = new QPushButton(fullColorDialog);
+    backColorButton->setObjectName("backColorButton");
     textBackColorButton = new QPushButton(fullColorDialog);
+    textBackColorButton->setObjectName("textBackColorButton");
     textColorButton = new QPushButton(fullColorDialog);
+    textColorButton->setObjectName("textColorButton");
+
     connect(backColorButton,SIGNAL(clicked()), this, SLOT(setBackColorDialog()));
     connect(textBackColorButton,SIGNAL(clicked()), this, SLOT(setTextBackColorDialog()));
     connect(textColorButton,SIGNAL(clicked()), this, SLOT(setTextColorDialog()));
@@ -289,7 +293,6 @@ void FullscreenEditor::setBackColorDialog()
     QString g = string.setNum(backgroundColor.green(), 10);
     QString b = string.setNum(backgroundColor.blue(),10);
 
-    backColorButton->setStyleSheet("background: rgb(" + r + ", " + g + ", " + b + ");");
 
     settings.setValue("FullTextArea/backgroundColor", backgroundColor);
     setBackColor();
@@ -305,7 +308,8 @@ void FullscreenEditor::setBackColor()
     QString g = string.setNum(backgroundColor.green(), 10);
     QString b = string.setNum(backgroundColor.blue(),10);
 
-    backColorString = "QWidget#mainBackground {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+    backColorString = "QWidget#mainBackground {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QPushButton#backColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
 
@@ -322,7 +326,6 @@ void FullscreenEditor::setTextBackColorDialog()
     QString g = string.setNum(textBackColor.green(), 10);
     QString b = string.setNum(textBackColor.blue(),10);
 
-    textBackColorButton->setStyleSheet("background: rgb(" + r + ", " + g + ", " + b + ");");
 
 
     settings.setValue("FullTextArea/textBackgroundColor", textBackColor);
@@ -342,7 +345,8 @@ void FullscreenEditor::setTextBackColor()
 
     textBackColorString = "FullTextZone {background-color: rgb(" + r + ", " + g + ", " + b + ");"
             "border: 0px none black; border-radius: 0px;"
-            "}";
+            "}"
+    "QPushButton#textBackColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
 }
@@ -357,7 +361,6 @@ void FullscreenEditor::setTextColorDialog()
     QString g = string.setNum(textColor.green(), 10);
     QString b = string.setNum(textColor.blue(),10);
 
-    textColorButton->setStyleSheet("background: rgb(" + r + ", " + g + ", " + b + ");");
 
 
     settings.setValue("FullTextArea/textColor", textColor);
@@ -375,7 +378,8 @@ void FullscreenEditor::setTextColor()
     QString g = string.setNum(textColor.green(), 10);
     QString b = string.setNum(textColor.blue(),10);
 
-    textColorString = "FullTextZone {color: rgb(" + r + ", " + g + ", " + b + ");}";
+    textColorString = "FullTextZone {color: rgb(" + r + ", " + g + ", " + b + ");}"
+    "QPushButton#textColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 }
 
 

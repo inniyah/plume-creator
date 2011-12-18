@@ -74,8 +74,8 @@ public slots:
     void readAllAttendances();
     void setOutlinerProjectAttendList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
     void removeAttendNumberSlot(int itemNumber);
-void addAttendNumberToSheetSlot(QList<int> list);
-void removeAttendNumberFromSheetSlot(QList<int> list);
+void addAttendNumberToSheetSlot(QList<int> list, int sheetNumber);
+void removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber);
 
 
 private slots:

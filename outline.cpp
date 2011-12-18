@@ -4,7 +4,7 @@
 #include "outlineitem.h"
 
 Outline::Outline(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), newAttendName("*" + tr("new"))
 {
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -405,22 +405,18 @@ void Outline::updateAttendances(QHash<int, QString> attendStringForNumber)
     QHash<int , QString>::const_iterator i = attendStringForNumber.constBegin();
      while (i != attendStringForNumber.constEnd()) {
 
-
-
-
+//qDebug() << "attendStringForNumber i.key() : " << string.setNum(i.key());
+//qDebug() << "attendStringForNumber i.value() : " << i.value();
 
          OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(i.key()));
 
-         if(!item == 0)
+         if(item != 0)
          item->showSheetAttendanceList(openSheetAttendList(i.key(), i.value()));
 
 
 
 
-//         QString string;
 
-//         qDebug() << "i.key() : " << string.setNum(i.key());
-//     qDebug() << "i.value() : " << i.value();
 
 
          ++i;
@@ -457,11 +453,11 @@ QList<QListWidgetItem *> *Outline::sortAttendItems(QList<int> *attend, QString s
     QList<QListWidgetItem *> placeList_level_one;
     QList<QListWidgetItem *> placeList_level_two;
 
-    if(attend->isEmpty()){
+//    if(attend->isEmpty()){
 
-        list->append(attendSeparator(tr("empty")));
-        return list;
-}
+//        list->append(attendSeparator(tr("empty")));
+//        return list;
+//}
 
 
 
@@ -482,13 +478,13 @@ QList<QListWidgetItem *> *Outline::sortAttendItems(QList<int> *attend, QString s
     for (int i = 0; i < attend->size(); ++i){
         QDomElement element = domElementForItemNumber.value(attend->at(i));
         if(element.tagName() == "char"){
-            map.insert(element.attribute("lastName", "ZZZ") + " " + element.attribute("firstName", "ZZZ"),element);
+            map.insert(element.attribute("lastName", newAttendName) + " " + element.attribute("firstName", ""),element);
         }
         if(element.tagName() == "item"){
-            map.insert(element.attribute("name", "ZZZ"),element);
+            map.insert(element.attribute("name", newAttendName),element);
         }
         if(element.tagName() == "place"){
-            map.insert(element.attribute("name", "ZZZ"),element);
+            map.insert(element.attribute("name", newAttendName),element);
         }
 
     }
@@ -562,14 +558,17 @@ QList<QListWidgetItem *> *Outline::sortAttendItems(QList<int> *attend, QString s
     //    list->append(charList);
     //    list->append(itemList);
     //    list->append(placeList);
+    if(charList_level_zero.size() + charList_level_one.size() + charList_level_two.size() != 0)
     list->append(attendSeparator(tr("Characters")));
     list->append(charList_level_zero);
     list->append(charList_level_one);
     list->append(charList_level_two);
+    if(itemList_level_zero.size() + itemList_level_one.size() + itemList_level_two.size() != 0)
     list->append(attendSeparator(tr("Items")));
     list->append(itemList_level_zero);
     list->append(itemList_level_one);
     list->append(itemList_level_two);
+    if(placeList_level_zero.size() + placeList_level_one.size() + placeList_level_two.size() != 0)
     list->append(attendSeparator(tr("Places")));
     list->append(placeList_level_zero);
     list->append(placeList_level_one);

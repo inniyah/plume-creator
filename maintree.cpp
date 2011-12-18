@@ -2668,12 +2668,24 @@ void MainTree::saveOutlineSettings()
 
 QTextDocument * MainTree::prevText(int num)
 {
-
+  //find directly before :
     int prevNum = domElementForNumber.key(domElementForNumber.value(num).previousSiblingElement(domElementForNumber.value(num).tagName()));
+
+
+    //find before the father :
+    if(prevNum == 0){
+        QDomElement father = domElementForNumber.value(num).parentNode().toElement();
+        QDomElement prevFather = father.previousSiblingElement(father.tagName());
+                QDomElement lastChild = prevFather.lastChild().toElement();
+        prevNum = domElementForNumber.key(lastChild);
+}
+    //cancel :
+    else if(prevNum == 0)
+    return 0;
 
     QString string;
     QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(prevNum,10));
-    //    qDebug() << "prevNum : " << string;
+        qDebug() << "prevNum : " << string;
 
     return textDoc;
 }
@@ -2713,6 +2725,7 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
         QDomElement element = i.value();
 
         attendString = element.attribute("attend", "0");
+  //      qDebug() << "attendString : " << attendString;
 
         QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
@@ -2725,7 +2738,7 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
 
         for( int i = 0 ; i < thisAttendStringList.size(); ++i)
             newAttendString.append(thisAttendStringList.at(i) + "-");
-
+  //      qDebug() << "newAttendString : " << newAttendString;
 
         element.setAttribute("attend", newAttendString);
         ++i;
@@ -2737,18 +2750,18 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
 
 //----------------------------------------------------------------------------------
 
-void MainTree::addAttendNumberToSheetSlot(QList<int> list)
+void MainTree::addAttendNumberToSheetSlot(QList<int> list, int sheetNumber)
 {
-    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
-    while (i != domElementForItem.constEnd()) {
+//    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
+//    while (i != domElementForItem.constEnd()) {
         QString attendString;
-        QDomElement element = i.value();
+        QDomElement element = domElementForNumber.value(sheetNumber);
 
         attendString = element.attribute("attend", "0");
 
         QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
-        qDebug() << "attendString : "<< attendString;
+//        qDebug() << "attendString : "<< attendString;
         QString string;
         for(int j=0 ; j < list.size(); ++j){
             int itemNumber = list.at(j);
@@ -2760,11 +2773,11 @@ void MainTree::addAttendNumberToSheetSlot(QList<int> list)
         for( int i = 0 ; i < thisAttendStringList.size(); ++i)
             newAttendString.append(thisAttendStringList.at(i) + "-");
 
-        qDebug() << "newAttendString : "<< newAttendString;
+   //     qDebug() << "newAttendString : "<< newAttendString;
 
         element.setAttribute("attend", newAttendString);
-        ++i;
-    }
+//        ++i;
+//    }
 
     this->write(deviceFile);
 
@@ -2773,14 +2786,14 @@ void MainTree::addAttendNumberToSheetSlot(QList<int> list)
 
 //----------------------------------------------------------------------------------
 
-void MainTree::removeAttendNumberFromSheetSlot(QList<int> list)
+void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
 {
 
 
-    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
-    while (i != domElementForItem.constEnd()) {
+//    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
+//    while (i != domElementForItem.constEnd()) {
         QString attendString;
-        QDomElement element = i.value();
+        QDomElement element = domElementForNumber.value(sheetNumber);
 
         attendString = element.attribute("attend", "0");
 
@@ -2801,12 +2814,9 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list)
         qDebug() << "newAttendString : "<< newAttendString;
 
         element.setAttribute("attend", newAttendString);
-        ++i;
-    }
+//        ++i;
+//    }
 
     this->write(deviceFile);
-
-
-
     readAllAttendances();
 }

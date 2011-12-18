@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.39 !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.40 !</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -391,8 +391,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         if(textWidgetList->size() != 0){
             for(int i = 0; i < textWidgetList->size(); ++i){
                 if(textWidgetList->at(i)->document() == textDoc){
-                    qDebug() << "tree item already opened, focus on it :";
-                         tabWidget->setCurrentWidget(textWidgetList->at(i));
+                    tabWidget->setCurrentWidget(textWidgetList->at(i));
                     return;
                 }
             }
@@ -572,13 +571,13 @@ void MainWindow::secondTextSlot(int number, QString action)
             return;
 
 
-//        disconnect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+        //        disconnect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
         QString string;
         TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
-//        QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
-//        QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
-//        //        qDebug() << "objectname value : " << string.setNum(number,10);
+        //        QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
+        //        QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
+        //        //        qDebug() << "objectname value : " << string.setNum(number,10);
 
 
         //disconnect edit menu to tab
@@ -589,15 +588,13 @@ void MainWindow::secondTextSlot(int number, QString action)
         disconnect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
 
-int tabNum = tabWidget->indexOf(tab);
-tabCloseRequest(tabNum);
+        int tabNum = tabWidget->indexOf(tab);
+        tabCloseRequest(tabNum);
 
-//tabWidget->removeTab();
+        //tabWidget->removeTab();
 
-//        noteLayout->removeWidget(noteWidget);
-//        synLayout->removeWidget(synWidget);
-
-
+        //        noteLayout->removeWidget(noteWidget);
+        //        synLayout->removeWidget(synWidget);
 
 
 
@@ -611,7 +608,9 @@ tabCloseRequest(tabNum);
 
 
 
-//        connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
+
+
+        //        connect(tabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
     }
 }
@@ -654,8 +653,8 @@ void MainWindow::setTextTabConnections()
             mainTree,SLOT(setOutlinerProjectAttendList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(setCurrentAttendList(int)));
     connect(attendList, SIGNAL(removeAttendNumberSignal(int)), mainTree, SLOT(removeAttendNumberSlot(int)));
-    connect(attendList, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>)));
-    connect(attendList, SIGNAL(addAttendNumberToSheetSignal(QList<int>)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>)));
+    connect(attendList, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>, int)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>, int)));
+    connect(attendList, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
 }
 
 
@@ -700,6 +699,7 @@ void MainWindow::tabChangeSlot(int tabNum)
         TextTab *tab = textWidgetList->at(tabNum);
         editMenu->tabChangedSlot(tab->tabFontChangedSlot());
 
+        editMenu->setShowPreviousTextButton(tab->setShowPrevTextButton());
 
         setCurrentAttendList(tabNum);
 
@@ -723,11 +723,11 @@ void MainWindow::tabCloseRequest(int tabNum)
                             numList->at(tabNum));
 
 
-    qDebug() << "tabCloseRequest textName :" << textWidgetList->at(tabNum)->objectName() << "----------- saved :" << textBool;
-    qDebug() << "tabCloseRequest noteName :" << noteWidgetList->at(tabNum)->objectName() << "----------- saved :" << noteBool;
-    qDebug() << "tabCloseRequest synName :" << synWidgetList->at(tabNum)->objectName() << "----------- saved :" << synBool;
-    qDebug() << "tabCloseRequest pre :" << tabNum;
-    qDebug() << "tabCloseRequest name :" << nameList->at(tabNum);
+    //    qDebug() << "tabCloseRequest textName :" << textWidgetList->at(tabNum)->objectName() << "----------- saved :" << textBool;
+    //    qDebug() << "tabCloseRequest noteName :" << noteWidgetList->at(tabNum)->objectName() << "----------- saved :" << noteBool;
+    //    qDebug() << "tabCloseRequest synName :" << synWidgetList->at(tabNum)->objectName() << "----------- saved :" << synBool;
+    //    qDebug() << "tabCloseRequest pre :" << tabNum;
+    //    qDebug() << "tabCloseRequest name :" << nameList->at(tabNum);
 
 
     // Closing / removing
@@ -870,7 +870,7 @@ void MainWindow::tabRenamingSlot(QString newName, int number)
     QString string;
     TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
 
-    qDebug() << "tabRenamingSlot : " << string.setNum(number,10);
+    //    qDebug() << "tabRenamingSlot : " << string.setNum(number,10);
 
     tabWidget->setTabText(tabWidget->indexOf(tab),newName);
 
@@ -913,7 +913,7 @@ void MainWindow::writeSettings()
     settings.setValue( "firstStart", false);
     settings.endGroup();
 
-    qDebug() << "main settings saved";
+    //    qDebug() << "main settings saved";
 }
 
 
@@ -1013,8 +1013,8 @@ void MainWindow::configTimer()
     timer->stop();
     timer->start(autosaveTime);
 
-    QString debug;
-    qDebug() << "autosaveTime" << debug.setNum(autosaveTime);
+    //    QString debug;
+    //    qDebug() << "autosaveTime" << debug.setNum(autosaveTime);
 }
 
 
@@ -1050,7 +1050,7 @@ void MainWindow::editFullscreen()
 
 
 
-    qDebug() << tabWidget->currentWidget()->objectName();
+    //    qDebug() << tabWidget->currentWidget()->objectName();
 
 
     QString tabName = tabWidget->currentWidget()->objectName();
@@ -1066,13 +1066,13 @@ void MainWindow::editFullscreen()
     //    if(this->findChild<QWidget *>(noteName) == 0)
     //        qDebug() << "note == 0";
 
-    qDebug() << "noteName : " << noteName;
+    //    qDebug() << "noteName : " << noteName;
 
     NoteZone *synStack = syn->findChild<NoteZone *>(synName + "-NoteZone");
     NoteZone *noteStack = note->findChild<NoteZone *>(noteName + "-NoteZone");
 
 
-    qDebug() << "synStack name : " << synStack->objectName();
+    //    qDebug() << "synStack name : " << synStack->objectName();
 
     fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
 
@@ -1120,10 +1120,10 @@ void MainWindow::showPrevText(bool showPrevTextBool)
 void MainWindow::setCurrentAttendList(int tabNum)
 {
     if(tabNum == -1)
-    tabNum = 0;
+        tabNum = 0;
 
     if(tabWidget->count() == 0)
-    return;
+        return;
 
     int number = tabWidget->widget(tabNum)->objectName().mid(tabWidget->widget(tabNum)->objectName().indexOf("_") + 1).toInt();
 

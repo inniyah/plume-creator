@@ -17,8 +17,8 @@ public:
 signals:
     void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
     void removeAttendNumberSignal(int itemNumber);
-    void addAttendNumberToSheetSignal(QList<int> list);
-    void removeAttendNumberFromSheetSignal(QList<int> list);
+    void addAttendNumberToSheetSignal(QList<int> list, int sheetNumber);
+    void removeAttendNumberFromSheetSignal(QList<int> list, int sheetNumber);
 
 public slots:
     void openSheetAttendList(int number ,QString attendString);
@@ -75,6 +75,8 @@ private slots:
 
     void toSheetSlot();
     void toAllSlot();
+void managerSheetListSelectionChanged();
+void projectListSelectionChanged();
 
 private:
     QListWidget *attendList, *abstractList;
@@ -95,7 +97,7 @@ private:
     ,*toSheetButton, *toAllButton;
     QComboBox *levelComboBox, *roleComboBox;
 
-    bool hideDetailsBool;
+    bool detailsHiddenBool;
     bool firstDetailOpening;
 
     NoteZone *editZone;
@@ -112,6 +114,9 @@ private:
     int currentManagerSheetList;
 
     QString newAttendName;
+
+    QList<QListWidgetItem *> projectItemList;
+    QList<QListWidgetItem *> managerSheetItemList;
 };
 
 #endif // ATTENDBOX_H
