@@ -71,7 +71,7 @@ bool MainTree::read(QFile *device)
     root = domDocument.documentElement();
     if (root.tagName() != "plume") {
         QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not a a Plume Creator project file."));
+                                 tr("The file is not a Plume Creator project file."));
         return false;
     } else if (root.hasAttribute("version")
                && root.attribute("version") != "0.2") {
@@ -236,7 +236,6 @@ bool MainTree::read(QFile *device)
 
 bool MainTree::write(QFile *device)
 {
-    domDocument.documentElement().setAttribute("lastModified", QDateTime::currentDateTime().toString());
 
 
     device->waitForBytesWritten(500);
@@ -304,6 +303,68 @@ bool MainTree::write(QFile *device)
 
 
 
+
+
+        domDocument.documentElement().setAttribute("lastModified", QDateTime::currentDateTime().toString());
+
+
+
+        // create and update the information file (*.prjinfo) :
+
+        QStringList filters;
+        filters.clear();
+        filters << "*.plume";
+
+        QString projectName = domDocument.documentElement().attribute("projectName", device->fileName().split("/").last().remove(".plume"));
+
+
+        QFile file(devicePath + "/" + projectName + ".prjinfo");
+
+        file.waitForBytesWritten(500);
+        file.close();
+
+        file.open(QIODevice::ReadWrite | QIODevice::Text);
+        if(file.isWritable()){
+
+
+            QDomDocument domDoc("plume-information");
+
+            QDomElement root = domDoc.createElement("root");
+            root.setTagName("plume-information");
+            root.setAttribute("projectName", projectName);
+            root.setAttribute("version","0.2");
+            domDoc.appendChild(root);
+
+            QDomElement prjInfoElem = domDoc.createElement("prj");
+            prjInfoElem.setAttribute("name", projectName);
+            prjInfoElem.setAttribute("path", devicePath.left(devicePath.size() - projectName.size() - 1 ));
+            prjInfoElem.setAttribute("workPath", devicePath);
+            prjInfoElem.setAttribute("lastModified", domDocument.documentElement().attribute("lastModified", QString(tr("not modified"))));
+            prjInfoElem.setAttribute("creationDate", domDocument.documentElement().attribute("creationDate"));
+
+            root.appendChild(prjInfoElem);
+
+
+
+            file.flush();
+
+            const int IndentSize = 4;
+
+            QTextStream out(&file);
+            out.flush();
+            domDoc.save(out, IndentSize);
+
+
+        }
+        file.close();
+
+        qDebug() << "prjinfo saved";
+
+
+
+
+
+
         return true;
 
     }
@@ -313,6 +374,9 @@ bool MainTree::write(QFile *device)
         //        qDebug() << "Dom saved in xml via write(QFile *device) :     error ";
         return false;
     }
+
+
+
 
 }
 
@@ -2668,7 +2732,7 @@ void MainTree::saveOutlineSettings()
 
 QTextDocument * MainTree::prevText(int num)
 {
-  //find directly before :
+    //find directly before :
     int prevNum = domElementForNumber.key(domElementForNumber.value(num).previousSiblingElement(domElementForNumber.value(num).tagName()));
 
 
@@ -2676,16 +2740,16 @@ QTextDocument * MainTree::prevText(int num)
     if(prevNum == 0){
         QDomElement father = domElementForNumber.value(num).parentNode().toElement();
         QDomElement prevFather = father.previousSiblingElement(father.tagName());
-                QDomElement lastChild = prevFather.lastChild().toElement();
+        QDomElement lastChild = prevFather.lastChild().toElement();
         prevNum = domElementForNumber.key(lastChild);
-}
+    }
     //cancel :
     else if(prevNum == 0)
-    return 0;
+        return 0;
 
     QString string;
     QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(prevNum,10));
-        qDebug() << "prevNum : " << string;
+    qDebug() << "prevNum : " << string;
 
     return textDoc;
 }
@@ -2725,7 +2789,7 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
         QDomElement element = i.value();
 
         attendString = element.attribute("attend", "0");
-  //      qDebug() << "attendString : " << attendString;
+        //      qDebug() << "attendString : " << attendString;
 
         QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
@@ -2738,7 +2802,7 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
 
         for( int i = 0 ; i < thisAttendStringList.size(); ++i)
             newAttendString.append(thisAttendStringList.at(i) + "-");
-  //      qDebug() << "newAttendString : " << newAttendString;
+        //      qDebug() << "newAttendString : " << newAttendString;
 
         element.setAttribute("attend", newAttendString);
         ++i;
@@ -2752,32 +2816,32 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
 
 void MainTree::addAttendNumberToSheetSlot(QList<int> list, int sheetNumber)
 {
-//    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
-//    while (i != domElementForItem.constEnd()) {
-        QString attendString;
-        QDomElement element = domElementForNumber.value(sheetNumber);
+    //    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
+    //    while (i != domElementForItem.constEnd()) {
+    QString attendString;
+    QDomElement element = domElementForNumber.value(sheetNumber);
 
-        attendString = element.attribute("attend", "0");
+    attendString = element.attribute("attend", "0");
 
-        QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
+    QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
-//        qDebug() << "attendString : "<< attendString;
-        QString string;
-        for(int j=0 ; j < list.size(); ++j){
-            int itemNumber = list.at(j);
-            thisAttendStringList.append(string.setNum(itemNumber));
-                }
+    //        qDebug() << "attendString : "<< attendString;
+    QString string;
+    for(int j=0 ; j < list.size(); ++j){
+        int itemNumber = list.at(j);
+        thisAttendStringList.append(string.setNum(itemNumber));
+    }
 
-        QString newAttendString;
+    QString newAttendString;
 
-        for( int i = 0 ; i < thisAttendStringList.size(); ++i)
-            newAttendString.append(thisAttendStringList.at(i) + "-");
+    for( int i = 0 ; i < thisAttendStringList.size(); ++i)
+        newAttendString.append(thisAttendStringList.at(i) + "-");
 
-   //     qDebug() << "newAttendString : "<< newAttendString;
+    //     qDebug() << "newAttendString : "<< newAttendString;
 
-        element.setAttribute("attend", newAttendString);
-//        ++i;
-//    }
+    element.setAttribute("attend", newAttendString);
+    //        ++i;
+    //    }
 
     this->write(deviceFile);
 
@@ -2790,32 +2854,32 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
 {
 
 
-//    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
-//    while (i != domElementForItem.constEnd()) {
-        QString attendString;
-        QDomElement element = domElementForNumber.value(sheetNumber);
+    //    QHash<QTreeWidgetItem *, QDomElement>::const_iterator  i = domElementForItem.constBegin();
+    //    while (i != domElementForItem.constEnd()) {
+    QString attendString;
+    QDomElement element = domElementForNumber.value(sheetNumber);
 
-        attendString = element.attribute("attend", "0");
+    attendString = element.attribute("attend", "0");
 
-        QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
+    QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
-        qDebug() << "attendString : "<< attendString;
-        QString string;
-        for(int j=0 ; j < list.size(); ++j){
-            int itemNumber = list.at(j);
-            if(thisAttendStringList.contains(string.setNum(itemNumber)))
-                thisAttendStringList.removeAt(thisAttendStringList.indexOf(string.setNum(itemNumber)));
-        }
-        QString newAttendString;
+    qDebug() << "attendString : "<< attendString;
+    QString string;
+    for(int j=0 ; j < list.size(); ++j){
+        int itemNumber = list.at(j);
+        if(thisAttendStringList.contains(string.setNum(itemNumber)))
+            thisAttendStringList.removeAt(thisAttendStringList.indexOf(string.setNum(itemNumber)));
+    }
+    QString newAttendString;
 
-        for( int i = 0 ; i < thisAttendStringList.size(); ++i)
-            newAttendString.append(thisAttendStringList.at(i) + "-");
+    for( int i = 0 ; i < thisAttendStringList.size(); ++i)
+        newAttendString.append(thisAttendStringList.at(i) + "-");
 
-        qDebug() << "newAttendString : "<< newAttendString;
+    qDebug() << "newAttendString : "<< newAttendString;
 
-        element.setAttribute("attend", newAttendString);
-//        ++i;
-//    }
+    element.setAttribute("attend", newAttendString);
+    //        ++i;
+    //    }
 
     this->write(deviceFile);
     readAllAttendances();

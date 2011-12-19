@@ -875,7 +875,7 @@ void NoteZone::applySynFontConfig()
 
     emit connectUpdateTextsSignal();
 
-    qDebug() << "applySynFontConfig";
+ //   qDebug() << "applySynFontConfig";
 
 }
 

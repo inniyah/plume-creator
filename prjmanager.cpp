@@ -15,6 +15,7 @@ PrjManager::PrjManager(QWidget *parent) :
     QDialog(parent)
 {
 
+    setAttribute(Qt::WA_DeleteOnClose);
 
     setWindowTitle(tr("Projects Manager"));
     setFixedSize(600, 500);
@@ -62,7 +63,7 @@ PrjManager::PrjManager(QWidget *parent) :
     setLayout(layout);
 
 
-
+    raise();
 }
 
 //-----------------------------------------------------------------------------------

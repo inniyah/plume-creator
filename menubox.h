@@ -64,6 +64,8 @@ public slots:
     void openProjectManagerSlot();
     void openNewProjectSlot();
     void openProjectSlot(QFile *device);
+void setExternalProject(QFile *externalFile);
+bool openExternalProject(QFile *externalPrjFile);
 
 private slots:
 
@@ -114,6 +116,8 @@ private:
 
     PrjManager *projManager;
     QFile *file;
+
+    QFile *extFile;
 };
 
 #endif // MENUBOX_H

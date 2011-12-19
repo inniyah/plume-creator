@@ -56,6 +56,7 @@ signals:
 
 public slots:
     void openProjectSlot(QFile *projectFile);
+    void openExternalProject(QFile *externalFile);
     void closeProjectSlot();
 
     void textSlot(QTextDocument *textDoc = 0, QTextDocument *noteDoc = 0, QTextDocument *synDoc = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
@@ -77,10 +78,10 @@ private slots:
 
 
     void reconnectAFterTabClose();
- void showPrevText(bool showPrevTextBool);
+    void showPrevText(bool showPrevTextBool);
 
- //attendance :
-void setCurrentAttendList(int tabNum);
+    //attendance :
+    void setCurrentAttendList(int tabNum);
 
 
 private:

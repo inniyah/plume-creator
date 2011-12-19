@@ -155,7 +155,6 @@ void NewProjectWizard::accept()
 
     settings.endArray();
 
-    // future : place the new project to top ?
 
     QDialog::accept();
 
