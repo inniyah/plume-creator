@@ -25,7 +25,9 @@ public slots:
     bool saveAll();
     bool saveThisDoc();
     bool saveDomDocument();
+    bool closeAll();
     void setCurrentList(int number);
+    void setCurrentListName(QString currentTabName);
     void setManagerSheetList(int number);
     void updateAllAttendances(QHash<int,QString> allAttendancesForNumber);
     void accept();
@@ -91,6 +93,7 @@ private:
 
     int currentSheetNumber;
     QListWidget *projectList;
+    QGroupBox *managerSheetListBox;
     QListWidget *managerSheetList;
     QGridLayout *detailLayout;
     QPushButton *showDetailButton, *hideDetailButton, *newCharButton, *newItemButton, *newPlaceButton, *deleteButton
@@ -99,6 +102,7 @@ private:
 
     bool detailsHiddenBool;
     bool firstDetailOpening;
+QString currentTabName;
 
     NoteZone *editZone;
 

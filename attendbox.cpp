@@ -40,8 +40,8 @@ bool AttendBox::saveAll()
         QTextDocumentWriter docWriter(file, "HTML");
         bool written = docWriter.write(doc);
 
-
-
+        //qDebug() << "QTextDocumentWriter : " << file->fileName();
+        //        qDebug() << "QTextDocumentWriter : " << written;
 
 
         ++i;
@@ -70,6 +70,8 @@ bool AttendBox::saveDomDocument()
         attFile->close();
     }
 }
+//--------------------------------------------------------------------------------------
+
 
 bool AttendBox::saveThisDoc()
 {
@@ -93,17 +95,52 @@ bool AttendBox::saveThisDoc()
 
     return written;
 }
+
 //--------------------------------------------------------------------------------------
 
-bool AttendBox::readProjectAttendance(QFile *device)
+
+bool AttendBox::closeAll()
 {
-    firstDetailOpening = true;
+
+
+    //close manager if opened :
+
+    this->accept();
+
+
+    // rename all docs :
+
+    QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
+
+    while (i != fileForDoc.end()) {
+
+
+        QTextDocument *doc = i.key();
+
+        doc->setObjectName("");
+
+        ++i;
+    }
+
+
+
+
     //clear all lists :
 
     domElementForItem.clear();
     domElementForItemNumber.clear();
     attendStringForNumber.clear();
     fileForDoc.clear();
+
+
+
+}
+//--------------------------------------------------------------------------------------
+
+bool AttendBox::readProjectAttendance(QFile *device)
+{
+    firstDetailOpening = true;
+
 
 
     // read file :
@@ -114,12 +151,22 @@ bool AttendBox::readProjectAttendance(QFile *device)
 
     QStringList filters;
     QDir dir(devicePath);
+
+
+    // check if the "attend" directory is here :
+
+    filters.clear();
+    filters << "attend";
+
+    if(dir.entryList(filters, QDir::Dirs).isEmpty())
+        dir.mkdir("attend");
+
+
+    // check if the .attend file is here :
     filters.clear();
     filters << "*.attend";
 
-
-
-    if(dir.entryList(filters).isEmpty()){
+    if(dir.entryList(filters, QDir::Files).isEmpty()){
         filters.clear();
         filters << "*.plume";
 
@@ -650,9 +697,18 @@ void AttendBox::setCurrentList(int number)
     if(attendManagerLaunched)
         setManagerSheetList(number);
 
+}//--------------------------------------------------------------------------------------
+
+
+void AttendBox::setCurrentListName(QString tabName)
+{
+
+    currentTabName = tabName;
+
+    if(attendManagerLaunched)
+        managerSheetListBox->setTitle(currentTabName);
+
 }
-
-
 
 //--------------------------------------------------------------------------------------
 
@@ -664,7 +720,8 @@ void AttendBox::addAttendManagerButton()
 
     managerLauncher = new QListWidgetItem;
     managerLauncher->setText(tr("Manage..."));
-    managerLauncher->setBackgroundColor(QColor(Qt::darkYellow));
+    managerLauncher->setTextAlignment(Qt::AlignHCenter);
+    managerLauncher->setBackgroundColor(QColor(Qt::cyan));
     attendList->addItem(managerLauncher);
 
 
@@ -724,10 +781,24 @@ void AttendBox::launchAttendManager()
     QHBoxLayout *detailPlusListLayout = new QHBoxLayout;
     detailLayout =  new QGridLayout;
     QHBoxLayout *listLayout = new QHBoxLayout;
-    projectList = new QListWidget;
+
+    QVBoxLayout *projectBoxLayout = new QVBoxLayout;
+    QGroupBox *projectListBox = new QGroupBox;
+    projectListBox->setAlignment(Qt::AlignHCenter);
+    projectListBox->setTitle(tr("Project"));
+         projectList = new QListWidget;
     projectList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    projectBoxLayout->addWidget(projectList);
+    projectListBox->setLayout(projectBoxLayout);
+
+    QVBoxLayout *sheetBoxLayout = new QVBoxLayout;
+    managerSheetListBox = new QGroupBox;
+    managerSheetListBox->setAlignment(Qt::AlignHCenter);
     managerSheetList = new QListWidget;
-     managerSheetList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    managerSheetList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+sheetBoxLayout->addWidget(managerSheetList);
+managerSheetListBox->setLayout(sheetBoxLayout);
+
     showDetailButton = new QPushButton("<");
     hideDetailButton = new QPushButton(">");
     newCharButton = new QPushButton("+C");
@@ -780,9 +851,9 @@ void AttendBox::launchAttendManager()
     transfertLayout->addStretch();
 
     //    listLayout->addWidget(showDetailButton);
-    listLayout->addWidget(projectList);
+    listLayout->addWidget(projectListBox);
     listLayout->addLayout(transfertLayout);
-    listLayout->addWidget(managerSheetList);
+    listLayout->addWidget(managerSheetListBox);
     detailPlusListLayout->addLayout(detailLayout);
     detailPlusListLayout->addLayout(listLayout);
     mainLayout->addLayout(detailPlusListLayout);
@@ -833,6 +904,10 @@ void AttendBox::launchAttendManager()
 
 
     // set target list :
+
+
+
+    managerSheetListBox->setTitle(currentTabName);
 
     setManagerSheetList(currentSheetNumber);
 
@@ -1264,7 +1339,7 @@ void AttendBox::newAttendElementSlot(QString tagName)
     for(int i=0; i < projectList->count(); ++i)
         if(projectList->item(i)->data(32).toInt() == number){
             item = projectList->item(i);
-}
+        }
 
 
     projectList->scrollToItem(item);
@@ -1301,61 +1376,61 @@ void AttendBox::deleteItems()
     {
 
 
-    if(detailsHiddenBool == false)
-    hideDetailAnimation();
+        if(detailsHiddenBool == false)
+            hideDetailAnimation();
 
-    QList<int> projectDataList;
-    for(int j=0; j < itemList.size(); ++j){
-        projectDataList.append(itemList.at(j)->data(32).toInt());
-    }
-
-    QList<QDomElement> domElementList;
-    for(int k=0; k < abstractList->count(); ++k){
-        if(projectDataList.contains(abstractList->item(k)->data(32).toInt())){
-            domElementList.append(domElementForItem.value(abstractList->item(k)));
-            //           qDebug() << "dddd : " << domElementForItem.value(abstractList->item(k)).tagName();
+        QList<int> projectDataList;
+        for(int j=0; j < itemList.size(); ++j){
+            projectDataList.append(itemList.at(j)->data(32).toInt());
         }
+
+        QList<QDomElement> domElementList;
+        for(int k=0; k < abstractList->count(); ++k){
+            if(projectDataList.contains(abstractList->item(k)->data(32).toInt())){
+                domElementList.append(domElementForItem.value(abstractList->item(k)));
+                //           qDebug() << "dddd : " << domElementForItem.value(abstractList->item(k)).tagName();
+            }
+        }
+
+        //    QString string;
+        //    qDebug() << "domElementList->size() : " << string.setNum(domElementList.size());
+        //    qDebug() << "itemList->size() : " << string.setNum(itemList.size());
+        //    qDebug() << "abstractList->count() : " << string.setNum(abstractList->count());
+
+
+        for(int l=0; l < domElementList.size(); ++l){
+            QTextDocument *text = this->findChild<QTextDocument *>("attendDoc_" + domElementList.at(l).attribute("number"));
+            QFile *textFile = fileForDoc.value(text);
+            textFile->remove();
+            fileForDoc.remove(text);
+            text->deleteLater();
+
+
+            emit removeAttendNumberSignal(domElementList.at(l).attribute("number").toInt());
+
+            domElementList.at(l).parentNode().removeChild(domElementList.at(l));
+
+
+
+        }
+        firstDetailOpening = true;
+
+        saveAndUpdate();
+
+
+
     }
+        break;
+    case QMessageBox::Cancel:
+        return;
 
-//    QString string;
-//    qDebug() << "domElementList->size() : " << string.setNum(domElementList.size());
-//    qDebug() << "itemList->size() : " << string.setNum(itemList.size());
-//    qDebug() << "abstractList->count() : " << string.setNum(abstractList->count());
-
-
-    for(int l=0; l < domElementList.size(); ++l){
-        QTextDocument *text = this->findChild<QTextDocument *>("attendDoc_" + domElementList.at(l).attribute("number"));
-        QFile *textFile = fileForDoc.value(text);
-        textFile->remove();
-        fileForDoc.remove(text);
-        text->deleteLater();
-
-
-        emit removeAttendNumberSignal(domElementList.at(l).attribute("number").toInt());
-
-        domElementList.at(l).parentNode().removeChild(domElementList.at(l));
-
+        break;
+    default:
+        // should never be reached
+        break;
 
 
     }
-    firstDetailOpening = true;
-
-    saveAndUpdate();
-
-
-
-}
-    break;
-case QMessageBox::Cancel:
-    return;
-
-    break;
-default:
-    // should never be reached
-    break;
-
-
-}
 
 }
 //---------------------------------------------------------------------------
@@ -1374,17 +1449,17 @@ void AttendBox::toSheetSlot()
 
     // remove doubles :
     for(int j=0; j < managerSheetList->count(); ++j){
-    int itemNumber = managerSheetList->item(j)->data(32).toInt();
+        int itemNumber = managerSheetList->item(j)->data(32).toInt();
         if(projectDataList.contains(itemNumber))
-           projectDataList.removeOne(itemNumber);
+            projectDataList.removeOne(itemNumber);
     }
 
 
 
-emit addAttendNumberToSheetSignal(projectDataList, currentSheetNumber);
-setProjectList();
-setManagerSheetList(currentManagerSheetList);
-setCurrentList(currentSheetNumber);
+    emit addAttendNumberToSheetSignal(projectDataList, currentSheetNumber);
+    setProjectList();
+    setManagerSheetList(currentManagerSheetList);
+    setCurrentList(currentSheetNumber);
 
 }
 
@@ -1418,7 +1493,7 @@ void AttendBox::managerSheetListSelectionChanged()
 //---------------------------------------------------------------------------
 void AttendBox::projectListSelectionChanged()
 {
-   projectItemList = projectList->selectedItems();
+    projectItemList = projectList->selectedItems();
 
 }
 

@@ -578,15 +578,37 @@ void FullTextZone::setXMax(int value)
 
 void FullTextZone::mouseMoveEvent(QMouseEvent* event)
 {
-event->ignore();
-
+    if( (event->buttons() & Qt::RightButton == Qt::RightButton) && !mDragging ){
+        this->unsetCursor();
+    mDragging = true;
 }
 
 
+    if(mDragging)
+//    mDragEndPosition = event->pos();
+    QTextEdit::mouseMoveEvent(event);
+
+    else
+    event->ignore();
 
 
 
 
+
+}
+
+void FullTextZone::mousePressEvent( QMouseEvent* event)
+{
+mDragStartPosition = event->pos();
+QTextEdit::mousePressEvent( event );
+}
+
+
+void FullTextZone::mouseReleaseEvent( QMouseEvent* event)
+{
+mDragging = false;
+QTextEdit::mouseReleaseEvent( event );
+}
 
 
 

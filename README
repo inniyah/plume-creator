@@ -1,6 +1,15 @@
 PLUME CREATOR
 
 
+v 0.42
+	- character/item/place manager :
+		- sheet list dynamic title added
+ 		- bug fixed : item details doesn't save
+		- bug fixed : crash when exiting with att. manager launched
+	- bug fixed : crash when exiting with no project opened
+	- french translation updated
+	- first Mac release ! Tested on OSX Lion
+		- app bundled and .plume file association  
 
 v 0.41
 	- Microsoft Windows release :

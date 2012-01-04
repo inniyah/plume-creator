@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 //  {
 //      QTextStream logStream(logFile);
 
-//      for(int i = 10; i < argc; ++i){
+//      for(int i = 0; i < argc; ++i){
 //          logStream << QDateTime::currentDateTime().toString() << " :   app arguments : " << argv[i];
 //          logStream << "\n";
 //      }
@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
     // style :
 
     QApplication::setStyle(new QPlastiqueStyle);
+//    QApplication::setStyle(new QMacStyle);
 
     // splashscreen :
 
@@ -108,13 +109,14 @@ int main(int argc, char *argv[])
 
     MainWindow mw;
 
+    // install enventfilter (for Mac)
+        QApplication::instance()->installEventFilter(&mw);
+
     if(argc > 1){
         QFile file(argv[argc - 1]); //pick the last argument
 //        if(file.exists() && file.isReadable() && file.isWritable()){
             mw.openExternalProject(&file);
-            qDebug() << "w";
 //        }
-        qDebug() << "x";
     }
 
     splash.finish(&mw);

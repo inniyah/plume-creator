@@ -43,6 +43,8 @@ protected:
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
+void mousePressEvent( QMouseEvent* event);
+void mouseReleaseEvent( QMouseEvent* event);
 
 public slots:
 
@@ -106,6 +108,9 @@ private:
     QMenu *alignmentGroup,
     *optionGroup;
     QPoint mousePos;
+
+    bool mDragging;
+    QPoint mDragStartPosition;
 
     bool alwaysCenter;
 

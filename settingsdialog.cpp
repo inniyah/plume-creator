@@ -119,7 +119,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridTextLayout->addWidget(textFontLabel,0,0);
     gridTextLayout->addWidget(textFontCombo,0,1);
     gridTextLayout->addWidget(textSpin,0,2);
-    gridTextLayout->addWidget(textApplyWideBox,0,3);
+//    gridTextLayout->addWidget(textApplyWideBox,0,3);
     gridTextLayout->addWidget(showScrollbarBox,1,0);
     gridTextLayout->addWidget(textIndentLabel,2,0);
     gridTextLayout->addWidget(textIndentSpin,2,1);
@@ -168,7 +168,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridSynLayout->addWidget(synFontLabel,0,0);
     gridSynLayout->addWidget(synFontCombo,0,1);
     gridSynLayout->addWidget(synSpin,0,2);
-    gridSynLayout->addWidget(synApplyWideBox,0,3);
+//    gridSynLayout->addWidget(synApplyWideBox,0,3);
     gridSynLayout->addWidget(synShowScrollbarBox,1,0);
     gridSynLayout->addWidget(synIndentLabel,2,0);
     gridSynLayout->addWidget(synIndentSpin,2,1);
@@ -201,7 +201,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridNoteLayout->addWidget(noteFontLabel,0,0);
     gridNoteLayout->addWidget(noteFontCombo,0,1);
     gridNoteLayout->addWidget(noteSpin,0,2);
-    gridNoteLayout->addWidget(noteApplyWideBox,0,3);
+//    gridNoteLayout->addWidget(noteApplyWideBox,0,3);
     gridNoteLayout->addWidget(noteShowScrollbarBox,1,0);
     gridNoteLayout->addWidget(noteIndentLabel,2,0);
     gridNoteLayout->addWidget(noteIndentSpin,2,1);

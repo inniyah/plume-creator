@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v0.41 !</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.42") + tr("!</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -117,7 +117,7 @@ void MainWindow::createMenuDock()
     menuDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     menuDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
     menuDock->setMinimumSize(160,350);
-    menuDock->setMaximumWidth(200);
+    //    menuDock->setMaximumWidth(200);
 
     QToolBox *toolBox = new QToolBox;
 
@@ -213,7 +213,7 @@ void MainWindow::createToolDock()
 
     toolDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     toolDock->setMinimumSize(160,200);
-    toolDock->setMaximumWidth(200);
+    //    toolDock->setMaximumWidth(200);
 
     QToolBox *toolBox = new QToolBox;
     stats = new StatsBox;
@@ -355,10 +355,15 @@ void MainWindow::openExternalProject(QFile *externalFile)
 
 void MainWindow::closeProjectSlot()
 {
+    if(NoProjectOpened == true)
+        return;
+
 
     closeAllDocsSlot();
     mainTree->write(file);
+    attendList->saveAll();
 
+    attendList->closeAll();
     mainTree->closeTree();
     NoProjectOpened = true;
 
@@ -528,6 +533,12 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
 
 
 
+        //    temporary config
+
+        //            tab->setObjectName("textTabWidget");
+        //            tab->setStyleSheet("QWidget#textTabWidget { background: white }");
+
+
 
 
 
@@ -661,6 +672,8 @@ void MainWindow::setTextTabConnections()
     connect(attendList, SIGNAL(removeAttendNumberSignal(int)), mainTree, SLOT(removeAttendNumberSlot(int)));
     connect(attendList, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>, int)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>, int)));
     connect(attendList, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
+
+
 }
 
 
@@ -853,7 +866,7 @@ void MainWindow::saveAllDocsSlot()
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
 
-        qDebug() << "tabSaveRequest name :" << nameList->at(i);
+        //        qDebug() << "tabSaveRequest name :" << nameList->at(i);
         //        qDebug() << "tabSaveRequest textName n° " << i << " ---> " << textWidgetList->at(i)->objectName() << "----- saved :" << textBool;
         //        qDebug() << "tabSaveRequest noteName n° " << i << " ---> " << noteWidgetList->at(i)->objectName() << "----- saved :" << noteBool;
         //        qDebug() << "tabSaveRequest synName  n° " << i << " ---> " << synWidgetList->at(i)->objectName() << "----- saved :" << synBool;
@@ -929,7 +942,10 @@ void MainWindow::writeSettings()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 
-
+    if(NoProjectOpened == true){
+        writeSettings();
+        event->accept();
+    }
 
 
     QMessageBox msgBox(this);
@@ -973,6 +989,27 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
     emit tabWidgetWidth(tabWidget->width());
 }
+
+//----------------------------------------------------------------------------------------
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) //for MAc o
+{
+    if(event->type() == QEvent::FileOpen)
+    {
+        QFile *extFile = new QFile(((QFileOpenEvent*)event)->file());
+        openExternalProject(extFile);
+        return true;
+    }
+    else
+    {
+        // else : nothing
+        return QObject::eventFilter(obj, event);
+    }
+}
+
+
+
+
 
 //----------------------------------------------------------------------------------------
 
@@ -1052,8 +1089,8 @@ void MainWindow::configTimer()
 
 void MainWindow::editFullscreen()
 {
-
-
+    if(tabWidget->count() == 0)
+        return;
 
 
     //    qDebug() << tabWidget->currentWidget()->objectName();
@@ -1134,4 +1171,8 @@ void MainWindow::setCurrentAttendList(int tabNum)
     int number = tabWidget->widget(tabNum)->objectName().mid(tabWidget->widget(tabNum)->objectName().indexOf("_") + 1).toInt();
 
     attendList->setCurrentList(number);
+
+    QString currentTabName = tabWidget->tabText(tabNum);
+
+    attendList->setCurrentListName(currentTabName);
 }

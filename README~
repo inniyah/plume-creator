@@ -1,9 +1,30 @@
 PLUME CREATOR
 
+
+
+v 0.41
+	- Microsoft Windows release :
+		- add .plume file association and .plume file icon
+	- only one instance of Plume Creator is allowed
+	- opening a .plume file adds it in the project manager
+ 
+v 0.40
+	- first Microsoft Windows release ! Tested on Xp and 7
+	- character/item/place manager :
+		- a few bugs solved
+	  
+v 0.39  
+	- character/item/place manager :
+		- it's working !
+		- option menu will be implemented shortly
+	- bug solved : crash when opening a new sheet after deleting one
+
 v 0.38  
 	- in fullscreen editor :
 		- mouse cursor hide when idle for 3 seconds
-
+	- very basic character/item/place manager (not finished and not useable yet)
+	- tabs not moveable anymore (it solves a few bugs)
+	- bug solved: font problem for text zone at the first line
 
 v 0.37  - Outliner :
 		- paragraph indent & margin menu added

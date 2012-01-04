@@ -196,7 +196,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version 0.41</p>"
+                       "<p>Version " + QString("0.42") + "</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
@@ -266,7 +266,7 @@ void MenuBox::createButtons()
     projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     projectManagerButton->setText(tr("Project &Manager"));
     // projectManagerAct->setShortcut(QKeySequence::New);
-    projectManagerButton->setToolTip(tr("Create a new project"));
+    projectManagerButton->setToolTip(tr("Create and manage your projects"));
     connect(projectManagerButton, SIGNAL(pressed()), this, SLOT(projectManager()));
 
     //    openButton = new QToolButton(this);
@@ -331,7 +331,7 @@ void MenuBox::createButtons()
     aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     aboutQtButton->setText(tr("About Qt"));
     // aboutQtButton->setShortcut(QKeySequence::Quit);
-    aboutQtButton->setToolTip(tr("aboutQt the application"));
+    aboutQtButton->setToolTip(tr("about Qt"));
     connect(aboutQtButton, SIGNAL(pressed()), this, SLOT(aboutQt()));
 
     //    QSize size(80,30);

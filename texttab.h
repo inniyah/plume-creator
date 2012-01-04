@@ -47,7 +47,7 @@ signals:
     void charFormatChangedSignal(QTextCharFormat format);
 
 protected:
-
+    void paintEvent(QPaintEvent *);
 
 
 public slots:

@@ -49,7 +49,10 @@ layout->addWidget(splitter);
 
     //config
 
-    //temporary config
+
+
+
+
 
 
     //   textZone->setMinimumWidth(600);
@@ -333,4 +336,13 @@ void TextTab::applyConfig()
     }
 
 
+}
+
+
+void TextTab::paintEvent(QPaintEvent *)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
