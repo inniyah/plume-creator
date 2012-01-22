@@ -438,7 +438,25 @@ void FullTextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 }
 
 
+//--------------------------------------------------------------------------------
 
+void FullTextZone::keyPressEvent(QKeyEvent *event)
+{
+    if(event->matches(QKeySequence::Italic))
+            italic(!italicAct->isChecked());
+    else if(event->matches(QKeySequence::Bold))
+            bold(!boldAct->isChecked());
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
+            leftAlign(true);
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
+            rightAlign(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
+            center(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
+            justify(true);
+    else
+        QTextEdit::keyPressEvent(event);
+}
 
 
 

@@ -3,6 +3,9 @@
 NoteZone::NoteZone(QWidget *parent) :
     QTextEdit(parent)
 {
+    this->setAttribute(Qt::WA_KeyCompression, true);
+
+
     textDocument = new QTextDocument(this);
 
 
@@ -606,6 +609,25 @@ void NoteZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 }
 
 
+//--------------------------------------------------------------------------------
+
+void NoteZone::keyPressEvent(QKeyEvent *event)
+{
+    if(event->matches(QKeySequence::Italic))
+            italic(!italicAct->isChecked());
+    else if(event->matches(QKeySequence::Bold))
+            bold(!boldAct->isChecked());
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
+            leftAlign(true);
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
+            rightAlign(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
+            center(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
+            justify(true);
+    else
+        QTextEdit::keyPressEvent(event);
+}
 
 
 
@@ -911,13 +933,12 @@ void NoteZone::applyAttendConfig()
 void NoteZone::applyAttendFontConfig()
 {
 
-
-    QSettings settings;
-    settings.beginGroup( "Settings" );
-    int attendBottMargin = settings.value("AttendArea/bottomMargin", 20).toInt();
-    int attendTextIndent = settings.value("AttendArea/textIndent", 20).toInt();
-    int attendTextHeight = settings.value("AttendArea/textHeight", 12).toInt();
-    QString attendFontFamily = settings.value("AttendArea/textFontFamily", "Liberation Serif").toString();
+   QSettings settings;
+   settings.beginGroup( "AttendManager" );
+    int attendBottMargin = settings.value("detailTextMargin", 20).toInt();
+    int attendTextIndent = settings.value("detailTextIndent", 20).toInt();
+    int attendTextHeight = settings.value("detailTextHeight", 12).toInt();
+    QString attendFontFamily = settings.value("detailFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
 

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
- *   terreville@google.com                                                 *
+ *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -37,14 +37,16 @@ public:
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
     void callColorDialogSignal();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
-void mousePressEvent( QMouseEvent* event);
-void mouseReleaseEvent( QMouseEvent* event);
+    void mousePressEvent( QMouseEvent* event);
+    void mouseReleaseEvent( QMouseEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
 

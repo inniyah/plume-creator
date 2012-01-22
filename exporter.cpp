@@ -1,6 +1,6 @@
 #include "exporter.h"
 //
-Exporter::Exporter(QFile *device, QWidget *parent) :
+Exporter::Exporter(QString mode, QFile *device, QWidget *parent) :
     QDialog(parent)
 {
 
@@ -26,8 +26,15 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     //setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo1.png"));
 
 
+    dialogMode = mode;
 
-    setWindowTitle(tr("Export Dialog"));
+
+    if(dialogMode == "export")
+        setWindowTitle(tr("Export Dialog"));
+    if(dialogMode == "print")
+        setWindowTitle(tr("Print Dialog"));
+
+
     setMinimumSize(600,600);
 
 
@@ -46,6 +53,25 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     directoryButton->setMaximumWidth(100);
 
     connect(directoryButton, SIGNAL(clicked()), this, SLOT(setExistingDirectory()));
+
+    fileTypeCombo = new QComboBox;
+    QStringList list;
+    list << tr(".html") << tr(".odt") << tr(".txt");
+    fileTypeCombo->insertItems(0, list);
+
+
+    if(dialogMode == "print")
+    {
+        label->hide();
+        projectNameLabel->hide();
+        projectNameLabelLineEdit->hide();
+        directoryLabelLineEdit->hide();
+        fileTypeCombo->hide();
+        directoryButton->hide();
+    }
+
+
+
 
     QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
     QGridLayout *checkLayout = new QGridLayout;
@@ -66,10 +92,7 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     checkGroupBox->setLayout(checkLayout);
 
 
-    fileTypeCombo = new QComboBox;
-    QStringList list;
-    list << tr(".html") << tr(".odt") << tr(".txt");
-    fileTypeCombo->insertItems(0, list);
+
 
     QWidget *stretcher = new QWidget;
     stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -86,7 +109,7 @@ Exporter::Exporter(QFile *device, QWidget *parent) :
     layout->addWidget(fileTypeCombo, 3,1);
     layout->addWidget(checkGroupBox,4,0,1,2);
     layout->addWidget(stretcher,5,0,1,2);
-layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
+    layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
     tree = new QTreeWidget;
     tree->setFixedWidth(width()/3);
 
@@ -97,6 +120,14 @@ layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel);
+
+
+    if(dialogMode == "print")
+    {
+        buttonBox = new QDialogButtonBox(this);
+        buttonBox->addButton(QDialogButtonBox::Cancel);
+        buttonBox->addButton(tr("Print"), QDialogButtonBox::AcceptRole);
+    }
 
     connect(previewButton, SIGNAL(clicked()), this, SLOT(seePreview()));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -118,20 +149,41 @@ layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
 
 void Exporter::accept()
 {
-    if(directoryLabelLineEdit->text() == "" || projectNameLabelLineEdit->text() == "" ){
-        QMessageBox::information(this, tr("Project Exporter"), tr("The destination fields must be completed !"), QMessageBox::Ok);
-return;
-            }
+    if(dialogMode == "export")
+    {
+        if(directoryLabelLineEdit->text() == "" || projectNameLabelLineEdit->text() == "" ){
+            QMessageBox::information(this, tr("Project Exporter"), tr("The destination fields must be completed !"), QMessageBox::Ok);
+            return;
+        }
 
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    exportDoc();
-    QApplication::restoreOverrideCursor();
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        exportDoc();
+        QApplication::restoreOverrideCursor();
 
 
 
-    QDialog::accept();
+        QDialog::accept();
+    }
+
+    if(dialogMode == "print")
+    {
+
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        print();
+        QApplication::restoreOverrideCursor();
+
+
+
+        QDialog::accept();
+    }
+
+
+
+
+
+
 }
-
 //-----------------------------------------------------------------------------------
 
 void Exporter::setExistingDirectory()
@@ -757,38 +809,92 @@ QTextDocument *Exporter::prepareNoteDoc(QFile *noteFile)
     return textDocument;
 }
 
+//-------------------------------------------------------------------------------------------------------
 
 void Exporter::seePreview()
 {
     QTextDocument *document = buildFinalDoc();
 
-
+    if(dialogMode == "export")
+    {
 
     previewDialog = new QDialog(this);
     previewDialog->setAttribute(Qt::WA_DeleteOnClose);
     previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
-previewDialog->setMinimumSize(600,800);
+    previewDialog->setMinimumSize(600,800);
 
-QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
 
     QTextBrowser *browser = new QTextBrowser;
-        if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
-            browser->setPlainText(document->toPlainText());
-        }
-        else{
+    if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
+        browser->setPlainText(document->toPlainText());
+    }
+    else{
         browser->setDocument(document);
+
+    }
+
+
+
+    QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
+                                                      | QDialogButtonBox::Cancel), Qt::Horizontal);
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttons, SIGNAL(rejected()), this, SLOT(closePreview()));
+
+    layout->addWidget(browser);
+    layout->addWidget(buttons);
+    previewDialog->setLayout(layout);
+    previewDialog->show();
+
+
+    }
+
+
+    if(dialogMode == "print")
+    {
+
+        QPrinter printer;
+
+        QPrintPreviewDialog printPreviewDialog(&printer, this, Qt::Dialog);
+            connect(&printPreviewDialog, SIGNAL(paintRequested(QPrinter*)), this, SLOT(previewPrint(QPrinter*))) ;
+        printPreviewDialog.exec();
+    }
+
+
 
 }
 
 
-    QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
-                                         | QDialogButtonBox::Cancel), Qt::Horizontal);
-    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttons, SIGNAL(rejected()), this, SLOT(closePreview()));
 
-layout->addWidget(browser);
-layout->addWidget(buttons);
-previewDialog->setLayout(layout);
-previewDialog->show();
+
+
+
+
+void Exporter::previewPrint(QPrinter *printer)
+{
+    QTextDocument *document = buildFinalDoc();
+    document->print(printer);
+
+}
+
+
+
+//-------------------------------------------------------------------------------------------------------
+
+void Exporter::print()
+{
+
+    QTextDocument *document = buildFinalDoc();
+
+    QPrinter printer;
+
+    QPrintDialog *dialog = new QPrintDialog(&printer, this);
+    dialog->setWindowTitle(tr("Print Document"));
+    if (dialog->exec() == QDialog::Accepted)
+    document->print(&printer);
+
+
+
+
 }

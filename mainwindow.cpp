@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.42") + tr("!</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.43") + tr("!</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -949,8 +949,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 
     QMessageBox msgBox(this);
-    msgBox.setText("Do you want to quit ?");
-    msgBox.setInformativeText("Your changes are already saved.");
+    msgBox.setText(tr("Do you want to quit ?"));
+    msgBox.setInformativeText(tr("Your changes are already saved."));
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
     int ret = msgBox.exec();

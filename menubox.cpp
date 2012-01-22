@@ -164,7 +164,7 @@ void MenuBox::exporter()
 
     emit saveProjectSignal();
 
-    Exporter *exporterDialog = new Exporter(file, this);
+    Exporter *exporterDialog = new Exporter(QString("export"), file, this);
     exporterDialog->exec();
 
 }
@@ -175,7 +175,13 @@ void MenuBox::exporter()
 void MenuBox::print()
 {
 
+    if(file == 0)
+        return;
 
+    emit saveProjectSignal();
+
+    Exporter *exporterDialog = new Exporter(QString("print"), file, this);
+    exporterDialog->exec();
 
 
 }
@@ -196,11 +202,11 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version " + QString("0.42") + "</p>"
+                       "<p>Version " + QString("0.43") + "</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
-                       "<p>terreville@google.com </p></center>"
+                       "<p>terreville@gmail.com </p></center>"
                        "<br>"
                        "<p>Plume Creator is free software: you can redistribute it and/or modify "
                        "it under the terms of the GNU General Public License as published by "
@@ -281,7 +287,7 @@ void MenuBox::createButtons()
     displayConfigButton->setMaximumSize(buttonSize);
     displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     displayConfigButton->setText(tr("&Configure"));
-    //   displayConfigButton->setShortcut(QKeySequence::Print);
+//    displayConfigButton->setShortcut(QKeySequence::Print);
     displayConfigButton->setToolTip(tr("Display the configuration"));
     connect(displayConfigButton, SIGNAL(pressed()), this, SLOT(displayConfig()));
 

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
- *   terreville@google.com                                                 *
+ *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -38,6 +38,7 @@ protected:
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
 
@@ -45,9 +46,11 @@ public slots:
     void setTextHeight(int height);
     void centerCursor();
     void applyConfig();
-void scrollBy(QPoint viewportPoint);
+    void scrollBy(QPoint viewportPoint);
 
 private slots:
+
+
 
     void undo();
     void redo();

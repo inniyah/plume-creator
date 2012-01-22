@@ -786,7 +786,7 @@ void AttendBox::launchAttendManager()
     QGroupBox *projectListBox = new QGroupBox;
     projectListBox->setAlignment(Qt::AlignHCenter);
     projectListBox->setTitle(tr("Project"));
-         projectList = new QListWidget;
+    projectList = new QListWidget;
     projectList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     projectBoxLayout->addWidget(projectList);
     projectListBox->setLayout(projectBoxLayout);
@@ -796,8 +796,8 @@ void AttendBox::launchAttendManager()
     managerSheetListBox->setAlignment(Qt::AlignHCenter);
     managerSheetList = new QListWidget;
     managerSheetList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-sheetBoxLayout->addWidget(managerSheetList);
-managerSheetListBox->setLayout(sheetBoxLayout);
+    sheetBoxLayout->addWidget(managerSheetList);
+    managerSheetListBox->setLayout(sheetBoxLayout);
 
     showDetailButton = new QPushButton("<");
     hideDetailButton = new QPushButton(">");
@@ -860,16 +860,59 @@ managerSheetListBox->setLayout(sheetBoxLayout);
     mainLayout->addWidget(buttons);
 
 
+
+
+    // font menu :
+
+    QWidgetAction *detailFontAct = new QWidgetAction(this);
+    QGroupBox *detailFontBox = new QGroupBox(tr("Detail font"), this);
+    QGridLayout *detailFontLayout = new QGridLayout(detailFontBox);
+    detailFontCombo = new QFontComboBox(this);
+    detailTextHeightSpin = new QSpinBox;
+    detailTextHeightSpin->setRange(6,30);
+    QLabel *detailTextIndentLabel = new QLabel(tr("Indent :"), this);
+    detailTextIndentSpin = new QSpinBox;
+    detailTextIndentSpin->setRange(0,70);
+    QLabel *detailTextMarginLabel = new QLabel(tr("Margin :"), this);
+    detailTextMarginSpin = new QSpinBox;
+    detailTextMarginSpin->setRange(0,70);
+    detailFontLayout->addWidget(detailFontCombo, 0,0);
+    detailFontLayout->addWidget(detailTextHeightSpin, 0,1);
+    detailFontLayout->addWidget(detailTextIndentLabel, 1,0, Qt::AlignRight);
+    detailFontLayout->addWidget(detailTextIndentSpin, 1,1);
+    detailFontLayout->addWidget(detailTextMarginLabel, 2,0, Qt::AlignRight);
+    detailFontLayout->addWidget(detailTextMarginSpin, 2,1);
+    detailFontBox->setLayout(detailFontLayout);
+    detailFontAct->setDefaultWidget(detailFontBox);
+
+
+    connect(detailFontCombo, SIGNAL(currentFontChanged(QFont)), this, SLOT(writeSettings()));
+    connect(detailTextHeightSpin, SIGNAL(valueChanged(int)), this, SLOT(writeSettings()));
+    connect(detailTextIndentSpin, SIGNAL(valueChanged(int)), this, SLOT(writeSettings()));
+    connect(detailTextMarginSpin, SIGNAL(valueChanged(int)), this, SLOT(writeSettings()));
+
+
+
+    QMenu *fontMenu = new QMenu(this);
+    fontMenu->addAction(detailFontAct);
+
+    fontsMenuButton = new QToolButton(this);
+    fontsMenuButton->setText(tr("Fonts"));
+    fontsMenuButton->setPopupMode(QToolButton::InstantPopup);
+    fontsMenuButton->setMenu(fontMenu);
+
     detailLayout->addWidget(firstnameEdit, 0, 0);
     detailLayout->addWidget(nameEdit, 0, 0);
     detailLayout->addWidget(lastnameEdit, 0, 1);
     detailLayout->addWidget(levelComboBox, 0, 2);
     detailLayout->addWidget(roleComboBox, 0, 3);
-    detailLayout->addWidget(hideDetailButton, 0, 4);
-    detailLayout->addWidget(editZone, 1, 0, 1, 5);
+    detailLayout->addWidget(fontsMenuButton, 0, 4);
+    detailLayout->addWidget(hideDetailButton, 0, 5);
+    detailLayout->addWidget(editZone, 1, 0, 1, 6);
     firstnameEdit->hide();
     lastnameEdit->hide();
     nameEdit->hide();
+    fontsMenuButton->hide();
     hideDetailButton->hide();
     editZone->hide();
     levelComboBox->hide();
@@ -1143,6 +1186,7 @@ void AttendBox::showDetails()
 
     levelComboBox->show();
     roleComboBox->show();
+    fontsMenuButton->show();
     showDetailButton->hide();
     hideDetailButton->show();
     editZone->show();
@@ -1189,7 +1233,8 @@ void AttendBox::hideDetails()
 
     firstnameEdit->hide();
     lastnameEdit->hide();
-    nameEdit->hide();
+fontsMenuButton->hide();
+        nameEdit->hide();
     levelComboBox->hide();
     roleComboBox->hide();
 
@@ -1497,7 +1542,22 @@ void AttendBox::projectListSelectionChanged()
 
 }
 
-//---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------------------------------------------
+//------------Apply Config------------------------------------------------------
+//------------------------------------------------------------------------------
+
+
 void AttendBox::readSettings()
 {
     QSettings settings;
@@ -1505,11 +1565,23 @@ void AttendBox::readSettings()
     attendManager->resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
     attendManager->move(settings.value( "pos" ).toPoint() );
     detailsHiddenBool = settings.value( "hideDetails" ).toBool();
+    int detailTextHeight = settings.value("detailTextHeight", 12).toInt();
+    int detailTextIndent = settings.value("detailTextIndent", 20).toInt();
+    int detailTextMargin = settings.value("detailTextMargin", 5).toInt();
+    QFont detailFont;
+    detailFont.setFamily(settings.value("detailFontFamily", "Liberation Serif").toString());
     settings.endGroup();
 
     if(!detailsHiddenBool)
         showDetails();
 
+    detailTextHeightSpin->setValue(detailTextHeight);
+    detailFontCombo->setCurrentFont(detailFont);
+    detailTextIndentSpin->setValue(detailTextIndent);
+    detailTextMarginSpin->setValue(detailTextMargin);
+
+
+    editZone->applyAttendConfig();
 
 }
 
@@ -1523,6 +1595,12 @@ void AttendBox::writeSettings()
     settings.setValue( "size", attendManager->size() );
     settings.setValue( "pos", attendManager->pos() );
     settings.setValue( "hideDetails", detailsHiddenBool );
-    settings.endGroup();
+    settings.setValue("detailTextHeight", detailTextHeightSpin->value());
+    settings.setValue("detailTextIndent", detailTextIndentSpin->value());
+    settings.setValue("detailTextMargin", detailTextMarginSpin->value());
+    settings.setValue("detailFontFamily", detailFontCombo->currentFont());
+   settings.endGroup();
 
+ editZone->applyAttendConfig();
 }
+

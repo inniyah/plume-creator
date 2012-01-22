@@ -5,6 +5,8 @@
 TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     QTextEdit(parent)
 {
+this->setAttribute(Qt::WA_KeyCompression, true);
+
     textDocument = doc;
     createActions();
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -325,7 +327,7 @@ void TextZone::setTextFont(QFont font)
 
     mergeFormatOnWordOrSelection(fmt);
 }
-
+//--------------------------------------------------------------------------------
 
 void TextZone::setTextHeight(int height)
 {
@@ -335,7 +337,7 @@ void TextZone::setTextHeight(int height)
 
 }
 
-
+//--------------------------------------------------------------------------------
 
 void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 
@@ -350,7 +352,25 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 }
 
 
+//--------------------------------------------------------------------------------
 
+void TextZone::keyPressEvent(QKeyEvent *event)
+{
+    if(event->matches(QKeySequence::Italic))
+            italic(!italicAct->isChecked());
+    else if(event->matches(QKeySequence::Bold))
+            bold(!boldAct->isChecked());
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
+            leftAlign(true);
+    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
+            rightAlign(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
+            center(true);
+    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
+            justify(true);
+    else
+        QTextEdit::keyPressEvent(event);
+}
 
 
 
@@ -446,7 +466,7 @@ void TextZone::resizeEvent(QResizeEvent* event)
 
 void TextZone::scrollBy(QPoint viewportPoint)
 {
-this->scrollContentsBy(viewportPoint.x(), viewportPoint.y());
+    this->scrollContentsBy(viewportPoint.x(), viewportPoint.y());
 }
 
 
@@ -470,8 +490,6 @@ void TextZone::applyConfig()
         setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     else
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-
 
 
 

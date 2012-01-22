@@ -1,6 +1,12 @@
 PLUME CREATOR
 
 
+v 0.43
+	- printing system enabled
+	- font menu added in attendance
+	- bold, italic and text alignment shortcuts added in text zones
+	- french translation updated
+
 v 0.42
 	- character/item/place manager :
 		- sheet list dynamic title added

@@ -9,7 +9,7 @@
 #include <QTextCodec>
 #include <QPixmap>
 #include <QSplashScreen>
-
+//#include <QMacStyle>
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"

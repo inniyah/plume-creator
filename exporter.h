@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
- *   terreville@google.com                                                 *
+ *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -27,7 +27,7 @@ class Exporter : public QDialog
 {
     Q_OBJECT
 public:
-    explicit Exporter(QFile *device = 0, QWidget *parent = 0);
+    explicit Exporter(QString mode = "export", QFile *device = 0, QWidget *parent = 0);
 
 protected:
     void accept();
@@ -47,7 +47,16 @@ private slots:
     void buildTree();
     void itemClickedSlot(QTreeWidgetItem* item, int column);
 
+
+
+
+    void print();
+    void previewPrint(QPrinter *printer);
+
 private:
+
+
+    QString dialogMode;
 
     QLineEdit *directoryLabelLineEdit;
     QLineEdit *projectNameLabelLineEdit;
@@ -56,7 +65,7 @@ private:
     QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
     QComboBox *fileTypeCombo;
     QFile *targetDevice;
-QDialog *previewDialog;
+    QDialog *previewDialog;
 
     //tree :
 

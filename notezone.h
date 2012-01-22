@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
- *   terreville@google.com                                                 *
+ *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -44,8 +44,8 @@ public:
 
 
 signals:
-void connectUpdateTextsSignal();
-void disconnectUpdateTextsSignal();
+    void connectUpdateTextsSignal();
+    void disconnectUpdateTextsSignal();
 
 protected:
 
@@ -54,6 +54,7 @@ protected:
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
 
@@ -89,9 +90,9 @@ private slots:
     void cursorPositionChangedSlot();
 
 
-void forceSynFirstCharFont();
-void forceNoteFirstCharFont();
-void forceAttendFirstCharFont();
+    void forceSynFirstCharFont();
+    void forceNoteFirstCharFont();
+    void forceAttendFirstCharFont();
 
     void applySynFontConfig();
     void applyNoteFontConfig();
