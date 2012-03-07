@@ -92,63 +92,63 @@
         <translation>Gérer...</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="776"/>
+        <location filename="attendbox.cpp" line="772"/>
         <source>Attendance Manager</source>
         <translation>Gestionnaire de Présence</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="794"/>
+        <location filename="attendbox.cpp" line="790"/>
         <source>Project</source>
         <translation>Projet</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="820"/>
+        <location filename="attendbox.cpp" line="816"/>
         <source>First Name :</source>
         <translation>Prénom :</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="822"/>
+        <location filename="attendbox.cpp" line="818"/>
         <source>Last Name :</source>
         <translation>Nom de famille :</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="824"/>
+        <location filename="attendbox.cpp" line="820"/>
         <source>Name :</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="874"/>
+        <location filename="attendbox.cpp" line="870"/>
         <source>Detail font</source>
         <translation>Police</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="879"/>
+        <location filename="attendbox.cpp" line="875"/>
         <source>Indent :</source>
         <translation>Indentation :</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="882"/>
+        <location filename="attendbox.cpp" line="878"/>
         <source>Margin :</source>
         <translation>Marge :</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="906"/>
+        <location filename="attendbox.cpp" line="902"/>
         <source>Fonts</source>
         <translation>Polices</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="1094"/>
-        <location filename="attendbox.cpp" line="1100"/>
+        <location filename="attendbox.cpp" line="1090"/>
+        <location filename="attendbox.cpp" line="1096"/>
         <source>no entry</source>
         <translation>pas d&apos;entrée</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="1440"/>
+        <location filename="attendbox.cpp" line="1436"/>
         <source>Item Deletion</source>
         <translation>Suppression d&apos;élément</translation>
     </message>
     <message>
-        <location filename="attendbox.cpp" line="1441"/>
+        <location filename="attendbox.cpp" line="1437"/>
         <source>&lt;p&gt;The selected items will be permanently deleted.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Do you really want to continue ?&lt;/p&gt;</source>
         <translation>&lt;p&gt;L&apos;élément sélectionné sera définitivement supprimé.&lt;/p&gt;

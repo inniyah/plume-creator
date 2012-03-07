@@ -1589,7 +1589,7 @@ void AttendBox::readSettings()
     settings.beginGroup( "AttendManager" );
     attendManager->resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
     attendManager->move(settings.value( "pos" ).toPoint() );
-    detailsHiddenBool = settings.value( "hideDetails" ).toBool();
+//    detailsHiddenBool = settings.value( "hideDetails" ).toBool();
     int detailTextHeight = settings.value("detailTextHeight", 12).toInt();
     int detailTextIndent = settings.value("detailTextIndent", 20).toInt();
     int detailTextMargin = settings.value("detailTextMargin", 5).toInt();
@@ -1597,8 +1597,8 @@ void AttendBox::readSettings()
     detailFont.setFamily(settings.value("detailFontFamily", "Liberation Serif").toString());
     settings.endGroup();
 
-    if(!detailsHiddenBool)
-        showDetails();
+//    if(!detailsHiddenBool)
+//        showDetails();
 
     detailTextHeightSpin->setValue(detailTextHeight);
     detailFontCombo->setCurrentFont(detailFont);
@@ -1619,7 +1619,7 @@ void AttendBox::writeSettings()
     settings.beginGroup( "AttendManager" );
     settings.setValue( "size", attendManager->size() );
     settings.setValue( "pos", attendManager->pos() );
-    settings.setValue( "hideDetails", detailsHiddenBool );
+//    settings.setValue( "hideDetails", detailsHiddenBool );
     settings.setValue("detailTextHeight", detailTextHeightSpin->value());
     settings.setValue("detailTextIndent", detailTextIndentSpin->value());
     settings.setValue("detailTextMargin", detailTextMarginSpin->value());
