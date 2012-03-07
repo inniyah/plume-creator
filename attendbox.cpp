@@ -40,8 +40,8 @@ bool AttendBox::saveAll()
         QTextDocumentWriter docWriter(file, "HTML");
         bool written = docWriter.write(doc);
 
-        //qDebug() << "QTextDocumentWriter : " << file->fileName();
-        //        qDebug() << "QTextDocumentWriter : " << written;
+//        qDebug() << "QTextDocumentWriter : " << file->fileName();
+//                qDebug() << "QTextDocumentWriter : " << written;
 
 
         ++i;
@@ -68,6 +68,8 @@ bool AttendBox::saveDomDocument()
         out.flush();
         domDocument.save(out, IndentSize);
         attFile->close();
+
+//        qDebug() << "saveDomDocument()";
     }
 }
 //--------------------------------------------------------------------------------------
@@ -662,7 +664,7 @@ bool AttendBox::showSheetAttendanceList(QList<QListWidgetItem *> *itemList)
     addAttendManagerButton();
 
     connect(attendList, SIGNAL(itemActivated(QListWidgetItem*)),
-            this, SLOT(itemActivatedSlot(QListWidgetItem*)));
+            this, SLOT(itemActivatedSlot(QListWidgetItem*)), Qt::UniqueConnection);
 
 
     return true;
@@ -735,14 +737,14 @@ void AttendBox::itemActivatedSlot(QListWidgetItem* itemActivated)
         hideDetails();
         return;
     }
-
+else{
     launchAttendManager();
 
     QListWidgetItem* item = projectList->findItems(itemActivated->text(), Qt::MatchExactly).takeFirst();
     projectList->scrollToItem(item);
     projectList->setItemSelected(item, true);
     projectItemActivated(item);
-
+}
 
 
 
@@ -1266,6 +1268,9 @@ void AttendBox::saveAndUpdate()
 
 void AttendBox::firstnameChanged()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     currentElement.setAttribute("firstName", firstnameEdit->text());
 
     saveAndUpdate();
@@ -1275,6 +1280,9 @@ void AttendBox::firstnameChanged()
 //---------------------------------------------------------------------------
 void AttendBox::lastnameChanged()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     currentElement.setAttribute("lastName", lastnameEdit->text());
 
     saveAndUpdate();
@@ -1284,6 +1292,9 @@ void AttendBox::lastnameChanged()
 //---------------------------------------------------------------------------
 void AttendBox::nameChanged()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     currentElement.setAttribute("name", nameEdit->text());
 
     saveAndUpdate();
@@ -1293,6 +1304,9 @@ void AttendBox::nameChanged()
 //---------------------------------------------------------------------------
 void AttendBox::levelChanged()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     currentElement.setAttribute("level", levelComboBox->currentIndex());
 
     saveAndUpdate();
@@ -1302,6 +1316,9 @@ void AttendBox::levelChanged()
 //---------------------------------------------------------------------------
 void AttendBox::roleChanged()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     currentElement.setAttribute("role", roleComboBox->currentIndex());
 
     saveAndUpdate();
@@ -1312,6 +1329,8 @@ void AttendBox::roleChanged()
 //---------------------------------------------------------------------------
 void AttendBox::newCharSlot()
 {
+    if(attendManagerLaunched == false)
+        return;
 
     newAttendElementSlot("char");
 }
@@ -1320,6 +1339,9 @@ void AttendBox::newCharSlot()
 //---------------------------------------------------------------------------
 void AttendBox::newItemSlot()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     newAttendElementSlot("item");
 
 }
@@ -1328,6 +1350,9 @@ void AttendBox::newItemSlot()
 //---------------------------------------------------------------------------
 void AttendBox::newPlaceSlot()
 {
+    if(attendManagerLaunched == false)
+        return;
+
     newAttendElementSlot("place");
 
 }

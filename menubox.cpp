@@ -202,7 +202,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version " + QString("0.43") + "</p>"
+                       "<p>Version " + QString("0.44") + "</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"

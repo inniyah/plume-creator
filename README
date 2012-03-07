@@ -1,5 +1,10 @@
 PLUME CREATOR
 
+v 0.44
+	- character/item/place manager :
+		- bug fixed : crash when opening the att. manager two times
+		- bug fixed : names lost
+	- french translation updated
 
 v 0.43
 	- printing system enabled
