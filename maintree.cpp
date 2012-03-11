@@ -727,7 +727,7 @@ void MainTree::itemEnteredSlot(QTreeWidgetItem *treeItemPressed,int column)
     m_preItemEntered = treeItemPressed; //for when it rename an item
 
 
-    qDebug() << "item entered : " << m_itemEntered->text(0);
+//    qDebug() << "item entered : " << m_itemEntered->text(0);
 
     //    if(treeItemPressed == 0){
 
@@ -2863,7 +2863,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
 
     QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
-    qDebug() << "attendString : "<< attendString;
+//    qDebug() << "attendString : "<< attendString;
     QString string;
     for(int j=0 ; j < list.size(); ++j){
         int itemNumber = list.at(j);
@@ -2875,7 +2875,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
     for( int i = 0 ; i < thisAttendStringList.size(); ++i)
         newAttendString.append(thisAttendStringList.at(i) + "-");
 
-    qDebug() << "newAttendString : "<< newAttendString;
+//    qDebug() << "newAttendString : "<< newAttendString;
 
     element.setAttribute("attend", newAttendString);
     //        ++i;

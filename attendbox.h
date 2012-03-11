@@ -97,8 +97,8 @@ private slots:
 
     void toSheetSlot();
     void toAllSlot();
-void managerSheetListSelectionChanged();
-void projectListSelectionChanged();
+    void managerSheetListSelectionChanged();
+    void projectListSelectionChanged();
 
 private:
     QListWidget *attendList, *abstractList;
@@ -122,13 +122,13 @@ private:
 
     bool detailsHiddenBool;
     bool firstDetailOpening;
-QString currentTabName;
+    QString currentTabName;
 
     NoteZone *editZone;
 
     QLineEdit *firstnameEdit, *lastnameEdit, *nameEdit;
 
-  QToolButton *fontsMenuButton;
+    QToolButton *fontsMenuButton;
     QFontComboBox *detailFontCombo;
     QSpinBox *detailTextHeightSpin, *detailTextIndentSpin, *detailTextMarginSpin;
 
@@ -139,6 +139,8 @@ QString currentTabName;
 
     QWidget* attendManager;
     bool attendManagerLaunched;
+    bool deletingItemBool;
+bool newAttendElementBool;
 
     int currentManagerSheetList;
 

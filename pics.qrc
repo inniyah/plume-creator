@@ -3,5 +3,9 @@
         <file>pics/plume-creator.png</file>
         <file>pics/plume-creator-splash.png</file>
         <file>pics/parchemin_double.png</file>
+        <file>pics/addchar.png</file>
+        <file>pics/addobject.png</file>
+        <file>pics/addplace.png</file>
+        <file>pics/removeItem.png</file>
     </qresource>
 </RCC>

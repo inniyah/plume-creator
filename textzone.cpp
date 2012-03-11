@@ -423,7 +423,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
 
         cursor.insertHtml(document.toHtml("utf-8"));
-        qDebug() << "insertFromMimeData Html";
+//        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -431,7 +431,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextCursor cursor = this->textCursor
                 ();
         cursor.insertText(plainText);
-        qDebug() << "insertFromMimeData plainText";
+//        qDebug() << "insertFromMimeData plainText";
 
     }
 
@@ -450,7 +450,7 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
         return QTextEdit::canInsertFromMimeData(source);
 
 
-    qDebug() << "canInsertFromMimeData";
+//    qDebug() << "canInsertFromMimeData";
 }
 //--------------------------------------------------------------------------------
 void TextZone::resizeEvent(QResizeEvent* event)

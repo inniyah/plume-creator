@@ -253,7 +253,7 @@ void TextTab::updateTextZone()
     textZone->document()->setTextWidth(textZone->width() - 20);
     prevTextZone->document()->setTextWidth(prevTextZone->width() - 20);
 
-    qDebug() << "updateTextZone";
+//    qDebug() << "updateTextZone";
 }
 
 

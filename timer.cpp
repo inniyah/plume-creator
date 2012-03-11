@@ -207,11 +207,11 @@ void Timer::showTime()
 
     timeLabel->setText(a.setNum(h,10) + tr(" h ") + b.setNum(m,10) + tr(" min ") + c.setNum(s,10) + tr(" s "));
 
-    QString debug;
-    QString debug1;
-    QString debug2;
-    qDebug() << "timeValue in QTime :" << debug.setNum(h,10)
-             << ":"<<debug1.setNum(m,10)<<":"<<debug2.setNum(s,10);
+//    QString debug;
+//    QString debug1;
+//    QString debug2;
+//    qDebug() << "timeValue in QTime :" << debug.setNum(h,10)
+//             << ":"<<debug1.setNum(m,10)<<":"<<debug2.setNum(s,10);
     //    QTime time;
     //    time.setHMS(h,m,s);
     //    QString text = time.toString("h:mm:ss");

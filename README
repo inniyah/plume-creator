@@ -1,4 +1,9 @@
 PLUME CREATOR
+v 0.44.1
+	- character/item/place manager :
+		- bug fixed : crash after deleting an item already opened
+		- icons added
+		- tooltips added
 
 v 0.44
 	- character/item/place manager :

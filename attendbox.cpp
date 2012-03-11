@@ -4,7 +4,7 @@
 #include "attendbox.h"
 //
 AttendBox::AttendBox(QWidget *parent) :
-    QFrame(parent), attendManagerLaunched(false), newAttendName("*" + tr("new"))
+    QFrame(parent), attendManagerLaunched(false), deletingItemBool(false),newAttendName("*" + tr("new")), newAttendElementBool(false)
 {
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -40,8 +40,8 @@ bool AttendBox::saveAll()
         QTextDocumentWriter docWriter(file, "HTML");
         bool written = docWriter.write(doc);
 
-//        qDebug() << "QTextDocumentWriter : " << file->fileName();
-//                qDebug() << "QTextDocumentWriter : " << written;
+        //        qDebug() << "QTextDocumentWriter : " << file->fileName();
+        //                qDebug() << "QTextDocumentWriter : " << written;
 
 
         ++i;
@@ -69,8 +69,11 @@ bool AttendBox::saveDomDocument()
         domDocument.save(out, IndentSize);
         attFile->close();
 
-//        qDebug() << "saveDomDocument()";
+        //        qDebug() << "saveDomDocument()";
+        return true;
     }
+    else
+        return false;
 }
 //--------------------------------------------------------------------------------------
 
@@ -134,7 +137,7 @@ bool AttendBox::closeAll()
     attendStringForNumber.clear();
     fileForDoc.clear();
 
-
+    return true;
 
 }
 //--------------------------------------------------------------------------------------
@@ -724,8 +727,8 @@ void AttendBox::addAttendManagerButton()
     managerLauncher->setText(tr("Manage..."));
     managerLauncher->setTextAlignment(Qt::AlignHCenter);
     managerLauncher->setBackgroundColor(QColor(Qt::cyan));
+    managerLauncher->setToolTip(tr("Launch a manager for characters, items and places"));
     attendList->addItem(managerLauncher);
-
 
 }
 //--------------------------------------------------------------------------------------
@@ -737,14 +740,14 @@ void AttendBox::itemActivatedSlot(QListWidgetItem* itemActivated)
         hideDetails();
         return;
     }
-else{
-    launchAttendManager();
+    else{
+        launchAttendManager();
 
-    QListWidgetItem* item = projectList->findItems(itemActivated->text(), Qt::MatchExactly).takeFirst();
-    projectList->scrollToItem(item);
-    projectList->setItemSelected(item, true);
-    projectItemActivated(item);
-}
+        QListWidgetItem* item = projectList->findItems(itemActivated->text(), Qt::MatchExactly).takeFirst();
+        projectList->scrollToItem(item);
+        projectList->setItemSelected(item, true);
+        projectItemActivated(item);
+    }
 
 
 
@@ -801,14 +804,24 @@ void AttendBox::launchAttendManager()
     sheetBoxLayout->addWidget(managerSheetList);
     managerSheetListBox->setLayout(sheetBoxLayout);
 
+
+
+
+
     showDetailButton = new QPushButton("<");
     hideDetailButton = new QPushButton(">");
-    newCharButton = new QPushButton("+C");
-    newItemButton = new QPushButton("+I");
-    newPlaceButton = new QPushButton("+P");
-    deleteButton = new QPushButton("-");
+    newCharButton = new QPushButton(QIcon(":/pics/addchar.png"),"");
+    newItemButton = new QPushButton(QIcon(":/pics/addobject.png"),"");
+    newPlaceButton = new QPushButton(QIcon(":/pics/addplace.png"),"");
+    deleteButton = new QPushButton(QIcon(":/pics/removeItem.png"),"");
     toSheetButton = new QPushButton(">");
     toAllButton = new QPushButton("<");
+
+    QSize iconSize(32,32);
+    newCharButton->setIconSize(iconSize);
+    newItemButton->setIconSize(iconSize);
+    newPlaceButton->setIconSize(iconSize);
+    deleteButton->setIconSize(iconSize);
 
     editZone = new NoteZone;
 
@@ -820,6 +833,23 @@ void AttendBox::launchAttendManager()
     nameEdit->setPlaceholderText(tr("Name :"));
     levelComboBox = new QComboBox;
     roleComboBox = new QComboBox;
+
+    projectList->setToolTip(tr("List all the characters, items and places in this project"));
+    managerSheetList->setToolTip(tr("List all the characters, items and places in the current sheet"));
+    showDetailButton->setToolTip(tr("Show this item details"));
+    hideDetailButton->setToolTip(tr("Hide this item details"));
+    newCharButton->setToolTip(tr("Add a new character"));
+    newItemButton->setToolTip(tr("Add a new item"));
+    newPlaceButton->setToolTip(tr("Add a new place"));
+    deleteButton->setToolTip(tr("Delete an item"));
+    toSheetButton->setToolTip(tr("Add the selected item(s) to the current sheet"));
+    toAllButton->setToolTip(tr("Remove the selected item(s) from the current sheet"));
+    editZone->setToolTip(tr("Write here the description"));
+    firstnameEdit->setToolTip(tr("First name"));
+    lastnameEdit->setToolTip(tr("Last name"));
+    nameEdit->setToolTip(tr("Name"));
+    levelComboBox->setToolTip(tr("Set the item level"));
+    roleComboBox->setToolTip(tr("Set the item role"));
 
     connect(firstnameEdit, SIGNAL(editingFinished()), this, SLOT(firstnameChanged()));
     connect(lastnameEdit, SIGNAL(editingFinished()), this, SLOT(lastnameChanged()));
@@ -926,7 +956,7 @@ void AttendBox::launchAttendManager()
 
     //sizes :
 
-    QSize buttonSize(25, 50);
+    QSize buttonSize(40, 50);
     toSheetButton->setFixedSize(buttonSize);
     toAllButton->setFixedSize(buttonSize);
     showDetailButton->setFixedSize(buttonSize);
@@ -1060,11 +1090,10 @@ void AttendBox::projectItemActivated(QListWidgetItem* itemActivated)
 
 void AttendBox::openDetail(QListWidgetItem* item)
 {
-    if(firstDetailOpening == false){
+    if(detailsHiddenBool == false ){
         saveThisDoc();
     }
 
-    //   editZone->clear();
     QListWidgetItem *abstractItem = abstractList->findItems(item->text(), Qt::MatchExactly).takeFirst();
     QString number = domElementForItem.value(abstractItem).attribute("number");
     currentElement = domElementForItem.value(abstractItem);
@@ -1102,10 +1131,12 @@ void AttendBox::openDetail(QListWidgetItem* item)
     // fill the QtextEdit :
 
     QTextDocument *attendDoc = this->findChild<QTextDocument *>("attendDoc_" + number);
-    //    qDebug() << "attendDoc_" + number;
     editZone->openAttendDetail(attendDoc);
 
     editZone->setFocus();
+
+
+
 
     firstDetailOpening = false;
 }
@@ -1158,7 +1189,7 @@ void AttendBox::showDetailAnimation()
     animation->start();
 
 
-    // center the window if it leaves the screen :
+    //     center the window if it leaves the screen :
     connect(animation, SIGNAL(stateChanged(QAbstractAnimation::State,QAbstractAnimation::State)), this, SLOT(centerWindow()), Qt::UniqueConnection);
 
 
@@ -1196,6 +1227,7 @@ void AttendBox::showDetails()
 
 
     detailsHiddenBool = false;
+
 
 }
 
@@ -1235,8 +1267,8 @@ void AttendBox::hideDetails()
 
     firstnameEdit->hide();
     lastnameEdit->hide();
-fontsMenuButton->hide();
-        nameEdit->hide();
+    fontsMenuButton->hide();
+    nameEdit->hide();
     levelComboBox->hide();
     roleComboBox->hide();
 
@@ -1252,8 +1284,9 @@ fontsMenuButton->hide();
 void AttendBox::saveAndUpdate()
 {
     // saving :
-    if(firstDetailOpening == false)
+    if(deletingItemBool == false && detailsHiddenBool == false ){
         saveThisDoc();
+    }
     saveDomDocument();
 
     // updating :
@@ -1360,6 +1393,8 @@ void AttendBox::newPlaceSlot()
 //---------------------------------------------------------------------------
 void AttendBox::newAttendElementSlot(QString tagName)
 {
+    newAttendElementBool = true;
+
     QDomElement newAttendElement = domDocument.createElement(tagName);
     newAttendElement.setTagName(tagName);
 
@@ -1373,6 +1408,7 @@ void AttendBox::newAttendElementSlot(QString tagName)
 
         ++i;
     }
+
     int number = max + 1;
     QString stringNumber;
     newAttendElement.setAttribute("number", stringNumber.setNum(number));
@@ -1401,9 +1437,8 @@ void AttendBox::newAttendElementSlot(QString tagName)
 
 
 
-
-
     saveAndUpdate();
+
 
     QListWidgetItem* item = new QListWidgetItem;
     for(int i=0; i < projectList->count(); ++i)
@@ -1422,6 +1457,8 @@ void AttendBox::newAttendElementSlot(QString tagName)
     else if(tagName == "item" || tagName == "place")
         nameEdit->setFocus();
 
+
+    newAttendElementBool = false;
 }
 
 
@@ -1429,11 +1466,15 @@ void AttendBox::newAttendElementSlot(QString tagName)
 
 void AttendBox::deleteItems()
 {
+
+    if(attendManagerLaunched == false)
+        return;
+
     QList<QListWidgetItem *> itemList = projectList->selectedItems();
     if(itemList.size() == 0)
         return;
 
-    int ret = QMessageBox::warning(this, tr("Item Deletion"),
+    int ret = QMessageBox::warning(attendManager, tr("Item Deletion"),
                                    tr("<p>The selected items will be"
                                       " permanently deleted.</p>\n"
                                       "<br>"
@@ -1444,6 +1485,7 @@ void AttendBox::deleteItems()
     switch (ret) {
     case QMessageBox::Yes:
     {
+        deletingItemBool = true;
 
 
         if(detailsHiddenBool == false)
@@ -1472,8 +1514,8 @@ void AttendBox::deleteItems()
             QTextDocument *text = this->findChild<QTextDocument *>("attendDoc_" + domElementList.at(l).attribute("number"));
             QFile *textFile = fileForDoc.value(text);
             textFile->remove();
+            text->setObjectName("");
             fileForDoc.remove(text);
-            text->deleteLater();
 
 
             emit removeAttendNumberSignal(domElementList.at(l).attribute("number").toInt());
@@ -1481,13 +1523,9 @@ void AttendBox::deleteItems()
             domElementList.at(l).parentNode().removeChild(domElementList.at(l));
 
 
-
         }
-        firstDetailOpening = true;
-
         saveAndUpdate();
-
-
+        deletingItemBool =  false;
 
     }
         break;
@@ -1589,7 +1627,7 @@ void AttendBox::readSettings()
     settings.beginGroup( "AttendManager" );
     attendManager->resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
     attendManager->move(settings.value( "pos" ).toPoint() );
-//    detailsHiddenBool = settings.value( "hideDetails" ).toBool();
+    //    detailsHiddenBool = settings.value( "hideDetails" ).toBool();
     int detailTextHeight = settings.value("detailTextHeight", 12).toInt();
     int detailTextIndent = settings.value("detailTextIndent", 20).toInt();
     int detailTextMargin = settings.value("detailTextMargin", 5).toInt();
@@ -1597,8 +1635,8 @@ void AttendBox::readSettings()
     detailFont.setFamily(settings.value("detailFontFamily", "Liberation Serif").toString());
     settings.endGroup();
 
-//    if(!detailsHiddenBool)
-//        showDetails();
+    //    if(!detailsHiddenBool)
+    //        showDetails();
 
     detailTextHeightSpin->setValue(detailTextHeight);
     detailFontCombo->setCurrentFont(detailFont);
@@ -1619,13 +1657,13 @@ void AttendBox::writeSettings()
     settings.beginGroup( "AttendManager" );
     settings.setValue( "size", attendManager->size() );
     settings.setValue( "pos", attendManager->pos() );
-//    settings.setValue( "hideDetails", detailsHiddenBool );
+    //    settings.setValue( "hideDetails", detailsHiddenBool );
     settings.setValue("detailTextHeight", detailTextHeightSpin->value());
     settings.setValue("detailTextIndent", detailTextIndentSpin->value());
     settings.setValue("detailTextMargin", detailTextMarginSpin->value());
     settings.setValue("detailFontFamily", detailFontCombo->currentFont());
-   settings.endGroup();
+    settings.endGroup();
 
- editZone->applyAttendConfig();
+    editZone->applyAttendConfig();
 }
 

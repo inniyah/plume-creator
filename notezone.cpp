@@ -124,11 +124,9 @@ bool NoteZone::openSyn(QTextDocument *synDoc)
 
 bool NoteZone::openAttendDetail(QTextDocument *attendDoc)
 {
-
     textDocument = attendDoc;
 
     this->setEnabled(true);
-
     //    synFile->open(QFile::ReadOnly | QFile::Text);
     //    QApplication::setOverrideCursor(Qt::WaitCursor);
     //    QTextStream synFileStream( synFile );
@@ -137,6 +135,7 @@ bool NoteZone::openAttendDetail(QTextDocument *attendDoc)
     //    QApplication::restoreOverrideCursor();
 
     //    synFile->close();
+
 
     setDocument(textDocument);
 

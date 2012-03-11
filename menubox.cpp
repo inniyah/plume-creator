@@ -202,7 +202,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version " + QString("0.44") + "</p>"
+                       "<p>Version " + QString("0.44.1") + "</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
@@ -265,7 +265,7 @@ void MenuBox::createButtons()
     newProjectButton->setText(tr("&New Project"));
     newProjectButton->setShortcut(QKeySequence::New);
     newProjectButton->setToolTip(tr("Create a new project"));
-    connect(newProjectButton, SIGNAL(pressed()), this, SLOT(newProject()));
+    connect(newProjectButton, SIGNAL(clicked()), this, SLOT(newProject()));
 
     projectManagerButton = new QToolButton(this);
     projectManagerButton->setMaximumSize(buttonSize);
@@ -273,7 +273,7 @@ void MenuBox::createButtons()
     projectManagerButton->setText(tr("Project &Manager"));
     // projectManagerAct->setShortcut(QKeySequence::New);
     projectManagerButton->setToolTip(tr("Create and manage your projects"));
-    connect(projectManagerButton, SIGNAL(pressed()), this, SLOT(projectManager()));
+    connect(projectManagerButton, SIGNAL(clicked()), this, SLOT(projectManager()));
 
     //    openButton = new QToolButton(this);
     //    openButton->setMaximumSize(buttonSize);
@@ -281,7 +281,7 @@ void MenuBox::createButtons()
     //    openButton->setText(tr("&Open..."));
     //    openButton->setShortcut(QKeySequence::Open);
     //    openButton->setToolTip(tr("Open an existing file"));
-    //    connect(openButton, SIGNAL(pressed()), this, SLOT(open()));
+    //    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
 
     displayConfigButton = new QToolButton(this);
     displayConfigButton->setMaximumSize(buttonSize);
@@ -289,7 +289,7 @@ void MenuBox::createButtons()
     displayConfigButton->setText(tr("&Configure"));
 //    displayConfigButton->setShortcut(QKeySequence::Print);
     displayConfigButton->setToolTip(tr("Display the configuration"));
-    connect(displayConfigButton, SIGNAL(pressed()), this, SLOT(displayConfig()));
+    connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
 
     exportButton = new QToolButton(this);
     exportButton->setMaximumSize(buttonSize);
@@ -297,7 +297,7 @@ void MenuBox::createButtons()
     exportButton->setText(tr("&Export"));
     //   exportButton->setShortcut(QKeySequence::Print);
     exportButton->setToolTip(tr("Export the project"));
-    connect(exportButton, SIGNAL(pressed()), this, SLOT(exporter()));
+    connect(exportButton, SIGNAL(clicked()), this, SLOT(exporter()));
 
     printButton = new QToolButton(this);
     printButton->setMaximumSize(buttonSize);
@@ -305,7 +305,7 @@ void MenuBox::createButtons()
     printButton->setText(tr("&Print"));
     printButton->setShortcut(QKeySequence::Print);
     printButton->setToolTip(tr("Print part of the project"));
-    connect(printButton, SIGNAL(pressed()), this, SLOT(print()));
+    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
 
     closeProjectButton = new QToolButton(this);
     closeProjectButton->setMaximumSize(buttonSize);
@@ -313,7 +313,7 @@ void MenuBox::createButtons()
     closeProjectButton->setText(tr("&Close project"));
     closeProjectButton->setShortcut(QKeySequence::Close);
     closeProjectButton->setToolTip(tr("Print the document"));
-    connect(closeProjectButton, SIGNAL(pressed()), this, SLOT(closeProject()));;
+    connect(closeProjectButton, SIGNAL(clicked()), this, SLOT(closeProject()));;
 
     exitButton = new QToolButton(this);
     exitButton->setMaximumSize(buttonSize);
@@ -321,7 +321,7 @@ void MenuBox::createButtons()
     exitButton->setText(tr("E&xit"));
     exitButton->setShortcut(QKeySequence::Quit);
     exitButton->setToolTip(tr("Exit the application"));
-    connect(exitButton, SIGNAL(pressed()), this, SLOT(exit()));
+    connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
 
 
     aboutButton = new QToolButton(this);
@@ -330,7 +330,7 @@ void MenuBox::createButtons()
     aboutButton->setText(tr("About Plume Creator"));
     // aboutButton->setShortcut(QKeySequence::Quit);
     aboutButton->setToolTip(tr("about the application"));
-    connect(aboutButton, SIGNAL(pressed()), this, SLOT(about()));
+    connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
 
     aboutQtButton = new QToolButton(this);
     aboutQtButton->setMaximumSize(buttonSize);
@@ -338,7 +338,7 @@ void MenuBox::createButtons()
     aboutQtButton->setText(tr("About Qt"));
     // aboutQtButton->setShortcut(QKeySequence::Quit);
     aboutQtButton->setToolTip(tr("about Qt"));
-    connect(aboutQtButton, SIGNAL(pressed()), this, SLOT(aboutQt()));
+    connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
 
     //    QSize size(80,30);
     //    newProjectButton->setFixedSize(size);
@@ -641,9 +641,9 @@ bool MenuBox::openExternalProject(QFile *externalPrjFile)
             return false;
         }
 
-        QFileInfo *dirInfo = new QFileInfo(file);
-        QString devicePath = dirInfo->path();
-        qDebug() << "File path:" << devicePath;
+//        QFileInfo *dirInfo = new QFileInfo(file);
+//        QString devicePath = dirInfo->path();
+//        qDebug() << "File path:" << devicePath;
 
 
         QDomElement root = domDocument.documentElement();
