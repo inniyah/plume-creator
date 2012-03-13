@@ -17,110 +17,61 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef MENUBOX_H
-#define MENUBOX_H
+#ifndef UPDATER_H
+#define UPDATER_H
 
 #include <QtGui>
 #include <QWidget>
-#include <QFrame>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkConfigurationManager>
+#include <QDomDocument>
 
-#include "prjmanager.h"
-#include "settingsdialog.h"
-//
-class MenuBox : public QFrame
+class Updater : public QDialog
 {
     Q_OBJECT
 public:
-    explicit MenuBox(QWidget *parent = 0);
+    explicit Updater(QString mode = "none", QWidget *parent = 0);
+    ~Updater();
+    //    QNetworkAccessManager manager;
+    //    QList<QNetworkReply *> currentDownloads;
 
-    void openManager()
-    {
-        projectManager();
-    }
 
-    void firstLaunch()
-    {
-        readSettings();
-    }
-    void launchCheckUpdateDialog(QString mode = "none");
-
-protected:
-
+    //    void doDownload(const QUrl &url);
+    //    QString saveFileName(const QUrl &url);
+    //    bool saveToDisk(const QString &filename, QIODevice *data);
 
 signals:
-
-    void exitSignal();
-
-    void openProjectSignal(QFile *device);
-    void closeProjectSignal();
-    void saveProjectSignal();
-
-    void openProjectNumberSignal(int prjNumber);
-
-    void applyConfigSignal();
-
+    
 public slots:
+    void setCurrentVersion(QString currentVersion);
 
+    //    void execute();
+    //    void downloadFinished(QNetworkReply *reply);
+    //    void sslErrors(const QList<QSslError> &errors);
 
-    void openProjectManagerSlot();
-    void openNewProjectSlot();
-    void openProjectSlot(QFile *device);
-void setExternalProject(QFile *externalFile);
-bool openExternalProject(QFile *externalPrjFile);
 
 private slots:
+    void checkUpdate();
+    void replyFinished(QNetworkReply *reply);
+    void slotError(QNetworkReply::NetworkError);
+    bool checkConnection();
 
-    void newProject();
-    void projectManager();
-    //   void open();
-    void displayConfig();
-    void exporter();
-    void print();
-    void closeProject();
-    void aboutQt();
-    void about();
-    void checkUpdate(){ launchCheckUpdateDialog("none"); }
-    void exit();
-
-    void applyConfig();
-
-private:
-
-QString currentVersion;
-
-    QToolButton *newProjectButton,
-    *projectManagerButton,
-    //   *openButton,
-    *displayConfigButton,
-    *closeProjectButton,
-    *exitButton,
-    *printButton,
-    *exportButton,
-    *aboutQtButton,
-    *aboutButton,
-    *updaterButton;
-
-
-
-
-
-
-    void createActions();
-    void createButtons();
-
-    //settings
     void readSettings();
     void writeSettings();
 
-    //style :
-    void giveStyle();
+private :
+    QNetworkAccessManager *manager;
 
 
+    QLabel *currentVersionLabel, *connectionLabel, *verifyLabel;
+    QVBoxLayout *verifyLayout;
+    QString thisVersion;
+    QPushButton *verifyButton;
+    QCheckBox *checkUpdateAtStartupBox;
 
-    PrjManager *projManager;
-    QFile *file;
-
-    QFile *extFile;
+    QDomDocument domDocument;
+    QDomElement root;
 };
 
-#endif // MENUBOX_H
+#endif // UPDATER_H

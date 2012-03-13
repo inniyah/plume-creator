@@ -45,11 +45,17 @@ public slots:
 
 private slots:
     void readSettings();
-
+    void langChanged();
 private:
     QSettings settings;
+
+    QComboBox *langComboBox;
+    QStringList langs;
+    QStringList langCodes;
+
     QSpinBox *autosaveTimeSpin;
     int autosaveTime;
+    QCheckBox *checkUpdateAtStartupCheckBox;
 
 
 };

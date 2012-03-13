@@ -3,9 +3,10 @@
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter.h"
+#include "updater.h"
 //
 MenuBox::MenuBox(QWidget *parent) :
-    QFrame(parent), extFile(0)
+    QFrame(parent), extFile(0), currentVersion("0.45")
 {
 
     file = 0;
@@ -194,7 +195,8 @@ void MenuBox::aboutQt()
 
 
 }
-//--------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 
 void MenuBox::about()
 {
@@ -202,7 +204,7 @@ void MenuBox::about()
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
-                       "<p>Version " + QString("0.44.1") + "</p>"
+                       "<p>Version " + currentVersion + "</p>"
 
 
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
@@ -222,6 +224,20 @@ void MenuBox::about()
                        "along with Plume Creator.  If not, see <address>http://www.gnu.org/licenses</address>.</p>"
                        );
 
+
+}
+
+
+//--------------------------------------------------------------------------
+
+
+void MenuBox::launchCheckUpdateDialog(QString mode)
+{
+
+    Updater *checkUpdateDialog = new Updater(mode);
+checkUpdateDialog->setCurrentVersion(currentVersion);
+
+checkUpdateDialog->exec();
 
 }
 //--------------------------------------------------------------------------
@@ -287,7 +303,7 @@ void MenuBox::createButtons()
     displayConfigButton->setMaximumSize(buttonSize);
     displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     displayConfigButton->setText(tr("&Configure"));
-//    displayConfigButton->setShortcut(QKeySequence::Print);
+    //    displayConfigButton->setShortcut(QKeySequence::Print);
     displayConfigButton->setToolTip(tr("Display the configuration"));
     connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
 
@@ -340,6 +356,14 @@ void MenuBox::createButtons()
     aboutQtButton->setToolTip(tr("about Qt"));
     connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
 
+    updaterButton = new QToolButton(this);
+    updaterButton->setMaximumSize(buttonSize);
+    updaterButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    updaterButton->setText(tr("Check Update"));
+    // aboutQtButton->setShortcut(QKeySequence::Quit);
+    updaterButton->setToolTip(tr("check for an update"));
+    connect(updaterButton, SIGNAL(clicked()), this, SLOT(checkUpdate()));
+
     //    QSize size(80,30);
     //    newProjectButton->setFixedSize(size);
     //    projectManagerButton->setFixedSize(size);
@@ -367,6 +391,7 @@ void MenuBox::createButtons()
 
     baseGridLayout->addWidget(aboutButton);
     baseGridLayout->addWidget(aboutQtButton);
+    baseGridLayout->addWidget(updaterButton);
     baseGridLayout->addSpacing(5);
 
     baseGridLayout->addWidget(closeProjectButton);
@@ -498,22 +523,22 @@ void MenuBox::setExternalProject(QFile *externalFile)
 
 
 
-//    QFile *logFile = new QFile;
-//    logFile->setFileName(QDir::toNativeSeparators(extFilePath + "/plume.log"));
-//    logFile->waitForBytesWritten(500);
-//    logFile->close();
-//    logFile->open(QFile::ReadWrite | QFile::Text | QFile::Append);
-//    if(logFile->isWritable())
-//    {
-//        QTextStream logStream(logFile);
+    //    QFile *logFile = new QFile;
+    //    logFile->setFileName(QDir::toNativeSeparators(extFilePath + "/plume.log"));
+    //    logFile->waitForBytesWritten(500);
+    //    logFile->close();
+    //    logFile->open(QFile::ReadWrite | QFile::Text | QFile::Append);
+    //    if(logFile->isWritable())
+    //    {
+    //        QTextStream logStream(logFile);
 
-//            logStream << QDateTime::currentDateTime().toString() << " :  extFilePath : " << extFilePath;
-//            logStream << "\n";
-//            logStream << QDateTime::currentDateTime().toString() << " :  valueList.first() : " << valueList.first();
-//            logStream << "\n";
+    //            logStream << QDateTime::currentDateTime().toString() << " :  extFilePath : " << extFilePath;
+    //            logStream << "\n";
+    //            logStream << QDateTime::currentDateTime().toString() << " :  valueList.first() : " << valueList.first();
+    //            logStream << "\n";
 
-//    }
-//    logFile->close();
+    //    }
+    //    logFile->close();
 
 
 
@@ -641,9 +666,9 @@ bool MenuBox::openExternalProject(QFile *externalPrjFile)
             return false;
         }
 
-//        QFileInfo *dirInfo = new QFileInfo(file);
-//        QString devicePath = dirInfo->path();
-//        qDebug() << "File path:" << devicePath;
+        //        QFileInfo *dirInfo = new QFileInfo(file);
+        //        QString devicePath = dirInfo->path();
+        //        qDebug() << "File path:" << devicePath;
 
 
         QDomElement root = domDocument.documentElement();
@@ -720,6 +745,7 @@ bool MenuBox::openExternalProject(QFile *externalPrjFile)
 
 
 }
+
 
 //---------------------------------------------------------------------------
 void MenuBox::giveStyle()

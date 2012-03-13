@@ -89,22 +89,71 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName( "Plume-Creator" );
 
 
-    // Translator (temporary)
+
+
+    // Lang menu :
+
 
     QString translatorFileName = QLatin1String("qt_");
-    translatorFileName += QLocale::system().name();
+    QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
+
+    QSettings settings;
+    if (settings.value("MainWindow/firstStart", true).toBool()){
+
+        QStringList langs;
+        langs << "Français" << "English";
+        QStringList langCodes;
+        langCodes << "fr_FR" << "en_US";
+
+        bool ok;
+        QString selectedLang = QInputDialog::getItem(0, "Language Selector",
+                                             "Please select your language : <br> "
+                                             "Veuillez sélectionner votre langue : ", langs, 0, false, &ok);
+        if (ok && !selectedLang.isEmpty()){
+            translatorFileName += langCodes.at(langs.indexOf(selectedLang));
+            plumeTranslatorFileName += langCodes.at(langs.indexOf(selectedLang));
+
+
+            settings.setValue("MainWindow/lang", langCodes.at(langs.indexOf(selectedLang)));
+        }
+        else{
+            translatorFileName += QLocale::system().name();
+            QTranslator *translator = new QTranslator(&instance);
+            if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+                instance.installTranslator(translator);
+
+            plumeTranslatorFileName += QLocale::system().name();
+            QTranslator *plumeTranslator = new QTranslator(&instance);
+            plumeTranslator->load(plumeTranslatorFileName);
+            instance.installTranslator(plumeTranslator);
+
+            settings.setValue("MainWindow/lang", QLocale::system().name());
+
+        }
+
+
+    }
+else{
+
+        translatorFileName += settings.value("MainWindow/lang", "none").toString();
     QTranslator *translator = new QTranslator(&instance);
     if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
         instance.installTranslator(translator);
 
-    QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
-    plumeTranslatorFileName += QLocale::system().name();
+    plumeTranslatorFileName += settings.value("MainWindow/lang", "none").toString();
     QTranslator *plumeTranslator = new QTranslator(&instance);
     plumeTranslator->load(plumeTranslatorFileName);
     instance.installTranslator(plumeTranslator);
 
-
+}
 //    qDebug() << "locale : " << "plume-creator_" + QLocale::system().name();
+
+
+
+
+
+
+
 
 
     MainWindow mw;

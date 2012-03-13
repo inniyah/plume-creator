@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     exporter.cpp \
     outlineitem.cpp \
     outline.cpp \
-    attendbox.cpp
+    attendbox.cpp \
+    updater.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     exporter.h \
     outlineitem.h \
     outline.h \
-    attendbox.h
+    attendbox.h \
+    updater.h
 
 RESOURCES += \
     pics.qrc \

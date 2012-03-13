@@ -41,48 +41,87 @@ void SettingsDialog::accept()
 GeneralSettingTab::GeneralSettingTab(QWidget *parent)
     : QWidget(parent)
 {
-    readSettings();
 
 
     //->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    QGroupBox *generalBox = new QGroupBox(tr("Main Text Area :"));
-    QHBoxLayout *generalBoxLayout = new QHBoxLayout;
+    QGroupBox *generalBox = new QGroupBox(tr("General :"));
+    QVBoxLayout *generalBoxLayout = new QVBoxLayout;
+
+    QHBoxLayout *langLayout = new QHBoxLayout;
+    QLabel *langLabel = new QLabel(tr("Change your language :"));
+    langComboBox = new QComboBox();
+    langs << "Français" << "English";
+    langCodes << "fr_FR" << "en_US";
+    langComboBox->addItems(langs);
+    langLayout->addWidget(langLabel);
+    langLayout->addWidget(langComboBox);
+
+    QHBoxLayout *autosaveLayout = new QHBoxLayout;
     QLabel *autosaveLabel = new QLabel(tr("Save project every :"));
     autosaveTimeSpin = new QSpinBox;
     autosaveTimeSpin->setRange(10,3600);
-    autosaveTimeSpin->setValue(autosaveTime / 1000);
     autosaveTimeSpin->setSingleStep(10);
     autosaveTimeSpin->setAccelerated(true);
     autosaveTimeSpin->setSuffix(tr(" s"));
+    autosaveLayout->addWidget(autosaveLabel);
+    autosaveLayout->addWidget(autosaveTimeSpin);
 
-    generalBoxLayout->addWidget(autosaveLabel);
-    generalBoxLayout->addWidget(autosaveTimeSpin);
+    checkUpdateAtStartupCheckBox = new QCheckBox(tr("Check update at startup"));
+
+    generalBoxLayout->addLayout(langLayout);
+    generalBoxLayout->addLayout(autosaveLayout);
+    generalBoxLayout->addWidget(checkUpdateAtStartupCheckBox);
+    generalBoxLayout->addStretch();
     generalBox->setLayout(generalBoxLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(generalBox);
     setLayout(mainLayout);
 
+    readSettings();
 
+    connect(langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
+}
+
+//---------------------------------------------------------------------------------
+
+void GeneralSettingTab::langChanged()
+{
+    QMessageBox msgBox;
+    msgBox.setText("A different language has been selected.<br>The change will be effective after restarting the program.");
+    msgBox.exec();
 }
 
 //---------------------------------------------------------------------------------
 
 void GeneralSettingTab::readSettings()
 {
+    settings.beginGroup("MainWindow");
+    langComboBox->setCurrentIndex(langCodes.indexOf(settings.value("lang", "en_US").toString()));
+    settings.endGroup();
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
+    autosaveTimeSpin->setValue(autosaveTime / 1000);
     settings.endGroup();
+    settings.beginGroup("Updater");
+    checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup", true).toBool());
+    settings.endGroup();
+
 }
 
 //---------------------------------------------------------------------------------
 
 void GeneralSettingTab::accept()
 {
+    settings.beginGroup("MainWindow");
+    settings.setValue("lang", langCodes.at(langs.indexOf(langComboBox->currentText())));
+    settings.endGroup();
     settings.beginGroup( "Settings" );
     settings.setValue("autosaveTime", autosaveTimeSpin->value() * 1000);
     settings.endGroup();
-
+    settings.beginGroup("Updater");
+    settings.setValue("checkAtStartup", checkUpdateAtStartupCheckBox->isChecked());
+    settings.endGroup();
 
 
 
@@ -119,7 +158,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridTextLayout->addWidget(textFontLabel,0,0);
     gridTextLayout->addWidget(textFontCombo,0,1);
     gridTextLayout->addWidget(textSpin,0,2);
-//    gridTextLayout->addWidget(textApplyWideBox,0,3);
+    //    gridTextLayout->addWidget(textApplyWideBox,0,3);
     gridTextLayout->addWidget(showScrollbarBox,1,0);
     gridTextLayout->addWidget(textIndentLabel,2,0);
     gridTextLayout->addWidget(textIndentSpin,2,1);
@@ -168,7 +207,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridSynLayout->addWidget(synFontLabel,0,0);
     gridSynLayout->addWidget(synFontCombo,0,1);
     gridSynLayout->addWidget(synSpin,0,2);
-//    gridSynLayout->addWidget(synApplyWideBox,0,3);
+    //    gridSynLayout->addWidget(synApplyWideBox,0,3);
     gridSynLayout->addWidget(synShowScrollbarBox,1,0);
     gridSynLayout->addWidget(synIndentLabel,2,0);
     gridSynLayout->addWidget(synIndentSpin,2,1);
@@ -201,7 +240,7 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridNoteLayout->addWidget(noteFontLabel,0,0);
     gridNoteLayout->addWidget(noteFontCombo,0,1);
     gridNoteLayout->addWidget(noteSpin,0,2);
-//    gridNoteLayout->addWidget(noteApplyWideBox,0,3);
+    //    gridNoteLayout->addWidget(noteApplyWideBox,0,3);
     gridNoteLayout->addWidget(noteShowScrollbarBox,1,0);
     gridNoteLayout->addWidget(noteIndentLabel,2,0);
     gridNoteLayout->addWidget(noteIndentSpin,2,1);

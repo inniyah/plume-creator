@@ -105,6 +105,7 @@ private:
     QFile *file;
 
     bool m_firstStart;
+    bool checkUpdateAtStartupBool;
 
     QTabWidget *tabWidget;
     void setTextTabConnections();

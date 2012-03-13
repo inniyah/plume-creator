@@ -1,4 +1,9 @@
 PLUME CREATOR
+v 0.45
+	- update checker added
+	- language selector added at startup and in settings
+	- french translation updated
+
 v 0.44.1
 	- character/item/place manager :
 		- bug fixed : crash after deleting an item already opened

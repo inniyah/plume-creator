@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.44.1") + tr("!</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.45") + tr("!</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -84,13 +84,14 @@ MainWindow::MainWindow(QWidget *parent)
 
         m_firstStart = false;
 
-        menu->openManager();
 
     }
-    else{
-        menu->openManager();
+
+    if (checkUpdateAtStartupBool){
+        menu->launchCheckUpdateDialog("auto");
     }
 
+    menu->openManager();
 
 
 }
@@ -913,7 +914,8 @@ void MainWindow::readSettings()
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
     settings.endGroup();
-
+    settings.beginGroup( "Updater" );
+    checkUpdateAtStartupBool = settings.value("checkAtStartup", true).toBool();
 
 
 
