@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
 
     QSettings settings;
-    if (settings.value("MainWindow/firstStart", true).toBool()){
+    if (settings.value("MainWindow/firstStart", true).toBool() || settings.value("MainWindow/lang", "none").toString() == "none" ){
 
         QStringList langs;
         langs << "Français" << "English";
@@ -113,6 +113,13 @@ int main(int argc, char *argv[])
             translatorFileName += langCodes.at(langs.indexOf(selectedLang));
             plumeTranslatorFileName += langCodes.at(langs.indexOf(selectedLang));
 
+            QTranslator *translator = new QTranslator(&instance);
+            if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+                instance.installTranslator(translator);
+
+            QTranslator *plumeTranslator = new QTranslator(&instance);
+            plumeTranslator->load(plumeTranslatorFileName);
+            instance.installTranslator(plumeTranslator);
 
             settings.setValue("MainWindow/lang", langCodes.at(langs.indexOf(selectedLang)));
         }

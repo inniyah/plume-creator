@@ -1189,24 +1189,30 @@ Veuillez ouvrir un fichier .plume.</translation>
 </translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="634"/>
+        <location filename="menubox.cpp" line="639"/>
+        <source>Plume Creator Prj XML</source>
+        <translation>Plume Creator Prj XML</translation>
+    </message>
+    <message>
+        <location filename="menubox.cpp" line="721"/>
         <source>Open Project</source>
         <translation>Ouvrir un Projet</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="635"/>
+        <location filename="menubox.cpp" line="722"/>
         <source>&lt;p&gt;You are opening a Plume project.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Do you want to add this project to the manager list ?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Vous ouvrez un projet Plume.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Voulez-vous ajouter ce projet à la liste du gestionnaire de projet ?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="659"/>
+        <location filename="menubox.cpp" line="746"/>
         <source>Plume Creator XML</source>
         <translation>Plume Creator XML</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="660"/>
+        <location filename="menubox.cpp" line="640"/>
+        <location filename="menubox.cpp" line="747"/>
         <source>Parse error at line %1, column %2:
 %3
 </source>
@@ -1215,25 +1221,27 @@ Veuillez ouvrir un fichier .plume.</translation>
 </translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="676"/>
-        <location filename="menubox.cpp" line="681"/>
+        <location filename="menubox.cpp" line="763"/>
+        <location filename="menubox.cpp" line="768"/>
         <source>Plume Creator Tree</source>
         <translation>Arbre de Plume Creator</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="677"/>
+        <location filename="menubox.cpp" line="655"/>
+        <location filename="menubox.cpp" line="764"/>
         <source>The file is not a Plume Creator information file.</source>
         <translation>Le fichier n&apos;est pas un fichier d&apos;information Plule Creator.</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="682"/>
+        <location filename="menubox.cpp" line="660"/>
+        <location filename="menubox.cpp" line="769"/>
         <source>The file is not an Plume Creator information file version 0.2 file.</source>
         <translation>Le fichier n&apos;est pas un fichier d&apos;information Plule Creator version 0.2.</translation>
     </message>
     <message>
-        <location filename="menubox.cpp" line="690"/>
-        <location filename="menubox.cpp" line="691"/>
-        <location filename="menubox.cpp" line="692"/>
+        <location filename="menubox.cpp" line="777"/>
+        <location filename="menubox.cpp" line="778"/>
+        <location filename="menubox.cpp" line="779"/>
         <source>error</source>
         <translation>erreur</translation>
     </message>
@@ -1927,7 +1935,7 @@ Veuillez ouvrir un fichier .plume.</translation>
     <message>
         <location filename="updater.cpp" line="20"/>
         <source>Please press this button to verify if an update is available :</source>
-        <translation>Veuillez presser ce bouton pour vérifier si une mise--jour est disponible :</translation>
+        <translation>Veuillez presser ce bouton pour vérifier si une mise-à-jour est disponible :</translation>
     </message>
     <message>
         <location filename="updater.cpp" line="23"/>
@@ -2027,7 +2035,8 @@ Veuillez ouvrir un fichier .plume.</translation>
     </message>
     <message>
         <location filename="updater.cpp" line="235"/>
-        <source>&lt;br&gt;Download it directly here : &lt;br&gt;&lt;address&gt;&lt;a href= </source>
+        <source>&lt;br&gt;Download it directly here : &lt;br&gt;&lt;address&gt;&lt;a href=</source>
+        <oldsource>&lt;br&gt;Download it directly here : &lt;br&gt;&lt;address&gt;&lt;a href= </oldsource>
         <translation>&lt;br&gt;Téléchargez-le directement ici : &lt;br&gt;&lt;address&gt;&lt;a href= </translation>
     </message>
     <message>

@@ -1,13 +1,15 @@
-Plume Creator was developed with Qt Creator 2.2.1 on Linux Mint 32bit using Qt 4.7.4 libraries.
+Plume Creator was developed with Qt Creator 2.4.1 on Linux Mint 32bit KDE using Qt 4.7.4 libraries.
 
 The simplest way to try it is to open it as project in Qt Creator, then execute it.
 
-Else, use qmake
+Else, use :
+qmake (qt 4.7.4)
+make
 
 Regards,
 
 Cyril Jacquet
-08/03/2011
+01/04/2012
 
 
 

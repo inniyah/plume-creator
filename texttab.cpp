@@ -75,7 +75,7 @@ layout->addWidget(splitter);
     //    synTextCursor.setCharFormat(synTextCharFormat);
 
 
-
+    giveStyle();
 }
 
 
@@ -345,4 +345,13 @@ void TextTab::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+//-------------------------------------------------------------------
+void TextTab::giveStyle()
+{
+    setStyleSheet(" TextZone {    border-width: 1px;"
+                  "border-style: outset;"
+                  "border-radius: 0px;"
+                  "}");
 }

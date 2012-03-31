@@ -817,7 +817,6 @@ void NoteZone::applyNoteFontConfig()
     QString noteFontFamily = settings.value("NoteArea/textFontFamily", "Liberation Serif").toString();
     settings.endGroup();
 
-
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(noteBottMargin);
     blockFormat.setTextIndent(noteTextIndent);

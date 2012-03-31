@@ -6,7 +6,7 @@
 #include "updater.h"
 //
 MenuBox::MenuBox(QWidget *parent) :
-    QFrame(parent), extFile(0), currentVersion("0.45")
+    QFrame(parent), extFile(0), currentVersion("0.46")
 {
 
     file = 0;
@@ -235,9 +235,9 @@ void MenuBox::launchCheckUpdateDialog(QString mode)
 {
 
     Updater *checkUpdateDialog = new Updater(mode);
-checkUpdateDialog->setCurrentVersion(currentVersion);
+    checkUpdateDialog->setCurrentVersion(currentVersion);
 
-checkUpdateDialog->exec();
+    checkUpdateDialog->exec();
 
 }
 //--------------------------------------------------------------------------
@@ -607,7 +607,94 @@ void MenuBox::setExternalProject(QFile *externalFile)
         file.close();
     }
 
+    //modify the path attributes in case the project was moved:
 
+    filters.clear();
+    filters << "*.prjinfo";
+
+    QFile plumeFile(extFilePath + "/" + dir.entryList(filters).first());
+    QString projectName = plumeFile.fileName().split("/").last().remove(".prjinfo");
+
+    QString string;
+    qDebug() << "dirCount : "  << string.setNum(dir.entryList(filters).count()) << " = " << dir.entryList(filters).first();
+    qDebug() << "plumeFile : " << plumeFile.fileName();
+    QFileInfo *dirInfo = new QFileInfo(plumeFile);
+    QString devicePath = dirInfo->absolutePath();
+    qDebug() << "File path:" << devicePath;
+
+    plumeFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+//    QString f(plumeFile.readAll());
+//    qDebug() << "f : "<< f;
+
+
+    QDomDocument domDocument;
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+
+    if (!domDocument.setContent(&plumeFile, true, &errorStr, &errorLine,
+                                &errorColumn)) {
+        QMessageBox::information(this, tr("Plume Creator Prj XML"),
+                                 tr("Parse error at line %1, column %2:\n%3\n")
+                                 .arg(errorLine)
+                                 .arg(errorColumn)
+                                 .arg(errorStr));
+
+
+        return;
+    }
+
+
+
+
+    QDomElement root = domDocument.documentElement();
+    if (root.tagName() != "plume-information") {
+        QMessageBox::information(this, tr("Plume Creator Prj Tree"),
+                                 tr("The file is not a Plume Creator information file."));
+        return;
+    } else if (root.hasAttribute("version")
+               && root.attribute("version") != "0.2") {
+        QMessageBox::information(this, tr("Plume Creator Prj Tree"),
+                                 tr("The file is not an Plume Creator information file version 0.2 "
+                                    "file."));
+        return;
+    }
+
+
+    QDomElement prjInfoElem = root.firstChildElement("prj");
+
+
+
+//    if(extFilePath != prjInfoElem.attribute("workPath")){
+
+
+
+
+        prjInfoElem.setAttribute("path", extFilePath.left(extFilePath.size() - projectName.size() - 1 ));
+        prjInfoElem.setAttribute("workPath", extFilePath);
+
+plumeFile.close();
+        plumeFile.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
+
+        plumeFile.flush();
+
+        const int IndentSize = 4;
+
+
+        QTextStream out(&plumeFile);
+        out.flush();
+        domDocument.save(out, IndentSize);
+
+
+
+        qDebug() << "eee";
+//    }
+
+
+
+        plumeFile.close();
 
 
     filters.clear();

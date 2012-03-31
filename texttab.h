@@ -70,6 +70,7 @@ private slots:
     //void charCountUpdated(int charCount);
     void blockCountUpdated(int blockCount);
 void cursorPositionChangedSlot();
+void giveStyle();
 
 private:
 

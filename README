@@ -1,4 +1,7 @@
 PLUME CREATOR
+v 0.46
+	- bug fixed : crash after opening an external project
+
 v 0.45
 	- update checker added
 	- language selector added at startup and in settings

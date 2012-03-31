@@ -26,7 +26,7 @@ Updater::Updater(QString mode, QWidget *parent) :
     QLabel *linkLabel = new QLabel;
     linkLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     linkLabel->setOpenExternalLinks(true);
-    linkLabel->setText(tr("<center>Website : <br><address><a href=\http://sourceforge.net/projects/plume-creator\>http://sourceforge.net/projects/plume-creator</a></address></center>"));
+    linkLabel->setText(tr("<center>Website : <br><address><a href=http://sourceforge.net/projects/plume-creator>http://sourceforge.net/projects/plume-creator</a></address></center>"));
     verifyLabel = new QLabel;
     verifyLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     verifyLabel->setOpenExternalLinks(true);
@@ -232,8 +232,8 @@ void Updater::replyFinished(QNetworkReply *reply)
     if(thisVersion.toFloat() < updateVersion.toFloat()){
         QString downloadLink = node.toElement().attribute("url1") + milestone + node.toElement().attribute("url2") + updateVersion + node.toElement().attribute("url3");
         verifyLabel->setText(("<center>An update is available ! Plume Creator version ")
-                             + updateVersion + tr("<br>Download it directly here : <br><address><a href=\ ")
-                             + downloadLink + "\>" + downloadLink + tr("</a></address></center>"));
+                             + updateVersion + tr("<br>Download it directly here : <br><address><a href=")
+                             + downloadLink + ">" + downloadLink + tr("</a></address></center>"));
     }
     else if(thisVersion.toFloat() == updateVersion.toFloat()){
         verifyLabel->setText(tr("You are up to date !"));

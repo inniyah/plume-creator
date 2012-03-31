@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.45") + tr("!</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.46") + tr("!</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
