@@ -5,7 +5,7 @@
 TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
     QTextEdit(parent)
 {
-this->setAttribute(Qt::WA_KeyCompression, true);
+    this->setAttribute(Qt::WA_KeyCompression, true);
 
     textDocument = doc;
     createActions();
@@ -357,19 +357,28 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 void TextZone::keyPressEvent(QKeyEvent *event)
 {
     if(event->matches(QKeySequence::Italic))
-            italic(!italicAct->isChecked());
+        italic(!italicAct->isChecked());
     else if(event->matches(QKeySequence::Bold))
-            bold(!boldAct->isChecked());
+        bold(!boldAct->isChecked());
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
-            leftAlign(true);
+        leftAlign(true);
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
-            rightAlign(true);
+        rightAlign(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
-            center(true);
+        center(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
-            justify(true);
-    else
+        justify(true);
+    else if(event->key() == Qt::Key_Space){
+        if(preventDoubleSpaceOption == true)
+            preventDoubleSpace();
+        else
+            QTextEdit::keyPressEvent(event);
+
+    }
+    else{
         QTextEdit::keyPressEvent(event);
+    }
+
 }
 
 
@@ -423,7 +432,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
 
         cursor.insertHtml(document.toHtml("utf-8"));
-//        qDebug() << "insertFromMimeData Html";
+        //        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -431,7 +440,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextCursor cursor = this->textCursor
                 ();
         cursor.insertText(plainText);
-//        qDebug() << "insertFromMimeData plainText";
+        //        qDebug() << "insertFromMimeData plainText";
 
     }
 
@@ -450,7 +459,7 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
         return QTextEdit::canInsertFromMimeData(source);
 
 
-//    qDebug() << "canInsertFromMimeData";
+    //    qDebug() << "canInsertFromMimeData";
 }
 //--------------------------------------------------------------------------------
 void TextZone::resizeEvent(QResizeEvent* event)
@@ -462,6 +471,7 @@ void TextZone::resizeEvent(QResizeEvent* event)
 
 
 
+//--------------------------------------------------------------------------------
 
 
 void TextZone::scrollBy(QPoint viewportPoint)
@@ -469,7 +479,42 @@ void TextZone::scrollBy(QPoint viewportPoint)
     this->scrollContentsBy(viewportPoint.x(), viewportPoint.y());
 }
 
+//--------------------------------------------------------------------------------
 
+void TextZone::preventDoubleSpace()
+{
+
+    QTextCursor *tCursor = new QTextCursor(document());
+    int cursorPos = this->textCursor().position();
+    QString prevChar;
+    QString nextChar;
+
+    if(this->textCursor().atBlockStart() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+            prevChar = tCursor->selectedText();
+            if(prevChar == " "){
+                tCursor->removeSelectedText();
+                cursorPos -= 1;
+            }
+        }
+        while(prevChar == " ");
+
+    }
+    if(this->textCursor().atBlockEnd() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+            nextChar = tCursor->selectedText();
+            if(nextChar == " "){
+                tCursor->removeSelectedText();
+            }
+        }
+        while(nextChar == " ");
+
+    }
+
+    this->textCursor().insertText(" ");
+}
 
 //--------------------------------------------------------------------------------
 //-----------Apply Config-------------------------------------------------------
@@ -481,6 +526,7 @@ void TextZone::applyConfig()
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("TextArea/alwaysCenter", true).toBool();
     showScrollbar = settings.value("TextArea/showScrollbar", true).toBool();
+    preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
 
 

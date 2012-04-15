@@ -2132,17 +2132,17 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
         newElement.setTagName(originalElement.tagName());
         if(originalElement.tagName() == "book"){
             newElement.setTagName("book");
-            newElement.setAttribute("name", "New Book"); //for config
+            newElement.setAttribute("name", tr("New Book")); //for config
 
         }
         if(originalElement.tagName() == "chapter"){
             newElement.setTagName("chapter");
-            newElement.setAttribute("name", "New Chapter");//for config
+            newElement.setAttribute("name", tr("New Chapter"));//for config
 
         }
         if(originalElement.tagName() == "scene" || originalElement.tagName() == "separator"){
             newElement.setTagName("scene");
-            newElement.setAttribute("name", "New Scene");//for config
+            newElement.setAttribute("name", tr("New Scene"));//for config
 
         }
 
@@ -2150,12 +2150,12 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     if(level == "child"){
         if(originalElement.tagName() == "book"){
             newElement.setTagName("chapter");
-            newElement.setAttribute("name", "New Chapter");//for config
+            newElement.setAttribute("name", tr("New Chapter"));//for config
 
         }
         if(originalElement.tagName() == "chapter"){
             newElement.setTagName("scene");
-            newElement.setAttribute("name", "New Scene");//for config
+            newElement.setAttribute("name", tr("New Scene"));//for config
 
         }
         //        }

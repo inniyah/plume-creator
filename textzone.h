@@ -70,6 +70,8 @@ private slots:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void cursorPositionChangedSlot();
 
+    void preventDoubleSpace();
+
 private:
 
     QTextDocument *textDocument;
@@ -96,6 +98,8 @@ private:
 
     bool alwaysCenter;
     bool showScrollbar;
+
+   bool preventDoubleSpaceOption;
 
 };
 

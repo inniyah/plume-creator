@@ -630,7 +630,7 @@
     <name>FullscreenEditor</name>
     <message>
         <location filename="fullscreeneditor.cpp" line="39"/>
-        <location filename="fullscreeneditor.cpp" line="215"/>
+        <location filename="fullscreeneditor.cpp" line="216"/>
         <source>Synopsis</source>
         <oldsource>Synopsys</oldsource>
         <translation>Synopsis</translation>
@@ -646,32 +646,32 @@
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="167"/>
+        <location filename="fullscreeneditor.cpp" line="168"/>
         <source>FullScreen Colors :</source>
         <translation>Couleusr en plein écran :</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="184"/>
+        <location filename="fullscreeneditor.cpp" line="185"/>
         <source>&amp;Background color:</source>
         <translation>Couleur d&apos;&amp;arrière-plan:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="185"/>
+        <location filename="fullscreeneditor.cpp" line="186"/>
         <source>Text b&amp;ackground color:</source>
         <translation>Couleur de l&apos;ar&amp;rière-plan du texte:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="186"/>
+        <location filename="fullscreeneditor.cpp" line="187"/>
         <source>&amp;Text color:</source>
         <translation>Couleur du &amp;texte:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="190"/>
+        <location filename="fullscreeneditor.cpp" line="191"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="242"/>
+        <location filename="fullscreeneditor.cpp" line="243"/>
         <source>Notes</source>
         <translation>Notes</translation>
     </message>
@@ -706,6 +706,11 @@
         <location filename="settingsdialog.cpp" line="69"/>
         <source>Check update at startup</source>
         <translation>Vérifier les mises-à-jour au démarrage</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.cpp" line="71"/>
+        <source>Prevent multiple space characters between words</source>
+        <translation>Empêcher plusieurs espacements entre les mots</translation>
     </message>
 </context>
 <context>
@@ -879,6 +884,23 @@ autorisé à supprimer un livre rempli.</translation>
         <location filename="maintree.cpp" line="1551"/>
         <source>This sheet does not contain *** .</source>
         <translation>Cette feuille ne contient pas de *** .</translation>
+    </message>
+    <message>
+        <location filename="maintree.cpp" line="2135"/>
+        <source>New Book</source>
+        <translation>Nouv. Livre</translation>
+    </message>
+    <message>
+        <location filename="maintree.cpp" line="2140"/>
+        <location filename="maintree.cpp" line="2153"/>
+        <source>New Chapter</source>
+        <translation>Nouv. Chapitre</translation>
+    </message>
+    <message>
+        <location filename="maintree.cpp" line="2145"/>
+        <location filename="maintree.cpp" line="2158"/>
+        <source>New Scene</source>
+        <translation>Nouv. Scène</translation>
     </message>
     <message>
         <source>Splitting critical error !</source>
@@ -1192,6 +1214,12 @@ Veuillez ouvrir un fichier .plume.</translation>
         <location filename="menubox.cpp" line="639"/>
         <source>Plume Creator Prj XML</source>
         <translation>Plume Creator Prj XML</translation>
+    </message>
+    <message>
+        <location filename="menubox.cpp" line="654"/>
+        <location filename="menubox.cpp" line="659"/>
+        <source>Plume Creator Prj Tree</source>
+        <translation>Arbre de Prj Plume Creator</translation>
     </message>
     <message>
         <location filename="menubox.cpp" line="721"/>
@@ -1672,59 +1700,59 @@ Veuillez ouvrir un fichier .plume.</translation>
 <context>
     <name>TextSettingTab</name>
     <message>
-        <location filename="settingsdialog.cpp" line="139"/>
+        <location filename="settingsdialog.cpp" line="145"/>
         <source>Main Text Area :</source>
         <translation>Zone Principale de Texte :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="141"/>
-        <location filename="settingsdialog.cpp" line="190"/>
-        <location filename="settingsdialog.cpp" line="224"/>
+        <location filename="settingsdialog.cpp" line="147"/>
+        <location filename="settingsdialog.cpp" line="196"/>
+        <location filename="settingsdialog.cpp" line="230"/>
         <source>Default Text Font :</source>
         <translation>Police par Défaut du Texte :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="146"/>
-        <location filename="settingsdialog.cpp" line="195"/>
-        <location filename="settingsdialog.cpp" line="229"/>
+        <location filename="settingsdialog.cpp" line="152"/>
+        <location filename="settingsdialog.cpp" line="201"/>
+        <location filename="settingsdialog.cpp" line="235"/>
         <source>Apply project wide</source>
         <translation>Appliquer à tout le projet</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="147"/>
-        <location filename="settingsdialog.cpp" line="177"/>
-        <location filename="settingsdialog.cpp" line="196"/>
-        <location filename="settingsdialog.cpp" line="230"/>
+        <location filename="settingsdialog.cpp" line="153"/>
+        <location filename="settingsdialog.cpp" line="183"/>
+        <location filename="settingsdialog.cpp" line="202"/>
+        <location filename="settingsdialog.cpp" line="236"/>
         <source>Show scrollbar</source>
         <translation>Montrer.la barre de défilement</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="148"/>
-        <location filename="settingsdialog.cpp" line="197"/>
-        <location filename="settingsdialog.cpp" line="231"/>
+        <location filename="settingsdialog.cpp" line="154"/>
+        <location filename="settingsdialog.cpp" line="203"/>
+        <location filename="settingsdialog.cpp" line="237"/>
         <source>Paragraph Indent :</source>
         <translation>Indentation de paragraphe :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="151"/>
-        <location filename="settingsdialog.cpp" line="200"/>
-        <location filename="settingsdialog.cpp" line="234"/>
+        <location filename="settingsdialog.cpp" line="157"/>
+        <location filename="settingsdialog.cpp" line="206"/>
+        <location filename="settingsdialog.cpp" line="240"/>
         <source>Margin :</source>
         <translation>Marge :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="173"/>
+        <location filename="settingsdialog.cpp" line="179"/>
         <source>FullScreen Text Area :</source>
         <translation>Zone de texte en plein écran :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="188"/>
+        <location filename="settingsdialog.cpp" line="194"/>
         <source>Synopsis Area :</source>
         <oldsource>Synopsys Area :</oldsource>
         <translation>Zone du Synopsis :</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="222"/>
+        <location filename="settingsdialog.cpp" line="228"/>
         <source>Note Area :</source>
         <translation>Zone de Note :</translation>
     </message>

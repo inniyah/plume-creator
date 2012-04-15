@@ -68,9 +68,13 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
 
     checkUpdateAtStartupCheckBox = new QCheckBox(tr("Check update at startup"));
 
+preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters between words"));
+
+
     generalBoxLayout->addLayout(langLayout);
     generalBoxLayout->addLayout(autosaveLayout);
     generalBoxLayout->addWidget(checkUpdateAtStartupCheckBox);
+    generalBoxLayout->addWidget(preventDoubleSpaceCheckBox);
     generalBoxLayout->addStretch();
     generalBox->setLayout(generalBoxLayout);
 
@@ -102,6 +106,7 @@ void GeneralSettingTab::readSettings()
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     autosaveTimeSpin->setValue(autosaveTime / 1000);
+preventDoubleSpaceCheckBox->setChecked(settings.value("preventDoubleSpace", false).toBool());
     settings.endGroup();
     settings.beginGroup("Updater");
     checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup", true).toBool());
@@ -118,6 +123,7 @@ void GeneralSettingTab::accept()
     settings.endGroup();
     settings.beginGroup( "Settings" );
     settings.setValue("autosaveTime", autosaveTimeSpin->value() * 1000);
+    settings.setValue("preventDoubleSpace", preventDoubleSpaceCheckBox->isChecked());
     settings.endGroup();
     settings.beginGroup("Updater");
     settings.setValue("checkAtStartup", checkUpdateAtStartupCheckBox->isChecked());

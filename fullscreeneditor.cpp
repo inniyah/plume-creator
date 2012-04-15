@@ -46,6 +46,7 @@ mainWidget->setMouseTracking(true);
 
     QPushButton *exitFullscreenButton = new QPushButton(tr("Exit"), this);
     connect(exitFullscreenButton, SIGNAL(clicked()),this,SLOT(close()));
+    connect(fullTextEdit, SIGNAL(quitFullScreen()),this,SLOT(close()));
     exitFullscreenButton->setFixedSize(50,20);
 
 

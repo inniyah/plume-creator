@@ -56,7 +56,7 @@ private:
     QSpinBox *autosaveTimeSpin;
     int autosaveTime;
     QCheckBox *checkUpdateAtStartupCheckBox;
-
+QCheckBox *preventDoubleSpaceCheckBox;
 
 };
 

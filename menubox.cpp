@@ -6,7 +6,7 @@
 #include "updater.h"
 //
 MenuBox::MenuBox(QWidget *parent) :
-    QFrame(parent), extFile(0), currentVersion("0.46")
+    QFrame(parent), extFile(0), currentVersion("0.47")
 {
 
     file = 0;

@@ -37,6 +37,7 @@ public:
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
     void callColorDialogSignal();
+    void quitFullScreen();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

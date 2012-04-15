@@ -454,6 +454,8 @@ void FullTextZone::keyPressEvent(QKeyEvent *event)
             center(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
             justify(true);
+    else if(event->key() == Qt::Key_Escape)
+        emit quitFullScreen();
     else
         QTextEdit::keyPressEvent(event);
 }

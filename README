@@ -1,4 +1,10 @@
 PLUME CREATOR
+v 0.47
+	- in fullscreen editor : 
+		- added "escape" key to quit the fullscreen editor
+	- option added : prevent multiple space characters between words
+
+
 v 0.46
 	- bug fixed : crash after opening an external project
 
