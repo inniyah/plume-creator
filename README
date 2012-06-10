@@ -1,4 +1,12 @@
 PLUME CREATOR
+v 0.48
+	- annoying bug fixed : text font sometimes came back to default system font
+	- copy/paste from an external source : text is now formated
+	- button added to give a project, a book and a chapter wordcount
+	- prevent multiple space characters between words in fullscreen, synopsies ans notes
+	- bold, italic and shortcuts added in outliner text zones
+	- french translation updated
+
 v 0.47
 	- in fullscreen editor : 
 		- added "escape" key to quit the fullscreen editor

@@ -334,7 +334,6 @@ void TextZone::setTextHeight(int height)
     QTextCharFormat fmt;
     fmt.setFontPointSize(height);
     mergeFormatOnWordOrSelection(fmt);
-
 }
 
 //--------------------------------------------------------------------------------
@@ -418,29 +417,65 @@ void TextZone::cursorPositionChangedSlot()
 
 void TextZone::insertFromMimeData (const QMimeData *source )
 {
+
+    QSettings settings;
+    settings.beginGroup( "Settings" );
+    int bottMargin = settings.value("TextArea/bottomMargin", 10).toInt();
+    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
+    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
+
+
     if(source->hasHtml()){
 
-        //        QString htmlText = ;
 
         //htmlText
-        QTextDocument document;
-        document.setHtml(qvariant_cast<QString>(source->html()));
+        QTextDocument *document = new QTextDocument;
+        document->setHtml(qvariant_cast<QString>(source->html()));
+
+        QTextBlockFormat blockFormat;
+        blockFormat.setBottomMargin(bottMargin);
+        blockFormat.setTextIndent(textIndent);
+         QTextCharFormat charFormat;
+        charFormat.setFontPointSize(textHeight);
+        charFormat.setFontFamily(fontFamily);
+        charFormat.clearForeground();
+
+        QTextCursor *tCursor = new QTextCursor(document);
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+        tCursor->mergeCharFormat(charFormat);
+        tCursor->mergeBlockFormat(blockFormat);
+
 
         QTextCursor cursor = this->textCursor();
-
-
-
-
-        cursor.insertHtml(document.toHtml("utf-8"));
-        //        qDebug() << "insertFromMimeData Html";
+        cursor.insertHtml(document->toHtml("utf-8"));
+                qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
-        QString plainText = qvariant_cast<QString>(source->text());
-        QTextCursor cursor = this->textCursor
-                ();
-        cursor.insertText(plainText);
-        //        qDebug() << "insertFromMimeData plainText";
+        QTextDocument *document = new QTextDocument;
+        document->setHtml(qvariant_cast<QString>(source->text()));
+
+        QTextBlockFormat blockFormat;
+        blockFormat.setBottomMargin(bottMargin);
+        blockFormat.setTextIndent(textIndent);
+        QTextCharFormat charFormat;
+        charFormat.setFontPointSize(textHeight);
+        charFormat.setFontFamily(fontFamily);
+        charFormat.clearForeground();
+        QTextCursor *tCursor = new QTextCursor(document);
+        tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+        tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+        tCursor->mergeCharFormat(charFormat);
+        tCursor->mergeBlockFormat(blockFormat);
+
+        QTextCursor cursor = this->textCursor();
+        cursor.insertHtml(document->toHtml("utf-8"));
+                qDebug() << "insertFromMimeData plainText";
 
     }
 

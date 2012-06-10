@@ -624,6 +624,13 @@ void NoteZone::keyPressEvent(QKeyEvent *event)
             center(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
             justify(true);
+    else if(event->key() == Qt::Key_Space){
+        if(preventDoubleSpaceOption == true)
+            preventDoubleSpace();
+        else
+            QTextEdit::keyPressEvent(event);
+
+    }
     else
         QTextEdit::keyPressEvent(event);
 }
@@ -673,7 +680,42 @@ int NoteZone::saveCursorPos()
 
 }
 
+//--------------------------------------------------------------------------------
 
+void NoteZone::preventDoubleSpace()
+{
+
+    QTextCursor *tCursor = new QTextCursor(document());
+    int cursorPos = this->textCursor().position();
+    QString prevChar;
+    QString nextChar;
+
+    if(this->textCursor().atBlockStart() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+            prevChar = tCursor->selectedText();
+            if(prevChar == " "){
+                tCursor->removeSelectedText();
+                cursorPos -= 1;
+            }
+        }
+        while(prevChar == " ");
+
+    }
+    if(this->textCursor().atBlockEnd() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+            nextChar = tCursor->selectedText();
+            if(nextChar == " "){
+                tCursor->removeSelectedText();
+            }
+        }
+        while(nextChar == " ");
+
+    }
+
+    this->textCursor().insertText(" ");
+}
 //--------------------------------------------------------------------------------
 
 
@@ -705,37 +747,214 @@ void NoteZone::updateTextZone()
 
 void NoteZone::insertFromMimeData (const QMimeData *source )
 {
-    if(source->hasHtml()){
-
-        //        QString htmlText = ;
-
-        //htmlText
-        QTextDocument document;
-        document.setHtml(qvariant_cast<QString>(source->html()));
-
-        QTextCursor cursor = this->textCursor();
 
 
 
-
-        cursor.insertHtml(document.toHtml("utf-8"));
-        //        qDebug() << "insertFromMimeData Html";
-
-    }
-    else if(source->hasText()){
-        QString plainText = qvariant_cast<QString>(source->text());
-        QTextCursor cursor = this->textCursor();
-        cursor.insertText(plainText);
-        //        qDebug() << "insertFromMimeData plainText";
-
-    }
+//    if(this->objectName().mid(0,3) == "syn"){
 
 
-    if(this->objectName().mid(0,3) == "syn")
-        applySynFontConfig();
+QTextCursor yCursor = this->textCursor();
+        int bottMargin = yCursor.blockFormat().bottomMargin();
+        int textIndent = yCursor.blockFormat().textIndent();
+        int textHeight = yCursor.charFormat().fontPointSize();
+        QString fontFamily = yCursor.charFormat().fontFamily();
 
-    if(this->objectName().mid(0,4) == "note")
-        applyNoteFontConfig();
+
+        if(source->hasHtml()){
+
+
+            //htmlText
+            QTextDocument *document = new QTextDocument;
+            document->setHtml(qvariant_cast<QString>(source->html()));
+
+            QTextBlockFormat blockFormat;
+            blockFormat.setBottomMargin(bottMargin);
+            blockFormat.setTextIndent(textIndent);
+             QTextCharFormat charFormat;
+            charFormat.setFontPointSize(textHeight);
+            charFormat.setFontFamily(fontFamily);
+            charFormat.clearForeground();
+
+            QTextCursor *tCursor = new QTextCursor(document);
+            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+            tCursor->mergeCharFormat(charFormat);
+            tCursor->mergeBlockFormat(blockFormat);
+
+
+            QTextCursor cursor = this->textCursor();
+            cursor.insertHtml(document->toHtml("utf-8"));
+                    qDebug() << "insertFromMimeData Html";
+
+        }
+        else if(source->hasText()){
+            QTextDocument *document = new QTextDocument;
+            document->setHtml(qvariant_cast<QString>(source->text()));
+
+            QTextBlockFormat blockFormat;
+            blockFormat.setBottomMargin(bottMargin);
+            blockFormat.setTextIndent(textIndent);
+            QTextCharFormat charFormat;
+            charFormat.setFontPointSize(textHeight);
+            charFormat.setFontFamily(fontFamily);
+            charFormat.clearForeground();
+            QTextCursor *tCursor = new QTextCursor(document);
+            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+            tCursor->mergeCharFormat(charFormat);
+            tCursor->mergeBlockFormat(blockFormat);
+
+            QTextCursor cursor = this->textCursor();
+            cursor.insertHtml(document->toHtml("utf-8"));
+                    qDebug() << "insertFromMimeData plainText";
+
+        }
+
+
+
+
+
+//    }
+
+//    if(this->objectName().mid(0,4) == "note"){
+
+
+//        QSettings settings;
+//        settings.beginGroup( "Settings" );
+//        int bottMargin = settings.value("noteArea/bottomMargin", 10).toInt();
+//        int textIndent = settings.value("noteArea/textIndent", 20).toInt();
+//        int textHeight = settings.value("noteArea/textHeight", 12).toInt();
+//        QString fontFamily = settings.value("noteArea/textFontFamily", "Liberation Serif").toString();
+//        settings.endGroup();
+
+
+//        if(source->hasHtml()){
+
+
+//            //htmlText
+//            QTextDocument *document = new QTextDocument;
+//            document->setHtml(qvariant_cast<QString>(source->html()));
+
+//            QTextBlockFormat blockFormat;
+//            blockFormat.setBottomMargin(bottMargin);
+//            blockFormat.setTextIndent(textIndent);
+//             QTextCharFormat charFormat;
+//            charFormat.setFontPointSize(textHeight);
+//            charFormat.setFontFamily(fontFamily);
+//            charFormat.setForeground(QBrush(Qt::black));
+
+//            QTextCursor *tCursor = new QTextCursor(document);
+//            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+//            tCursor->mergeCharFormat(charFormat);
+//            tCursor->mergeBlockFormat(blockFormat);
+
+
+//            QTextCursor cursor = this->textCursor();
+//            cursor.insertHtml(document->toHtml("utf-8"));
+//                    qDebug() << "insertFromMimeData Html";
+
+//        }
+//        else if(source->hasText()){
+//            QTextDocument *document = new QTextDocument;
+//            document->setHtml(qvariant_cast<QString>(source->text()));
+
+//            QTextBlockFormat blockFormat;
+//            blockFormat.setBottomMargin(bottMargin);
+//            blockFormat.setTextIndent(textIndent);
+//            QTextCharFormat charFormat;
+//            charFormat.setFontPointSize(textHeight);
+//            charFormat.setFontFamily(fontFamily);
+//            QTextCursor *tCursor = new QTextCursor(document);
+//            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+//            tCursor->mergeCharFormat(charFormat);
+//            tCursor->mergeBlockFormat(blockFormat);
+
+//            QTextCursor cursor = this->textCursor();
+//            cursor.insertHtml(document->toHtml("utf-8"));
+//                    qDebug() << "insertFromMimeData plainText";
+
+//        }
+//    }
+
+//    if(this->document()->objectName().mid(0,9) == "attendDoc"){
+
+
+//        QSettings settings;
+//        settings.beginGroup( "Settings" );
+//        int bottMargin = settings.value("attendArea/bottomMargin", 10).toInt();
+//        int textIndent = settings.value("attendArea/textIndent", 20).toInt();
+//        int textHeight = settings.value("attendArea/textHeight", 12).toInt();
+//        QString fontFamily = settings.value("attendArea/textFontFamily", "Liberation Serif").toString();
+//        settings.endGroup();
+
+
+//        if(source->hasHtml()){
+
+
+//            //htmlText
+//            QTextDocument *document = new QTextDocument;
+//            document->setHtml(qvariant_cast<QString>(source->html()));
+
+//            QTextBlockFormat blockFormat;
+//            blockFormat.setBottomMargin(bottMargin);
+//            blockFormat.setTextIndent(textIndent);
+//             QTextCharFormat charFormat;
+//            charFormat.setFontPointSize(textHeight);
+//            charFormat.setFontFamily(fontFamily);
+//            charFormat.setForeground(QBrush(Qt::black));
+
+//            QTextCursor *tCursor = new QTextCursor(document);
+//            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+//            tCursor->mergeCharFormat(charFormat);
+//            tCursor->mergeBlockFormat(blockFormat);
+
+
+//            QTextCursor cursor = this->textCursor();
+//            cursor.insertHtml(document->toHtml("utf-8"));
+//                    qDebug() << "insertFromMimeData Html";
+
+//        }
+//        else if(source->hasText()){
+//            QTextDocument *document = new QTextDocument;
+//            document->setHtml(qvariant_cast<QString>(source->text()));
+
+//            QTextBlockFormat blockFormat;
+//            blockFormat.setBottomMargin(bottMargin);
+//            blockFormat.setTextIndent(textIndent);
+//            QTextCharFormat charFormat;
+//            charFormat.setFontPointSize(textHeight);
+//            charFormat.setFontFamily(fontFamily);
+//            QTextCursor *tCursor = new QTextCursor(document);
+//            tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+//            tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+//            tCursor->mergeCharFormat(charFormat);
+//            tCursor->mergeBlockFormat(blockFormat);
+
+//            QTextCursor cursor = this->textCursor();
+//            cursor.insertHtml(document->toHtml("utf-8"));
+//                    qDebug() << "insertFromMimeData plainText";
+
+//        }
+
+
+
+
+//    }
+
+
+
+
+
+
 
 }
 
@@ -784,6 +1003,7 @@ void NoteZone::applyNoteConfig()
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("NoteArea/alwaysCenter", true).toBool();
     bool noteShowScrollbar = settings.value("NoteArea/showScrollbar", true).toBool();
+    preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
 
 
@@ -823,6 +1043,7 @@ void NoteZone::applyNoteFontConfig()
     QTextCharFormat charFormat;
     charFormat.setFontPointSize(noteTextHeight);
     charFormat.setFontFamily(noteFontFamily);
+    charFormat.clearForeground();
 
     QTextCursor *tCursor = new QTextCursor(document());
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
@@ -831,6 +1052,10 @@ void NoteZone::applyNoteFontConfig()
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
+    QFont font;
+    font.setFamily(noteFontFamily);
+    font.setPointSize(noteTextHeight);
+    this->document()->setDefaultFont(font);
 
     emit connectUpdateTextsSignal();
 
@@ -846,6 +1071,7 @@ void NoteZone::applySynConfig()
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("SynArea/alwaysCenter", true).toBool();
     bool synShowScrollbar = settings.value("SynArea/showScrollbar", true).toBool();
+    preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
 
 
@@ -885,6 +1111,7 @@ void NoteZone::applySynFontConfig()
     QTextCharFormat charFormat;
     charFormat.setFontPointSize(synTextHeight);
     charFormat.setFontFamily(synFontFamily);
+    charFormat.clearForeground();
     QTextCursor *tCursor = new QTextCursor(document());
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
     tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -892,6 +1119,10 @@ void NoteZone::applySynFontConfig()
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
+    QFont font;
+    font.setFamily(synFontFamily);
+    font.setPointSize(synTextHeight);
+    this->document()->setDefaultFont(font);
 
     emit connectUpdateTextsSignal();
 
@@ -948,6 +1179,7 @@ void NoteZone::applyAttendFontConfig()
     QTextCharFormat charFormat;
     charFormat.setFontPointSize(attendTextHeight);
     charFormat.setFontFamily(attendFontFamily);
+    charFormat.clearForeground();
     QTextCursor *tCursor = new QTextCursor(document());
     tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
     tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -955,5 +1187,9 @@ void NoteZone::applyAttendFontConfig()
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
+    QFont font;
+    font.setFamily(attendFontFamily);
+    font.setPointSize(attendTextHeight);
+    this->document()->setDefaultFont(font);
 
 }

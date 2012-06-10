@@ -40,6 +40,7 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
     connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
+    applyStyleSheet();
     applyConfig();
 }
 
@@ -153,3 +154,10 @@ void EditMenuBox::applyConfig()
 }
 
 //---------------------------------------------------------------------------
+void EditMenuBox::applyStyleSheet()
+{
+        this->setStyleSheet(
+                            "QSpinBox::up-button{subcontrol-origin: padding; subcontrol-position: left top;}"
+                            "QSpinBox::down-button{subcontrol-origin: padding; subcontrol-position: left bottom;}"
+                            );
+}

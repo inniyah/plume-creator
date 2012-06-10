@@ -13,7 +13,7 @@ OutlineItem::OutlineItem(QWidget *parent) :
     QGridLayout *layout = new QGridLayout;
 
     titleEdit = new QLineEdit;
-    synEdit = new QTextEdit;
+    synEdit = new NoteZone;
 
     QPushButton *writeButton = new QPushButton("w");
     writeButton->setObjectName("writeButton");
@@ -27,7 +27,7 @@ OutlineItem::OutlineItem(QWidget *parent) :
     showListButton = new QPushButton("<<");
     hideListButton = new QPushButton(">>");
 
-    noteEdit = new QTextEdit;
+    noteEdit = new NoteZone;
 
     noteLabel = new QLabel(tr("Note :"));
     showNoteButton = new QPushButton(">>");
@@ -717,8 +717,9 @@ void OutlineItem::setDocuments(QTextDocument *synDocument, QTextDocument *noteDo
     noteOutlineDoc = noteDocument->clone(this);
     //    qDebug() << "jalon 1b";
 
-    synEdit->setDocument(synOutlineDoc);
-    noteEdit->setDocument(noteOutlineDoc);
+
+    synEdit->openSyn(synOutlineDoc);
+    noteEdit->openNote(noteOutlineDoc);
 
     //    qDebug() << "jalon 1c";
 
@@ -1186,6 +1187,11 @@ void OutlineItem::applySynFont()
     tCursor->mergeCharFormat(charFormat);
     tCursor->mergeBlockFormat(blockFormat);
 
+    QFont font;
+    font.setFamily(synDefaultFont.family());
+    font.setPointSize(synDefaultHeight);
+    synOutlineDoc->setDefaultFont(font);
+
     connectUpdateTextsSlot();
 }
 
@@ -1209,7 +1215,10 @@ void OutlineItem::applyNoteFont()
       tCursor->mergeCharFormat(charFormat);
       tCursor->mergeBlockFormat(blockFormat);
 
-
+      QFont font;
+      font.setFamily(noteDefaultFont.family());
+      font.setPointSize(noteDefaultHeight);
+      synOutlineDoc->setDefaultFont(font);
 
     connectUpdateTextsSlot();
 }
@@ -1265,5 +1274,6 @@ bool OutlineItem::showSheetAttendanceList(QList<QListWidgetItem *> *itemList)
 
 void OutlineItem::applyConfig()
 {
+
 
 }

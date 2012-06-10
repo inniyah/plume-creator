@@ -239,9 +239,9 @@ QTextCharFormat TextTab::tabFontChangedSlot()
 //-------------------------------------------------------------------------------
 void TextTab::cursorPositionChangedSlot()
 {
-            if(textZone->textCursor().atStart() == true
-                    || textZone->textCursor().position() == 1)
-                applyConfig();
+//            if(textZone->textCursor().atStart() == true
+//                    || textZone->textCursor().position() == 1)
+//                applyConfig();
 }
 
 //-------------------------------------------------------------------------------
@@ -323,18 +323,23 @@ void TextTab::applyConfig()
 
     //apply default font in empty documents :
 
-    if(textZone->textCursor().atStart() == true
-          || textZone->textCursor().position() == 1){
-        QFont font;
-        font.setFamily(fontFamily);
-        font.setPointSize(textHeight);
-        document()->setDefaultFont(font);
-        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
+//    if((textZone->textCursor().atStart() == true
+//          || textZone->textCursor().position() == 1 )&& textZone->document()->isEmpty()){
+//        QFont font;
+//        font.setFamily(fontFamily);
+//        font.setPointSize(textHeight);
+//        document()->setDefaultFont(font);
+//        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
 
-        changeTextFontSlot(font);
-        changeTextHeightSlot(textHeight);
-    }
 
+//    }
+
+    QFont font;
+    font.setFamily(fontFamily);
+    font.setPointSize(textHeight);
+this->document()->setDefaultFont(font);
+            changeTextFontSlot(font);
+            changeTextHeightSlot(textHeight);
 
 }
 

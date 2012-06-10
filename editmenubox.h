@@ -47,6 +47,7 @@ public slots:
 private slots:
     void sliderValueChanged(int sliderValue);
     void showPreviousText(bool showPrevTextBool);
+    void applyStyleSheet();
 
 private:
 

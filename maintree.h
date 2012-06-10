@@ -61,6 +61,11 @@ signals:
     void allAttendancesSignal(QHash<int, QString> attendStringForNumber);
     void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
 
+    // for global wordcount :
+void docsForProjectWordCountSignal(QHash<QTextDocument *, QFile *> fileForDocs);
+void domForProjectWordCountSignal(QDomDocument domDoc);
+
+
 public slots:
 
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
@@ -77,6 +82,8 @@ public slots:
 void addAttendNumberToSheetSlot(QList<int> list, int sheetNumber);
 void removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber);
 
+// for global wordcount :
+void giveDocsAndDomForProjectWordCount();
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);

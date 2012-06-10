@@ -637,7 +637,7 @@ void Exporter::exportDoc()
         format = "odt";
     if(fileTypeCombo->currentIndex() == 2){
         format = "txt";
-        QMessageBox::information(this, "Project Exporter", "You have selected the .txt format. There is no formatting !", QMessageBox::Ok);
+        QMessageBox::information(this, tr("Project Exporter"), tr("You have selected the .txt format. There is no formatting !"), QMessageBox::Ok);
     }
 
     QTextDocumentWriter writer;
@@ -649,7 +649,7 @@ void Exporter::exportDoc()
 
 
 
-    QMessageBox::information(this, "Project exported", "This project was successfully exported !", QMessageBox::Ok);
+    QMessageBox::information(this, tr("Project exported"), tr("This project was successfully exported !"), QMessageBox::Ok);
 }
 
 //---------------------------------------------------------------------------------

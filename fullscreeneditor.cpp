@@ -33,8 +33,11 @@ mainWidget->setMouseTracking(true);
     DigitalClock *clock = new DigitalClock(this);
     //    Timer *timer = new Timer(this);
     clock->setMouseTracking(true);
+    clock->setObjectName("add-on");
     timerLabel = new QLabel;
-    wordCountLabel = new QLabel;
+    timerLabel->setObjectName("add-on");
+        wordCountLabel = new QLabel;
+wordCountLabel->setObjectName("add-on");
 
     QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
     connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
@@ -176,15 +179,19 @@ void FullscreenEditor::callColorDialog()
     textBackColorButton->setObjectName("textBackColorButton");
     textColorButton = new QPushButton(fullColorDialog);
     textColorButton->setObjectName("textColorButton");
+    addOnColorButton = new QPushButton(fullColorDialog);
+    addOnColorButton->setObjectName("addOnColorButton");
 
     connect(backColorButton,SIGNAL(clicked()), this, SLOT(setBackColorDialog()));
     connect(textBackColorButton,SIGNAL(clicked()), this, SLOT(setTextBackColorDialog()));
     connect(textColorButton,SIGNAL(clicked()), this, SLOT(setTextColorDialog()));
+    connect(addOnColorButton,SIGNAL(clicked()), this, SLOT(setAddOnColorDialog()));
 
 
     colorsLayout->addRow(tr("&Background color:"), backColorButton);
     colorsLayout->addRow(tr("Text b&ackground color:"), textBackColorButton);
     colorsLayout->addRow(tr("&Text color:"), textColorButton);
+    colorsLayout->addRow(tr("&Timers color:"), addOnColorButton);
 
 
 
@@ -383,6 +390,39 @@ void FullscreenEditor::setTextColor()
     "QPushButton#textColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 }
 
+void FullscreenEditor::setAddOnColorDialog()
+{
+    QColor addOnColor = QColorDialog::getColor(Qt::white, this, "Timers Color"/* , QColorDialog::ShowAlphaChannel*/);
+
+
+    QString string;
+    QString r = string.setNum(addOnColor.red(),10);
+    QString g = string.setNum(addOnColor.green(), 10);
+    QString b = string.setNum(addOnColor.blue(),10);
+
+
+
+    settings.setValue("FullTextArea/addOnColor", addOnColor);
+
+    setAddOnColor();
+    applyStyleSheet();
+}
+
+void FullscreenEditor::setAddOnColor()
+{
+    QColor addOnColor = settings.value("FullTextArea/addOnColor", Qt::lightGray).toString();
+
+    QString string;
+    QString r = string.setNum(addOnColor.red(),10);
+    QString g = string.setNum(addOnColor.green(), 10);
+    QString b = string.setNum(addOnColor.blue(),10);
+
+    addOnColorString = "QLabel#add-on {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+;
+}
+
+
 
 
 //void FullscreenEditor::setZoomIn()
@@ -395,7 +435,7 @@ void FullscreenEditor::setTextColor()
 
 void FullscreenEditor::applyStyleSheet()
 {
-    setStyleSheet(backColorString + textBackColorString + textColorString);
+    setStyleSheet(backColorString + textBackColorString + textColorString + addOnColorString);
 }
 
 
@@ -417,6 +457,7 @@ void FullscreenEditor::applyConfig()
     setBackColor();
     setTextBackColor();
     setTextColor();
+    setAddOnColor();
 
     applyStyleSheet();
 

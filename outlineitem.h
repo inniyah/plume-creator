@@ -22,6 +22,7 @@
 
 #include <QtGui>
 #include <QWidget>
+#include "notezone.h"
 //
 class OutlineItem : public QWidget
 {
@@ -89,6 +90,7 @@ private slots:
    void applySynFont();
    void applyNoteFont();
 
+
 private:
     int itemWidth;
 
@@ -109,13 +111,15 @@ private:
     QPushButton *hideListButton;
     QFrame *vSeparator1;
 
-    QTextEdit *synEdit;
+//    QTextEdit *synEdit;
+    NoteZone *synEdit;
     QPushButton *expandButton;
     QPushButton *collapseButton;
     QPushButton *expandButton1;
     QPushButton *collapseButton1;
 
-    QTextEdit *noteEdit;
+//    QTextEdit *noteEdit;
+    NoteZone *noteEdit;
     QLabel *noteLabel;
     QPushButton *showNoteButton;
     QPushButton *hideNoteButton;
@@ -139,6 +143,8 @@ int noteDefaultIndent;
 int noteDefaultMargin;
 
     int number;
+
+
 };
 
 #endif // OUTLINEITEM_H

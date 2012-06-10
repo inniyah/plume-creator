@@ -7,7 +7,7 @@ FullTextZone::FullTextZone(QTextDocument *doc, QWidget *parent) :
 {
     setDocument(doc);
     this->setMouseTracking(true);
-this->viewport()->setMouseTracking(true);
+    this->viewport()->setMouseTracking(true);
 
     textDocument = doc;
     createActions();
@@ -443,17 +443,24 @@ void FullTextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 void FullTextZone::keyPressEvent(QKeyEvent *event)
 {
     if(event->matches(QKeySequence::Italic))
-            italic(!italicAct->isChecked());
+        italic(!italicAct->isChecked());
     else if(event->matches(QKeySequence::Bold))
-            bold(!boldAct->isChecked());
+        bold(!boldAct->isChecked());
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
-            leftAlign(true);
+        leftAlign(true);
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
-            rightAlign(true);
+        rightAlign(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
-            center(true);
+        center(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
-            justify(true);
+        justify(true);
+    else if(event->key() == Qt::Key_Space){
+        if(preventDoubleSpaceOption == true)
+            preventDoubleSpace();
+        else
+            QTextEdit::keyPressEvent(event);
+
+    }
     else if(event->key() == Qt::Key_Escape)
         emit quitFullScreen();
     else
@@ -511,7 +518,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
 
 
         cursor.insertHtml(document.toHtml("utf-8"));
-//        qDebug() << "insertFromMimeData Html";
+        //        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -519,7 +526,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
         QTextCursor cursor = this->textCursor
                 ();
         cursor.insertText(plainText);
-//        qDebug() << "insertFromMimeData plainText";
+        //        qDebug() << "insertFromMimeData plainText";
 
     }
 
@@ -538,7 +545,7 @@ bool FullTextZone::canInsertFromMimeData (const QMimeData *source) const
         return QTextEdit::canInsertFromMimeData(source);
 
 
-//    qDebug() << "canInsertFromMimeData";
+    //    qDebug() << "canInsertFromMimeData";
 }
 //--------------------------------------------------------------------------------
 void FullTextZone::resizeEvent(QResizeEvent* event)
@@ -566,8 +573,8 @@ void FullTextZone::loadSliderValue()
     widthSlider->setSliderPosition(sliderValue);
     widthSlider->setValue(sliderValue);
 
-//    QString debug;
-//    qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
+    //    QString debug;
+    //    qDebug() << "FullEditor : loadSliderValue : " << debug.setNum(sliderValue);
 
 
     sliderValueChanged(sliderValue);
@@ -591,7 +598,7 @@ void FullTextZone::setXMax(int value)
     xMax = value;
 
     QString string;
-//    qDebug() << "xMax : " << string.setNum(xMax,10);
+    //    qDebug() << "xMax : " << string.setNum(xMax,10);
 }
 
 
@@ -600,16 +607,16 @@ void FullTextZone::mouseMoveEvent(QMouseEvent* event)
 {
     if( (event->buttons() & Qt::RightButton == Qt::RightButton) && !mDragging ){
         this->unsetCursor();
-    mDragging = true;
-}
+        mDragging = true;
+    }
 
 
     if(mDragging)
-//    mDragEndPosition = event->pos();
-    QTextEdit::mouseMoveEvent(event);
+        //    mDragEndPosition = event->pos();
+        QTextEdit::mouseMoveEvent(event);
 
     else
-    event->ignore();
+        event->ignore();
 
 
 
@@ -619,19 +626,54 @@ void FullTextZone::mouseMoveEvent(QMouseEvent* event)
 
 void FullTextZone::mousePressEvent( QMouseEvent* event)
 {
-mDragStartPosition = event->pos();
-QTextEdit::mousePressEvent( event );
+    mDragStartPosition = event->pos();
+    QTextEdit::mousePressEvent( event );
 }
 
 
 void FullTextZone::mouseReleaseEvent( QMouseEvent* event)
 {
-mDragging = false;
-QTextEdit::mouseReleaseEvent( event );
+    mDragging = false;
+    QTextEdit::mouseReleaseEvent( event );
 }
 
 
+//--------------------------------------------------------------------------------
 
+void FullTextZone::preventDoubleSpace()
+{
+
+    QTextCursor *tCursor = new QTextCursor(document());
+    int cursorPos = this->textCursor().position();
+    QString prevChar;
+    QString nextChar;
+
+    if(this->textCursor().atBlockStart() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor,1);
+            prevChar = tCursor->selectedText();
+            if(prevChar == " "){
+                tCursor->removeSelectedText();
+                cursorPos -= 1;
+            }
+        }
+        while(prevChar == " ");
+
+    }
+    if(this->textCursor().atBlockEnd() == false){
+        do {tCursor->setPosition(cursorPos);
+            tCursor->movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor,1);
+            nextChar = tCursor->selectedText();
+            if(nextChar == " "){
+                tCursor->removeSelectedText();
+            }
+        }
+        while(nextChar == " ");
+
+    }
+
+    this->textCursor().insertText(" ");
+}
 
 //---------------------------------------------------------------------------
 //----------Apply Config---------------------------------------------------------------------
@@ -644,6 +686,7 @@ void FullTextZone::applyTextConfig()
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("FullTextArea/alwaysCenter", true).toBool();
     bool showScrollbar = settings.value("FullTextArea/showScrollbar", false).toBool();
+    preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
     setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
 

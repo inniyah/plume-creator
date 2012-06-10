@@ -21,8 +21,8 @@
 #define STATSBOX_H
 
 #include <QWidget>
-#include <QFrame>
-#include <QLabel>
+#include <QtGui>
+#include <QDomDocument>
 //
 class StatsBox : public QFrame
 {
@@ -32,13 +32,26 @@ public:
 
 signals:
     void timerSignal(QString);
+    void fetchDomAndDocsSignal();
+    void fetchCurrentNumber();
+    void docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>);
+    void domForProjectWordCountSignal(QDomDocument);
+    void setCurrentNumberSignal(int);
 
 public slots:
     void setWordCount(int num);
 
-private:
+private slots:
+    void displayProjectWordCount();
+    void setChapterWordCount(int count);
+    void setBookWordCount(int count);
+    void setProjectWordCount(int count);
 
+private:
+    QPushButton *projectWordCountButton;
     QLabel *wordCountLabel;
+    QLabel *currentProjectCountLabel, *currentBookCountLabel, *currentChapterCountLabel;
+
 };
 
 #endif // STATSBOX_H

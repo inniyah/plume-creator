@@ -17,83 +17,40 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef FULLSCREENEDITOR_H
-#define FULLSCREENEDITOR_H
+#ifndef WORDCOUNTTHREAD_H
+#define WORDCOUNTTHREAD_H
 
-
-#include <QWidget>
-#include <QLabel>
+#include <QObject>
+#include <QtCore>
+#include <QDomDocument>
 #include <QTextDocument>
-#include <QPushButton>
-#include <QSettings>
-#include <fulltextzone.h>
-//
-class FullscreenEditor : public QWidget
+
+class WordCountThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit FullscreenEditor(QTextDocument *doc = 0, int cursorPos = 0, QWidget *parent = 0);
-
+    explicit WordCountThread(QObject *parent = 0);
 
 protected:
-    void closeEvent(QCloseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
+    void run();
 
 signals:
-    void closeSignal();
+    void chapterWordCountSignal(int count);
+    void bookWordCountSignal(int count);
+    void projectWordCountSignal(int count);
 
 public slots:
-    void setWordCount(int num);
-    void setTimer(QString);
-    void applyConfig();
-    void setSyn(QTextDocument *synDocument, int cursorPos);
-    void setNote(QTextDocument *noteDocument, int cursorPos);
+    void setDocs(QHash<QTextDocument*,QFile*> fileForDocs);
+    void setDom(QDomDocument domDoc);
+    void setCurrentNumber(int number);
 
 private slots:
-    void callColorDialog();
-    void setBaseStyleSheet();
-    void setBackColorDialog();
-    void setBackColor();
-    void setTextBackColorDialog();
-    void setTextBackColor();
-    void setTextColorDialog();
-    void setTextColor();
-    void setAddOnColorDialog();
-    void setAddOnColor();
-    void hideMouse();
-    void applyStyleSheet();
+    int countWords(QTextDocument *doc);
 
-    void showSyn();
-    void showNote();
 private:
-
-    FullTextZone *fullTextEdit;
-    QLabel *wordCountLabel;
-    QLabel *timerLabel;
-
-    QPushButton *backColorButton,
-    *textBackColorButton,
-    *textColorButton,
-    *addOnColorButton;
-
-    QSettings settings;
-
-    int synCursorPos;
-    int noteCursorPos;
-    //QTextDocument *synDoc;
-    //QTextDocument *noteDoc;
-    QWidget *synWidget;
-    QWidget *noteWidget;
-
-    QTimer *mouseTimer;
-
-
-    // style sheets
-    QString backColorString,
-    textBackColorString,
-    textColorString,
-    addOnColorString;
-
+    QList<QTextDocument *> textDocList;
+    QDomDocument domDocument;
+    int currNumber;
 };
 
-#endif // FULLSCREENEDITOR_H
+#endif // WORDCOUNTTHREAD_H

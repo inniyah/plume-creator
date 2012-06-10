@@ -106,7 +106,7 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 //--------------------------------------------------------------------------------------------------------------------------------
 
 
-void WordCount::updateAll()
+int WordCount::updateAll()
 {
 
     //     emit charCountSignal(preCharCount);
@@ -114,6 +114,8 @@ void WordCount::updateAll()
     emit wordCountSignal(finalWordCount);
 
     emit blockCountSignal(preBlockCount);
+
+return finalWordCount;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------

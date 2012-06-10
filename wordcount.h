@@ -31,7 +31,7 @@ class WordCount : public QObject
     Q_OBJECT
 public:
     explicit WordCount(QTextDocument *doc, QObject *parent = 0);
-    void updateAll();
+    int updateAll();
 
 
 signals:

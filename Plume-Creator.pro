@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     outlineitem.cpp \
     outline.cpp \
     attendbox.cpp \
-    updater.cpp
+    updater.cpp \
+    wordcountthread.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     outlineitem.h \
     outline.h \
     attendbox.h \
-    updater.h
+    updater.h \
+    wordcountthread.h
 
 RESOURCES += \
     pics.qrc \
@@ -62,7 +64,8 @@ RESOURCES += \
 
 CODECFORTR = UTF-8
 
-TRANSLATIONS = plume-creator_fr_FR.ts
+TRANSLATIONS = plume-creator_fr_FR.ts \
+#    plume-creator_ro_RO.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
 

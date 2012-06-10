@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     createToolDock();
 
 
-    setTextTabConnections();
+    setConnections();
 
 
     // Config :
@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.47") + tr("!</b></center>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.48") + tr("!</b></center>"
                               "<p>Plume Creator is a little program for writers"
                               " in quest of a complete yet simple way of"
                               " writing and organizing a fiction.</p>"
@@ -633,7 +633,7 @@ void MainWindow::secondTextSlot(int number, QString action)
     }
 }
 
-void MainWindow::setTextTabConnections()
+void MainWindow::setConnections()
 {
     textDocList = new QList<QTextDocument *> ;
     noteDocList = new QList<QTextDocument *> ;
@@ -675,6 +675,13 @@ void MainWindow::setTextTabConnections()
     connect(attendList, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
 
 
+    //for global wordcount :
+
+    connect(stats, SIGNAL(fetchDomAndDocsSignal()), mainTree, SLOT(giveDocsAndDomForProjectWordCount()));
+    connect(stats, SIGNAL(fetchCurrentNumber()), this, SLOT(setCurrentNumber()));
+    connect(this, SIGNAL(currentNumber(int)), stats, SIGNAL(setCurrentNumberSignal(int)));
+    connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)) );
+connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
 }
 
 
@@ -1177,4 +1184,19 @@ void MainWindow::setCurrentAttendList(int tabNum)
     QString currentTabName = tabWidget->tabText(tabNum);
 
     attendList->setCurrentListName(currentTabName);
+}
+
+//----------------------------------------------------------------------------
+
+int MainWindow::setCurrentNumber()
+{
+
+if(tabWidget->count() == 0)
+    return 0;
+
+int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
+
+emit currentNumber(number);
+
+return number;
 }

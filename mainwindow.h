@@ -55,6 +55,7 @@ signals:
     void tabWidgetWidth(int value);
     void applyConfigSignal();
 
+    void currentNumber(int);
 
 public slots:
     void openProjectSlot(QFile *projectFile);
@@ -85,6 +86,7 @@ private slots:
     //attendance :
     void setCurrentAttendList(int tabNum);
 
+int setCurrentNumber();
 
 private:
 
@@ -108,7 +110,7 @@ private:
     bool checkUpdateAtStartupBool;
 
     QTabWidget *tabWidget;
-    void setTextTabConnections();
+    void setConnections();
     QList<QTextDocument *> *textDocList;
     QList<QTextDocument *> *noteDocList;
     QList<QTextDocument *> *synDocList;

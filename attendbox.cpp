@@ -1091,7 +1091,7 @@ void AttendBox::projectItemActivated(QListWidgetItem* itemActivated)
 void AttendBox::openDetail(QListWidgetItem* item)
 {
     if(detailsHiddenBool == false ){
-        saveThisDoc();
+//        saveThisDoc();
     }
 
     QListWidgetItem *abstractItem = abstractList->findItems(item->text(), Qt::MatchExactly).takeFirst();

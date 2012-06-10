@@ -98,6 +98,9 @@ private slots:
     void applyNoteFontConfig();
     void applyAttendFontConfig();
 
+    void preventDoubleSpace();
+
+
 private:
 
     QTextDocument *textDocument;
@@ -123,6 +126,7 @@ private:
 
 
     bool alwaysCenter;
+    bool preventDoubleSpaceOption;
 
 };
 

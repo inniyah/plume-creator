@@ -350,6 +350,7 @@
     </message>
     <message>
         <location filename="exporter.cpp" line="155"/>
+        <location filename="exporter.cpp" line="640"/>
         <source>Project Exporter</source>
         <translation>Exportateur de Projet</translation>
     </message>
@@ -410,6 +411,21 @@
         <location filename="exporter.cpp" line="599"/>
         <source>Story</source>
         <translation>Histoire</translation>
+    </message>
+    <message>
+        <location filename="exporter.cpp" line="640"/>
+        <source>You have selected the .txt format. There is no formatting !</source>
+        <translation>Vous avez sélectionné le foramt .txt. Il n&apos;y aura pas de formattage !</translation>
+    </message>
+    <message>
+        <location filename="exporter.cpp" line="652"/>
+        <source>Project exported</source>
+        <translation>Projet exporté</translation>
+    </message>
+    <message>
+        <location filename="exporter.cpp" line="652"/>
+        <source>This project was successfully exported !</source>
+        <translation>Ce projet a été exporté avec succés !</translation>
     </message>
     <message>
         <location filename="exporter.cpp" line="893"/>
@@ -629,49 +645,54 @@
 <context>
     <name>FullscreenEditor</name>
     <message>
-        <location filename="fullscreeneditor.cpp" line="39"/>
-        <location filename="fullscreeneditor.cpp" line="216"/>
+        <location filename="fullscreeneditor.cpp" line="42"/>
+        <location filename="fullscreeneditor.cpp" line="223"/>
         <source>Synopsis</source>
         <oldsource>Synopsys</oldsource>
         <translation>Synopsis</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="43"/>
+        <location filename="fullscreeneditor.cpp" line="46"/>
         <source>Note</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="47"/>
+        <location filename="fullscreeneditor.cpp" line="50"/>
         <source>Exit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="168"/>
+        <location filename="fullscreeneditor.cpp" line="171"/>
         <source>FullScreen Colors :</source>
         <translation>Couleusr en plein écran :</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="185"/>
+        <location filename="fullscreeneditor.cpp" line="191"/>
         <source>&amp;Background color:</source>
         <translation>Couleur d&apos;&amp;arrière-plan:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="186"/>
+        <location filename="fullscreeneditor.cpp" line="192"/>
         <source>Text b&amp;ackground color:</source>
         <translation>Couleur de l&apos;ar&amp;rière-plan du texte:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="187"/>
+        <location filename="fullscreeneditor.cpp" line="193"/>
         <source>&amp;Text color:</source>
         <translation>Couleur du &amp;texte:</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="191"/>
+        <location filename="fullscreeneditor.cpp" line="194"/>
+        <source>&amp;Timers color:</source>
+        <translation>Couleur des chr&amp;onos:</translation>
+    </message>
+    <message>
+        <location filename="fullscreeneditor.cpp" line="198"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="fullscreeneditor.cpp" line="243"/>
+        <location filename="fullscreeneditor.cpp" line="250"/>
         <source>Notes</source>
         <translation>Notes</translation>
     </message>
@@ -886,19 +907,19 @@ autorisé à supprimer un livre rempli.</translation>
         <translation>Cette feuille ne contient pas de *** .</translation>
     </message>
     <message>
-        <location filename="maintree.cpp" line="2135"/>
+        <location filename="maintree.cpp" line="2132"/>
         <source>New Book</source>
         <translation>Nouv. Livre</translation>
     </message>
     <message>
-        <location filename="maintree.cpp" line="2140"/>
-        <location filename="maintree.cpp" line="2153"/>
+        <location filename="maintree.cpp" line="2137"/>
+        <location filename="maintree.cpp" line="2150"/>
         <source>New Chapter</source>
         <translation>Nouv. Chapitre</translation>
     </message>
     <message>
-        <location filename="maintree.cpp" line="2145"/>
-        <location filename="maintree.cpp" line="2158"/>
+        <location filename="maintree.cpp" line="2142"/>
+        <location filename="maintree.cpp" line="2155"/>
         <source>New Scene</source>
         <translation>Nouv. Scène</translation>
     </message>
@@ -1057,12 +1078,12 @@ autorisé à supprimer un livre rempli.</translation>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="954"/>
+        <location filename="mainwindow.cpp" line="961"/>
         <source>Do you want to quit ?</source>
         <translation>Voulez-vous quitter ?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="955"/>
+        <location filename="mainwindow.cpp" line="962"/>
         <source>Your changes are already saved.</source>
         <translation>Vos changements ont déjà été sauvegardés.</translation>
     </message>
@@ -1682,19 +1703,46 @@ Veuillez ouvrir un fichier .plume.</translation>
 <context>
     <name>StatsBox</name>
     <message>
-        <location filename="statsbox.cpp" line="12"/>
+        <location filename="statsbox.cpp" line="13"/>
         <source>Time</source>
         <translation>Heure</translation>
     </message>
     <message>
-        <location filename="statsbox.cpp" line="19"/>
+        <location filename="statsbox.cpp" line="20"/>
         <source>Timer</source>
         <translation>Décompte</translation>
     </message>
     <message>
-        <location filename="statsbox.cpp" line="28"/>
+        <location filename="statsbox.cpp" line="29"/>
         <source>Word Count</source>
         <translation>Nombre de mots</translation>
+    </message>
+    <message>
+        <location filename="statsbox.cpp" line="31"/>
+        <source>All</source>
+        <translation>Tout</translation>
+    </message>
+    <message>
+        <location filename="statsbox.cpp" line="60"/>
+        <source>Project : </source>
+        <translation>Projet : </translation>
+    </message>
+    <message>
+        <location filename="statsbox.cpp" line="61"/>
+        <source>Current book : </source>
+        <translation>Livre en cours : </translation>
+    </message>
+    <message>
+        <location filename="statsbox.cpp" line="62"/>
+        <source>current chapter : </source>
+        <translation>Chapitre en cours : </translation>
+    </message>
+    <message>
+        <location filename="statsbox.cpp" line="63"/>
+        <location filename="statsbox.cpp" line="64"/>
+        <location filename="statsbox.cpp" line="65"/>
+        <source>calculating...</source>
+        <translation>en calcul...</translation>
     </message>
 </context>
 <context>
@@ -1895,12 +1943,12 @@ Veuillez ouvrir un fichier .plume.</translation>
         <translation>&amp;Alignement</translation>
     </message>
     <message>
-        <location filename="textzone.cpp" line="363"/>
+        <location filename="textzone.cpp" line="362"/>
         <source>L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="textzone.cpp" line="365"/>
+        <location filename="textzone.cpp" line="364"/>
         <source>R</source>
         <translation></translation>
     </message>

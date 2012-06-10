@@ -2007,9 +2007,6 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
             for (int i = 0; i < originalTextFile.size(); ++i) {
                 if (originalTextFile.at(i) == QChar('.'))
                     numOriginalTextChar_point = i;
-
-
-
             }
 
             originalTextFile = originalTextFile.left(numOriginalTextChar_point);
@@ -2884,3 +2881,13 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
     this->write(deviceFile);
     readAllAttendances();
 }
+
+//----------------------------------------------------------------------------------
+
+void MainTree::giveDocsAndDomForProjectWordCount()
+{
+    emit docsForProjectWordCountSignal(fileForDoc);
+    emit domForProjectWordCountSignal(domDocument.cloneNode().toDocument());
+}
+
+//----------------------------------------------------------------------------------

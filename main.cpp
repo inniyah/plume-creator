@@ -9,7 +9,10 @@
 #include <QTextCodec>
 #include <QPixmap>
 #include <QSplashScreen>
-//#include <QMacStyle>
+
+#ifdef Q_OS_MAC
+#include <QMacStyle>
+#endif
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
@@ -62,7 +65,9 @@ int main(int argc, char *argv[])
     // style :
 
     QApplication::setStyle(new QPlastiqueStyle);
-//    QApplication::setStyle(new QMacStyle);
+#ifdef Q_OS_MAC
+    QApplication::setStyle(new QMacStyle);
+#endif
 
     // splashscreen :
 

@@ -82,6 +82,7 @@ private slots:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void cursorPositionChangedSlot();
 
+    void preventDoubleSpace();
 
     void sliderValueChanged(int sliderValue);
 
@@ -120,6 +121,9 @@ private:
     QSlider *widthSlider;
     int sliderValue;
     int xMax;
+
+    bool preventDoubleSpaceOption;
+
 };
 
 
