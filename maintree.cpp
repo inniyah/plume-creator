@@ -1369,6 +1369,11 @@ void MainTree::delYesItem()
 
 void MainTree::removeItem(QDomElement element)
 {
+    if(element.toElement().tagName() == "separator")
+        return;
+
+
+
     int number = domElementForNumber.key(element.toElement());
 
 

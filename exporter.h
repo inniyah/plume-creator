@@ -90,6 +90,7 @@ private:
     QTextDocument* prepareTextDoc(QFile *textFile);
     QTextDocument* prepareSynDoc(QFile *synFile);
     QTextDocument* prepareNoteDoc(QFile *noteFile);
+    QString format;
 
 };
 

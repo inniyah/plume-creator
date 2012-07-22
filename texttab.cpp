@@ -8,10 +8,10 @@
 TextTab::TextTab(QWidget *parent) :
     QWidget(parent)
 {
-prevTextDocument = new QTextDocument(this);
+    prevTextDocument = new QTextDocument(this);
     textDocument = new QTextDocument(this);
 
-prevTextZone = new TextZone(prevTextDocument, this);
+    prevTextZone = new TextZone(prevTextDocument, this);
     prevTextZone->toHtml();
 
 
@@ -20,17 +20,17 @@ prevTextZone = new TextZone(prevTextDocument, this);
 
 
     QHBoxLayout *layout = new QHBoxLayout;
-//QVBoxLayout *vLayout = new QVBoxLayout;
-QSplitter *splitter = new QSplitter;
-splitter->setOrientation(Qt::Vertical);
-splitter->addWidget(prevTextZone);
-splitter->addWidget(textZone);
+    //QVBoxLayout *vLayout = new QVBoxLayout;
+    QSplitter *splitter = new QSplitter;
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(prevTextZone);
+    splitter->addWidget(textZone);
 
 
 
     layout->addStretch();
-//    layout->addLayout(vLayout);
-layout->addWidget(splitter);
+    //    layout->addLayout(vLayout);
+    layout->addWidget(splitter);
     layout->addStretch();
 
     setLayout(layout);
@@ -103,9 +103,9 @@ bool TextTab::openText(QTextDocument *doc)
 
     connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-//    QString debug;
-//    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
-//    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
+    //    QString debug;
+    //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
+    //    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
 
     applyConfig();
 
@@ -152,18 +152,18 @@ void TextTab::wordCountUpdated(int wordCount)
 
 
 
-//    if(wordCount == 0){
-//        QSettings settings;
-//        settings.beginGroup( "Settings" );
-//        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
-//        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
-//        settings.endGroup();
+    //    if(wordCount == 0){
+    //        QSettings settings;
+    //        settings.beginGroup( "Settings" );
+    //        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+    //        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+    //        settings.endGroup();
 
-//        QFont font;
-//        font.setFamily(fontFamily);
-//        changeTextFontSlot(font);
-//        changeTextHeightSlot(textHeight);
-//    }
+    //        QFont font;
+    //        font.setFamily(fontFamily);
+    //        changeTextFontSlot(font);
+    //        changeTextHeightSlot(textHeight);
+    //    }
 }
 
 //void TextTab::charCountUpdated(int charCount)
@@ -192,7 +192,7 @@ void TextTab::updateWordCounts()
 void TextTab::changeWidthSlot(int width)
 {
     textZone->setFixedWidth(width);
-   textZone->document()->setTextWidth(width - 20);
+    textZone->document()->setTextWidth(width - 20);
     prevTextZone->setFixedWidth(width);
     prevTextZone->document()->setTextWidth(width - 20);
 }
@@ -211,7 +211,7 @@ void TextTab::changeTextHeightSlot(int height)
 void TextTab::setTextFocus()
 {
     if(textZone->isVisible())
-    textZone->setFocus();
+        textZone->setFocus();
 
 }
 //-------------------------------------------------------------------------------
@@ -239,9 +239,9 @@ QTextCharFormat TextTab::tabFontChangedSlot()
 //-------------------------------------------------------------------------------
 void TextTab::cursorPositionChangedSlot()
 {
-//            if(textZone->textCursor().atStart() == true
-//                    || textZone->textCursor().position() == 1)
-//                applyConfig();
+                if((textZone->textCursor().atStart() == true
+                        || textZone->textCursor().position() == 1) && textZone->textCursor().hasSelection() == false)
+                    applyConfig();
 }
 
 //-------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ void TextTab::updateTextZone()
     textZone->document()->setTextWidth(textZone->width() - 20);
     prevTextZone->document()->setTextWidth(prevTextZone->width() - 20);
 
-//    qDebug() << "updateTextZone";
+    //    qDebug() << "updateTextZone";
 }
 
 
@@ -279,16 +279,16 @@ void  TextTab::setPrevText(QTextDocument *prevDoc)
     if(prevDoc == 0){
         prevTextZone->setHidden(true);
         return;
-}
+    }
 
-prevTextDocument = prevDoc;
-prevTextZone->setDocument(prevTextDocument);
-prevTextZone->document()->adjustSize();
+    prevTextDocument = prevDoc;
+    prevTextZone->setDocument(prevTextDocument);
+    prevTextZone->document()->adjustSize();
 
 
-QTextCursor curs =  prevTextZone->textCursor();
-curs.movePosition(QTextCursor::End);
-prevTextZone->setTextCursor(curs);
+    QTextCursor curs =  prevTextZone->textCursor();
+    curs.movePosition(QTextCursor::End);
+    prevTextZone->setTextCursor(curs);
 }
 
 
@@ -323,24 +323,24 @@ void TextTab::applyConfig()
 
     //apply default font in empty documents :
 
-//    if((textZone->textCursor().atStart() == true
-//          || textZone->textCursor().position() == 1 )&& textZone->document()->isEmpty()){
-//        QFont font;
-//        font.setFamily(fontFamily);
-//        font.setPointSize(textHeight);
-//        document()->setDefaultFont(font);
-//        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
+        if((textZone->textCursor().atStart() == true
+              || textZone->textCursor().position() == 1 )&& textZone->document()->isEmpty()){
+            QFont font;
+            font.setFamily(fontFamily);
+            font.setPointSize(textHeight);
+            document()->setDefaultFont(font);
+    //        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
 
 
-//    }
+        }
 
     QFont font;
     font.setFamily(fontFamily);
     font.setPointSize(textHeight);
-this->document()->setDefaultFont(font);
-            changeTextFontSlot(font);
-            changeTextHeightSlot(textHeight);
-
+    this->document()->setDefaultFont(font);
+    changeTextFontSlot(font);
+    changeTextHeightSlot(textHeight);
+    qDebug() << "ee";
 }
 
 

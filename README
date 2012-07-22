@@ -1,4 +1,9 @@
 PLUME CREATOR
+v 0.49
+	- tree : 
+		- bug fixed: crash when deleting a scene separator
+	- Exporter : Html export got manuscript formatting
+
 v 0.48
 	- annoying bug fixed : text font sometimes came back to default system font
 	- copy/paste from an external source : text is now formated

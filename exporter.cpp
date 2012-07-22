@@ -503,16 +503,27 @@ QTextDocument * Exporter::buildFinalDoc()
     QTextDocument *textDocument = new QTextDocument;
     QTextEdit *edit = new QTextEdit;
 
+    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
+
 
 
     for(int i = 0; i < itemList->size(); ++i){
         QDomElement element = domElementForItem.value(itemList->at(i));
         QTextCursor *tCursor = new QTextCursor(textDocument);
-        QTextBlockFormat blockFormatLeft;
-        QTextBlockFormat blockFormatCenter;
 
-        blockFormatLeft.setAlignment(Qt::AlignLeft);
+        QTextBlockFormat blockFormatLeft;
+        blockFormatLeft.setBottomMargin(0);
+        blockFormatLeft.setTopMargin(0);
+        blockFormatLeft.setTextIndent(72);
+        blockFormatLeft.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
+        blockFormatLeft.setAlignment(Qt::AlignJustify);
+        QTextCharFormat charFormatLeft;
+        charFormatLeft.setFontPointSize(12);
+        charFormatLeft.setFontFamily("Courrier");
+
+        QTextBlockFormat blockFormatCenter;
         blockFormatCenter.setAlignment(Qt::AlignCenter);
+
 
         if(element.tagName() != "separator"){
 
@@ -526,11 +537,9 @@ QTextDocument * Exporter::buildFinalDoc()
             QFile *synFile = new QFile(devicePath + synPath);
             QFile *noteFile = new QFile(devicePath + notePath);
 
-            QTextDocumentFragment *textFrag = new QTextDocumentFragment(prepareTextDoc(textFile));
-            QTextDocumentFragment *synFrag = new QTextDocumentFragment(prepareSynDoc(synFile));
-            QTextDocumentFragment *noteFrag = new QTextDocumentFragment(prepareNoteDoc(noteFile));
-
-
+            QTextDocumentFragment textFrag(prepareTextDoc(textFile));
+            QTextDocumentFragment synFrag(prepareSynDoc(synFile));
+            QTextDocumentFragment noteFrag(prepareNoteDoc(noteFile));
 
             edit->setDocument(textDocument);
 
@@ -547,8 +556,7 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
                 edit->append("<br>");
-                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                tCursor->mergeBlockFormat(blockFormatLeft);
+
             }
             if(element.tagName() == "chapter"){
                 edit->append("<br>");
@@ -557,8 +565,7 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
-                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                tCursor->mergeBlockFormat(blockFormatLeft);
+
             }
 
             if(element.tagName() == "scene" && sceneTitleCheckBox->isChecked()){
@@ -567,48 +574,49 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
-                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                tCursor->mergeBlockFormat(blockFormatLeft);
+
             }
 
-            if(synCheckBox->isChecked() && !synFrag->isEmpty()){
+            if(synCheckBox->isChecked() && !synFrag.isEmpty()){
                 edit->append("<br>");
                 edit->append("<h4>" + tr("Synopsis") + "</h4>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                tCursor->mergeBlockFormat(blockFormatLeft);
-                edit->append(synFrag->toHtml());
+                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+                tCursor->insertFragment(synFrag);
             }
 
-            if(noteCheckBox->isChecked() && !noteFrag->isEmpty()){
+            if(noteCheckBox->isChecked() && !noteFrag.isEmpty()){
                 edit->append("<br>");
                 edit->append("<h4>" + tr("Note") + "</h4>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                tCursor->mergeBlockFormat(blockFormatLeft);
-                edit->append(noteFrag->toHtml());
+                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+                tCursor->insertFragment(noteFrag);
             }
 
             if(textCheckBox->isChecked()){
-                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag->isEmpty()){
-                    edit->append("<br>");
-                    edit->append("<h4>" + tr("Story") + "</h4>");
-                    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag.isEmpty()){
+                    tCursor->insertBlock();
+                    tCursor->insertHtml("<h4>" + tr("Story") + "</h4>");
                     tCursor->mergeBlockFormat(blockFormatCenter);
-                    edit->append("<br>");
-                    tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-                    tCursor->mergeBlockFormat(blockFormatLeft);
+                    tCursor->insertBlock();
+
                 }
-                edit->append(textFrag->toHtml());
+                tCursor->insertHtml("<br>");
+                //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+                tCursor->insertFragment(textFrag);
+                //                edit->append(textFrag->toHtml());
             }
         }
         else if(element.tagName() == "separator"){
             edit->append("<br>");
-            edit->append("<h3>~~~~~~</h3>");
+            edit->append("<h3>#</h3>");
             tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
             tCursor->mergeBlockFormat(blockFormatCenter);
             edit->append("<br>");
@@ -616,10 +624,29 @@ QTextDocument * Exporter::buildFinalDoc()
             tCursor->mergeBlockFormat(blockFormatLeft);
         }
 
+
+
+
         progressValue += 1;
         progressBar->setValue(progressValue);
 
     }
+    QRegExp reg("-qt-paragraph-type:.*;|margin-top:.*;|margin-bottom:.*;|margin-left:.*;|margin-right:.*;|-qt-block-indent:.*;|text-indent:.*;|font-family:.*;|font-size:.*;");
+    reg.setMinimal(true);
+    textDocument->setHtml(textDocument->toHtml().remove(reg));
+
+    //find and change final page css style :
+
+    //textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:14pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
+
+    //            <style type="text/css">
+    //            p, li { white-space: pre-wrap; }
+    //            </style>
+
+    //            tCursor
+    //            qDebug() << textDocument->toHtml();
+
+
     progressWidget->close();
 
     return textDocument;
@@ -630,7 +657,6 @@ void Exporter::exportDoc()
 
     QTextDocument *document = buildFinalDoc();
 
-    QString format;
     if(fileTypeCombo->currentIndex() == 0)
         format = "html";
     if(fileTypeCombo->currentIndex() == 1)
@@ -642,12 +668,36 @@ void Exporter::exportDoc()
 
     QTextDocumentWriter writer;
     QByteArray array;
+    QString fileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + "." + format);
     writer.setFormat(array.append(format));
-    writer.setFileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + "." + format);
+    writer.setFileName(fileName);
     writer.setCodec(QTextCodec::codecForName("UTF-8"));
     writer.write(document);
 
+    if(format=="html"){
 
+                QFile *textFile = new QFile;
+                textFile->setFileName(fileName);
+                bool opened = textFile->open(QFile::ReadWrite | QFile::Text);
+                qDebug() << opened ;
+                QTextStream textFileStream( textFile );
+                QString textString(textFileStream.readAll());
+                QRegExp regExpCss("<style type=\x0022text/css\x0022>.*</style>");
+                regExpCss.setMinimal(true);
+                textString = textString.replace( regExpCss, "<style type=\x0022text/css\x0022>p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}</style>");
+                qDebug() << textString;
+                QByteArray array;
+                array.append(textString);
+                textFile->write(array);
+
+                textFile->close();
+
+    }
+
+
+
+
+    QApplication::restoreOverrideCursor();
 
     QMessageBox::information(this, tr("Project exported"), tr("This project was successfully exported !"), QMessageBox::Ok);
 }
@@ -664,6 +714,8 @@ QTextDocument *Exporter::prepareTextDoc(QFile *textFile)
     textFile->open(QFile::ReadOnly | QFile::Text);
     QTextStream textFileStream( textFile );
     textDocument->setHtml(textFileStream.readAll());
+
+//    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:19pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
 
     //cut blank spaces at the begining and end :
 
@@ -688,19 +740,24 @@ QTextDocument *Exporter::prepareTextDoc(QFile *textFile)
 
     //set text config :
 
-    //    QTextBlockFormat blockFormat;
-    //    blockFormat.setBottomMargin(noteBottMargin);
-    //    blockFormat.setTextIndent(noteTextIndent);
+    QTextBlockFormat blockFormat;
+    //    blockFormat.setBottomMargin(0);
+    //    blockFormat.setTopMargin(0);
+    //    blockFormat.setTextIndent(72);
+    blockFormat.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
+    blockFormat.setAlignment(Qt::AlignJustify);
     //    QTextCharFormat charFormat;
-    //            charFormat.setFontPointSize(noteTextHeight);
-    //    charFormat.setFontFamily(noteFontFamily);
+    //    charFormat.setFontPointSize(12);
+    //    charFormat.setFontFamily("Courrier");
 
-    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    //    tCursor->mergeCharFormat(charFormat);
-    //    tCursor->mergeBlockFormat(blockFormat);
+    tCursor->select(QTextCursor::Document);
+    tCursor->mergeBlockFormat(blockFormat);
+    //    tCursor->mergeBlockCharFormat(charFormat);
 
 
+    QRegExp reg("-qt-paragraph-type:.*;|margin-top:.*;|margin-bottom:.*;|margin-left:.*;|margin-right:.*;|-qt-block-indent:.*;|text-indent:.*;|font-family:.*;|font-size:.*;");
+    reg.setMinimal(true);
+    textDocument->setHtml(textDocument->toHtml().remove(reg));
 
 
 
@@ -743,17 +800,19 @@ QTextDocument *Exporter::prepareSynDoc(QFile *synFile)
 
     //set text config :
 
-    //    QTextBlockFormat blockFormat;
-    //    blockFormat.setBottomMargin(noteBottMargin);
-    //    blockFormat.setTextIndent(noteTextIndent);
-    //    QTextCharFormat charFormat;
-    //            charFormat.setFontPointSize(noteTextHeight);
-    //    charFormat.setFontFamily(noteFontFamily);
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(0);
+    blockFormat.setTopMargin(0);
+    blockFormat.setTextIndent(72);
+    blockFormat.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
+    blockFormat.setAlignment(Qt::AlignJustify);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(12);
+    charFormat.setFontFamily("Courrier");
 
-    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    //    tCursor->mergeCharFormat(charFormat);
-    //    tCursor->mergeBlockFormat(blockFormat);
+    tCursor->select(QTextCursor::Document);
+    tCursor->mergeBlockCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
 
     return textDocument;
 }
@@ -794,17 +853,20 @@ QTextDocument *Exporter::prepareNoteDoc(QFile *noteFile)
 
     //set text config :
 
-    //    QTextBlockFormat blockFormat;
-    //    blockFormat.setBottomMargin(noteBottMargin);
-    //    blockFormat.setTextIndent(noteTextIndent);
-    //    QTextCharFormat charFormat;
-    //            charFormat.setFontPointSize(noteTextHeight);
-    //    charFormat.setFontFamily(noteFontFamily);
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(0);
+    blockFormat.setTopMargin(0);
+    blockFormat.setTextIndent(72);
+    blockFormat.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
+    blockFormat.setAlignment(Qt::AlignJustify);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(12);
+    charFormat.setFontFamily("Courrier");
 
-    //    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    //    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    //    tCursor->mergeCharFormat(charFormat);
-    //    tCursor->mergeBlockFormat(blockFormat);
+    tCursor->select(QTextCursor::Document);
+    tCursor->mergeBlockCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
+
 
     return textDocument;
 }
@@ -818,34 +880,34 @@ void Exporter::seePreview()
     if(dialogMode == "export")
     {
 
-    previewDialog = new QDialog(this);
-    previewDialog->setAttribute(Qt::WA_DeleteOnClose);
-    previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
-    previewDialog->setMinimumSize(600,800);
+        previewDialog = new QDialog(this);
+        previewDialog->setAttribute(Qt::WA_DeleteOnClose);
+        previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
+        previewDialog->setMinimumSize(600,800);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-
-
-    QTextBrowser *browser = new QTextBrowser;
-    if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
-        browser->setPlainText(document->toPlainText());
-    }
-    else{
-        browser->setDocument(document);
-
-    }
+        QVBoxLayout *layout = new QVBoxLayout;
 
 
+        QTextBrowser *browser = new QTextBrowser;
+        if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
+            browser->setPlainText(document->toPlainText());
+        }
+        else{
+            browser->setDocument(document);
 
-    QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
-                                                      | QDialogButtonBox::Cancel), Qt::Horizontal);
-    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttons, SIGNAL(rejected()), this, SLOT(closePreview()));
+        }
 
-    layout->addWidget(browser);
-    layout->addWidget(buttons);
-    previewDialog->setLayout(layout);
-    previewDialog->show();
+
+
+        QDialogButtonBox *buttons = new QDialogButtonBox((QDialogButtonBox::Ok
+                                                          | QDialogButtonBox::Cancel), Qt::Horizontal);
+        connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+        connect(buttons, SIGNAL(rejected()), this, SLOT(closePreview()));
+
+        layout->addWidget(browser);
+        layout->addWidget(buttons);
+        previewDialog->setLayout(layout);
+        previewDialog->show();
 
 
     }
@@ -857,7 +919,7 @@ void Exporter::seePreview()
         QPrinter printer;
 
         QPrintPreviewDialog printPreviewDialog(&printer, this, Qt::Dialog);
-            connect(&printPreviewDialog, SIGNAL(paintRequested(QPrinter*)), this, SLOT(previewPrint(QPrinter*))) ;
+        connect(&printPreviewDialog, SIGNAL(paintRequested(QPrinter*)), this, SLOT(previewPrint(QPrinter*))) ;
         printPreviewDialog.exec();
     }
 
@@ -892,7 +954,7 @@ void Exporter::print()
     QPrintDialog *dialog = new QPrintDialog(&printer, this);
     dialog->setWindowTitle(tr("Print Document"));
     if (dialog->exec() == QDialog::Accepted)
-    document->print(&printer);
+        document->print(&printer);
 
 
 
