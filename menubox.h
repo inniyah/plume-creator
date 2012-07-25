@@ -67,6 +67,7 @@ public slots:
     void openProjectSlot(QFile *device);
 void setExternalProject(QFile *externalFile);
 bool openExternalProject(QFile *externalPrjFile);
+QMenuBar *createMenuBar();
 
 private slots:
 
@@ -77,6 +78,7 @@ private slots:
     void exporter();
     void print();
     void closeProject();
+    void findAndReplace();
     void aboutQt();
     void about();
     void checkUpdate(){ launchCheckUpdateDialog("none"); }
@@ -96,13 +98,26 @@ QString currentVersion;
     *exitButton,
     *printButton,
     *exportButton,
+    *findReplaceButton,
     *aboutQtButton,
     *aboutButton,
     *updaterButton;
 
-
-
-
+    QAction *newProjectAct,
+    *projectManagerAct,
+    //   *openAct,
+    *displayConfigAct,
+    *closeProjectAct,
+    *exitAct,
+    *printAct,
+    *exportAct,
+    *findReplaceAct,
+    *aboutQtAct,
+    *aboutAct,
+    *updaterAct;
+QMenu *projectGroup;
+QMenu *editGroup;
+QMenu *helpGroup;
 
 
     void createActions();

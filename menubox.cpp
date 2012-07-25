@@ -4,9 +4,11 @@
 #include "settingsdialog.h"
 #include "exporter.h"
 #include "updater.h"
+#include "findreplace.h"
+
 //
 MenuBox::MenuBox(QWidget *parent) :
-    QFrame(parent), extFile(0), currentVersion("0.49")
+    QFrame(parent), extFile(0), currentVersion(QApplication::applicationVersion())
 {
 
     file = 0;
@@ -188,6 +190,23 @@ void MenuBox::print()
 }
 //--------------------------------------------------------------------------
 
+
+
+void MenuBox::findAndReplace()
+{
+    if(file == 0)
+        return;
+
+    emit saveProjectSignal();
+
+    FindReplace *findReplaceDialog = new FindReplace(file, this);
+    findReplaceDialog->exec();
+
+}
+
+
+//--------------------------------------------------------------------------
+
 void MenuBox::aboutQt()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
@@ -255,6 +274,23 @@ void MenuBox::exit()
 
 
 
+//---------------------------------------------------------------------------
+
+
+QMenuBar *MenuBox::createMenuBar()
+{
+
+    QMenuBar *menubar = new QMenuBar();
+
+    createActions();
+
+    menubar->addMenu(projectGroup);
+    menubar->addMenu(editGroup);
+    menubar->addMenu(helpGroup);
+
+    return menubar;
+}
+
 
 
 //---------------------------------------------------------------------------
@@ -262,7 +298,95 @@ void MenuBox::exit()
 
 void MenuBox::createActions()
 {
+    newProjectAct = new QAction(tr("&New Project"), this);
+    newProjectAct->setText(tr("&New Project"));
+    newProjectAct->setShortcut(QKeySequence::New);
+    newProjectAct->setToolTip(tr("Create a new project"));
+    connect(newProjectAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
+    projectManagerAct = new QAction(tr("Project &Manager"), this);
+    projectManagerAct->setText(tr("Project &Manager"));
+    // projectManagerAct->setShortcut(QKeySequence::New);
+    projectManagerAct->setToolTip(tr("Create and manage your projects"));
+    connect(projectManagerAct, SIGNAL(triggered()), this, SLOT(projectManager()));
+
+    displayConfigAct = new QAction(tr("&Configure"), this);
+    displayConfigAct->setText(tr("&Configure"));
+    //    displayConfigAct->setShortcut(QKeySequence::Print);
+    displayConfigAct->setToolTip(tr("Display the configuration"));
+    connect(displayConfigAct, SIGNAL(triggered()), this, SLOT(displayConfig()));
+
+    exportAct = new QAction(tr("&Export"), this);
+    exportAct->setText(tr("&Export"));
+    //   exportAct->setShortcut(QKeySequence::Print);
+    exportAct->setToolTip(tr("Export the project"));
+    connect(exportAct, SIGNAL(triggered()), this, SLOT(exporter()));
+
+    printAct = new QAction(tr("&Print"), this);
+    printAct->setText(tr("&Print"));
+    printAct->setShortcut(QKeySequence::Print);
+    printAct->setToolTip(tr("Print part of the project"));
+    connect(printAct, SIGNAL(triggered()), this, SLOT(print()));
+
+    closeProjectAct = new QAction(tr("&Close project"), this);
+    closeProjectAct->setText(tr("&Close project"));
+    closeProjectAct->setShortcut(QKeySequence::Close);
+    closeProjectAct->setToolTip(tr("Print the document"));
+    connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));;
+
+    exitAct = new QAction(tr("E&xit"), this);
+    exitAct->setText(tr("E&xit"));
+    exitAct->setShortcut(QKeySequence::Quit);
+    exitAct->setToolTip(tr("Exit the application"));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(exit()));
+
+
+    projectGroup = new QMenu(tr("&Project"),this);
+    projectGroup->addAction(projectManagerAct);
+    projectGroup->addSeparator();
+    projectGroup->addAction(newProjectAct);
+    projectGroup->addSeparator();
+    projectGroup->addAction(displayConfigAct);
+    projectGroup->addSeparator();
+    projectGroup->addAction(exportAct);
+    projectGroup->addAction(printAct);
+    projectGroup->addSeparator();
+    projectGroup->addAction(closeProjectAct);
+    projectGroup->addAction(exitAct);
+
+    findReplaceAct = new QAction(this);
+    findReplaceAct->setText(tr("&Find && Replace"));
+    // aboutAct->setShortcut(QKeySequence::Quit);
+    findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
+    connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
+
+    editGroup = new QMenu(tr("&Edit"),this);
+    editGroup->addAction(findReplaceAct);
+
+
+    aboutAct = new QAction(this);
+    aboutAct->setText(tr("About"));
+    // aboutAct->setShortcut(QKeySequence::Quit);
+    aboutAct->setToolTip(tr("about the application"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+    aboutQtAct = new QAction(this);
+    aboutQtAct->setText(tr("About Qt"));
+    // aboutQtAct->setShortcut(QKeySequence::Quit);
+    aboutQtAct->setToolTip(tr("about Qt"));
+    connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
+
+    updaterAct = new QAction(this);
+    updaterAct->setText(tr("Check Update"));
+    // aboutQtAct->setShortcut(QKeySequence::Quit);
+    updaterAct->setToolTip(tr("check for an update"));
+    connect(updaterAct, SIGNAL(triggered()), this, SLOT(checkUpdate()));
+
+    helpGroup = new QMenu(tr("&Help"),this);
+    helpGroup->addAction(aboutAct);
+    helpGroup->addAction(aboutQtAct);
+    helpGroup->addSeparator();
+    helpGroup->addAction(updaterAct);
 }
 
 //---------------------------------------------------------------------------
@@ -307,6 +431,13 @@ void MenuBox::createButtons()
     displayConfigButton->setToolTip(tr("Display the configuration"));
     connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
 
+    findReplaceButton = new QToolButton(this);
+    findReplaceButton->setText(tr("&Find && Replace"));
+    // aboutAct->setShortcut(QKeySequence::Quit);
+    findReplaceButton->setToolTip(tr("Find & Replace Dialog"));
+    connect(findReplaceButton, SIGNAL(clicked()), this, SLOT(findAndReplace()));
+
+
     exportButton = new QToolButton(this);
     exportButton->setMaximumSize(buttonSize);
     exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -343,7 +474,7 @@ void MenuBox::createButtons()
     aboutButton = new QToolButton(this);
     aboutButton->setMaximumSize(buttonSize);
     aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    aboutButton->setText(tr("About Plume Creator"));
+    aboutButton->setText(tr("About"));
     // aboutButton->setShortcut(QKeySequence::Quit);
     aboutButton->setToolTip(tr("about the application"));
     connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
@@ -381,6 +512,9 @@ void MenuBox::createButtons()
     baseGridLayout->addWidget(newProjectButton);
     baseGridLayout->addWidget(projectManagerButton);
     //   baseGridLayout->addWidget(openButton);
+    baseGridLayout->addSpacing(5);
+
+    baseGridLayout->addWidget(findReplaceButton);
     baseGridLayout->addSpacing(5);
 
     baseGridLayout->addWidget(displayConfigButton);
@@ -624,8 +758,8 @@ void MenuBox::setExternalProject(QFile *externalFile)
 
     plumeFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
-//    QString f(plumeFile.readAll());
-//    qDebug() << "f : "<< f;
+    //    QString f(plumeFile.readAll());
+    //    qDebug() << "f : "<< f;
 
 
     QDomDocument domDocument;
@@ -667,34 +801,34 @@ void MenuBox::setExternalProject(QFile *externalFile)
 
 
 
-//    if(extFilePath != prjInfoElem.attribute("workPath")){
+    //    if(extFilePath != prjInfoElem.attribute("workPath")){
 
 
 
 
-        prjInfoElem.setAttribute("path", extFilePath.left(extFilePath.size() - projectName.size() - 1 ));
-        prjInfoElem.setAttribute("workPath", extFilePath);
+    prjInfoElem.setAttribute("path", extFilePath.left(extFilePath.size() - projectName.size() - 1 ));
+    prjInfoElem.setAttribute("workPath", extFilePath);
 
-plumeFile.close();
-        plumeFile.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
+    plumeFile.close();
+    plumeFile.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
 
-        plumeFile.flush();
+    plumeFile.flush();
 
-        const int IndentSize = 4;
-
-
-        QTextStream out(&plumeFile);
-        out.flush();
-        domDocument.save(out, IndentSize);
+    const int IndentSize = 4;
 
 
-
-        qDebug() << "eee";
-//    }
+    QTextStream out(&plumeFile);
+    out.flush();
+    domDocument.save(out, IndentSize);
 
 
 
-        plumeFile.close();
+    qDebug() << "eee";
+    //    }
+
+
+
+    plumeFile.close();
 
 
     filters.clear();

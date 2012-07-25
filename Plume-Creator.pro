@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     outline.cpp \
     attendbox.cpp \
     updater.cpp \
-    wordcountthread.cpp
+    wordcountthread.cpp \
+    findreplace.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -56,7 +57,8 @@ HEADERS  += mainwindow.h \
     outline.h \
     attendbox.h \
     updater.h \
-    wordcountthread.h
+    wordcountthread.h \
+    findreplace.h
 
 RESOURCES += \
     pics.qrc \

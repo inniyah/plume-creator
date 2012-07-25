@@ -74,6 +74,7 @@ private slots:
     void setProjectNumberSlot(int prjNumber);
     void editFullscreen();
     void launchOutliner();
+    void hideOrShowNotes();
 
     //config :
     void applyConfig();
@@ -83,10 +84,12 @@ private slots:
     void reconnectAFterTabClose();
     void showPrevText(bool showPrevTextBool);
 
+    void ifNoteDockHiddenShowBar(){    if(!noteDock->isVisible())   bar->show(); else bar->hide();}
+
     //attendance :
     void setCurrentAttendList(int tabNum);
 
-int setCurrentNumber();
+    int setCurrentNumber();
 
 private:
 
@@ -95,19 +98,25 @@ private:
     void createNoteDock();
     void createToolDock();
 
+    QWidget *widgetToHideWith;
     MenuBox *menu;
-    EditMenuBox *editMenu;
+ QToolBox *toolBox;
+ EditMenuBox *editMenu;
     MainTree *mainTree;
+    QDockWidget *noteDock;
     QStackedLayout *synLayout;
     QStackedLayout *noteLayout;
     StatsBox *stats;
     ItemBox *items;
     AttendBox *attendList;
 
+QStatusBar *bar;
+
     QFile *file;
 
     bool m_firstStart;
     bool checkUpdateAtStartupBool;
+    bool checkScreenResAtStartupBool;
 
     QTabWidget *tabWidget;
     void setConnections();
@@ -128,7 +137,7 @@ private:
     void readSettings();
     void writeSettings();
     int settingNumber;
-
+bool menuBarOnTop;
     void autosaveTimer();
     bool NoProjectOpened;
     int autosaveTime;

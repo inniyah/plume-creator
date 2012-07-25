@@ -20,6 +20,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), NoProjectOpened(true)
 {
+
+
     setMinimumSize(800, 600);
     setWindowTitle("Plume Creator");
 
@@ -27,10 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //temporary config
-    //    setStyleSheet("* {background-color: beige}");
+//        setStyleSheet("* {background-color: grey; color: white;}");
 
-
-
+    // netbook mode 10':
+    //setFixedSize(1024, 600);
 
 
     tabWidget = new QTabWidget;
@@ -63,20 +65,20 @@ MainWindow::MainWindow(QWidget *parent)
     if (m_firstStart){
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QString("0.49") + tr("!</b></center>"
-                              "<p>Plume Creator is a little program for writers"
-                              " in quest of a complete yet simple way of"
-                              " writing and organizing a fiction.</p>"
-                              "<br>"
-                              "<p>It allows :"
-                              "<blockquote>- fullscreen text editing</blockquote>"
-                              "<blockquote>- chapters and scenes outlining</blockquote>"
-                              "<blockquote>- note taking</blockquote>"
-                              "<blockquote>- items/characters/places managing</blockquote></p>"
+        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QApplication::applicationVersion() + tr("!</b></center>"
+                                                                                                      "<p>Plume Creator is a little program for writers"
+                                                                                                      " in quest of a complete yet simple way of"
+                                                                                                      " writing and organizing a fiction.</p>"
+                                                                                                      "<br>"
+                                                                                                      "<p>It allows :"
+                                                                                                      "<blockquote>- fullscreen text editing</blockquote>"
+                                                                                                      "<blockquote>- chapters and scenes outlining</blockquote>"
+                                                                                                      "<blockquote>- note taking</blockquote>"
+                                                                                                      "<blockquote>- items/characters/places managing</blockquote></p>"
 
 
 
-                              ));
+                                                                                                      ));
         firstStart.exec();
 
         NewProjectWizard projectWizard;
@@ -86,6 +88,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     }
+
+//    if(checkScreenResAtStartupBool){
+//        QRect scrGeom = QDesktopWidget::availableGeometry();
+//        if(scrGeom.x() <= 1024 && scrGeom.x() <= 600)
+
+//    }
+
+
 
     if (checkUpdateAtStartupBool){
         menu->launchCheckUpdateDialog("auto");
@@ -120,7 +130,7 @@ void MainWindow::createMenuDock()
     menuDock->setMinimumSize(160,350);
     //    menuDock->setMaximumWidth(200);
 
-    QToolBox *toolBox = new QToolBox;
+    toolBox = new QToolBox;
 
 
 
@@ -141,6 +151,7 @@ void MainWindow::createMenuDock()
 
 
     menu->firstLaunch();
+    toolBox->setCurrentWidget(menu);
 
 
 
@@ -164,7 +175,6 @@ void MainWindow::createMenuDock()
 
     toolBox->addItem(attendList, tr("Attendance"));
 
-    toolBox->setCurrentWidget(menu);
 
     toolBox->setFrameStyle(QFrame::Panel | QFrame::Raised);
     toolBox->setLineWidth(2);
@@ -173,6 +183,9 @@ void MainWindow::createMenuDock()
     menuDock->setWidget(toolBox);
 
     addDockWidget(Qt::RightDockWidgetArea, menuDock);
+
+
+
 
 }
 
@@ -218,7 +231,7 @@ void MainWindow::createToolDock()
 
     QToolBox *toolBox = new QToolBox;
     stats = new StatsBox;
-    items = new ItemBox;
+    //    items = new ItemBox;
 
     // page 1
 
@@ -229,10 +242,10 @@ void MainWindow::createToolDock()
 
     //page 2
 
-    toolBox->addItem(items, tr("Items"));
-    items->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    items->setLineWidth(2);
-    items->setMidLineWidth(3);
+    //    toolBox->addItem(items, tr("Items"));
+    //    items->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //    items->setLineWidth(2);
+    //    items->setMidLineWidth(3);
 
     toolBox->setCurrentWidget(stats);
 
@@ -251,7 +264,7 @@ void MainWindow::createToolDock()
 void MainWindow::createNoteDock()
 {
 
-    QDockWidget *noteDock = new QDockWidget;
+    noteDock = new QDockWidget;
 
     noteDock->setObjectName("noteDock");
     noteDock->setWindowTitle(tr("Notes"));
@@ -277,17 +290,23 @@ void MainWindow::createNoteDock()
 
     QGridLayout *midLayout = new QGridLayout;
 
+    QToolButton *hideNotesButton = new QToolButton(this);
+    hideNotesButton->setText(tr("&Hide Notes"));
+    hideNotesButton->setShortcut(Qt::Key_F10);
+    hideNotesButton->setToolTip(tr("Hide the notes"));
+    connect(hideNotesButton, SIGNAL(clicked()), this, SLOT(hideOrShowNotes()));
+
     QToolButton *tabFullscreenButton = new QToolButton(this);
     tabFullscreenButton->setText(tr("Fullscreen &Edit"));
     tabFullscreenButton->setShortcut(Qt::Key_F11);
     tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    connect(tabFullscreenButton, SIGNAL(pressed()), this, SLOT(editFullscreen()));;
+    connect(tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
 
     QToolButton *outlinerButton = new QToolButton(this);
     outlinerButton->setText(tr("Outliner"));
     outlinerButton->setShortcut(Qt::Key_F12);
     outlinerButton->setToolTip(tr("Launch the project outliner"));
-    connect(outlinerButton, SIGNAL(pressed()), this, SLOT(launchOutliner()));
+    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
     //    QToolButton *keepVisibleButton = new QToolButton(this);
     //    keepVisibleButton->setText(tr("Visible"));
@@ -298,15 +317,15 @@ void MainWindow::createNoteDock()
 
 
     QComboBox *stateCombo = new QComboBox;
-    midLayout->addWidget(tabFullscreenButton,0,0, Qt::AlignHCenter);
-    midLayout->addWidget(outlinerButton,1,0, Qt::AlignHCenter);
+    midLayout->addWidget(hideNotesButton,0,0, Qt::AlignHCenter);
+    midLayout->addWidget(tabFullscreenButton,1,0, Qt::AlignHCenter);
+    midLayout->addWidget(outlinerButton,2,0, Qt::AlignHCenter);
     //   midLayout->addWidget(stateCombo);
     midFrame->setLayout(midLayout);
 
     synopsisBox->setLayout(synLayout);
 
     noteBox->setLayout(noteLayout);
-
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(synopsisBox);
@@ -327,6 +346,61 @@ void MainWindow::createNoteDock()
 
     addDockWidget(Qt::BottomDockWidgetArea, noteDock);
 
+
+
+
+
+
+
+
+    bar = new QStatusBar(this);
+
+    QToolButton *showNotesButton = new QToolButton(this);
+    showNotesButton->setText(tr("&Show Notes"));
+    showNotesButton->setShortcut(Qt::Key_F10);
+    showNotesButton->setToolTip(tr("Show the notes"));
+    connect(showNotesButton, SIGNAL(clicked()), this, SLOT(hideOrShowNotes()));
+
+    QToolButton *status_tabFullscreenButton = new QToolButton(this);
+    status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
+    status_tabFullscreenButton->setShortcut(Qt::Key_F11);
+    status_tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
+    connect(status_tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
+
+    QToolButton *status_outlinerButton = new QToolButton(this);
+    status_outlinerButton->setText(tr("Outliner"));
+    status_outlinerButton->setShortcut(Qt::Key_F12);
+    status_outlinerButton->setToolTip(tr("Launch the project outliner"));
+    connect(status_outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
+
+//    QWidget *stretcher1 = new QWidget();
+//    stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+//    QWidget *stretcher2 = new QWidget();
+//    stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+
+//bar->addPermanentWidget(stretcher1);
+    bar->addPermanentWidget(showNotesButton);
+    bar->addPermanentWidget(status_tabFullscreenButton);
+    bar->addPermanentWidget(status_outlinerButton);
+//    bar->addPermanentWidget(stretcher2);
+
+    this->setStatusBar(bar);
+
+    bar->hide();
+
+    connect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(ifNoteDockHiddenShowBar()));
+
+
+
+
+
+    //    QWidget *widgetToHideWith_syn = new QWidget;
+    //    QWidget *widgetToHideWith_note = new QWidget;
+    //    QWidget *widgetToHideWith_mid = new QWidget;
+
+    //    widgetToHideWith_syn->setLayout(synLayout);
+    //    widgetToHideWith_note->setLayout(noteLayout);
+    //    widgetToHideWith_mid->setLayout(midLayout);
 
 }
 
@@ -681,7 +755,7 @@ void MainWindow::setConnections()
     connect(stats, SIGNAL(fetchCurrentNumber()), this, SLOT(setCurrentNumber()));
     connect(this, SIGNAL(currentNumber(int)), stats, SIGNAL(setCurrentNumberSignal(int)));
     connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)) );
-connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
+    connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
 }
 
 
@@ -920,11 +994,13 @@ void MainWindow::readSettings()
     resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
+    checkScreenResAtStartupBool = settings.value("checkScreenResAtStartup", true).toBool();
     settings.endGroup();
     settings.beginGroup( "Updater" );
     checkUpdateAtStartupBool = settings.value("checkAtStartup", true).toBool();
+    settings.endGroup();
 
-
+    ifNoteDockHiddenShowBar();
 
 }
 
@@ -1050,10 +1126,19 @@ void MainWindow::applyConfig()
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     settings.endGroup();
+    settings.beginGroup( "MainWindow" );
+    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
+    settings.endGroup();
 
     if(!NoProjectOpened)
         configTimer();
 
+
+    if(menuBarOnTop == true){
+        this->setMenuBar(menu->createMenuBar());
+        menu->hide();
+        toolBox->removeItem(toolBox->indexOf(menu));
+    }
 
     editMenu->applyConfig();
 }
@@ -1084,10 +1169,21 @@ void MainWindow::configTimer()
 
 
 
+//----------------------------------------------------------------------------
 
 
 
-
+void  MainWindow::hideOrShowNotes()
+{
+    if(bar->isHidden()){
+        noteDock->close();
+        bar->show();
+    }
+    else{
+        bar->hide();
+        noteDock->show();
+    }
+}
 
 
 
@@ -1191,12 +1287,12 @@ void MainWindow::setCurrentAttendList(int tabNum)
 int MainWindow::setCurrentNumber()
 {
 
-if(tabWidget->count() == 0)
-    return 0;
+    if(tabWidget->count() == 0)
+        return 0;
 
-int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
+    int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
 
-emit currentNumber(number);
+    emit currentNumber(number);
 
-return number;
+    return number;
 }

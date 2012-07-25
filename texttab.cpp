@@ -340,7 +340,6 @@ void TextTab::applyConfig()
     this->document()->setDefaultFont(font);
     changeTextFontSlot(font);
     changeTextHeightSlot(textHeight);
-    qDebug() << "ee";
 }
 
 

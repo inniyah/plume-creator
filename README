@@ -1,4 +1,11 @@
 PLUME CREATOR
+v 0.50
+	- Plume adapts its style to Gnome and KDE
+	- style selector added in settings
+	- button "Hide Notes" added (temporary)
+	- menu bar position selector added in settings (top or side)
+	- french translation updated
+
 v 0.49
 	- tree : 
 		- bug fixed: crash when deleting a scene separator

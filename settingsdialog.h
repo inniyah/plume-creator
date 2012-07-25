@@ -46,6 +46,9 @@ public slots:
 private slots:
     void readSettings();
     void langChanged();
+    void styleChanged();
+    void menuPositionChanged(bool menuOnTopBool);
+
 private:
     QSettings settings;
 
@@ -53,10 +56,13 @@ private:
     QStringList langs;
     QStringList langCodes;
 
+    QComboBox *styleComboBox;
+    QStringList styles;
+    QStringList styleCodes;
+
     QSpinBox *autosaveTimeSpin;
     int autosaveTime;
-    QCheckBox *checkUpdateAtStartupCheckBox;
-QCheckBox *preventDoubleSpaceCheckBox;
+    QCheckBox *menuBarOnTopCheckBox, *checkUpdateAtStartupCheckBox, *preventDoubleSpaceCheckBox;
 
 };
 

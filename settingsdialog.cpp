@@ -56,6 +56,37 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
     langLayout->addWidget(langLabel);
     langLayout->addWidget(langComboBox);
 
+
+    QHBoxLayout *styleLayout = new QHBoxLayout;
+    QLabel *styleLabel = new QLabel(tr("Change Plume style :"));
+    styleComboBox = new QComboBox();
+    styles <<  tr("System default") << tr("Plastique (KDE)") << tr("Cleanlooks");
+#ifdef Q_OS_LINUX
+    styles << tr("Gtk (Gnome/XFCE)");
+#endif
+#ifdef Q_OS_WIN32
+    styles  << tr("Windows Vista") << tr("Windows XP");
+#endif
+#ifdef Q_OS_MAC
+    styles << tr("Macintosh (OSX)");
+#endif
+    styleCodes << "default" << "plastique" << "cleanlooks";
+#ifdef Q_OS_LINUX
+    styleCodes << "gtk";
+#endif
+#ifdef Q_OS_WIN32
+    styleCodes << "vista" << "xp";
+#endif
+#ifdef Q_OS_MAC
+    styleCodes << "osx";
+#endif
+    styleComboBox->addItems(styles);
+    styleLayout->addWidget(styleLabel);
+    styleLayout->addWidget(styleComboBox);
+
+    menuBarOnTopCheckBox = new QCheckBox(tr("Set the menu bar on top"));
+    menuBarOnTopCheckBox->setToolTip(tr("Menu is set horizontaly on top or verticaly on the right side"));
+
     QHBoxLayout *autosaveLayout = new QHBoxLayout;
     QLabel *autosaveLabel = new QLabel(tr("Save project every :"));
     autosaveTimeSpin = new QSpinBox;
@@ -68,11 +99,13 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
 
     checkUpdateAtStartupCheckBox = new QCheckBox(tr("Check update at startup"));
 
-preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters between words"));
+    preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters between words"));
 
 
     generalBoxLayout->addLayout(langLayout);
+    generalBoxLayout->addLayout(styleLayout);
     generalBoxLayout->addLayout(autosaveLayout);
+    generalBoxLayout->addWidget(menuBarOnTopCheckBox);
     generalBoxLayout->addWidget(checkUpdateAtStartupCheckBox);
     generalBoxLayout->addWidget(preventDoubleSpaceCheckBox);
     generalBoxLayout->addStretch();
@@ -85,6 +118,8 @@ preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters
     readSettings();
 
     connect(langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
+    connect(styleComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(styleChanged()), Qt::UniqueConnection);
+    connect(menuBarOnTopCheckBox,SIGNAL(toggled(bool)), this, SLOT(menuPositionChanged(bool)), Qt::UniqueConnection);
 }
 
 //---------------------------------------------------------------------------------
@@ -92,8 +127,27 @@ preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters
 void GeneralSettingTab::langChanged()
 {
     QMessageBox msgBox;
-    msgBox.setText("A different language has been selected.<br>The change will be effective after restarting the program.");
+    msgBox.setText(tr("A different language has been selected.<br>The change will be effective after restarting the program."));
     msgBox.exec();
+}
+
+//---------------------------------------------------------------------------------
+
+void GeneralSettingTab::styleChanged()
+{
+    QMessageBox msgBox;
+    msgBox.setText(tr("A different style has been selected.<br>The change will be effective after restarting the program."));
+    msgBox.exec();
+}
+
+//---------------------------------------------------------------------------------
+void GeneralSettingTab::menuPositionChanged(bool menuOnTopBool)
+{
+    if(menuOnTopBool == false){
+    QMessageBox msgBox;
+    msgBox.setText(tr("The menu will be set on the side.<br>The change will be effective after restarting the program."));
+    msgBox.exec();
+    }
 }
 
 //---------------------------------------------------------------------------------
@@ -102,11 +156,13 @@ void GeneralSettingTab::readSettings()
 {
     settings.beginGroup("MainWindow");
     langComboBox->setCurrentIndex(langCodes.indexOf(settings.value("lang", "en_US").toString()));
-    settings.endGroup();
+    styleComboBox->setCurrentIndex(styleCodes.indexOf(settings.value("style", "default").toString()));
+    menuBarOnTopCheckBox->setChecked(settings.value("menuBarOnTop", true).toBool());
+         settings.endGroup();
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     autosaveTimeSpin->setValue(autosaveTime / 1000);
-preventDoubleSpaceCheckBox->setChecked(settings.value("preventDoubleSpace", false).toBool());
+    preventDoubleSpaceCheckBox->setChecked(settings.value("preventDoubleSpace", false).toBool());
     settings.endGroup();
     settings.beginGroup("Updater");
     checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup", true).toBool());
@@ -120,7 +176,9 @@ void GeneralSettingTab::accept()
 {
     settings.beginGroup("MainWindow");
     settings.setValue("lang", langCodes.at(langs.indexOf(langComboBox->currentText())));
-    settings.endGroup();
+    settings.setValue("style", styleCodes.at(styles.indexOf(styleComboBox->currentText())));
+    settings.setValue("menuBarOnTop", menuBarOnTopCheckBox->isChecked());
+          settings.endGroup();
     settings.beginGroup( "Settings" );
     settings.setValue("autosaveTime", autosaveTimeSpin->value() * 1000);
     settings.setValue("preventDoubleSpace", preventDoubleSpaceCheckBox->isChecked());
