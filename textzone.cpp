@@ -501,7 +501,8 @@ void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
     textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
-    QWidget::resizeEvent(event);
+QWidget::resizeEvent(event);
+
 }
 
 

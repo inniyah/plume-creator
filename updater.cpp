@@ -40,7 +40,7 @@ Updater::Updater(QString mode, QWidget *parent) :
     connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
 
     verifyLayout = new QVBoxLayout;
-    verifyLayout->addWidget(verifyLabel);
+    verifyLayout->addWidget(verifyLabel,Qt::AlignCenter);
     verifyLayout->addWidget(checkerLabel);
     verifyLayout->addWidget(verifyButton);
 
@@ -122,7 +122,6 @@ void Updater::checkUpdate()
 bool Updater::checkConnection()
 {
 
-    qDebug() << "a";
 
     QAbstractSocket *netSocket = new QAbstractSocket(QAbstractSocket::TcpSocket, this);
     netSocket->connectToHost("sourceforge.net", 80);
@@ -231,12 +230,12 @@ void Updater::replyFinished(QNetworkReply *reply)
 
     if(thisVersion.toFloat() < updateVersion.toFloat()){
         QString downloadLink = node.toElement().attribute("url1") + milestone + node.toElement().attribute("url2") + updateVersion + node.toElement().attribute("url3");
-        verifyLabel->setText(("<center>An update is available ! Plume Creator version ")
-                             + updateVersion + tr("<br>Download it directly here : <br><address><a href=")
+        verifyLabel->setText(("<b><h3><center>An update is available ! Plume Creator version ")
+                             + updateVersion + tr("</h3><b><br>Download it directly here : <br><address><a href=")
                              + downloadLink + ">" + downloadLink + tr("</a></address></center>"));
     }
     else if(thisVersion.toFloat() == updateVersion.toFloat()){
-        verifyLabel->setText(tr("You are up to date !"));
+        verifyLabel->setText(tr("<b><h3><center>You are up to date !</h3><b>"));
 
     }
 

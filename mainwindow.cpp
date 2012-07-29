@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 #include "newprojectwizard.h"
-#include "menubox.h"
+#include "menubar.h"
 #include "maintree.h"
 #include "statsbox.h"
 #include "itembox.h"
@@ -22,17 +22,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
 
-    setMinimumSize(800, 600);
+    setMinimumSize(800, 400);
     setWindowTitle("Plume Creator");
 
     setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks);
 
 
     //temporary config
-//        setStyleSheet("* {background-color: grey; color: white;}");
+    //    setStyleSheet("* {background-color: black; color: beige;}");
 
     // netbook mode 10':
-    //setFixedSize(1024, 600);
+    //    setFixedSize(900, 550);
 
 
     tabWidget = new QTabWidget;
@@ -43,12 +43,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(tabWidget);
 
-
-
-    createMenuDock();
+    createMenuBar();
+    //    createMenuDock();
+    createAttendDock();
     createTreeDock();
     createNoteDock();
     createToolDock();
+    createDocksToolBar();
+    createStatusBar();
+
+
 
 
     setConnections();
@@ -66,20 +70,22 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox firstStart;
         firstStart.setWindowTitle(tr("Welcome"));
         firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QApplication::applicationVersion() + tr("!</b></center>"
-                                                                                                      "<p>Plume Creator is a little program for writers"
-                                                                                                      " in quest of a complete yet simple way of"
-                                                                                                      " writing and organizing a fiction.</p>"
-                                                                                                      "<br>"
-                                                                                                      "<p>It allows :"
-                                                                                                      "<blockquote>- fullscreen text editing</blockquote>"
-                                                                                                      "<blockquote>- chapters and scenes outlining</blockquote>"
-                                                                                                      "<blockquote>- note taking</blockquote>"
-                                                                                                      "<blockquote>- items/characters/places managing</blockquote></p>"
+                                                                                                                         "<p>Plume Creator is a little program for writers"
+                                                                                                                         " in quest of a complete yet simple way of"
+                                                                                                                         " writing and organizing a fiction.</p>"
+                                                                                                                         "<br>"
+                                                                                                                         "<p>It allows :"
+                                                                                                                         "<blockquote>- fullscreen text editing</blockquote>"
+                                                                                                                         "<blockquote>- chapters and scenes outlining</blockquote>"
+                                                                                                                         "<blockquote>- note taking</blockquote>"
+                                                                                                                         "<blockquote>- items/characters/places managing</blockquote></p>"
+                                                                                                                         "<p><b><h1>This is a Beta software ! It's stable but all the features are not finished !</h1></b></p>"
 
 
-
-                                                                                                      ));
+                                                                                                                         ));
         firstStart.exec();
+
+
 
         NewProjectWizard projectWizard;
         projectWizard.exec();
@@ -89,11 +95,38 @@ MainWindow::MainWindow(QWidget *parent)
 
     }
 
-//    if(checkScreenResAtStartupBool){
-//        QRect scrGeom = QDesktopWidget::availableGeometry();
-//        if(scrGeom.x() <= 1024 && scrGeom.x() <= 600)
 
-//    }
+    if (m_firstStart_checkDisplay && QApplication::desktop()->availableGeometry().height() < 650){
+        QMessageBox firstStart_checkDisplay;
+        firstStart_checkDisplay.setWindowTitle(tr("Small screen size detected"));
+        firstStart_checkDisplay.setText(tr("<center><b>A small screen has been detected</b></center>"
+                                           "<p>Maybe you are running Plume on a netbook."
+                                           " Plume will adapt its interface to this type of computer."
+                                           "</p>"
+                                           "<br>"
+                                           "<p>You can change this option in the 'Configure' dialog."
+                                           "</p>"
+                                           ));
+        firstStart_checkDisplay.exec();
+
+        QSettings settings;
+        settings.setValue("MainWindow/displayMode", "netbook");
+        setDisplayMode("netbook");
+
+        m_firstStart_checkDisplay = false;
+
+
+    }
+
+
+
+
+
+    //    if(checkScreenResAtStartupBool){
+    //        QRect scrGeom = QDesktopWidget::availableGeometry();
+    //        if(scrGeom.x() <= 1024 && scrGeom.x() <= 600)
+
+    //    }
 
 
 
@@ -113,59 +146,34 @@ MainWindow::~MainWindow()
 
 
 
-
 //---------------------------------------------------------------------------
 
-void MainWindow::createMenuDock()
+void MainWindow::createMenuBar()
 {
-
-    QDockWidget *menuDock = new QDockWidget;
-
-    menuDock->setObjectName("menuDock");
+    menu = new MenuBar;
 
 
-    menuDock->setWindowTitle(tr("Menus"));
-    menuDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    menuDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    menuDock->setMinimumSize(160,350);
-    //    menuDock->setMaximumWidth(200);
-
-    toolBox = new QToolBox;
-
-
-
-    // page 1
-    menu = new MenuBox;
-
-    menu->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    menu->setLineWidth(2);
-    menu->setMidLineWidth(3);
-
-
-    toolBox->addItem(menu, tr("Menu"));
 
     connect(menu, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
     connect(menu, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
+    connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
 
 
     menu->firstLaunch();
-    toolBox->setCurrentWidget(menu);
 
+    this->setMenuBar(menu->createMenuBar());
 
+}
 
-    //page 2
+//---------------------------------------------------------------------------
 
-    editMenu = new EditMenuBox;
-
-    editMenu->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    editMenu->setLineWidth(2);
-    editMenu->setMidLineWidth(3);
-
-    toolBox->addItem(editMenu, tr("Edit Menu"));
-
-    //page 3
+void MainWindow::createAttendDock()
+{
+    attendDock = new QDockWidget;
+    attendDock->setObjectName("attendDock");
+    attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
     attendList = new AttendBox;
 
@@ -173,16 +181,83 @@ void MainWindow::createMenuDock()
     attendList->setLineWidth(2);
     attendList->setMidLineWidth(3);
 
-    toolBox->addItem(attendList, tr("Attendance"));
+    attendDock->setWidget(attendList);
+    addDockWidget(Qt::RightDockWidgetArea, attendDock);
+
+    connect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+
+    attendDock->hide();
+}
+
+//---------------------------------------------------------------------------
+
+void MainWindow::createMenuDock()
+{
+
+    //    QDockWidget *menuDock = new QDockWidget;
+
+    //    menuDock->setObjectName("menuDock");
 
 
-    toolBox->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    toolBox->setLineWidth(2);
-    toolBox->setMidLineWidth(3);
+    //    menuDock->setWindowTitle(tr("Menus"));
+    //    menuDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    //    menuDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    //    menuDock->setMinimumSize(160,350);
+    //    //    menuDock->setMaximumWidth(200);
 
-    menuDock->setWidget(toolBox);
+    //    toolBox = new QToolBox;
 
-    addDockWidget(Qt::RightDockWidgetArea, menuDock);
+
+
+    // page 1
+    //    menu = new MenuBar;
+
+    //    menu->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //    menu->setLineWidth(2);
+    //    menu->setMidLineWidth(3);
+
+
+    //    toolBox->addItem(menu, tr("Menu"));
+
+    //    connect(menu, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+
+    //    connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
+    //    connect(menu, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
+
+
+    //    menu->firstLaunch();
+    //    toolBox->setCurrentWidget(menu);
+
+
+
+    //page 2
+
+    //    editMenu = new EditMenuBar;
+
+    //    editMenu->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //    editMenu->setLineWidth(2);
+    //    editMenu->setMidLineWidth(3);
+
+    //    toolBox->addItem(editMenu, tr("Edit Menu"));
+
+    //page 3
+
+    //    attendList = new AttendBox;
+
+    //    attendList->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //    attendList->setLineWidth(2);
+    //    attendList->setMidLineWidth(3);
+
+    //    toolBox->addItem(attendList, tr("Attendance"));
+
+
+    //    toolBox->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    //    toolBox->setLineWidth(2);
+    //    toolBox->setMidLineWidth(3);
+
+    //    menuDock->setWidget(toolBox);
+
+    //    addDockWidget(Qt::RightDockWidgetArea, menuDock);
 
 
 
@@ -195,7 +270,7 @@ void MainWindow::createMenuDock()
 void MainWindow::createTreeDock()
 {
 
-    QDockWidget *treeDock = new QDockWidget;
+    treeDock = new QDockWidget;
 
     treeDock->setObjectName("treeDock");
     treeDock->setWindowTitle(tr("Tree"));
@@ -211,6 +286,9 @@ void MainWindow::createTreeDock()
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
+    connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+
+
 }
 
 //---------------------------------------------------------------------------
@@ -219,7 +297,7 @@ void MainWindow::createTreeDock()
 void MainWindow::createToolDock()
 {
 
-    QDockWidget *toolDock = new QDockWidget;
+    toolDock = new QDockWidget;
 
     toolDock->setObjectName("toolDock");
     toolDock->setWindowTitle(tr("Tools"));
@@ -257,6 +335,12 @@ void MainWindow::createToolDock()
 
     addDockWidget(Qt::LeftDockWidgetArea, toolDock);
 
+
+    connect(toolDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+
+    //default behaviour :
+    toolDock->hide();
+
 }
 
 //---------------------------------------------------------------------------------------------
@@ -269,8 +353,7 @@ void MainWindow::createNoteDock()
     noteDock->setObjectName("noteDock");
     noteDock->setWindowTitle(tr("Notes"));
     noteDock->setAllowedAreas(Qt::BottomDockWidgetArea);
-    noteDock->setMinimumSize(800,200);
-    noteDock->setMaximumSize(2000,800);
+
 
     synLayout = new QStackedLayout;
     noteLayout = new QStackedLayout;
@@ -283,30 +366,30 @@ void MainWindow::createNoteDock()
     frame->setMidLineWidth(3);
 
 
-    QFrame *midFrame = new QFrame;
-    midFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    midFrame->setLineWidth(1);
-    midFrame->setMidLineWidth(3);
+    //    QFrame *midFrame = new QFrame;
+    //    midFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //    midFrame->setLineWidth(1);
+    //    midFrame->setMidLineWidth(3);
 
-    QGridLayout *midLayout = new QGridLayout;
+    //    QGridLayout *midLayout = new QGridLayout;
 
-    QToolButton *hideNotesButton = new QToolButton(this);
-    hideNotesButton->setText(tr("&Hide Notes"));
-    hideNotesButton->setShortcut(Qt::Key_F10);
-    hideNotesButton->setToolTip(tr("Hide the notes"));
-    connect(hideNotesButton, SIGNAL(clicked()), this, SLOT(hideOrShowNotes()));
+    //    QToolButton *hideNotesButton = new QToolButton(this);
+    //    hideNotesButton->setText(tr("&Hide Notes"));
+    //    hideNotesButton->setShortcut(Qt::Key_F10);
+    //    hideNotesButton->setToolTip(tr("Hide the notes"));
+    //    connect(hideNotesButton, SIGNAL(clicked()), noteDock, SLOT(hide()));
 
-    QToolButton *tabFullscreenButton = new QToolButton(this);
-    tabFullscreenButton->setText(tr("Fullscreen &Edit"));
-    tabFullscreenButton->setShortcut(Qt::Key_F11);
-    tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    connect(tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
+    //    QToolButton *tabFullscreenButton = new QToolButton(this);
+    //    tabFullscreenButton->setText(tr("Fullscreen &Edit"));
+    //    tabFullscreenButton->setShortcut(Qt::Key_F11);
+    //    tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
+    //    connect(tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
 
-    QToolButton *outlinerButton = new QToolButton(this);
-    outlinerButton->setText(tr("Outliner"));
-    outlinerButton->setShortcut(Qt::Key_F12);
-    outlinerButton->setToolTip(tr("Launch the project outliner"));
-    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
+    //    QToolButton *outlinerButton = new QToolButton(this);
+    //    outlinerButton->setText(tr("Outliner"));
+    //    outlinerButton->setShortcut(Qt::Key_F12);
+    //    outlinerButton->setToolTip(tr("Launch the project outliner"));
+    //    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
     //    QToolButton *keepVisibleButton = new QToolButton(this);
     //    keepVisibleButton->setText(tr("Visible"));
@@ -315,30 +398,31 @@ void MainWindow::createNoteDock()
     //    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
     //    connect(keepVisibleButton, SIGNAL(toggled(bool)), tabWidget, SLOT(showFullScreen()));;
 
+    //    QComboBox *stateCombo = new QComboBox;
 
-    QComboBox *stateCombo = new QComboBox;
-    midLayout->addWidget(hideNotesButton,0,0, Qt::AlignHCenter);
-    midLayout->addWidget(tabFullscreenButton,1,0, Qt::AlignHCenter);
-    midLayout->addWidget(outlinerButton,2,0, Qt::AlignHCenter);
+
+    //    midLayout->addWidget(hideNotesButton,0,0, Qt::AlignHCenter);
+    //    midLayout->addWidget(tabFullscreenButton,1,0, Qt::AlignHCenter);
+    //    midLayout->addWidget(outlinerButton,2,0, Qt::AlignHCenter);
     //   midLayout->addWidget(stateCombo);
-    midFrame->setLayout(midLayout);
+    //  midFrame->setLayout(midLayout);
 
     synopsisBox->setLayout(synLayout);
 
     noteBox->setLayout(noteLayout);
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(synopsisBox);
-    layout->addWidget(midFrame);
-    layout->addWidget(noteBox);
-    frame->setLayout(layout);
+    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    noteDockLayout->addWidget(synopsisBox);
+    //    layout->addWidget(midFrame);
+    noteDockLayout->addWidget(noteBox);
+    frame->setLayout(noteDockLayout);
 
 
     noteDock->setWidget(frame);
 
     QStringList list;
     list << tr("Draft") << tr("25%") << tr("50%") << tr("75%") << tr("Done") << tr("Corrected");
-    stateCombo->insertItems(0, list);
+    //    stateCombo->insertItems(0, list);
 
 
     synopsisBox->setTitle(tr("Synopsis"));
@@ -348,18 +432,48 @@ void MainWindow::createNoteDock()
 
 
 
+    connect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+    connect(noteDock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(changeOrientationOfNoteDock(Qt::DockWidgetArea)));
+
+    //default behaviour :
+    noteDock->hide();
 
 
 
+    //    QWidget *widgetToHideWith_syn = new QWidget;
+    //    QWidget *widgetToHideWith_note = new QWidget;
+    //    QWidget *widgetToHideWith_mid = new QWidget;
+
+    //    widgetToHideWith_syn->setLayout(synLayout);
+    //    widgetToHideWith_note->setLayout(noteLayout);
+    //    widgetToHideWith_mid->setLayout(midLayout);
+
+}
+//---------------------------------------------------------------------------
 
 
+void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
+{
+    if(noteDockArea == Qt::LeftDockWidgetArea | noteDockArea == Qt::RightDockWidgetArea){
+        noteDockLayout->setDirection(QBoxLayout::TopToBottom);
+
+    }
+    else if(noteDockArea == Qt::TopDockWidgetArea | noteDockArea == Qt::BottomDockWidgetArea){
+        noteDockLayout->setDirection(QBoxLayout::LeftToRight);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+void MainWindow::createStatusBar()
+{
     bar = new QStatusBar(this);
 
     QToolButton *showNotesButton = new QToolButton(this);
     showNotesButton->setText(tr("&Show Notes"));
     showNotesButton->setShortcut(Qt::Key_F10);
     showNotesButton->setToolTip(tr("Show the notes"));
-    connect(showNotesButton, SIGNAL(clicked()), this, SLOT(hideOrShowNotes()));
+    connect(showNotesButton, SIGNAL(clicked()), noteDock, SLOT(show()));
 
     QToolButton *status_tabFullscreenButton = new QToolButton(this);
     status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
@@ -373,36 +487,216 @@ void MainWindow::createNoteDock()
     status_outlinerButton->setToolTip(tr("Launch the project outliner"));
     connect(status_outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
-//    QWidget *stretcher1 = new QWidget();
-//    stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
-//    QWidget *stretcher2 = new QWidget();
-//    stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+    sceneWCLabel = new QLabel();
 
-//bar->addPermanentWidget(stretcher1);
-    bar->addPermanentWidget(showNotesButton);
-    bar->addPermanentWidget(status_tabFullscreenButton);
-    bar->addPermanentWidget(status_outlinerButton);
-//    bar->addPermanentWidget(stretcher2);
+    QWidget *stretcher1 = new QWidget();
+    stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+    //        QWidget *stretcher2 = new QWidget();
+    //        stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+
+    //bar->addPermanentWidget(stretcher1);
+
+    bar->addPermanentWidget(sceneWCLabel,1);
+    bar->addPermanentWidget(stretcher1,10);
+    bar->addPermanentWidget(showNotesButton,2);
+    bar->addPermanentWidget(status_tabFullscreenButton,2);
+    bar->addPermanentWidget(status_outlinerButton,2);
+    //    bar->addPermanentWidget(stretcher2);
 
     this->setStatusBar(bar);
 
-    bar->hide();
-
-    connect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(ifNoteDockHiddenShowBar()));
+}
 
 
+//---------------------------------------------------------------------------
+
+void MainWindow::createDocksToolBar()
+{
+
+    docksToolBar = new QToolBar(tr("Dock Buttons"), this);
+    docksToolBar->setObjectName("docksToolBar");
+    docksToolBar->setOrientation(Qt::Vertical);
+    docksToolBar->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
+    docksToolBar->setMovable(true);
+    docksToolBar->setFloatable(false);
+
+    treeDockButton = new OrientationButton(tr("Tree"));
+    treeDockButton->setOrientation(Qt::Vertical);
+    treeDockButton->setCheckable(true);
+    treeDockButton->setMirrored(true);
+    connect(treeDockButton, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
 
 
+    noteDockButton = new OrientationButton(tr("Notes"));
+    noteDockButton->setOrientation(Qt::Vertical);
+    noteDockButton->setCheckable(true);
+    noteDockButton->setMirrored(true);
+    connect(noteDockButton, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
 
-    //    QWidget *widgetToHideWith_syn = new QWidget;
-    //    QWidget *widgetToHideWith_note = new QWidget;
-    //    QWidget *widgetToHideWith_mid = new QWidget;
+    toolDockButton = new OrientationButton(tr("Tools (clock)"));
+    toolDockButton->setOrientation(Qt::Vertical);
+    toolDockButton->setCheckable(true);
+    toolDockButton->setMirrored(true);
+    connect(toolDockButton, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
 
-    //    widgetToHideWith_syn->setLayout(synLayout);
-    //    widgetToHideWith_note->setLayout(noteLayout);
-    //    widgetToHideWith_mid->setLayout(midLayout);
+    attendDockButton = new OrientationButton(tr("Attendance"));
+    attendDockButton->setOrientation(Qt::Vertical);
+    attendDockButton->setCheckable(true);
+    attendDockButton->setMirrored(true);
+    connect(attendDockButton, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
+
+    docksToolBar->addWidget(treeDockButton);
+    docksToolBar->addWidget(noteDockButton);
+    docksToolBar->addWidget(toolDockButton);
+    docksToolBar->addWidget(attendDockButton);
+
+    //    this->addToolBar(Qt::LeftToolBarArea, docksToolBar);
 
 }
+
+//---------------------------------------------------------------------------
+
+void MainWindow::checkHiddenDocks()
+{
+
+
+
+    if(treeDock->isVisible())
+        treeDockButton->setChecked(true);
+    else
+        treeDockButton->setChecked(false);
+
+    if(noteDock->isVisible()){
+      noteDockButton->setChecked(true);
+    }
+    else
+        noteDockButton->setChecked(false);
+
+    if(toolDock->isVisible())
+        toolDockButton->setChecked(true);
+    else
+        toolDockButton->setChecked(false);
+
+    if(attendDock->isVisible()){
+        attendDockButton->setChecked(true);
+    }
+    else
+        attendDockButton->setChecked(false);
+
+
+}
+
+
+
+//---------------------------------------------------------------------------
+
+void MainWindow::setDisplayMode(QString mode)
+{
+    QSettings settings;
+    settings.beginGroup( "MainWindow" );
+
+    if(mode == "desktop"){
+        settings.setValue( "netbook_wmState", saveState(1) );
+
+        disconnect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(attendDockHidesOthers(bool)));
+        disconnect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(noteDockHidesOthers(bool)));
+
+        docksToolBar->setAllowedAreas(Qt::RightToolBarArea | Qt::LeftToolBarArea);
+        docksToolBar->setOrientation(Qt::Vertical);
+        docksToolBar->setMovable(true);
+        docksToolBar->setFloatable(false);
+        this->addToolBar(Qt::LeftToolBarArea, docksToolBar);
+
+        attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+        attendDock->setFloating(false);
+        this->addDockWidget(Qt::RightDockWidgetArea, attendDock, Qt::Vertical);
+
+        noteDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+        noteDock->setFloating(false);
+        this->addDockWidget(Qt::RightDockWidgetArea, noteDock, Qt::Horizontal);
+        this->changeOrientationOfNoteDock(Qt::RightDockWidgetArea);
+
+        treeDock->setWindowTitle(tr("Tree"));
+        treeDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+        this->addDockWidget(Qt::LeftDockWidgetArea, treeDock, Qt::Vertical);
+
+
+        restoreState( settings.value( "desktop_wmState" ).toByteArray(),1 );
+
+    }
+
+    if(mode == "netbook"){
+
+        settings.setValue( "desktop_wmState", saveState(1) );
+
+        docksToolBar->setAllowedAreas(Qt::RightToolBarArea);
+        docksToolBar->setOrientation(Qt::Vertical);
+        docksToolBar->setMovable(false);
+        docksToolBar->setFloatable(false);
+        this->addToolBar(Qt::RightToolBarArea, docksToolBar);
+
+        attendDock->setAllowedAreas(Qt::RightDockWidgetArea);
+        attendDock->setFloating(false);
+        this->addDockWidget(Qt::RightDockWidgetArea, attendDock, Qt::Vertical);
+
+        noteDock->setAllowedAreas(Qt::RightDockWidgetArea);
+        noteDock->setFloating(false);
+        this->addDockWidget(Qt::RightDockWidgetArea, noteDock, Qt::Vertical);
+        this->changeOrientationOfNoteDock(Qt::BottomDockWidgetArea);
+
+        treeDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+        treeDock->setFloating(false);
+        this->addDockWidget(Qt::LeftDockWidgetArea, treeDock, Qt::Vertical);
+
+
+        connect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(attendDockHidesOthers(bool)));
+        connect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(noteDockHidesOthers(bool)));
+
+        restoreState( settings.value( "netbook_wmState" ).toByteArray(),1 );
+
+    }
+
+
+    displayMode = mode;
+    checkHiddenDocks();
+
+
+    settings.endGroup();
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -561,11 +855,10 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
 
 
         //connect edit menu to tab
-        connect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
 
-        connect(editMenu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
-        connect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
-        connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
+        connect(menu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
+        connect(menu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
+        connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
 
 
         //connect note & syn to maintree :
@@ -603,10 +896,15 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(this, SIGNAL(applyConfigSignal()), noteStack,SLOT(applyNoteConfig()));
 
 
-        editMenu->loadSliderValue();
+        QSettings settings;
+        int textWidthValue = settings.value("Settings/TextArea/textWidth", tab->width()/2 ).toInt();
+
+        tab->changeWidthSlot(textWidthValue);
 
 
-
+        // For wordcount :
+        connect(tab,SIGNAL(wordCountSignal(int)),this,SLOT(updateSceneWC(int)));
+        tab->updateWordCounts();
 
         //    temporary config
 
@@ -673,11 +971,11 @@ void MainWindow::secondTextSlot(int number, QString action)
 
 
         //disconnect edit menu to tab
-        disconnect(editMenu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
+        disconnect(menu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
 
-        disconnect(editMenu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
-        disconnect(editMenu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
-        disconnect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),editMenu,SLOT(charFormatChangedSlot(QTextCharFormat)));
+        disconnect(menu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
+        disconnect(menu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
+        disconnect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
 
 
         int tabNum = tabWidget->indexOf(tab);
@@ -728,13 +1026,10 @@ void MainWindow::setConnections()
     connect(menu, SIGNAL(openProjectNumberSignal(int)), this, SLOT(setProjectNumberSlot(int)));
     connect(menu, SIGNAL(saveProjectSignal()), this, SLOT(saveAllDocsSlot()));
 
-    connect(this, SIGNAL(tabWidgetWidth(int)), editMenu,SLOT(tabWitdhChangedSlot(int)));
-    emit tabWidgetWidth(tabWidget->width());
-
 
 
     //to show previous text :
-    connect(editMenu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
+    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
 
 
     //for attendance :
@@ -798,9 +1093,9 @@ void MainWindow::tabChangeSlot(int tabNum)
         //to initialize edit menu fonts:
 
         TextTab *tab = textWidgetList->at(tabNum);
-        editMenu->tabChangedSlot(tab->tabFontChangedSlot());
+        menu->tabChangedSlot(tab->tabFontChangedSlot());
 
-        editMenu->setShowPreviousTextButton(tab->setShowPrevTextButton());
+        menu->setShowPreviousTextButton(tab->setShowPrevTextButton());
 
         setCurrentAttendList(tabNum);
 
@@ -990,17 +1285,20 @@ void MainWindow::readSettings()
 {
     QSettings settings;
     settings.beginGroup( "MainWindow" );
-    restoreState( settings.value( "wmState" ).toByteArray(),1 );
-    resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
+    this->setDisplayMode(settings.value("displayMode", "desktop").toString() );
+    resize(settings.value( "size", QSize( 800, 500 ) ).toSize() );
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
+    m_firstStart_checkDisplay = settings.value("firstStart_checkDisplay", true).toBool();
     checkScreenResAtStartupBool = settings.value("checkScreenResAtStartup", true).toBool();
     settings.endGroup();
     settings.beginGroup( "Updater" );
     checkUpdateAtStartupBool = settings.value("checkAtStartup", true).toBool();
     settings.endGroup();
 
-    ifNoteDockHiddenShowBar();
+
+    checkHiddenDocks();
+
 
 }
 
@@ -1011,10 +1309,17 @@ void MainWindow::writeSettings()
 
     QSettings settings;
     settings.beginGroup( "MainWindow" );
-    settings.setValue( "wmState", saveState(1) );
+
+    if(settings.value( "displayMode", "desktop" ).toString() == "netbook")
+        settings.setValue( "netbook_wmState", saveState(1) );
+    else if(settings.value( "displayMode", "desktop" ).toString() == "desktop")
+        settings.setValue( "desktop_wmState", saveState(1) );
+
+
     settings.setValue( "size", size() );
     settings.setValue( "pos", pos() );
     settings.setValue( "firstStart", false);
+    settings.setValue( "firstStart_checkDisplay", false);
     settings.endGroup();
 
     //    qDebug() << "main settings saved";
@@ -1127,20 +1432,19 @@ void MainWindow::applyConfig()
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     settings.endGroup();
     settings.beginGroup( "MainWindow" );
-    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
+    //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
     settings.endGroup();
 
     if(!NoProjectOpened)
         configTimer();
 
 
-    if(menuBarOnTop == true){
-        this->setMenuBar(menu->createMenuBar());
-        menu->hide();
-        toolBox->removeItem(toolBox->indexOf(menu));
-    }
+    //    if(menuBarOnTop == true){
+    //        menu->hide();
+    //        toolBox->removeItem(toolBox->indexOf(menu));
+    //    }
 
-    editMenu->applyConfig();
+    //    menu->applyConfig();
 }
 
 //---------------------------------------------------------------------------
@@ -1168,22 +1472,6 @@ void MainWindow::configTimer()
 
 
 
-
-//----------------------------------------------------------------------------
-
-
-
-void  MainWindow::hideOrShowNotes()
-{
-    if(bar->isHidden()){
-        noteDock->close();
-        bar->show();
-    }
-    else{
-        bar->hide();
-        noteDock->show();
-    }
-}
 
 
 

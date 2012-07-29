@@ -8,7 +8,7 @@ FindReplace::FindReplace(QFile *device, QWidget *parent) :
         setWindowTitle(tr("Find & Replace Dialog"));
 
 
-    setMinimumSize(600,600);
+    setMinimumSize(600,300);
 
 
     QLabel *label = new QLabel(tr("Please complete the fields below: "));

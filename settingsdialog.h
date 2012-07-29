@@ -16,8 +16,9 @@ public:
 
 protected:
     void accept();
-
+    void reject();
 signals:
+    void setDisplayModeSignal(QString mode);
 
 public slots:
 
@@ -39,15 +40,17 @@ public:
 
 signals:
     void autosaveTimeSignal(int autosaveTime);
+    void setDisplayModeSignal(QString mode);
 
 public slots:
     void accept();
+    void reject();
 
 private slots:
     void readSettings();
     void langChanged();
     void styleChanged();
-    void menuPositionChanged(bool menuOnTopBool);
+    void displayModeChanged(int dispModeIndex);
 
 private:
     QSettings settings;
@@ -60,9 +63,16 @@ private:
     QStringList styles;
     QStringList styleCodes;
 
+    QComboBox *displayModeComboBox;
+    QStringList displayModes;
+    QStringList displayModeCodes;
+
+
     QSpinBox *autosaveTimeSpin;
     int autosaveTime;
-    QCheckBox *menuBarOnTopCheckBox, *checkUpdateAtStartupCheckBox, *preventDoubleSpaceCheckBox;
+    QCheckBox *checkUpdateAtStartupCheckBox, *preventDoubleSpaceCheckBox;
+
+    QString displayMode, prev_displayMode;
 
 };
 
@@ -81,10 +91,10 @@ signals:
 
 public slots:
     void accept();
+    void reject();
 
 private slots:
     void readSettings();
-
 private:
     QSettings settings;
     QFontComboBox *textFontCombo;
@@ -94,6 +104,8 @@ private:
     QCheckBox *showScrollbarBox;
     int textIndentValue,
     textMarginValue;
+    QSpinBox *widthSpin;
+    int textWidthValue, previous_textWidthValue;
 
     QCheckBox *showFullScrollbarBox;
 

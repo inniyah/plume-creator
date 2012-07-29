@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
 
-    instance.setApplicationVersion("0.50");
+    instance.setApplicationVersion("0.51");
 
     QString message=argv[1];
 
@@ -97,34 +97,35 @@ int main(int argc, char *argv[])
 
 
     // style :
-
     QSettings settings;
-    if (settings.value("MainWindow/style", "default").toString() == "plastique" ){
+QString plumeStyle = settings.value("MainWindow/style", "default").toString();
+
+    if (plumeStyle == "plastique" ){
         QApplication::setStyle(new QPlastiqueStyle);
     }
-    else if(settings.value("MainWindow/style", "default").toString() == "cleanlooks" ){
+    else if(plumeStyle == "cleanlooks" ){
         QApplication::setStyle(new QCleanlooksStyle);
     }
 #ifdef Q_OS_LINUX
-    else if(settings.value("MainWindow/style", "default").toString() == "gtk" ){
+    else if(plumeStyle == "gtk" ){
         QApplication::setStyle(new QGtkStyle);
     }
 #endif
 #ifdef Q_OS_WIN32
-    else if(settings.value("MainWindow/style", "default").toString() == "vista" ){
+    else if(plumeStyle == "vista" ){
         QApplication::setStyle(new QWindowsVistaStyle);
     }
-    else if(settings.value("MainWindow/style", "default").toString() == "xp" ){
+    else if(plumeStyle == "xp" ){
         QApplication::setStyle(new QWindowsXPStyle);
     }
 #endif
 
 #ifdef Q_OS_MAC
-    else if (settings.value("MainWindow/style", "default").toString() == "osx" ){
+    else if (plumeStyle == "osx" ){
         QApplication::setStyle(new QMacStyle);
     }
 #endif
-    else if (settings.value("MainWindow/style", "default").toString() == "default" ){
+    else if (plumeStyle == "default" ){
 
         QApplication::setStyle(new QPlastiqueStyle);
 

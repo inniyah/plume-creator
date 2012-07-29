@@ -2,11 +2,19 @@
 
 #include "outline.h"
 #include "outlineitem.h"
-//
+
+
+
+
+
+// Soon, this class will be deprecated !
+
+
+
+
 Outline::Outline(QWidget *parent) :
     QWidget(parent), newAttendName("*" + tr("new"))
 {
-
     QVBoxLayout *layout = new QVBoxLayout();
 
     setMinimumSize(600, 600);
@@ -172,6 +180,12 @@ Outline::Outline(QWidget *parent) :
 
 
 //    qDebug() << "outline launched";
+
+
+
+
+
+
 }
 
 

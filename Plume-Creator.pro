@@ -12,9 +12,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     newprojectwizard.cpp \
-    menubox.cpp \
     prjmanager.cpp \
-    editmenubox.cpp \
     maintree.cpp \
     statsbox.cpp \
     itembox.cpp \
@@ -33,13 +31,16 @@ SOURCES += main.cpp\
     attendbox.cpp \
     updater.cpp \
     wordcountthread.cpp \
-    findreplace.cpp
+    findreplace.cpp \
+    outlinerspreadsheet.cpp \
+    outlinerbase.cpp \
+    orientationbutton.cpp \
+    editmenu.cpp \
+    menubar.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
-    menubox.h \
     prjmanager.h \
-    editmenubox.h \
     maintree.h \
     statsbox.h \
     itembox.h \
@@ -58,7 +59,12 @@ HEADERS  += mainwindow.h \
     attendbox.h \
     updater.h \
     wordcountthread.h \
-    findreplace.h
+    findreplace.h \
+    outlinerspreadsheet.h \
+    outlinerbase.h \
+    orientationbutton.h \
+    editmenu.h \
+    menubar.h
 
 RESOURCES += \
     pics.qrc \

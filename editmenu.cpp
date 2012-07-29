@@ -1,6 +1,6 @@
-#include "editmenubox.h"
+#include "editmenu.h"
 //
-EditMenuBox::EditMenuBox(QWidget *parent) :
+EditMenu::EditMenu(QWidget *parent) :
     QFrame(parent), xMax(0)
 {
     showPreviousTextButton = new QToolButton();
@@ -21,8 +21,7 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
     textSpin->setRange(6,30);
     connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
-    QLabel *textZoneWidthLabel = new QLabel(tr("Text Area Width :"));
-    widthSlider = new QSlider(Qt::Horizontal);
+
     QWidget *stretcher = new QWidget;
     stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
@@ -32,9 +31,7 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
     baseGridLayout->addWidget(showPreviousTextButton,0,0);
     baseGridLayout->addWidget(textFontCombo,2,0);
     baseGridLayout->addWidget(textSpin,3,0);
-    baseGridLayout->addWidget(textZoneWidthLabel,4,0);
-    baseGridLayout->addWidget(widthSlider,5,0);
-    baseGridLayout->addWidget(stretcher,6,0);
+    baseGridLayout->addWidget(stretcher,4,0);
     setLayout(baseGridLayout);
 
     connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
@@ -45,7 +42,7 @@ EditMenuBox::EditMenuBox(QWidget *parent) :
 }
 
 //----------------------------------------------------------------------------------------
-void EditMenuBox::charFormatChangedSlot(QTextCharFormat format)
+void EditMenu::charFormatChangedSlot(QTextCharFormat format)
 {
     disconnect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
     disconnect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
@@ -62,43 +59,8 @@ void EditMenuBox::charFormatChangedSlot(QTextCharFormat format)
 
 //----------------------------------------------------------------------------------------
 
-void EditMenuBox::loadSliderValue()
-{
-    int sliderValue = settings.value("TextArea/areaWidth", 400).toInt();
-    widthSlider->setSliderPosition(sliderValue);
-    widthSlider->setValue(sliderValue);
 
-//    QString debug;
-//    qDebug() << "loadSliderValue : " << debug.setNum(sliderValue);
-    sliderValueChanged(sliderValue);
-    connect(widthSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)), Qt::UniqueConnection);
-
-}
-
-//----------------------------------------------------------------------------------------
-
-void EditMenuBox::sliderValueChanged(int value)
-{
-    sliderValue = value;
-    settings.setValue( "TextArea/areaWidth", sliderValue);
-    emit widthChangedSignal(sliderValue);
-}
-
-//----------------------------------------------------------------------------------------
-
-void EditMenuBox::tabWitdhChangedSlot(int value)
-{
-    int oldXMax = 0;
-    xMax = value;
-
-    if(xMax < widthSlider->value() && widthSlider->value() < oldXMax)
-        widthSlider->setValue(xMax);
-
-    widthSlider->setRange(200, xMax);
-    oldXMax = xMax;
-}
-
-void EditMenuBox::tabChangedSlot(QTextCharFormat newTabFormat)
+void EditMenu::tabChangedSlot(QTextCharFormat newTabFormat)
 {
 
 
@@ -107,7 +69,7 @@ void EditMenuBox::tabChangedSlot(QTextCharFormat newTabFormat)
 
 
 
-void EditMenuBox::showPreviousText(bool showPrevTextBool)
+void EditMenu::showPreviousText(bool showPrevTextBool)
 {
 
         emit showPrevTextSignal(showPrevTextBool);
@@ -115,7 +77,7 @@ void EditMenuBox::showPreviousText(bool showPrevTextBool)
 }
 
 
-void EditMenuBox::setShowPreviousTextButton(bool showPrevTextBool)
+void EditMenu::setShowPreviousTextButton(bool showPrevTextBool)
 {
     disconnect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
 
@@ -139,7 +101,7 @@ void EditMenuBox::setShowPreviousTextButton(bool showPrevTextBool)
 //-----------------------------------------------------------------------------------------------
 
 
-void EditMenuBox::applyConfig()
+void EditMenu::applyConfig()
 {
     QSettings settings;
     settings.beginGroup( "Settings" );
@@ -154,7 +116,7 @@ void EditMenuBox::applyConfig()
 }
 
 //---------------------------------------------------------------------------
-void EditMenuBox::applyStyleSheet()
+void EditMenu::applyStyleSheet()
 {
         this->setStyleSheet(
                             "QSpinBox::up-button{subcontrol-origin: padding; subcontrol-position: left top;}"

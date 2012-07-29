@@ -1,13 +1,12 @@
-#include "menubox.h"
+#include "menubar.h"
 #include "prjmanager.h"
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter.h"
 #include "updater.h"
 #include "findreplace.h"
-
 //
-MenuBox::MenuBox(QWidget *parent) :
+MenuBar::MenuBar(QWidget *parent) :
     QFrame(parent), extFile(0), currentVersion(QApplication::applicationVersion())
 {
 
@@ -23,7 +22,7 @@ MenuBox::MenuBox(QWidget *parent) :
 
 //---------------------------------------------------------------------------
 
-void MenuBox::newProject()
+void MenuBar::newProject()
 {
     NewProjectWizard projectWizard(this);
     projectWizard.exec();
@@ -34,7 +33,7 @@ void MenuBox::newProject()
 
 //---------------------------------------------------------------------------
 
-//void MenuBox::open()
+//void MenuBar::open()
 //{
 //    QString fileName =
 //            QFileDialog::getOpenFileName(this, tr("Open Project File"),
@@ -88,7 +87,7 @@ void MenuBox::newProject()
 
 //---------------------------------------------------------------------------
 
-void MenuBox::projectManager()
+void MenuBar::projectManager()
 {
 
     projManager = new PrjManager(this);
@@ -108,12 +107,15 @@ void MenuBox::projectManager()
 //---------------------------------------------------------------------------
 
 
-void MenuBox::displayConfig()
+void MenuBar::displayConfig()
 {
 
     SettingsDialog *settingsDialog = new SettingsDialog(this);
     connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
-    settingsDialog->exec();
+    connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString)), this, SIGNAL(setDisplayModeSignal(QString)));
+
+
+            settingsDialog->exec();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -125,7 +127,7 @@ void MenuBox::displayConfig()
 //--------------------------------------------------------------------------
 
 
-void MenuBox::closeProject()
+void MenuBar::closeProject()
 {
     if(file == 0)
         return;
@@ -160,7 +162,7 @@ void MenuBox::closeProject()
 //--------------------------------------------------------------------------
 
 
-void MenuBox::exporter()
+void MenuBar::exporter()
 {
     if(file == 0)
         return;
@@ -175,7 +177,7 @@ void MenuBox::exporter()
 //--------------------------------------------------------------------------
 
 
-void MenuBox::print()
+void MenuBar::print()
 {
 
     if(file == 0)
@@ -192,7 +194,7 @@ void MenuBox::print()
 
 
 
-void MenuBox::findAndReplace()
+void MenuBar::findAndReplace()
 {
     if(file == 0)
         return;
@@ -207,7 +209,7 @@ void MenuBox::findAndReplace()
 
 //--------------------------------------------------------------------------
 
-void MenuBox::aboutQt()
+void MenuBar::aboutQt()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
 
@@ -217,7 +219,7 @@ void MenuBox::aboutQt()
 
 //----------------------------------------------------------------------------
 
-void MenuBox::about()
+void MenuBar::about()
 {
     QMessageBox::about(this, tr("About Plume Creator"),
                        "<p><center><b>Plume Creator</b></p>"
@@ -250,7 +252,7 @@ void MenuBox::about()
 //--------------------------------------------------------------------------
 
 
-void MenuBox::launchCheckUpdateDialog(QString mode)
+void MenuBar::launchCheckUpdateDialog(QString mode)
 {
 
     Updater *checkUpdateDialog = new Updater(mode);
@@ -261,7 +263,7 @@ void MenuBox::launchCheckUpdateDialog(QString mode)
 }
 //--------------------------------------------------------------------------
 
-void MenuBox::exit()
+void MenuBar::exit()
 {
 
     writeSettings();
@@ -277,7 +279,7 @@ void MenuBox::exit()
 //---------------------------------------------------------------------------
 
 
-QMenuBar *MenuBox::createMenuBar()
+QMenuBar *MenuBar::createMenuBar()
 {
 
     QMenuBar *menubar = new QMenuBar();
@@ -296,7 +298,7 @@ QMenuBar *MenuBox::createMenuBar()
 //---------------------------------------------------------------------------
 
 
-void MenuBox::createActions()
+void MenuBar::createActions()
 {
     newProjectAct = new QAction(tr("&New Project"), this);
     newProjectAct->setText(tr("&New Project"));
@@ -360,9 +362,15 @@ void MenuBox::createActions()
     findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
     connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
 
+
+    createEditWidget();
+    QWidgetAction *editWidgetAct = new QWidgetAction(this);
+    editWidgetAct->setDefaultWidget(editWidget);
+
     editGroup = new QMenu(tr("&Edit"),this);
     editGroup->addAction(findReplaceAct);
-
+    editGroup->addSeparator();
+    editGroup->addAction(editWidgetAct);
 
     aboutAct = new QAction(this);
     aboutAct->setText(tr("About"));
@@ -392,148 +400,178 @@ void MenuBox::createActions()
 //---------------------------------------------------------------------------
 
 
-void MenuBox::createButtons()
+
+void MenuBar::createEditWidget()
 {
-    QSize buttonSize(120,60);
 
+editWidget = new EditMenu;
 
-    QVBoxLayout *baseGridLayout = new QVBoxLayout;
+//editWidget->setFrameStyle(QFrame::Panel);
+//editWidget->setLineWidth(2);
+//editWidget->setMidLineWidth(3);
 
-    newProjectButton = new QToolButton(this);
-    newProjectButton->setMaximumSize(buttonSize);
-    newProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    newProjectButton->setText(tr("&New Project"));
-    newProjectButton->setShortcut(QKeySequence::New);
-    newProjectButton->setToolTip(tr("Create a new project"));
-    connect(newProjectButton, SIGNAL(clicked()), this, SLOT(newProject()));
+// repeater to join editWidget to MainWindow :
 
-    projectManagerButton = new QToolButton(this);
-    projectManagerButton->setMaximumSize(buttonSize);
-    projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    projectManagerButton->setText(tr("Project &Manager"));
-    // projectManagerAct->setShortcut(QKeySequence::New);
-    projectManagerButton->setToolTip(tr("Create and manage your projects"));
-    connect(projectManagerButton, SIGNAL(clicked()), this, SLOT(projectManager()));
+connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
 
-    //    openButton = new QToolButton(this);
-    //    openButton->setMaximumSize(buttonSize);
-    //    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    //    openButton->setText(tr("&Open..."));
-    //    openButton->setShortcut(QKeySequence::Open);
-    //    openButton->setToolTip(tr("Open an existing file"));
-    //    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
+connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
+connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
 
-    displayConfigButton = new QToolButton(this);
-    displayConfigButton->setMaximumSize(buttonSize);
-    displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    displayConfigButton->setText(tr("&Configure"));
-    //    displayConfigButton->setShortcut(QKeySequence::Print);
-    displayConfigButton->setToolTip(tr("Display the configuration"));
-    connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
+connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
-    findReplaceButton = new QToolButton(this);
-    findReplaceButton->setText(tr("&Find && Replace"));
-    // aboutAct->setShortcut(QKeySequence::Quit);
-    findReplaceButton->setToolTip(tr("Find & Replace Dialog"));
-    connect(findReplaceButton, SIGNAL(clicked()), this, SLOT(findAndReplace()));
+connect(editWidget, SIGNAL(showPrevTextSignal(bool)), this, SIGNAL(showPrevTextSignal(bool)));
 
-
-    exportButton = new QToolButton(this);
-    exportButton->setMaximumSize(buttonSize);
-    exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    exportButton->setText(tr("&Export"));
-    //   exportButton->setShortcut(QKeySequence::Print);
-    exportButton->setToolTip(tr("Export the project"));
-    connect(exportButton, SIGNAL(clicked()), this, SLOT(exporter()));
-
-    printButton = new QToolButton(this);
-    printButton->setMaximumSize(buttonSize);
-    printButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    printButton->setText(tr("&Print"));
-    printButton->setShortcut(QKeySequence::Print);
-    printButton->setToolTip(tr("Print part of the project"));
-    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
-
-    closeProjectButton = new QToolButton(this);
-    closeProjectButton->setMaximumSize(buttonSize);
-    closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    closeProjectButton->setText(tr("&Close project"));
-    closeProjectButton->setShortcut(QKeySequence::Close);
-    closeProjectButton->setToolTip(tr("Print the document"));
-    connect(closeProjectButton, SIGNAL(clicked()), this, SLOT(closeProject()));;
-
-    exitButton = new QToolButton(this);
-    exitButton->setMaximumSize(buttonSize);
-    exitButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    exitButton->setText(tr("E&xit"));
-    exitButton->setShortcut(QKeySequence::Quit);
-    exitButton->setToolTip(tr("Exit the application"));
-    connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
-
-
-    aboutButton = new QToolButton(this);
-    aboutButton->setMaximumSize(buttonSize);
-    aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    aboutButton->setText(tr("About"));
-    // aboutButton->setShortcut(QKeySequence::Quit);
-    aboutButton->setToolTip(tr("about the application"));
-    connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
-
-    aboutQtButton = new QToolButton(this);
-    aboutQtButton->setMaximumSize(buttonSize);
-    aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    aboutQtButton->setText(tr("About Qt"));
-    // aboutQtButton->setShortcut(QKeySequence::Quit);
-    aboutQtButton->setToolTip(tr("about Qt"));
-    connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
-
-    updaterButton = new QToolButton(this);
-    updaterButton->setMaximumSize(buttonSize);
-    updaterButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    updaterButton->setText(tr("Check Update"));
-    // aboutQtButton->setShortcut(QKeySequence::Quit);
-    updaterButton->setToolTip(tr("check for an update"));
-    connect(updaterButton, SIGNAL(clicked()), this, SLOT(checkUpdate()));
-
-    //    QSize size(80,30);
-    //    newProjectButton->setFixedSize(size);
-    //    projectManagerButton->setFixedSize(size);
-    // //   openButton->setFixedSize(size);
-    //    displayConfigButton->setFixedSize(size);
-    //    closeProjectButton->setFixedSize(size);
-    //    exitButton->setFixedSize(size);
-    //    printButton->setFixedSize(size);
-    //    aboutQtButton->setFixedSize(size);
-    //    aboutButton->setFixedSize(size);
+}
 
 
 
 
-    baseGridLayout->addWidget(newProjectButton);
-    baseGridLayout->addWidget(projectManagerButton);
-    //   baseGridLayout->addWidget(openButton);
-    baseGridLayout->addSpacing(5);
-
-    baseGridLayout->addWidget(findReplaceButton);
-    baseGridLayout->addSpacing(5);
-
-    baseGridLayout->addWidget(displayConfigButton);
-    baseGridLayout->addWidget(exportButton);
-    baseGridLayout->addWidget(printButton);
-    baseGridLayout->addSpacing(5);
 
 
-    baseGridLayout->addWidget(aboutButton);
-    baseGridLayout->addWidget(aboutQtButton);
-    baseGridLayout->addWidget(updaterButton);
-    baseGridLayout->addSpacing(5);
 
-    baseGridLayout->addWidget(closeProjectButton);
-    baseGridLayout->addWidget(exitButton);
-    baseGridLayout->addStretch(0);
 
-    baseGridLayout->setSpacing(0);
-    setLayout(baseGridLayout);
+void MenuBar::createButtons()
+{
+//    QSize buttonSize(120,60);
+
+
+//    QVBoxLayout *baseGridLayout = new QVBoxLayout;
+
+//    newProjectButton = new QToolButton(this);
+//    newProjectButton->setMaximumSize(buttonSize);
+//    newProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    newProjectButton->setText(tr("&New Project"));
+//    newProjectButton->setShortcut(QKeySequence::New);
+//    newProjectButton->setToolTip(tr("Create a new project"));
+//    connect(newProjectButton, SIGNAL(clicked()), this, SLOT(newProject()));
+
+//    projectManagerButton = new QToolButton(this);
+//    projectManagerButton->setMaximumSize(buttonSize);
+//    projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    projectManagerButton->setText(tr("Project &Manager"));
+//    // projectManagerAct->setShortcut(QKeySequence::New);
+//    projectManagerButton->setToolTip(tr("Create and manage your projects"));
+//    connect(projectManagerButton, SIGNAL(clicked()), this, SLOT(projectManager()));
+
+//    //    openButton = new QToolButton(this);
+//    //    openButton->setMaximumSize(buttonSize);
+//    //    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    //    openButton->setText(tr("&Open..."));
+//    //    openButton->setShortcut(QKeySequence::Open);
+//    //    openButton->setToolTip(tr("Open an existing file"));
+//    //    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
+
+//    displayConfigButton = new QToolButton(this);
+//    displayConfigButton->setMaximumSize(buttonSize);
+//    displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    displayConfigButton->setText(tr("&Configure"));
+//    //    displayConfigButton->setShortcut(QKeySequence::Print);
+//    displayConfigButton->setToolTip(tr("Display the configuration"));
+//    connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
+
+//    findReplaceButton = new QToolButton(this);
+//    findReplaceButton->setText(tr("&Find && Replace"));
+//    // aboutAct->setShortcut(QKeySequence::Quit);
+//    findReplaceButton->setToolTip(tr("Find & Replace Dialog"));
+//    connect(findReplaceButton, SIGNAL(clicked()), this, SLOT(findAndReplace()));
+
+
+//    exportButton = new QToolButton(this);
+//    exportButton->setMaximumSize(buttonSize);
+//    exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    exportButton->setText(tr("&Export"));
+//    //   exportButton->setShortcut(QKeySequence::Print);
+//    exportButton->setToolTip(tr("Export the project"));
+//    connect(exportButton, SIGNAL(clicked()), this, SLOT(exporter()));
+
+//    printButton = new QToolButton(this);
+//    printButton->setMaximumSize(buttonSize);
+//    printButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    printButton->setText(tr("&Print"));
+//    printButton->setShortcut(QKeySequence::Print);
+//    printButton->setToolTip(tr("Print part of the project"));
+//    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
+
+//    closeProjectButton = new QToolButton(this);
+//    closeProjectButton->setMaximumSize(buttonSize);
+//    closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    closeProjectButton->setText(tr("&Close project"));
+//    closeProjectButton->setShortcut(QKeySequence::Close);
+//    closeProjectButton->setToolTip(tr("Print the document"));
+//    connect(closeProjectButton, SIGNAL(clicked()), this, SLOT(closeProject()));;
+
+//    exitButton = new QToolButton(this);
+//    exitButton->setMaximumSize(buttonSize);
+//    exitButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    exitButton->setText(tr("E&xit"));
+//    exitButton->setShortcut(QKeySequence::Quit);
+//    exitButton->setToolTip(tr("Exit the application"));
+//    connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
+
+
+//    aboutButton = new QToolButton(this);
+//    aboutButton->setMaximumSize(buttonSize);
+//    aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    aboutButton->setText(tr("About"));
+//    // aboutButton->setShortcut(QKeySequence::Quit);
+//    aboutButton->setToolTip(tr("about the application"));
+//    connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
+
+//    aboutQtButton = new QToolButton(this);
+//    aboutQtButton->setMaximumSize(buttonSize);
+//    aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    aboutQtButton->setText(tr("About Qt"));
+//    // aboutQtButton->setShortcut(QKeySequence::Quit);
+//    aboutQtButton->setToolTip(tr("about Qt"));
+//    connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
+
+//    updaterButton = new QToolButton(this);
+//    updaterButton->setMaximumSize(buttonSize);
+//    updaterButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    updaterButton->setText(tr("Check Update"));
+//    // aboutQtButton->setShortcut(QKeySequence::Quit);
+//    updaterButton->setToolTip(tr("check for an update"));
+//    connect(updaterButton, SIGNAL(clicked()), this, SLOT(checkUpdate()));
+
+//    //    QSize size(80,30);
+//    //    newProjectButton->setFixedSize(size);
+//    //    projectManagerButton->setFixedSize(size);
+//    // //   openButton->setFixedSize(size);
+//    //    displayConfigButton->setFixedSize(size);
+//    //    closeProjectButton->setFixedSize(size);
+//    //    exitButton->setFixedSize(size);
+//    //    printButton->setFixedSize(size);
+//    //    aboutQtButton->setFixedSize(size);
+//    //    aboutButton->setFixedSize(size);
+
+
+
+
+//    baseGridLayout->addWidget(newProjectButton);
+//    baseGridLayout->addWidget(projectManagerButton);
+//    //   baseGridLayout->addWidget(openButton);
+//    baseGridLayout->addSpacing(5);
+
+//    baseGridLayout->addWidget(findReplaceButton);
+//    baseGridLayout->addSpacing(5);
+
+//    baseGridLayout->addWidget(displayConfigButton);
+//    baseGridLayout->addWidget(exportButton);
+//    baseGridLayout->addWidget(printButton);
+//    baseGridLayout->addSpacing(5);
+
+
+//    baseGridLayout->addWidget(aboutButton);
+//    baseGridLayout->addWidget(aboutQtButton);
+//    baseGridLayout->addWidget(updaterButton);
+//    baseGridLayout->addSpacing(5);
+
+//    baseGridLayout->addWidget(closeProjectButton);
+//    baseGridLayout->addWidget(exitButton);
+//    baseGridLayout->addStretch(0);
+
+//    baseGridLayout->setSpacing(0);
+//    setLayout(baseGridLayout);
 }
 
 
@@ -543,7 +581,7 @@ void MenuBox::createButtons()
 
 //---------------------------------------------------------------------------
 
-void MenuBox::readSettings()
+void MenuBar::readSettings()
 {
 
 
@@ -551,7 +589,7 @@ void MenuBox::readSettings()
 
 //---------------------------------------------------------------------------
 
-void MenuBox::writeSettings()
+void MenuBar::writeSettings()
 {
 
 
@@ -562,7 +600,7 @@ void MenuBox::writeSettings()
 
 //---------------------------------------------------------------------------
 
-void MenuBox::openProjectManagerSlot()
+void MenuBar::openProjectManagerSlot()
 {
 
     if(projManager->isVisible()){
@@ -581,7 +619,7 @@ void MenuBox::openProjectManagerSlot()
 }
 //---------------------------------------------------------------------------
 
-void MenuBox::openNewProjectSlot()
+void MenuBar::openNewProjectSlot()
 {
 
     newProject();
@@ -594,7 +632,7 @@ void MenuBox::openNewProjectSlot()
 }
 //---------------------------------------------------------------------------
 
-void MenuBox::openProjectSlot(QFile *device)
+void MenuBar::openProjectSlot(QFile *device)
 {
 
     closeProject();
@@ -614,7 +652,7 @@ void MenuBox::openProjectSlot(QFile *device)
 
 //---------------------------------------------------------------------------
 
-void MenuBox::setExternalProject(QFile *externalFile)
+void MenuBar::setExternalProject(QFile *externalFile)
 {
     QFileInfo *externalFileInfo = new QFileInfo(externalFile->fileName());
     QString extFileName = externalFileInfo->fileName();
@@ -847,7 +885,7 @@ void MenuBox::setExternalProject(QFile *externalFile)
 }
 
 //---------------------------------------------------------------------------
-bool MenuBox::openExternalProject(QFile *externalPrjFile)
+bool MenuBar::openExternalProject(QFile *externalPrjFile)
 {
 
 
@@ -969,7 +1007,7 @@ bool MenuBox::openExternalProject(QFile *externalPrjFile)
 
 
 //---------------------------------------------------------------------------
-void MenuBox::giveStyle()
+void MenuBar::giveStyle()
 {
 
 
@@ -999,9 +1037,10 @@ void MenuBox::giveStyle()
 //-----------------------------------------------------------------------------------------------
 
 
-void MenuBox::applyConfig()
+void MenuBar::applyConfig()
 {
 
+    editWidget->applyConfig();
 
     emit applyConfigSignal();
 }

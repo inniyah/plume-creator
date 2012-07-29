@@ -26,6 +26,7 @@
 #include <QDomDocument>
 
 #include <outline.h>
+#include <outlinerbase.h>
 //
 class MainTree : public QTreeWidget
 {
@@ -54,6 +55,13 @@ signals:
     // for Outliner :
     void disconnectUpdateTextsSignal();
     void connectUpdateTextsSignal();
+
+
+    void showOutlinerSignal();
+    void saveOutliner();
+   void domDocSignal(QDomDocument domDoc);
+
+
 
     // for attendance :
 
@@ -122,6 +130,9 @@ private slots:
     void saveOutlineSettings();
     void insertOutlinerItem(int newNumber, int numberOfRef);
     void outlinerClosed(){outlinerLaunched = false;}
+
+
+
 
 private:
     void parseFolderElement(const QDomElement &element,
@@ -193,9 +204,14 @@ private:
     //Outline :
 
     Outline *outliner;
-    bool outlinerLaunched;
     int widgetTargetedNumber;
     QTreeWidgetItem *itemTargetedForOutliner;
+
+//NEW Outliner :
+
+    OutlinerBase *outlinerBase;
+    bool outlinerLaunched;
+
 
 
 

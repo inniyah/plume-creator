@@ -17,8 +17,8 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef MENUBOX_H
-#define MENUBOX_H
+#ifndef MENUBAR_H
+#define MENUBAR_H
 
 #include <QtGui>
 #include <QWidget>
@@ -26,12 +26,14 @@
 
 #include "prjmanager.h"
 #include "settingsdialog.h"
+#include "editmenu.h"
+
 //
-class MenuBox : public QFrame
+class MenuBar : public QFrame
 {
     Q_OBJECT
 public:
-    explicit MenuBox(QWidget *parent = 0);
+    explicit MenuBar(QWidget *parent = 0);
 
     void openManager()
     {
@@ -59,6 +61,22 @@ signals:
 
     void applyConfigSignal();
 
+    //repeater between Dialog Settings and MainWindow
+    void setDisplayModeSignal(QString mode);
+
+
+    // repeater to join editWidget to MainWindow :
+
+
+void widthChangedSignal(int width);
+void textFontChangedSignal(QFont font);
+void textHeightChangedSignal(int textHeight);
+
+void charFormatChangedSlotSignal(QTextCharFormat charFmt);
+ void tabWidgetChangedSlotSignal(int newTabWidth);
+  void showPrevTextSignal(bool prevText);
+void tabWitdhChangedSlotSignal(int);
+
 public slots:
 
 
@@ -68,6 +86,14 @@ public slots:
 void setExternalProject(QFile *externalFile);
 bool openExternalProject(QFile *externalPrjFile);
 QMenuBar *createMenuBar();
+
+
+//repeater for editWidget :
+void tabChangedSlot(QTextCharFormat newTabFormat){editWidget->tabChangedSlot(newTabFormat);}
+void setShowPreviousTextButton(bool showPrevTextBool){editWidget->setShowPreviousTextButton(showPrevTextBool);}
+
+
+void applyConfig();
 
 private slots:
 
@@ -84,7 +110,8 @@ private slots:
     void checkUpdate(){ launchCheckUpdateDialog("none"); }
     void exit();
 
-    void applyConfig();
+    void createEditWidget();
+
 
 private:
 
@@ -119,6 +146,8 @@ QMenu *projectGroup;
 QMenu *editGroup;
 QMenu *helpGroup;
 
+EditMenu *editWidget;
+
 
     void createActions();
     void createButtons();
@@ -138,4 +167,4 @@ QMenu *helpGroup;
     QFile *extFile;
 };
 
-#endif // MENUBOX_H
+#endif // MENUBAR_H

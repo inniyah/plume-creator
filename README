@@ -1,4 +1,13 @@
 PLUME CREATOR
+v 0.51
+	- Dialogs resized for 10" netbooks
+	- 2 display modes available : "Desktop" and "Netbook"
+	- Toolbar to hide/show docks added
+	- right-side menu removed
+	- edit options moved to the top menu
+	- slider for "main text zone width" moved to settings dialog
+	- Outliner is temporarily removed  
+
 v 0.50
 	- Plume adapts its style to Gnome and KDE
 	- style selector added in settings

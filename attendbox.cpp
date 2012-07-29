@@ -7,12 +7,32 @@ AttendBox::AttendBox(QWidget *parent) :
     QFrame(parent), attendManagerLaunched(false), deletingItemBool(false),newAttendName("*" + tr("new")), newAttendElementBool(false)
 {
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
 
     attendList = new QListWidget;
     abstractList = new QListWidget;
+    projectList = new QListWidget;
+    dockProjectList = new QListWidget;
+//setProjectList();
+
+
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+
+    QPushButton *launchManagerButton = new QPushButton(tr("Manage"));
+    QPushButton *POVButton = new QPushButton(tr("POV", "Point Of View"));
+
+//    buttonsLayout->addWidget(launchManagerButton);
+//    buttonsLayout->addWidget(POVButton);
+
+//    connect(launchManagerButton, SIGNAL(clicked()), this, SLOT(launchAttendManager()));
+//    connect(POVButton, SIGNAL(clicked()), this, SLOT(launchAttendManager()));
+
 
     mainLayout->addWidget(attendList);
+//    mainLayout->addWidget(dockProjectList);
+    mainLayout->addLayout(buttonsLayout);
+
     this->setLayout(mainLayout);
 
 }
@@ -956,7 +976,7 @@ void AttendBox::launchAttendManager()
 
     //sizes :
 
-    QSize buttonSize(40, 50);
+    QSize buttonSize(20, 30);
     toSheetButton->setFixedSize(buttonSize);
     toAllButton->setFixedSize(buttonSize);
     showDetailButton->setFixedSize(buttonSize);
@@ -966,7 +986,7 @@ void AttendBox::launchAttendManager()
     newPlaceButton->setFixedSize(buttonSize);
     deleteButton->setFixedSize(buttonSize);
 
-    QSize listSize(250, 550);
+    QSize listSize(250, 250);
     projectList->setMinimumSize(listSize);
     managerSheetList->setMinimumSize(listSize);
 
@@ -1008,6 +1028,7 @@ void AttendBox::setProjectList()
     while(projectList->count() != 0)
         projectList->takeItem(0);
 
+
     // display project list :
 
     QList<int> *intList = new QList<int>;
@@ -1026,7 +1047,7 @@ void AttendBox::setProjectList()
 
     while(!list->isEmpty()){
         projectList->addItem(list->takeFirst()->clone());
-    }
+        }
 }
 //---------------------------------------------------------------------------
 
@@ -1185,7 +1206,7 @@ void AttendBox::showDetailAnimation()
 
 
     animation->setStartValue(QRect(xManager,yManager,wManager,hManager));
-    animation->setEndValue(QRect(xManager - 500,yManager,wManager + 500,hManager));
+    animation->setEndValue(QRect(xManager - 200,yManager,wManager + 200,hManager));
     animation->start();
 
 
@@ -1248,7 +1269,7 @@ void AttendBox::hideDetailAnimation()
 
 
     animation->setStartValue(QRect(xManager,yManager,wManager,hManager));
-    animation->setEndValue(QRect(xManager + 500,yManager,wManager - 500,hManager));
+    animation->setEndValue(QRect(xManager + 200,yManager,wManager - 200,hManager));
     animation->start();
 
 
@@ -1625,7 +1646,7 @@ void AttendBox::readSettings()
 {
     QSettings settings;
     settings.beginGroup( "AttendManager" );
-    attendManager->resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
+    attendManager->resize(settings.value( "size", QSize( 600, 400 ) ).toSize() );
     attendManager->move(settings.value( "pos" ).toPoint() );
     //    detailsHiddenBool = settings.value( "hideDetails" ).toBool();
     int detailTextHeight = settings.value("detailTextHeight", 12).toInt();

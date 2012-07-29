@@ -22,8 +22,7 @@
 
 #include <QtGui/QMainWindow>
 
-#include "menubox.h"
-#include "editmenubox.h"
+#include "menubar.h"
 #include "maintree.h"
 #include "statsbox.h"
 #include "itembox.h"
@@ -32,6 +31,8 @@
 #include "fullscreeneditor.h"
 #include "outline.h"
 #include "attendbox.h"
+#include "orientationbutton.h"
+
 //
 class MainWindow : public QMainWindow
 {
@@ -74,47 +75,72 @@ private slots:
     void setProjectNumberSlot(int prjNumber);
     void editFullscreen();
     void launchOutliner();
-    void hideOrShowNotes();
 
     //config :
     void applyConfig();
     void configTimer();
-
+    void setDisplayMode(QString mode);
+    void changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea);
 
     void reconnectAFterTabClose();
     void showPrevText(bool showPrevTextBool);
 
-    void ifNoteDockHiddenShowBar(){    if(!noteDock->isVisible())   bar->show(); else bar->hide();}
+    void checkHiddenDocks();
+// for netbook mode :
+    void attendDockHidesOthers(bool attendIsVisible){if(attendIsVisible) noteDock->hide();}
+    void noteDockHidesOthers(bool noteIsVisible){if(noteIsVisible) attendDock->hide();}
+
 
     //attendance :
     void setCurrentAttendList(int tabNum);
 
     int setCurrentNumber();
 
+    //wordcount :
+    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("S : ") + sceneWCNum.setNum(count));}
+
 private:
 
+    void createMenuBar();
     void createMenuDock();
     void createTreeDock();
     void createNoteDock();
     void createToolDock();
+    void createAttendDock();
+    void createDocksToolBar();
+    void createStatusBar();
 
     QWidget *widgetToHideWith;
-    MenuBox *menu;
- QToolBox *toolBox;
- EditMenuBox *editMenu;
+    MenuBar *menu;
+    QToolBox *toolBox;
+    //    EditMenuBox *editMenu;
     MainTree *mainTree;
+    QDockWidget *treeDock;
     QDockWidget *noteDock;
+    QDockWidget *toolDock;
+    QDockWidget *attendDock;
     QStackedLayout *synLayout;
     QStackedLayout *noteLayout;
     StatsBox *stats;
     ItemBox *items;
     AttendBox *attendList;
+    QBoxLayout *noteDockLayout;
 
-QStatusBar *bar;
+    QStatusBar *bar;
+    QToolBar *docksToolBar;
+    OrientationButton *menuDockButton;
+    OrientationButton *toolDockButton;
+    OrientationButton *treeDockButton;
+    OrientationButton *noteDockButton;
+    OrientationButton *attendDockButton;
+    OrientationButton *editDockButton;
+
+    QLabel *sceneWCLabel;
 
     QFile *file;
 
     bool m_firstStart;
+    bool m_firstStart_checkDisplay;
     bool checkUpdateAtStartupBool;
     bool checkScreenResAtStartupBool;
 
@@ -137,11 +163,12 @@ QStatusBar *bar;
     void readSettings();
     void writeSettings();
     int settingNumber;
-bool menuBarOnTop;
+    bool menuBarOnTop;
     void autosaveTimer();
     bool NoProjectOpened;
     int autosaveTime;
     QTimer *timer;
+    QString displayMode;
 
     void setEditMenuConnections();
 

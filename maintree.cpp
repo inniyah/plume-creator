@@ -2536,39 +2536,86 @@ bool MainTree::saveDoc(QTextDocument *doc)
 
 void MainTree::launchOutliner()
 {
-    if(outlinerLaunched){
-        QApplication::setActiveWindow(outliner);
-        outliner->raise();
-        return;
-    }
-    //       outliner->cleanArea();
-    //       outliner->show();
-    //    }
-    //    else{
-    outliner = new Outline(0);
 
-    outliner->applyConfig();
-    buildOutliner();
+        if(outlinerLaunched){
+          // connect to raise and set active windows//        QApplication::setActiveWindow(outliner);
+            //        outliner->raise();
+            emit showOutlinerSignal();
+            return;
+        }
 
-    connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
-    connect(outliner, SIGNAL(outlinerClosedSignal()), this, SLOT(outlinerClosed()));
-    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
-    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
-    connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
-    connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
-    connect(outliner, SIGNAL(writeThisSignal(int)), this, SLOT(writeThisSlot(int)));
+    outlinerBase = new OutlinerBase(0);
 
-    //    }
-    //for attendance :
-    connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outliner, SLOT(updateAttendances(QHash<int,QString>)));
-    connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
-            ,outliner, SLOT(setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
 
-    outliner->setProjectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
+    connect(this, SIGNAL(showOutlinerSignal()), outlinerBase, SLOT(showOutliner()));
 
-    readAllAttendances();
+
+   // UpdatesToOutliner :
+
+//    connect(this,SIGNAL(), outlinerBase, SLOT());
+
+
+//for domDocument :
+    //            to Outline :
+
+    connect(this, SIGNAL(domDocSignal(QDomDocument)), outlinerBase, SLOT(mtoO_setDomDoc(QDomDocument)));
+emit domDocSignal(domDocument.cloneNode().toDocument());
+
+
+
+//for TextDocuments :
+
+
+
+
+
+        //for attendance :
+//           to Outline :
+        connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outlinerBase, SLOT(mtoO_updateAttendances(QHash<int,QString>)));
+        connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
+                ,outlinerBase, SLOT(mtoO_setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
+
+        emit projectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
+        readAllAttendances();
+
+
+
+
+
 
     outlinerLaunched = true;
+
+
+
+//    if(outlinerLaunched){
+//        QApplication::setActiveWindow(outliner);
+//        outliner->raise();
+//        return;
+//    }
+
+//    outliner = new Outline(0);
+
+//    outliner->applyConfig();
+//    buildOutliner();
+
+//    connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
+//    connect(outliner, SIGNAL(outlinerClosedSignal()), this, SLOT(outlinerClosed()));
+//    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
+//    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
+//    connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
+//    connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
+//    connect(outliner, SIGNAL(writeThisSignal(int)), this, SLOT(writeThisSlot(int)));
+
+//    //for attendance :
+//    connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outliner, SLOT(updateAttendances(QHash<int,QString>)));
+//    connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
+//            ,outliner, SLOT(setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
+
+//    outliner->setProjectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
+
+//    readAllAttendances();
+
+//    outlinerLaunched = true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -2610,17 +2657,36 @@ void MainTree::buildOutliner()
 
     outliner->buildStretcher();
     QTimer::singleShot( 5, this, SLOT(setOutlineViewPos()) );
+
+
+
+
+
+
+
+
+
+
 }
 
 //-----------------------------------------------------------------------------------------
 
 void MainTree::killOutliner()
 {
-    saveOutlineSettings();
-    outliner->close();
-    outliner->deleteLater();
-    outlinerLaunched = false;
+//    saveOutlineSettings();
+//    outliner->close();
+//    outliner->deleteLater();
+//    outlinerLaunched = false;
 
+//    if(outlinerLaunched){
+//        QApplication::setActiveWindow(outliner);
+//        outliner->raise();
+//        return;
+//    }
+
+outlinerBase->saveConfig();
+outlinerBase->deleteLater();
+ outlinerLaunched = false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -2731,6 +2797,21 @@ void MainTree::saveOutlineSettings()
 
 
 }
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+
+
+
+
 
 QTextDocument * MainTree::prevText(int num)
 {

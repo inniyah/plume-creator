@@ -15,9 +15,9 @@ TextTab::TextTab(QWidget *parent) :
     prevTextZone->toHtml();
 
 
+
     textZone = new TextZone(textDocument, this);
     textZone->toHtml();
-
 
     QHBoxLayout *layout = new QHBoxLayout;
     //QVBoxLayout *vLayout = new QVBoxLayout;
@@ -43,7 +43,6 @@ TextTab::TextTab(QWidget *parent) :
 
 
     prevTextZone->hide();
-
 
 
 
@@ -307,6 +306,7 @@ void TextTab::applyConfig()
     int textIndent = settings.value("TextArea/textIndent", 20).toInt();
     int textHeight = settings.value("TextArea/textHeight", 12).toInt();
     QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+    changeWidthSlot(settings.value("TextArea/textWidth", this->width()/2).toInt());
     settings.endGroup();
 
 
@@ -354,8 +354,10 @@ void TextTab::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------
 void TextTab::giveStyle()
 {
-    setStyleSheet(" TextZone {    border-width: 1px;"
+    setStyleSheet(" TextZone {    border-width: 0px;"
                   "border-style: outset;"
                   "border-radius: 0px;"
+                  "margin: 4px"
                   "}");
+
 }

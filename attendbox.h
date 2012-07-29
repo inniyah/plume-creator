@@ -112,7 +112,7 @@ private:
     QHash<QTextDocument *, QFile *>::iterator u;
 
     int currentSheetNumber;
-    QListWidget *projectList;
+    QListWidget *projectList, *dockProjectList;
     QGroupBox *managerSheetListBox;
     QListWidget *managerSheetList;
     QGridLayout *detailLayout;

@@ -17,72 +17,63 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-
-#ifndef FINDREPLACE_H
-#define FINDREPLACE_H
+#ifndef OUTLINERBASE_H
+#define OUTLINERBASE_H
 
 #include <QtGui>
 #include <QWidget>
 #include <QDomDocument>
 
-class FindReplace : public QDialog
+class OutlinerBase : public QWidget
+
 {
     Q_OBJECT
 public:
-    explicit FindReplace(QFile *device = 0, QWidget *parent = 0);
+    explicit OutlinerBase(QWidget *parent = 0);
 
 protected:
+    void closeEvent(QCloseEvent *event);
 
 signals:
+//    void toSpreadsheetSignal(bool spreadsheetSignal);
 
 public slots:
+    void saveConfig();
+    void applyConfig();
+void showOutliner();
+
+// for domDocument :
+void mtoO_setDomDoc(QDomDocument domDoc);
+
+//for attendances :
+void mtoO_updateAttendances(QHash<int, QString> attendStringForNumber);
+void mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
+
+
 
 private slots:
-    //tree :
-    void createTree(QFile *device);
-    bool read(QFile *device);
-    void closeTree();
-    void buildTree();
-    void itemClickedSlot(QTreeWidgetItem* item, int column);
+    void shiftToSpreadsheetSignal();
 
+
+
+    //for attendance :
+    QList<QListWidgetItem *> *sortAttendItems(QList<int> *attend, QString sorting = "nothing");
+    QListWidgetItem *attendSeparator(QString separatorName);
+    QList<QListWidgetItem *> *openSheetAttendList(int number ,QString attendString);
 
 
 
 private:
+    QVBoxLayout *zoneLayout;
 
+QAction *shiftToSpreadsheetAct;
 
-    QString dialogMode;
+QDomDocument mtoO_domDoc;
+    QHash<QListWidgetItem *, QDomElement> attend_domElementForItem;
+    QHash<int, QDomElement> attend_domElementForItemNumber;
 
-    QLineEdit *replaceLineEdit;
-    QLineEdit *findLineEdit;
-    QDialogButtonBox *buttonBox;
-    QTreeWidget *tree;
-    QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
-    QFile *targetDevice;
-
-    //tree :
-
-    void parseFolderElement(const QDomElement &element,
-                            QTreeWidgetItem *parentItem = 0);
-    QTreeWidgetItem *createItem(const QDomElement &element,
-                                QTreeWidgetItem *parentItem = 0);
-
-    QDomDocument domDocument;
-    QDomElement root;
-    QHash<QTreeWidgetItem *, QDomElement> domElementForItem;
-    QHash<QTreeWidgetItem *, QDomElement>::iterator h;
-    QHash<int, QDomElement> domElementForNumber;
-    QHash<int, QDomElement>::iterator t;
-    QIcon folderIcon;
-    QIcon sceneIcon;
-
-
-    // accept :
-    QTextDocument * buildFinalDoc();
-//    QTextDocument* prepareTextDoc(QFile *textFile);
-//    QTextDocument* prepareSynDoc(QFile *synFile);
-//    QTextDocument* prepareNoteDoc(QFile *noteFile);
+    QString newAttendName;
 
 };
 
-#endif // FINDREPLACE_H
+#endif // OUTLINERBASE_H

@@ -17,72 +17,46 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-
-#ifndef FINDREPLACE_H
-#define FINDREPLACE_H
+#ifndef EDITMENU_H
+#define EDITMENU_H
 
 #include <QtGui>
 #include <QWidget>
-#include <QDomDocument>
-
-class FindReplace : public QDialog
+#include <QFrame>
+#include <QToolButton>
+//
+class EditMenu : public QFrame
 {
     Q_OBJECT
 public:
-    explicit FindReplace(QFile *device = 0, QWidget *parent = 0);
-
-protected:
+    explicit EditMenu(QWidget *parent = 0);
 
 signals:
+    void widthChangedSignal(int sliderValue);
+    void textFontChangedSignal(QFont font);
+    void textHeightChangedSignal(int textHeight);
+    void showPrevTextSignal(bool showPrevTextBool);
 
 public slots:
-
+    void applyConfig();
+    void charFormatChangedSlot(QTextCharFormat format);
+    void tabChangedSlot(QTextCharFormat newTabFormat);
+    void setShowPreviousTextButton(bool showPrevTextBool);
 private slots:
-    //tree :
-    void createTree(QFile *device);
-    bool read(QFile *device);
-    void closeTree();
-    void buildTree();
-    void itemClickedSlot(QTreeWidgetItem* item, int column);
-
-
-
+    void showPreviousText(bool showPrevTextBool);
+    void applyStyleSheet();
 
 private:
 
-
-    QString dialogMode;
-
-    QLineEdit *replaceLineEdit;
-    QLineEdit *findLineEdit;
-    QDialogButtonBox *buttonBox;
-    QTreeWidget *tree;
-    QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
-    QFile *targetDevice;
-
-    //tree :
-
-    void parseFolderElement(const QDomElement &element,
-                            QTreeWidgetItem *parentItem = 0);
-    QTreeWidgetItem *createItem(const QDomElement &element,
-                                QTreeWidgetItem *parentItem = 0);
-
-    QDomDocument domDocument;
-    QDomElement root;
-    QHash<QTreeWidgetItem *, QDomElement> domElementForItem;
-    QHash<QTreeWidgetItem *, QDomElement>::iterator h;
-    QHash<int, QDomElement> domElementForNumber;
-    QHash<int, QDomElement>::iterator t;
-    QIcon folderIcon;
-    QIcon sceneIcon;
-
-
-    // accept :
-    QTextDocument * buildFinalDoc();
-//    QTextDocument* prepareTextDoc(QFile *textFile);
-//    QTextDocument* prepareSynDoc(QFile *synFile);
-//    QTextDocument* prepareNoteDoc(QFile *noteFile);
-
+    QToolButton *showPreviousTextButton;
+    int xMax;
+    QSlider *widthSlider;
+    int sliderValue;
+    QSettings settings;
+    QFontComboBox *textFontCombo;
+    QFont textFont;
+    QSpinBox *textSpin;
+    int textSpinValue;
 };
 
-#endif // FINDREPLACE_H
+#endif // EDITMENU_H

@@ -35,7 +35,7 @@ Exporter::Exporter(QString mode, QFile *device, QWidget *parent) :
         setWindowTitle(tr("Print Dialog"));
 
 
-    setMinimumSize(600,600);
+    setMinimumSize(600,300);
 
 
     QLabel *label = new QLabel(tr("Please complete the fields below: "));

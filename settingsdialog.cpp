@@ -23,15 +23,28 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setLayout(mainLayout);
 
     setWindowTitle(tr("Settings Dialog"));
-}
 
+    connect(generalSettingTab, SIGNAL(setDisplayModeSignal(QString)), this, SIGNAL(setDisplayModeSignal(QString)));
+
+
+}
+//----------------------------------------------------------------------------------------
 void SettingsDialog::accept()
 {
     generalSettingTab->accept();
     textSettingTab->accept();
     QDialog::accept();
 }
+//----------------------------------------------------------------------------------------
 
+
+
+void SettingsDialog::reject()
+{
+    generalSettingTab->reject();
+    textSettingTab->reject();
+    QDialog::reject();
+}
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -45,7 +58,7 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
 
     //->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     QGroupBox *generalBox = new QGroupBox(tr("General :"));
-    QVBoxLayout *generalBoxLayout = new QVBoxLayout;
+    QFormLayout *generalFormLayout = new QFormLayout;
 
     QHBoxLayout *langLayout = new QHBoxLayout;
     QLabel *langLabel = new QLabel(tr("Change your language :"));
@@ -84,8 +97,8 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
     styleLayout->addWidget(styleLabel);
     styleLayout->addWidget(styleComboBox);
 
-    menuBarOnTopCheckBox = new QCheckBox(tr("Set the menu bar on top"));
-    menuBarOnTopCheckBox->setToolTip(tr("Menu is set horizontaly on top or verticaly on the right side"));
+    //    menuBarOnTopCheckBox = new QCheckBox(tr("Set the menu bar on top"));
+    //    menuBarOnTopCheckBox->setToolTip(tr("Menu is set horizontaly on top or verticaly on the right side"));
 
     QHBoxLayout *autosaveLayout = new QHBoxLayout;
     QLabel *autosaveLabel = new QLabel(tr("Save project every :"));
@@ -97,19 +110,28 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
     autosaveLayout->addWidget(autosaveLabel);
     autosaveLayout->addWidget(autosaveTimeSpin);
 
+    QHBoxLayout *displayModeLayout = new QHBoxLayout;
+    QLabel *displayModeLabel = new QLabel(tr("Change your display :"));
+    displayModeComboBox = new QComboBox();
+    displayModes << tr("Desktop") << tr("Netbook");
+    displayModeCodes << "desktop" << "netbook";
+    displayModeComboBox->addItems(displayModes);
+    displayModeLayout->addWidget(displayModeLabel);
+    displayModeLayout->addWidget(displayModeComboBox);
+
+
     checkUpdateAtStartupCheckBox = new QCheckBox(tr("Check update at startup"));
 
     preventDoubleSpaceCheckBox = new QCheckBox(tr("Prevent multiple space characters between words"));
 
 
-    generalBoxLayout->addLayout(langLayout);
-    generalBoxLayout->addLayout(styleLayout);
-    generalBoxLayout->addLayout(autosaveLayout);
-    generalBoxLayout->addWidget(menuBarOnTopCheckBox);
-    generalBoxLayout->addWidget(checkUpdateAtStartupCheckBox);
-    generalBoxLayout->addWidget(preventDoubleSpaceCheckBox);
-    generalBoxLayout->addStretch();
-    generalBox->setLayout(generalBoxLayout);
+    generalFormLayout->addRow(langLayout);
+    generalFormLayout->addRow(styleLayout);
+    generalFormLayout->addRow(displayModeLayout);
+    generalFormLayout->addRow(autosaveLayout);
+    generalFormLayout->addRow(checkUpdateAtStartupCheckBox);
+    generalFormLayout->addRow(preventDoubleSpaceCheckBox);
+    generalBox->setLayout(generalFormLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(generalBox);
@@ -119,7 +141,7 @@ GeneralSettingTab::GeneralSettingTab(QWidget *parent)
 
     connect(langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
     connect(styleComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(styleChanged()), Qt::UniqueConnection);
-    connect(menuBarOnTopCheckBox,SIGNAL(toggled(bool)), this, SLOT(menuPositionChanged(bool)), Qt::UniqueConnection);
+    connect(displayModeComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(displayModeChanged(int)), Qt::UniqueConnection);
 }
 
 //---------------------------------------------------------------------------------
@@ -141,13 +163,12 @@ void GeneralSettingTab::styleChanged()
 }
 
 //---------------------------------------------------------------------------------
-void GeneralSettingTab::menuPositionChanged(bool menuOnTopBool)
+
+void GeneralSettingTab::displayModeChanged(int dispModeIndex)
 {
-    if(menuOnTopBool == false){
-    QMessageBox msgBox;
-    msgBox.setText(tr("The menu will be set on the side.<br>The change will be effective after restarting the program."));
-    msgBox.exec();
-    }
+
+    emit setDisplayModeSignal(displayModeCodes.at(dispModeIndex));
+
 }
 
 //---------------------------------------------------------------------------------
@@ -157,8 +178,12 @@ void GeneralSettingTab::readSettings()
     settings.beginGroup("MainWindow");
     langComboBox->setCurrentIndex(langCodes.indexOf(settings.value("lang", "en_US").toString()));
     styleComboBox->setCurrentIndex(styleCodes.indexOf(settings.value("style", "default").toString()));
-    menuBarOnTopCheckBox->setChecked(settings.value("menuBarOnTop", true).toBool());
-         settings.endGroup();
+
+    displayMode = settings.value("displayMode", "desktop").toString();
+    prev_displayMode = displayMode;
+    displayModeComboBox->setCurrentIndex(displayModeCodes.indexOf(displayMode));
+
+    settings.endGroup();
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     autosaveTimeSpin->setValue(autosaveTime / 1000);
@@ -177,8 +202,8 @@ void GeneralSettingTab::accept()
     settings.beginGroup("MainWindow");
     settings.setValue("lang", langCodes.at(langs.indexOf(langComboBox->currentText())));
     settings.setValue("style", styleCodes.at(styles.indexOf(styleComboBox->currentText())));
-    settings.setValue("menuBarOnTop", menuBarOnTopCheckBox->isChecked());
-          settings.endGroup();
+    settings.setValue("displayMode", displayModeCodes.at(displayModes.indexOf(displayModeComboBox->currentText())));
+    settings.endGroup();
     settings.beginGroup( "Settings" );
     settings.setValue("autosaveTime", autosaveTimeSpin->value() * 1000);
     settings.setValue("preventDoubleSpace", preventDoubleSpaceCheckBox->isChecked());
@@ -190,6 +215,13 @@ void GeneralSettingTab::accept()
 
 
 }
+//---------------------------------------------------------------------------------
+
+void GeneralSettingTab::reject()
+{
+    emit setDisplayModeSignal(prev_displayMode);
+
+}
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -199,9 +231,9 @@ void GeneralSettingTab::accept()
 TextSettingTab::TextSettingTab(QWidget *parent)
     : QWidget(parent)
 {
-
     QGroupBox *textBox = new QGroupBox(tr("Main Text Area :"));
     QGridLayout *gridTextLayout = new QGridLayout;
+
     QLabel *textFontLabel = new QLabel(tr("Default Text Font :"));
     textFontCombo = new QFontComboBox;
     textFontCombo->setCurrentFont(textFont);
@@ -215,8 +247,11 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     QLabel *textMarginLabel = new QLabel(tr("Margin :"));
     textMarginSpin = new QSpinBox;
     textMarginSpin->setRange(0,50);
-
-
+    QLabel *textZoneWidthLabel = new QLabel(tr("Text Area Width :"));
+    widthSpin = new QSpinBox();
+    widthSpin->setRange(0,2000);
+    widthSpin->setAccelerated(true);
+    widthSpin->setSuffix(tr(" px"));
 
 
     gridTextLayout->addWidget(textFontLabel,0,0);
@@ -228,6 +263,8 @@ TextSettingTab::TextSettingTab(QWidget *parent)
     gridTextLayout->addWidget(textIndentSpin,2,1);
     gridTextLayout->addWidget(textMarginLabel,3,0);
     gridTextLayout->addWidget(textMarginSpin,3,1);
+    gridTextLayout->addWidget(textZoneWidthLabel,4,0);
+    gridTextLayout->addWidget(widthSpin,4,1);
     textBox->setLayout(gridTextLayout);
 
 
@@ -321,11 +358,11 @@ TextSettingTab::TextSettingTab(QWidget *parent)
 
 
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(textBox);
-    mainLayout->addWidget(fullTextBox);
-    mainLayout->addWidget(synBox);
-    mainLayout->addWidget(noteBox);
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->addWidget(textBox,0,0);
+    mainLayout->addWidget(fullTextBox,0,1);
+    mainLayout->addWidget(synBox,1,0);
+    mainLayout->addWidget(noteBox,1,1);
     setLayout(mainLayout);
 
     readSettings();
@@ -342,11 +379,15 @@ void TextSettingTab::readSettings()
     showScrollbarBox->setChecked(settings.value("TextArea/showScrollbar", true).toBool());
     textIndentValue = settings.value("TextArea/textIndent", 20).toInt();
     textMarginValue = settings.value("TextArea/bottomMargin", 10).toInt();
+    textWidthValue = settings.value("TextArea/textWidth", 700).toInt();
+    previous_textWidthValue = textWidthValue;
 
     textSpin->setValue(textSpinValue);
     textFontCombo->setCurrentFont(textFont);
     textIndentSpin->setValue(textIndentValue);
     textMarginSpin->setValue(textMarginValue);
+    widthSpin->setValue(textWidthValue);
+
 
     // Fullscreen text :
 
@@ -392,8 +433,8 @@ void TextSettingTab::accept()
     settings.setValue("TextArea/showScrollbar", showScrollbarBox->isChecked());
     settings.setValue("TextArea/textIndent", textIndentSpin->value());
     settings.setValue("TextArea/bottomMargin", textMarginSpin->value());
+    settings.setValue( "TextArea/textWidth", widthSpin->value());
 
-    // Fullscreen text :
 
 
     settings.setValue("FullTextArea/showScrollbar", showFullScrollbarBox->isChecked());
@@ -425,4 +466,14 @@ void TextSettingTab::accept()
 
 
 
+}
+
+
+//----------------------------------------------------------------------------------------
+
+
+
+void TextSettingTab::reject()
+{
+    widthSpin->setValue(previous_textWidthValue);
 }
