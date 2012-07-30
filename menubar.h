@@ -74,7 +74,6 @@ void textHeightChangedSignal(int textHeight);
 
 void charFormatChangedSlotSignal(QTextCharFormat charFmt);
  void tabWidgetChangedSlotSignal(int newTabWidth);
-  void showPrevTextSignal(bool prevText);
 void tabWitdhChangedSlotSignal(int);
 
 public slots:
@@ -90,7 +89,6 @@ QMenuBar *createMenuBar();
 
 //repeater for editWidget :
 void tabChangedSlot(QTextCharFormat newTabFormat){editWidget->tabChangedSlot(newTabFormat);}
-void setShowPreviousTextButton(bool showPrevTextBool){editWidget->setShowPreviousTextButton(showPrevTextBool);}
 
 
 void applyConfig();

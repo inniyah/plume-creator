@@ -419,7 +419,6 @@ connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightCh
 
 connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
-connect(editWidget, SIGNAL(showPrevTextSignal(bool)), this, SIGNAL(showPrevTextSignal(bool)));
 
 }
 

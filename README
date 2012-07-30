@@ -1,4 +1,10 @@
 PLUME CREATOR
+
+v 0.52
+	- bug fixed : in netbook mode, the note dock stays at the bottom.
+	- "Show Previous scene" button is moved to the status bar
+	- "Show Notes" button is removed from the status bar
+
 v 0.51
 	- Dialogs resized for 10" netbooks
 	- 2 display modes available : "Desktop" and "Netbook"

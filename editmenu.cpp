@@ -3,13 +3,6 @@
 EditMenu::EditMenu(QWidget *parent) :
     QFrame(parent), xMax(0)
 {
-    showPreviousTextButton = new QToolButton();
-    showPreviousTextButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    showPreviousTextButton->setCheckable(true);
-    showPreviousTextButton->setText(tr("&Show Previous Scene"));
-    showPreviousTextButton->setToolTip(tr("Show the end of the previous scene"));
-    connect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
-
 
 
 
@@ -28,7 +21,6 @@ EditMenu::EditMenu(QWidget *parent) :
 
     QGridLayout *baseGridLayout = new QGridLayout;
 
-    baseGridLayout->addWidget(showPreviousTextButton,0,0);
     baseGridLayout->addWidget(textFontCombo,2,0);
     baseGridLayout->addWidget(textSpin,3,0);
     baseGridLayout->addWidget(stretcher,4,0);
@@ -68,27 +60,10 @@ void EditMenu::tabChangedSlot(QTextCharFormat newTabFormat)
 }
 
 
-
-void EditMenu::showPreviousText(bool showPrevTextBool)
-{
-
-        emit showPrevTextSignal(showPrevTextBool);
-
-}
-
-
-void EditMenu::setShowPreviousTextButton(bool showPrevTextBool)
-{
-    disconnect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
+//----------------------------------------------------------------------------------------
 
 
 
-        showPreviousTextButton->setChecked(showPrevTextBool);
-
-
-
-    connect(showPreviousTextButton, SIGNAL(toggled(bool)), this, SLOT(showPreviousText(bool)));
-}
 
 
 

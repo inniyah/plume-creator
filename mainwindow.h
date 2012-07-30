@@ -76,6 +76,9 @@ private slots:
     void editFullscreen();
     void launchOutliner();
 
+
+    void setShowPreviousTextButton(bool showPrevTextBool);
+
     //config :
     void applyConfig();
     void configTimer();
@@ -158,6 +161,7 @@ private:
     QList<int> *tabNumList;
     QList<int> *numList;
 
+QToolButton *showPrevSceneButton;
 
     //settings
     void readSettings();

@@ -469,11 +469,12 @@ void MainWindow::createStatusBar()
 {
     bar = new QStatusBar(this);
 
-    QToolButton *showNotesButton = new QToolButton(this);
-    showNotesButton->setText(tr("&Show Notes"));
-    showNotesButton->setShortcut(Qt::Key_F10);
-    showNotesButton->setToolTip(tr("Show the notes"));
-    connect(showNotesButton, SIGNAL(clicked()), noteDock, SLOT(show()));
+    showPrevSceneButton = new QToolButton(this);
+    showPrevSceneButton->setText(tr("&Show Prev. Scene"));
+     showPrevSceneButton->setCheckable(true);
+    showPrevSceneButton->setShortcut(Qt::Key_F10);
+    showPrevSceneButton->setToolTip(tr("Show the end of the previous scene"));
+    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
 
     QToolButton *status_tabFullscreenButton = new QToolButton(this);
     status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
@@ -498,7 +499,7 @@ void MainWindow::createStatusBar()
 
     bar->addPermanentWidget(sceneWCLabel,1);
     bar->addPermanentWidget(stretcher1,10);
-    bar->addPermanentWidget(showNotesButton,2);
+    bar->addPermanentWidget(showPrevSceneButton,2);
     bar->addPermanentWidget(status_tabFullscreenButton,2);
     bar->addPermanentWidget(status_outlinerButton,2);
     //    bar->addPermanentWidget(stretcher2);
@@ -507,6 +508,20 @@ void MainWindow::createStatusBar()
 
 }
 
+//---------------------------------------------------------------------------
+
+void MainWindow::setShowPreviousTextButton(bool showPrevTextBool)
+{
+    disconnect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+
+
+
+        showPrevSceneButton->setChecked(showPrevTextBool);
+
+
+
+    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+}
 
 //---------------------------------------------------------------------------
 
@@ -641,8 +656,8 @@ void MainWindow::setDisplayMode(QString mode)
 
         noteDock->setAllowedAreas(Qt::RightDockWidgetArea);
         noteDock->setFloating(false);
+        this->changeOrientationOfNoteDock(Qt::RightDockWidgetArea);
         this->addDockWidget(Qt::RightDockWidgetArea, noteDock, Qt::Vertical);
-        this->changeOrientationOfNoteDock(Qt::BottomDockWidgetArea);
 
         treeDock->setAllowedAreas(Qt::LeftDockWidgetArea);
         treeDock->setFloating(false);
@@ -1028,8 +1043,8 @@ void MainWindow::setConnections()
 
 
 
-    //to show previous text :
-    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
+//    //to show previous text :
+//    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
 
 
     //for attendance :
@@ -1095,7 +1110,7 @@ void MainWindow::tabChangeSlot(int tabNum)
         TextTab *tab = textWidgetList->at(tabNum);
         menu->tabChangedSlot(tab->tabFontChangedSlot());
 
-        menu->setShowPreviousTextButton(tab->setShowPrevTextButton());
+        this->setShowPreviousTextButton(tab->setShowPrevTextButton());
 
         setCurrentAttendList(tabNum);
 

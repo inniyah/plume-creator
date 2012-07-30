@@ -35,15 +35,13 @@ signals:
     void widthChangedSignal(int sliderValue);
     void textFontChangedSignal(QFont font);
     void textHeightChangedSignal(int textHeight);
-    void showPrevTextSignal(bool showPrevTextBool);
 
 public slots:
     void applyConfig();
     void charFormatChangedSlot(QTextCharFormat format);
     void tabChangedSlot(QTextCharFormat newTabFormat);
-    void setShowPreviousTextButton(bool showPrevTextBool);
+
 private slots:
-    void showPreviousText(bool showPrevTextBool);
     void applyStyleSheet();
 
 private:
