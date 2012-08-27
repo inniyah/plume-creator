@@ -746,7 +746,8 @@ void AttendBox::addAttendManagerButton()
     managerLauncher = new QListWidgetItem;
     managerLauncher->setText(tr("Manage..."));
     managerLauncher->setTextAlignment(Qt::AlignHCenter);
-    managerLauncher->setBackgroundColor(QColor(Qt::cyan));
+    managerLauncher->setBackgroundColor(QColor(Qt::lightGray));
+    managerLauncher->setTextColor(QColor(Qt::white));
     managerLauncher->setToolTip(tr("Launch a manager for characters, items and places"));
     attendList->addItem(managerLauncher);
 

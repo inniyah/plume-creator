@@ -1,4 +1,29 @@
 PLUME CREATOR
+v 0.53
+	- Text Splitter Dialog finished.
+	- New Project Manager
+	- Outliner :
+		- the table is a tree now
+		- right-click menu
+	
+	- Handle bars added above and below the main text zone to show previous and next scene.
+	- bug fixed : when pasting plain text, line breaks weren't pasted
+	- bug fixed : crash when tabs are all closed and showing previous scene
+	- bug fixed : notes an synopsys right margins wrong in new scenes
+	- bug fixed : the docks sizes are minimal at startup.
+	- Projects files (*.plume) can now be opened on Linux !
+	- behavior when opening external projects fixed
+	- Wordcount centered under the sheet.
+	- "Tree" dock renamed "Project" dock
+	- Closing Project dock is now forbidden
+	- Project button removed in vertical toolbar
+	- "Show Previous Scene", "Outliner" and "Fullscreen" buttons are moved to the side tool bar
+	- Plume is now lightly styled
+	- added a basic spreadsheet Outliner
+	- removed the sheets Outliner
+	- added a "View" menu
+	- added a few icons from Oxygen theme
+	- added "Release notes" in the menu
 
 v 0.52
 	- bug fixed : in netbook mode, the note dock stays at the bottom.

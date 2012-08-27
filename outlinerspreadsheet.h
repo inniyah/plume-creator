@@ -23,16 +23,67 @@
 #include <QtGui>
 #include <QWidget>
 
-class OutlinerSpreadsheet : public QTableWidget
+class OutlinerSpreadsheet : public QTreeView
 {
     Q_OBJECT
 public:
     explicit OutlinerSpreadsheet(QWidget *parent = 0);
     
+protected :
+    //    void	updateGeometries ();
+    //    void	paintEvent ( QPaintEvent * event );
+    void focusInEvent ( QFocusEvent * event );
+    //        void mouseEvent(QMouseEvent* event);
+    void wheelEvent(QWheelEvent* event);
+    void contextMenuEvent(QContextMenuEvent *event);
+
 signals:
-    
+    void otoM_actionSignal(QString action, int idNumber);
+
 public slots:
-    
+    void temp_moveUp(){moveUp();}
+    void temp_moveDown(){moveDown();}
+    void giveStyle();
+
+private slots:
+    void doNotWarnAgainSlot(bool dontWarnMe);
+    void itemClicked(QModelIndex index);
+    void prepareContextMenu();
+    void itemEntered(QModelIndex index);
+
+    void rename(){emit otoM_actionSignal("rename", enteredItemId);}
+    void addItemNext(){emit otoM_actionSignal("addItemNext", enteredItemId);}
+    void addChild(){emit otoM_actionSignal("addChild", enteredItemId);}
+    void addSeparator(){emit otoM_actionSignal("addSeparator", enteredItemId);}
+    void moveUp(){emit otoM_actionSignal("moveUp", enteredItemId);}
+    void moveDown(){emit otoM_actionSignal("moveDown", enteredItemId);}
+    void removeItem(){emit otoM_actionSignal("removeItem", enteredItemId);}
+    void autoRenameChilds(){emit otoM_actionSignal("autoRenameChilds", enteredItemId);}
+    void addMulti(){emit otoM_actionSignal("addMulti", enteredItemId);}
+
+
+
+
+
+
+
+
+private:
+    bool wasClickedOnce;
+    int itemIdClickedOnce;
+    int enteredItemId;
+
+    QAction *renameAct,
+    *addItemNextAct,
+    *addChildAct,
+    *addSeparatorAct,
+    *autoRenameChildsAct,
+    *delYesAct,
+    *moveUpAct,
+    *moveDownAct,
+    *addMultiAct;
+    QMenu *delItemMenu,
+    *advancedMenu;
 };
 
 #endif // OUTLINERSPREADSHEET_H

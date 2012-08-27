@@ -28,35 +28,35 @@ TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
 
 void TextZone::createActions()
 {
-    undoAct = new QAction(tr("&Undo"), this);
+    undoAct = new QAction(QIcon(":/pics/edit-undo.png"),tr("&Undo"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo the last operation"));
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
 
-    redoAct = new QAction(tr("&Redo"), this);
+    redoAct = new QAction(QIcon(":/pics/edit-redo.png"),tr("&Redo"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo the last operation"));
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
-    cutAct = new QAction(tr("Cu&t"), this);
+    cutAct = new QAction(QIcon(":/pics/edit-cut.png"),tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
-    copyAct = new QAction(tr("&Copy"), this);
+    copyAct = new QAction(QIcon(":/pics/edit-copy.png"),tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
-    pasteAct = new QAction(tr("&Paste"), this);
+    pasteAct = new QAction(QIcon(":/pics/edit-paste.png"),tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
-    boldAct = new QAction(tr("&Bold"), this);
+    boldAct = new QAction(QIcon(":/pics/format-text-bold.png"),tr("&Bold"), this);
     boldAct->setCheckable(true);
     boldAct->setShortcuts(QKeySequence::Bold);
     boldAct->setStatusTip(tr("Make the text bold"));
@@ -66,7 +66,7 @@ void TextZone::createActions()
     boldFont.setBold(true);
     boldAct->setFont(boldFont);
 
-    italicAct = new QAction(tr("&Italic"), this);
+    italicAct = new QAction(QIcon(":/pics/format-text-italic.png"),tr("&Italic"), this);
     italicAct->setCheckable(true);
     italicAct->setShortcuts(QKeySequence::Italic);
     italicAct->setStatusTip(tr("Make the text italic"));
@@ -86,25 +86,25 @@ void TextZone::createActions()
     //    connect(setParagraphSpacingAct, SIGNAL(triggered()),
     //            this, SLOT(setParagraphSpacing()));
 
-    leftAlignAct = new QAction(tr("&Left Align"), this);
+    leftAlignAct = new QAction(QIcon(":/pics/format-justify-left.png"),tr("&Left Align"), this);
     leftAlignAct->setCheckable(true);
     leftAlignAct->setShortcut(tr("Ctrl+L"));
     leftAlignAct->setStatusTip(tr("Left align the selected text"));
     connect(leftAlignAct, SIGNAL(triggered(bool)), this, SLOT(leftAlign(bool)));
 
-    rightAlignAct = new QAction(tr("&Right Align"), this);
+    rightAlignAct = new QAction(QIcon(":/pics/format-justify-right.png"),tr("&Right Align"), this);
     rightAlignAct->setCheckable(true);
     rightAlignAct->setShortcut(tr("Ctrl+R"));
     rightAlignAct->setStatusTip(tr("Right align the selected text"));
     connect(rightAlignAct, SIGNAL(triggered(bool)), this, SLOT(rightAlign(bool)));
 
-    justifyAct = new QAction(tr("&Justify"), this);
+    justifyAct = new QAction(QIcon(":/pics/format-justify-fill.png"),tr("&Justify"), this);
     justifyAct->setCheckable(true);
     justifyAct->setShortcut(tr("Ctrl+J"));
     justifyAct->setStatusTip(tr("Justify the selected text"));
     connect(justifyAct, SIGNAL(triggered(bool)), this, SLOT(justify(bool)));
 
-    centerAct = new QAction(tr("&Center"), this);
+    centerAct = new QAction(QIcon(":/pics/format-justify-center.png"),tr("&Center"), this);
     centerAct->setCheckable(true);
     centerAct->setShortcut(tr("Ctrl+E"));
     centerAct->setStatusTip(tr("Center the selected text"));
@@ -428,20 +428,35 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
 
     if(source->hasHtml()){
+        QString sourceString = qvariant_cast<QString>(source->html());
+//        qDebug() << "                         sourceString  :  " << sourceString;
+//        sourceString.replace( QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)"), "<div" );
+//qDebug() << "                       regExpedIs Valid  : " << QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)").isValid();
+////        sourceString.replace( QRegExp("/<(.|\n)*?>/g"), "" );
 
+
+
+
+//        qDebug() << "                       regExpedString  :  " << sourceString;
+
+////
+//         /<\s*\w.*?>/g
 
         //htmlText
         QTextDocument *document = new QTextDocument;
-        document->setHtml(qvariant_cast<QString>(source->html()));
-
+        document->setHtml(sourceString);
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
-         QTextCharFormat charFormat;
+          QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
         charFormat.setFontFamily(fontFamily);
-        charFormat.clearForeground();
-
+        charFormat.clearProperty(QTextFormat::ForegroundBrush);
+        charFormat.clearProperty(QTextFormat::IsAnchor);
+        charFormat.clearProperty(QTextFormat::AnchorHref);
+        charFormat.clearProperty(QTextFormat::AnchorName);
+        charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
+        charFormat.clearProperty(QTextFormat::FontStrikeOut);
         QTextCursor *tCursor = new QTextCursor(document);
         tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
         tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -449,15 +464,16 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         tCursor->mergeCharFormat(charFormat);
         tCursor->mergeBlockFormat(blockFormat);
 
-
         QTextCursor cursor = this->textCursor();
+        qDebug() << "                            insertedString  :  " << document->toHtml("utf-8");
+
         cursor.insertHtml(document->toHtml("utf-8"));
                 qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
         QTextDocument *document = new QTextDocument;
-        document->setHtml(qvariant_cast<QString>(source->text()));
+        document->setPlainText(qvariant_cast<QString>(source->text()));
 
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);

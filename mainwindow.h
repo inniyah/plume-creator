@@ -78,8 +78,12 @@ private slots:
 
 
     void setShowPreviousTextButton(bool showPrevTextBool);
+    void setShowNextTextButton(bool showNextTextBool);
+    void showPrevAndNextTexts(bool showTextsBool = true);
 
     //config :
+    void readDocksSettings();
+    void writeDocksSettings();
     void applyConfig();
     void configTimer();
     void setDisplayMode(QString mode);
@@ -87,6 +91,7 @@ private slots:
 
     void reconnectAFterTabClose();
     void showPrevText(bool showPrevTextBool);
+    void showNextText(bool showNextTextBool);
 
     void checkHiddenDocks();
 // for netbook mode :
@@ -100,8 +105,10 @@ private slots:
     int setCurrentNumber();
 
     //wordcount :
-    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("S : ") + sceneWCNum.setNum(count));}
+    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
 
+
+    void giveStyle();
 private:
 
     void createMenuBar();
@@ -128,6 +135,7 @@ private:
     ItemBox *items;
     AttendBox *attendList;
     QBoxLayout *noteDockLayout;
+QSplitter *noteSplitter;
 
     QStatusBar *bar;
     QToolBar *docksToolBar;
@@ -161,15 +169,15 @@ private:
     QList<int> *tabNumList;
     QList<int> *numList;
 
-QToolButton *showPrevSceneButton;
-
+QToolButton *showPrevSceneButton, *showNextSceneButton;
+OrientationButton *showPrvScnButton, *showNxtScnButton;
     //settings
     void readSettings();
     void writeSettings();
     int settingNumber;
     bool menuBarOnTop;
     void autosaveTimer();
-    bool NoProjectOpened;
+    bool noProjectOpened;
     int autosaveTime;
     QTimer *timer;
     QString displayMode;

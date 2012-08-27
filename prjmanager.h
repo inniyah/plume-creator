@@ -24,10 +24,10 @@
 #include <QtGui>
 //
 
-QT_BEGIN_NAMESPACE
-class DeletePrjButton;
-class OpenPrjButton;
-QT_END_NAMESPACE
+//QT_BEGIN_NAMESPACE
+//class DeletePrjButton;
+//class OpenPrjButton;
+//QT_END_NAMESPACE
 
 
 class PrjManager : public QDialog
@@ -42,20 +42,35 @@ signals:
     void newPrjSignal();
     void openProjectSignal(QFile *device);
     void openProjectNumberSignal(int prjNumber);
+    void deleteProjectNum(int numPrj);
 
-public slots:
+    public slots:
+    void projectAlreadyOpened(bool projectAlreadyOpened){if(projectAlreadyOpened) noProjectAlreadyOpened = false; else noProjectAlreadyOpened = true;}
 
 private slots:
+    static bool removeDir(const QString &dirName);
+    void deleteProjectQuestion();
+    void delProject();
     void displayProjects();
     void newPrj();
-
-
+void setPrjActivated(int row,int column);
+void openPrj();
+void renamePrj();
+void acceptRenaming();
+void renameXML(QFile *xmlFile, QString oldName, QString newName);
+void itemsSelectionChangedSlot();
 
 private:
-    OpenPrjButton *openButton;
-    DeletePrjButton *deleteButton;
     QVBoxLayout *projListLayout;
     QGridLayout *itemLayout;
+QTableWidget *table;
+int prjActivated;
+int currentRow;
+QLineEdit *renameEdit;
+QDialog *renameDialog;
+QLabel *nameLabel,*creationDateLabel,*modifiedDateLabel,*pathLabel;
+bool noProjectAlreadyOpened;
+bool prjOpened;
 
     QFrame *stackItem;
     int numberOfProjects;
@@ -63,60 +78,60 @@ private:
 };
 
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+////$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+////$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
 
-class DeletePrjButton : public QPushButton
-{
-    Q_OBJECT
-public:
-    explicit DeletePrjButton(QWidget *parent = 0);
+//class DeletePrjButton : public QPushButton
+//{
+//    Q_OBJECT
+//public:
+//    explicit DeletePrjButton(QWidget *parent = 0);
 
-signals:
+//signals:
 
-    void openProjectManagerSignal();
+//    void openProjectManagerSignal();
 
-public slots:
-    void deleteProjectQuestion();
-    void deleteProjectNum(int numPrj);
-    void delProject();
+//public slots:
+//    void deleteProjectQuestion();
+//    void deleteProjectNum(int numPrj);
+//    void delProject();
 
-private slots:
-    static bool removeDir(const QString &dirName);
+//private slots:
+//    static bool removeDir(const QString &dirName);
 
-private:
-    int del_numPrj;
-};
-
-
-
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+//private:
+//    int del_numPrj;
+//};
 
 
 
-class OpenPrjButton : public QPushButton
-{
-    Q_OBJECT
-public:
-    explicit OpenPrjButton(QWidget *parent = 0);
+////$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+////$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-signals:
-    void openProjectSignal(QFile *device);
-    void openProjectNumberSignal(int prjNumber);
 
-public slots:
-    void openProjectFile(QFile *device);
-    void openProjectSettingNumber(int prjNumber);
 
-private slots:
-    void opProject();
-private:
-    QFile *prjFile;
-    int projectNumber;
-};
+//class OpenPrjButton : public QPushButton
+//{
+//    Q_OBJECT
+//public:
+//    explicit OpenPrjButton(QWidget *parent = 0);
+
+//signals:
+//    void openProjectSignal(QFile *device);
+//    void openProjectNumberSignal(int prjNumber);
+
+//public slots:
+//    void openProjectFile(QFile *device);
+//    void openProjectSettingNumber(int prjNumber);
+
+//private slots:
+//    void opProject();
+//private:
+//    QFile *prjFile;
+//    int projectNumber;
+//};
 
 
 #endif // PRJMANAGER_H

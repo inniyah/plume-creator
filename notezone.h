@@ -39,6 +39,9 @@ public:
     //    bool saveSyn(QFile *synFile, QString name);
     bool closeSyn();
 
+    bool openOutlinerDoc(QTextDocument *outlinerDoc);
+    bool closeOutlinerDoc();
+
     bool openAttendDetail(QTextDocument *attendDoc);
     bool closeAttendDetail();
 
@@ -46,17 +49,19 @@ public:
 signals:
     void connectUpdateTextsSignal();
     void disconnectUpdateTextsSignal();
+    void  noteFocusOutSignal();
 
 protected:
 
     void contextMenuEvent(QContextMenuEvent *event);
-    // void keyPressEvent(QKeyEvent *event);
     void insertFromMimeData (const QMimeData *source);
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
     void keyPressEvent(QKeyEvent *event);
+void focusOutEvent ( QFocusEvent * event );
 
 public slots:
+
 
     void setTextFont(QFont font);
     void setTextHeight(int height);
@@ -66,6 +71,7 @@ public slots:
     void updateTextZone();
     void applyNoteConfig();
     void applySynConfig();
+    void applyOutlinerDocConfig();
     void applyAttendConfig();
 
 private slots:
@@ -92,13 +98,16 @@ private slots:
 
     void forceSynFirstCharFont();
     void forceNoteFirstCharFont();
+    void forceOutlinerDocFirstCharFont();
     void forceAttendFirstCharFont();
 
     void applySynFontConfig();
     void applyNoteFontConfig();
+    void applyOutlinerDocFontConfig();
     void applyAttendFontConfig();
 
-    void preventDoubleSpace();
+void giveOutlinerStyle();
+void preventDoubleSpace();
 
 
 private:

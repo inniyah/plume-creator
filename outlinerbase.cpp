@@ -1,12 +1,17 @@
 #include "outlinerbase.h"
-#include "outlinerspreadsheet.h"
+#include "outlinerabstractmodel.h"
+#include "outlineritemdelegate.h"
+
+#include <QtGui>
+
 
 OutlinerBase::OutlinerBase(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), spreadsheetMode(false)
 {
 
     setMinimumSize(500, 300);
     setWindowTitle(tr("Outliner"));
+    setFocusPolicy(Qt::WheelFocus);
     QApplication::setActiveWindow(this);
     raise();
 
@@ -27,19 +32,35 @@ OutlinerBase::OutlinerBase(QWidget *parent) :
     QToolBar *commonToolBar = new QToolBar();
     commonToolBar->setOrientation(Qt::Vertical);
 
-    shiftToSpreadsheetAct = new QAction(QIcon(":/pics/addchar.png"),"", this);
+    shiftToSpreadsheetAct = new QAction(QIcon(":/pics/table.png"),"", this);
     shiftToSpreadsheetAct->setToolTip(tr("Shift to spreadsheet mode"));
     shiftToSpreadsheetAct->setCheckable(true);
-    connect(shiftToSpreadsheetAct, SIGNAL(toggled(bool)), this, SLOT(shiftToSpreadsheetSignal()));
+    connect(shiftToSpreadsheetAct, SIGNAL(toggled(bool)), this, SLOT(shiftToSpreadsheet()));
 
-    QAction *quitAct = new QAction(QIcon(":/pics/addplace.png"),"", this);
+    QAction *quitAct = new QAction(QIcon(":/pics/window-close-32x32.png"),"", this);
     quitAct->setToolTip(tr("Close the Outliner"));
     connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
+
+    expandSpreadsheetAct = new QAction(QIcon(":/pics/zoom-out.png"),"", this);
+    expandSpreadsheetAct->setToolTip(tr("Expand spreadsheet"));
+
+    shrinkSpreadsheetAct = new QAction(QIcon(":/pics/zoom-in.png"),"", this);
+    shrinkSpreadsheetAct->setToolTip(tr("Shrink spreadsheet"));
+
+    moveUpAct = new QAction(QIcon(":/pics/go-up-32x32.png"),"", this);
+    moveUpAct->setToolTip(tr("Move up"));
+
+    moveDownAct = new QAction(QIcon(":/pics/go-down-32x32.png"),"", this);
+    moveDownAct->setToolTip(tr("Move down"));
 
     commonToolBar->addAction(shiftToSpreadsheetAct);
     commonToolBar->addSeparator();
     commonToolBar->addAction(quitAct);
-
+    commonToolBar->addSeparator();
+    commonToolBar->addAction(expandSpreadsheetAct);
+    commonToolBar->addAction(shrinkSpreadsheetAct);
+commonToolBar->addAction(moveUpAct);
+commonToolBar->addAction(moveDownAct);
 
 
 
@@ -47,8 +68,8 @@ OutlinerBase::OutlinerBase(QWidget *parent) :
     mainLayout->addWidget(mainZone);
 
     mainLayout->setMargin(1);
-mainLayout->setSpacing(1);
-mainLayout->setContentsMargins(1,1,1,1);
+    mainLayout->setSpacing(1);
+    mainLayout->setContentsMargins(1,1,1,1);
 
     setLayout(mainLayout);
 
@@ -60,10 +81,10 @@ mainLayout->setContentsMargins(1,1,1,1);
     applyConfig();
 
 
-    QMessageBox msgBox;
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setText(tr("The Ouliner is in heavy maintenance !<br>For now, it's only an empty GUI. Please wait for a future release !"));
-    msgBox.exec();
+    //    QMessageBox msgBox;
+    //    msgBox.setIcon(QMessageBox::Warning);
+    //    msgBox.setText(tr("The Ouliner is in heavy maintenance !<br>For now, it's only an empty GUI. Please wait for a future release !"));
+    //    msgBox.exec();
 
 
 }
@@ -75,6 +96,13 @@ void OutlinerBase::saveConfig()
     settings.beginGroup( "Outline");
     settings.setValue( "size",   size() );
     settings.setValue( "pos",   pos() );
+    if(lastOpened == "spreadsheet"){
+        //       settings.setValue( "spreadsheetState", spreadsheet->horizontalHeader()->saveState());
+        settings.setValue( "spreadsheetState", spreadsheet->header()->saveState());
+        settings.setValue( "lastOpened", "spreadsheet" );
+        //       settings.setValue( "spreadsheetVertSize", spreadsheet->verticalHeader()->sectionSize(0));
+    }
+
     settings.endGroup();
 
 }
@@ -88,10 +116,27 @@ void OutlinerBase::applyConfig()
     settings.beginGroup( "Outline" );
     resize(settings.value( "size", QSize( 1000, 750 ) ).toSize() );
     move(settings.value( "pos" ).toPoint() );
+    QString lastOpened = settings.value( "lastOpened", "spreadsheet").toString();
+    if(lastOpened == "spreadsheet")
+        QTimer::singleShot(0, this, SLOT(shiftToSpreadsheet()));
+
     settings.endGroup();
 
 }
 
+//------------------------------------------------------------------------------------
+void OutlinerBase::applySpreadsheetConfig()
+{
+    QSettings settings;
+    settings.beginGroup( "Outline" );
+    //    spreadsheet->horizontalHeader()->restoreState(settings.value( "spreadsheetState",0 ).toByteArray());
+    spreadsheet->header()->restoreState(settings.value( "spreadsheetState",0 ).toByteArray());
+    //    spreadsheet->verticalHeader()->setDefaultSectionSize(settings.value( "spreadsheetVertSize",40 ).toInt());
+    settings.endGroup();
+
+
+
+}
 //------------------------------------------------------------------------------------
 
 
@@ -99,46 +144,114 @@ void OutlinerBase::showOutliner()
 {
 
 
-QApplication::setActiveWindow(this);
-this->show();
-this->raise();
+    QApplication::setActiveWindow(this);
+    this->show();
+    this->raise();
 }
 
 //------------------------------------------------------------------------------------
 void OutlinerBase::closeEvent(QCloseEvent *event)
 {
-    event->ignore();
     saveConfig();
- this->hide();
-//propagate here
-}
+    this->hide();
+    //propagate here
 
+
+    event->ignore();
+
+}
 
 //------------------------------------------------------------------------------------
 
 
-void OutlinerBase::shiftToSpreadsheetSignal()
+void OutlinerBase::shiftToSpreadsheet()
 {
-shiftToSpreadsheetAct->setDisabled(true);
+    shiftToSpreadsheetAct->setDisabled(true);
+    spreadsheetMode = true;
+    lastOpened = "spreadsheet";
 
-    OutlinerSpreadsheet *spreadsheet = new OutlinerSpreadsheet();
+    spreadsheet = new OutlinerSpreadsheet();
+
+
+
+    absModel = new OutlinerAbstractModel();
+    absModel->mtoO_setDomDoc(mtoO_domDoc);
+    absModel->mtoO_setNumForDoc(mtoO_numForDoc);
+
+    absModel->resetAbsModel();
+
+
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel;
+    proxyModel->setSourceModel(absModel);
+    spreadsheet->setModel(proxyModel );
+
+    spreadsheet->setWordWrap(true);
+
+    OutlinerItemDelegate *delegate = new OutlinerItemDelegate;
+    //spreadsheet->setItemDelegateForColumn(0, delegate); //tree
+    spreadsheet->setItemDelegateForColumn(1, delegate); //syn
+    spreadsheet->setItemDelegateForColumn(2, delegate); //notes
+
+
+
+
+
+
+
+
+
+
+
     zoneLayout->addWidget(spreadsheet);
 
 
+    QTimer::singleShot(0, this, SLOT(applySpreadsheetConfig()));
+    spreadsheet->reset();
+    spreadsheet->expandAll();
+
+    connect(absModel, SIGNAL(updateMainDomDocSignal(QDomDocument)), this, SIGNAL(updateMainDomDocSignal(QDomDocument)));
+    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(shrinkRow()));
+    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(expandAll()));
+    connect(expandSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(expandRow()));
+    connect(expandSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(expandAll()));
+    connect(moveUpAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveUp()));
+    connect(moveDownAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveDown()));
+    connect(absModel, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()));
+    connect(spreadsheet, SIGNAL(otoM_actionSignal(QString,int)), this, SIGNAL(otoM_actionSignal(QString,int)));
+}
+
+//------------------------------------------------------------------------------------
+
+void OutlinerBase::updateOutliner()
+{
+
+    if(spreadsheetMode){
+
+
+    absModel->mtoO_setDomDoc(mtoO_domDoc);
+    absModel->mtoO_setNumForDoc(mtoO_numForDoc);
+
+    absModel->resetAbsModel();
+    spreadsheet->expandAll();
+
+
+    }
+}
+
+//------------------------------------------------------------------------------------
+
+void OutlinerBase::moveViewTo(int hBarValue, int vBarValue)
+{
+    spreadsheet->verticalScrollBar()->setValue(vBarValue);
+    spreadsheet->horizontalScrollBar()->setValue(hBarValue);
 }
 
 
+//void OutlinerBase::moveViewTo()
+//{
+//    moveViewTo(hBarValue,vBarValue);
 
-
-
-
-
-
-
-
-
-
-
+//}
 
 
 
@@ -154,15 +267,33 @@ shiftToSpreadsheetAct->setDisabled(true);
 void OutlinerBase::mtoO_setDomDoc(QDomDocument domDoc)
 {
     mtoO_domDoc = domDoc;
+
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //------------------------------------------------------------------------------------
-//------- :-----------------------------------------------------------------
+//------- note / synopsis textDocuments :-----------------------------------------------------------------
 //------------------------------------------------------------------------------------
 // mtoO means Main to Outliner
 
-
+void OutlinerBase::mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc)
+{
+    mtoO_numForDoc = numForDoc;
+}
 
 
 
@@ -179,14 +310,14 @@ void OutlinerBase::mtoO_setDomDoc(QDomDocument domDoc)
 void OutlinerBase::mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_)
 {
     attend_domElementForItem = domElementForItem_;
-            attend_domElementForItemNumber = domElementForItemNumber_;
+    attend_domElementForItemNumber = domElementForItemNumber_;
 
 
-            QString string;
+    QString string;
 
 
-//                 qDebug() << "*** domElementForItemNumber_.size() : " << string.setNum(domElementForItemNumber_.size());
-//                 qDebug() << "*** domElementForItem_.size() : " << string.setNum(domElementForItem_.size());
+    //                 qDebug() << "*** domElementForItemNumber_.size() : " << string.setNum(domElementForItemNumber_.size());
+    //                 qDebug() << "*** domElementForItem_.size() : " << string.setNum(domElementForItem_.size());
 
 }
 
@@ -198,31 +329,31 @@ void OutlinerBase::mtoO_updateAttendances(QHash<int, QString> attendStringForNum
     QString string;
 
 
-//         qDebug() << "domElementForItemNumber.size() : " << string.setNum(domElementForItemNumber.size());
+    //         qDebug() << "domElementForItemNumber.size() : " << string.setNum(domElementForItemNumber.size());
 
     QHash<int , QString>::const_iterator i = attendStringForNumber.constBegin();
-     while (i != attendStringForNumber.constEnd()) {
+    while (i != attendStringForNumber.constEnd()) {
 
-//qDebug() << "attendStringForNumber i.key() : " << string.setNum(i.key());
-//qDebug() << "attendStringForNumber i.value() : " << i.value();
-
-
-
-
-
-//         OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(i.key()));
-
-//         if(item != 0)
-//         item->showSheetAttendanceList(openSheetAttendList(i.key(), i.value()));
+        //qDebug() << "attendStringForNumber i.key() : " << string.setNum(i.key());
+        //qDebug() << "attendStringForNumber i.value() : " << i.value();
 
 
 
 
 
+        //         OutlineItem *item = areaWidget->findChild<OutlineItem *>("outlineItem_" + string.setNum(i.key()));
+
+        //         if(item != 0)
+        //         item->showSheetAttendanceList(openSheetAttendList(i.key(), i.value()));
 
 
-         ++i;
-     }
+
+
+
+
+
+        ++i;
+    }
 
 }
 
@@ -255,11 +386,11 @@ QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QStr
     QList<QListWidgetItem *> placeList_level_one;
     QList<QListWidgetItem *> placeList_level_two;
 
-//    if(attend->isEmpty()){
+    //    if(attend->isEmpty()){
 
-//        list->append(attendSeparator(tr("empty")));
-//        return list;
-//}
+    //        list->append(attendSeparator(tr("empty")));
+    //        return list;
+    //}
 
 
 
@@ -361,26 +492,26 @@ QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QStr
     //    list->append(itemList);
     //    list->append(placeList);
     if(charList_level_zero.size() + charList_level_one.size() + charList_level_two.size() != 0)
-    list->append(attendSeparator(tr("Characters")));
+        list->append(attendSeparator(tr("Characters")));
     list->append(charList_level_zero);
     list->append(charList_level_one);
     list->append(charList_level_two);
     if(itemList_level_zero.size() + itemList_level_one.size() + itemList_level_two.size() != 0)
-    list->append(attendSeparator(tr("Items")));
+        list->append(attendSeparator(tr("Items")));
     list->append(itemList_level_zero);
     list->append(itemList_level_one);
     list->append(itemList_level_two);
     if(placeList_level_zero.size() + placeList_level_one.size() + placeList_level_two.size() != 0)
-    list->append(attendSeparator(tr("Places")));
+        list->append(attendSeparator(tr("Places")));
     list->append(placeList_level_zero);
     list->append(placeList_level_one);
     list->append(placeList_level_two);
 
 
-//    QString string;
-//    qDebug() << "post domElementForItem ->size() : " << string.setNum(domElementForItem.size());
+    //    QString string;
+    //    qDebug() << "post domElementForItem ->size() : " << string.setNum(domElementForItem.size());
 
-//    qDebug() << "post list->size() : " << string.setNum(list->size());
+    //    qDebug() << "post list->size() : " << string.setNum(list->size());
 
 
 
@@ -417,7 +548,7 @@ QListWidgetItem *OutlinerBase::attendSeparator(QString separatorName)
 QList<QListWidgetItem *> *OutlinerBase::openSheetAttendList(int number ,QString attendString)
 {
 
-//    qDebug() << "attendString : " << attendString;
+    //    qDebug() << "attendString : " << attendString;
 
 
 
@@ -434,17 +565,38 @@ QList<QListWidgetItem *> *OutlinerBase::openSheetAttendList(int number ,QString 
         attendIntList->removeAt(attendIntList->indexOf(0));
 
 
-//    QString string;
-//    qDebug() << "openSheetAttendList attendIntList->size() : " << string.setNum(attendIntList->size());
+    //    QString string;
+    //    qDebug() << "openSheetAttendList attendIntList->size() : " << string.setNum(attendIntList->size());
 
     QList<QListWidgetItem *> *itemList = sortAttendItems(attendIntList);
 
-//    qDebug() << "openSheetAttendList itemList->size() : " << string.setNum(itemList->size());
+    //    qDebug() << "openSheetAttendList itemList->size() : " << string.setNum(itemList->size());
 
     return itemList;
 
 }
 //--------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

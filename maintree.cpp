@@ -4,7 +4,7 @@
 #include "maintree.h"
 //
 MainTree::MainTree(QWidget *parent) :
-    QTreeWidget(parent), outlinerLaunched(false)
+    QTreeWidget(parent), outlinerLaunched(false) ,otoM_UpdateLaunched(false)
 {
     // The tree can accept drops
     setAcceptDrops( true );
@@ -86,13 +86,16 @@ bool MainTree::read(QFile *device)
     buildTree();
 
 
-    connect(this, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
-            this, SLOT(openTextFile(QTreeWidgetItem*,int)));
+    //    connect(this, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+    //            this, SLOT(openTextFile(QTreeWidgetItem*,int)));
 
     //setMouseTracking(true);
 
+    //    connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+    //            this, SLOT(rename(QTreeWidgetItem*)));
+
     connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-            this, SLOT(rename(QTreeWidgetItem*)));
+            this, SLOT(openTextFile(QTreeWidgetItem*,int)));
 
     connect(this, SIGNAL(itemCollapsed(QTreeWidgetItem*)), this, SLOT(itemCollapsedSlot(QTreeWidgetItem*)));
     connect(this, SIGNAL(itemExpanded(QTreeWidgetItem*)), this, SLOT(itemExpandedSlot(QTreeWidgetItem*)));
@@ -229,6 +232,7 @@ bool MainTree::read(QFile *device)
 
     m_itemEntered = item;
 
+
     return true;
 }
 
@@ -262,6 +266,8 @@ bool MainTree::write(QFile *device)
 
 
         //       QDomElement element;
+        //        QHash<QTextDocument *, QFile *> clonefileForDoc(fileForDoc);
+
         QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
 
         while (i != fileForDoc.end()) {
@@ -662,35 +668,35 @@ void MainTree::prepareContextMenu()
     connect(this, SIGNAL(itemEntered(QTreeWidgetItem*,int)), this, SLOT(itemEnteredSlot(QTreeWidgetItem*,int)));
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem*,int)),this,SLOT(itemActivatedSlot(QTreeWidgetItem*,int)));
 
-    renameAct = new QAction(tr("&Rename"), this);
+    renameAct = new QAction(QIcon(":/pics/edit-rename.png"),tr("&Rename"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(renameAct, SIGNAL(triggered()), this, SLOT(rename()));
 
-    addItemNextAct = new QAction(tr("Add &next"), this);
+    addItemNextAct = new QAction(QIcon(":/pics/folder-new.png"),tr("Add &next"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(addItemNextAct, SIGNAL(triggered()), this, SLOT(addItemNext()));
 
-    addChildAct = new QAction(tr("Add &child"), this);
+    addChildAct = new QAction(QIcon(":/pics/document-new.png"),tr("Add &child"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(addChildAct, SIGNAL(triggered()), this, SLOT(addChild()));
 
-    addSeparatorAct = new QAction(tr("Add &scene break"), this);
+    addSeparatorAct = new QAction(QIcon(":/pics/insert-horizontal-rule.png"),tr("Add &scene break"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(addSeparatorAct, SIGNAL(triggered()), this, SLOT(addSeparator()));
 
-    moveUpAct = new QAction(tr("Move Up"), this);
+    moveUpAct = new QAction(QIcon(":/pics/arrow-up.png"),tr("Move Up"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(moveUpAct, SIGNAL(triggered()), this, SLOT(moveUp()));
 
-    moveDownAct = new QAction(tr("Move Down"), this);
+    moveDownAct = new QAction(QIcon(":/pics/arrow-down.png"),tr("Move Down"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(moveDownAct, SIGNAL(triggered()), this, SLOT(moveDown()));
 
-    delYesAct = new QAction(tr("C&onfirm"), this);
+    delYesAct = new QAction(QIcon(":/pics/knotes_delete.png"),tr("C&onfirm"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(delYesAct, SIGNAL(triggered()), this, SLOT(delYesItem()));
 
-    autoRenameChildsAct = new QAction(tr("&Auto Rename Childs"), this);
+    autoRenameChildsAct = new QAction(QIcon(":/pics/edit-rename.png"),tr("&Auto Rename Childs"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(autoRenameChildsAct, SIGNAL(triggered()), this, SLOT(autoRenameChilds()));
 
@@ -698,7 +704,7 @@ void MainTree::prepareContextMenu()
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(splitAct, SIGNAL(triggered()), this, SLOT(split()));
 
-    addMultiAct = new QAction(tr("Add &X Children"), this);
+    addMultiAct = new QAction(QIcon(":/pics/document-multiple.png"),tr("Add &X Children"), this);
     //renameAct->setShortcuts(QKeySequence::Rename);
     connect(addMultiAct, SIGNAL(triggered()), this, SLOT(addMulti()));
 
@@ -727,7 +733,7 @@ void MainTree::itemEnteredSlot(QTreeWidgetItem *treeItemPressed,int column)
     m_preItemEntered = treeItemPressed; //for when it rename an item
 
 
-//    qDebug() << "item entered : " << m_itemEntered->text(0);
+    //    qDebug() << "item entered : " << m_itemEntered->text(0);
 
     //    if(treeItemPressed == 0){
 
@@ -772,6 +778,9 @@ void MainTree::rename(QTreeWidgetItem *item)
         //  m_itemPressed->setFlags(m_preFlagItemPressed->flags());
         m_itemEntered = item;
         emit nameChangedSignal(text, domElementForItem.value(item).attribute("number").toInt());
+
+        if(outlinerLaunched && !otoM_UpdateLaunched)
+            updateOutliner();
     }
 }
 
@@ -804,11 +813,12 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
 
     //    qDebug() << "outlinerLaunched : " << outlinerLaunched;
 
-    if(outlinerLaunched){
-        killOutliner();
-        launchOutliner();
-    }
-
+    //    if(outlinerLaunched){
+    //        killOutliner();
+    //        launchOutliner();
+    //    }
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
 
     return domElementForItem.key(newElement);
 
@@ -852,13 +862,14 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     buildTree();
 
 
-    if(outlinerLaunched){
-        killOutliner();
-        launchOutliner();
-        //        insertOutlinerItem(newElement.attribute("number").toInt(), element.attribute("number").toInt());
-    }
+    //    if(outlinerLaunched){
+    //        killOutliner();
+    //        launchOutliner();
+    //        //        insertOutlinerItem(newElement.attribute("number").toInt(), element.attribute("number").toInt());
+    //    }
 
-
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
 
 
 
@@ -974,11 +985,9 @@ QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
 
     buildTree();
 
-    if(outlinerLaunched){
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
 
-        killOutliner();
-        launchOutliner();
-    }
 
     return domElementForItem.key(newElement);
 }
@@ -1035,12 +1044,13 @@ void MainTree::moveUp()
 
     buildTree();
 
-    if(outlinerLaunched){
+    //    if(outlinerLaunched){
 
-        killOutliner();
-        launchOutliner();
-    }
-
+    //        killOutliner();
+    //        launchOutliner();
+    //    }
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
     //    disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
     //               this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
@@ -1088,7 +1098,7 @@ void MainTree::moveDown()
 
         }
         else{
-            elementMoved = nextParentElement->insertAfter(newNode, nextChild);
+            elementMoved = nextParentElement->insertBefore(newNode, nextChild);
 
         }
 
@@ -1108,12 +1118,13 @@ void MainTree::moveDown()
 
     buildTree();
 
-    if(outlinerLaunched){
+    //    if(outlinerLaunched){
 
-        killOutliner();
-        launchOutliner();
-    }
-
+    //        killOutliner();
+    //        launchOutliner();
+    //    }
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1342,13 +1353,14 @@ void MainTree::delYesItem()
 
         buildTree();
 
-        if(outlinerLaunched){
+        //        if(outlinerLaunched){
 
-            killOutliner();
-            launchOutliner();
-        }
+        //            killOutliner();
+        //            launchOutliner();
+        //        }
 
-
+        if(outlinerLaunched && !otoM_UpdateLaunched)
+            updateOutliner();
     }
         break;
     case QMessageBox::Cancel:
@@ -1443,7 +1455,8 @@ void MainTree::autoRenameChilds()
             preNum = num;
             first = next;
 
-
+            //            if(outlinerLaunched && !otoM_UpdateLaunched)
+            //                updateOutliner();
 
         }
 
@@ -1486,418 +1499,290 @@ void MainTree::autoRenameChilds()
 
 void MainTree::split()
 {
-
-    QMessageBox msgBox;
-    msgBox.setText("Do you want to split this sheet ?");
-    msgBox.setInformativeText(tr("<center><b>Each sheet type has different behaviour !</b></center>"
-                                 "<br>"
-                                 "<center><b>For the moment, only scene splitting works !</b></center>"
-                                 "<br>"
-                                 "<p>"
-                                 "<blockquote>In a scene sheet : split <b>only</b> into scenes with *** .</blockquote>"
-                                 "<blockquote>In a chapter sheet : split into scenes with *** and into chapters with ### .</blockquote>"
-                                 "<blockquote>In a book sheet : split into scenes with *** and into chapters with ### .</blockquote></p>"
-
-                                 ));
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    int ret = msgBox.exec();
-
-    switch (ret) {
-    case QMessageBox::Ok:
-
-    {
-
-        // saving
-
-        disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                   this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
-
-
-
-
-
-        emit textAndNoteSignal(0,"save");
-
-
-
-        //splitting
-
-        itemOfWork = m_itemEntered;
-
-        QFile *txtFile = new QFile;
-        QString txtPath;
-        QTreeWidgetItem *childItem;
-        QTreeWidgetItem *item;
-        QTreeWidgetItem *childItemOfWork;
-        QTreeWidgetItem *itemOfWork2;
-        QTreeWidgetItem *lastItem = new QTreeWidgetItem;
-        QTreeWidgetItem *nextItem = new QTreeWidgetItem;
-        QStringList chaptersList, scenesList, allScenesList;
-        QList<bool> resultsList;
-        QList<QTreeWidgetItem *> childsList;
-        QTextDocumentWriter *docWriter = new QTextDocumentWriter;
-        docWriter->setFormat("HTML");
-
-
-        QDomElement domItem = domElementForItem.value(itemOfWork);
-
-        int number = domItem.attribute("number").toInt();
-
-        QString string;
-        QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number,10));
-        QString mainString = textDoc->toHtml("utf-8");
-
-
-        if(domItem.tagName() == "scene"){
-
-            scenesList = mainString.split("***", QString::SkipEmptyParts);
-            if(scenesList.size() == 1){
-                QMessageBox::information(this, tr("Splitting Task"), tr("This sheet does not contain *** ."));
-                return;
-            }
-            QString debug;
-            //            qDebug() << "scenesList.size() : " << debug.setNum(scenesList.size(), 10);
-            for(int i = 0; i < scenesList.size(); ++i){
-
-                item = addItemNext(itemOfWork);
-                int num = domElementForItem.value(item).toElement().attribute("number").toInt();
-                QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
-                doc->setHtml(scenesList.at(i));
-
-                itemOfWork = item;
-
-            }
-
-
-        }
-        if(domItem.tagName() == "chapter"){
-            chaptersList = mainString.split("###", QString::KeepEmptyParts);
-            for(int i = 0; i < chaptersList.size(); ++i){
-                itemOfWork = addItemNext(itemOfWork);
-
-
-            }
-        }
-        //        if(domItem.tagName() == "chapter"){
-
-        //            chaptersList = mainString.split("###", QString::KeepEmptyParts);
-        //            //            if(scenesList.size() == 1){
-        //            //                QMessageBox::information(this, tr("Splitting Task"), tr("This sheet does not contain *** ."));
-        //            //                return;
-        //            //            }
-
-        //            QString debug;
-        //            qDebug() << "chaptersList.size() : " << debug.setNum(chaptersList.size(), 10);
-
-        //            for(int i = 0; i < chaptersList.size(); ++i){
-
-
-        //                itemOfWork2 = addItemNext(itemOfWork);
-        //                QString chapterString = chaptersList.at(i);
-
-        //                scenesList = chapterString.split("***", QString::SkipEmptyParts);
-        //                qDebug() << "scenesList.size() : " << debug.setNum(scenesList.size(), 10);
-
-        //                qDebug() << "scenesList.first() : " << scenesList.first();
-        //                childItem = addChild(itemOfWork2);
-        //                qDebug() << "childItem->text(0)  : " << childItem->text(0);
-        //                int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
-        //                QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
-        //                qDebug() << "doc : " << doc->objectName();
-        //                if(doc == 0)
-        //                    qDebug() <<"doc == 0" ;
-        //                doc->setHtml(scenesList.first());
-        //childItemOfWork = childItem;
-
-        //                if(scenesList.size() != 1)
-        //                    for(int t = 1; t < scenesList.size(); ++t){
-        //                        item = addItemNext(childItemOfWork);
-        //                        int num = domElementForItem.value(item).toElement().attribute("number").toInt();
-        //                        QTextDocument *doc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(num,10));
-        //                        doc->setHtml(scenesList.at(t));
-
-        //                        childItemOfWork = item;
-        //                    }
-
-
-        //            }
-
-
-        //        }
-
-
-        /*
-        else if(domItem.tagName() == "chapter"){
-            qDebug() << "jal AA ";
-
-
-
-            //            chaptersList = mainString.split("###", QString::SkipEmptyParts);
-
-            //            int chaptersSize = chaptersList.size();
-
-            //            while(!chaptersList.isEmpty()){
-
-            //                scenesList = chaptersList.takeFirst().split("***", QString::SkipEmptyParts);
-
-            //                while (!scenesList.isEmpty())
-            //                    allScenesList.append(scenesList.takeFirst());
-
-            //                allScenesList.append("@@@@@@---break---@@@@@@");
-            //            }
-            //            qDebug() << "jal BB ";
-
-            //            allScenesList.removeLast();
-
-            //            for(int k = 0; k < chaptersSize; ++k){
-            //                while(chaptersSize != 0){
-            //                    qDebug() << "jal BBB ";
-
-            //                    item = addItemNext(itemOfWork);
-            //                    childsList.append(item);
-            //                    itemOfWork = item;
-            //                    chaptersSize -= 1;
-            //                }
-            //                qDebug() << "jal CC ";
-            //          //      m_itemEntered = childsList.first();
-            //                qDebug() << "jal CC 1 ";
-
-            //                addChild();
-            //                qDebug() << "jal DD ";
-
-            //                lastItem = childsList.first()->child(0);
-            //                while(!allScenesList.isEmpty()){
-
-            //                    item = lastItem;
-            //m_itemEntered = item;
-            //                    nextItem = addItemNext();
-            //                    qDebug() << "jal DDD ";
-
-            //                    txtPath = domElementForItem.value(childItem).toElement().attribute("textPath");
-
-            //                    txtFile->setFileName(devicePath + txtPath);
-            //                    textDocument->setHtml(allScenesList.takeFirst());
-            //                    qDebug() << "jal DDD ";
-
-            //                    if(textDocument->firstBlock().text() == "@@@@@@---break---@@@@@@"){
-
-            //                        m_itemEntered = lastItem;
-            //                        moveDown();
-
-            //                        qDebug() << "jal EEEE ";
-
-            //                        allScenesList.removeFirst();
-            //                    }
-            //                    else{
-            //                        docWriter->setDevice(txtFile);
-            //                        bool written = docWriter->write(textDocument);
-            //                        resultsList.append(written);
-            //                    }
-            //                    lastItem = nextItem;
-            //                }
-
-
-
-
-            chaptersList = mainString.split("###", QString::SkipEmptyParts);
-
-            QString debug;
-            qDebug() << "chaptersList.size() : " << debug.setNum(chaptersList.size());
-            qDebug() << "mainString.size() : " << debug.setNum(mainString.size());
-
-
-
-
-
-
-            QTreeWidgetItem *parentItem;
-            QTreeWidgetItem *current;
-
-
-            qDebug() << "itemOfWork name : " << itemOfWork->text(0);
-            current = itemOfWork;
-            if(current->parent())
-                parentItem = current->parent();
-            else
-                parentItem = headerItem();
-
-            QDomElement element;
-            for(int j = 0; j < chaptersList.size(); ++j ){
-
-
-                element = domElementForItem.value(current);
-
-
-                QDomElement newElement = domDocument.createElement("nothing");
-                element.parentNode().insertAfter(newElement, element);
-
-                modifyAttributes(element, newElement, "sibling");
-
-
-
-
-
-
-            }
-            buildTree();
-
-
-            for(int i = 0; i < chaptersList.size(); ++i){
-
-                qDebug() << "A";
-
-                qDebug() << "B";
-
-
-                scenesList = chaptersList.at(i).split("***", QString::SkipEmptyParts);
-                qDebug() << "scenesList.size() : " << debug.setNum(scenesList.size());
-
-                //                if(scenesList.size() == 1 || chaptersList.size() == 1){
-                //                    QMessageBox::information(window(), tr("Splitting Task"), tr("This sheet does not contain *** nor ### ."));
-                //                    return;
-                //                }
-
-
-
-                item = current;
-
-
-                //   for(int j = 0; j < scenesList.size(); ++j){
-
-                //
-                qDebug() << "T";
-
-                while(!scenesList.isEmpty()){
-                    qDebug() << "item name : " <<  item->text(0);
-                    QString debug;
-                    qDebug() << "int i : " << debug.setNum(i,10);
-
-                    QDomElement element = domElementForItem.value(item);
-                    qDebug() << "jal c ";
-
-                    QDomElement newElement = domDocument.createElement("nothing");
-                    element.appendChild(newElement);
-                    newElement = modifyAttributes(element, newElement, "child");
-                    qDebug() << "jal d ";
-
-                    //                    childItem = domElementForItem.key(newElement);
-
-                    //                    qDebug() << "childItem : " << childItem->text(0);
-
-                    txtPath = newElement.toElement().attribute("textPath");
-                    qDebug() <<   "U";
-                    txtFile->setFileName(devicePath + txtPath);
-                    textDocument->setHtml(scenesList.takeFirst());
-                    docWriter->setDevice(txtFile);
-                    bool written = docWriter->write(textDocument);
-
-                    qDebug() <<   "V";
-                    resultsList.append(written);
-
-
-                    current = domElementForItem.key(element.nextSibling().toElement());
-
-                }
-                qDebug() <<   "W";
-                this->write(deviceFile);
-
-                qDebug() <<  "X";
-            }
-
-
-
-
-
-
-
-        }
-        else if(domItem.tagName() == "book"){
-
-            //            QTreeWidgetItem *itemToWorkWith = new QTreeWidgetItem;
-            //            itemToWorkWith = itemOfWork;
-            //            QTreeWidgetItem *childItem = new QTreeWidgetItem;
-
-
-            chaptersList = mainString.split("###", QString::SkipEmptyParts);
-
-
-            for(int l = 0; l < chaptersList.size(); ++l){
-
-                scenesList = chaptersList.at(l).split("***", QString::SkipEmptyParts);
-
-                childItem = addChild(itemOfWork);
-
-                for(int m = 0; m < scenesList.size(); ++m){
-
-
-
-                    childItem = addChild(childItem);
-                    txtPath = domElementForItem.value(childItem).toElement().attribute("textPath");
-
-                    txtFile->setFileName(devicePath + txtPath);
-                    textDocument->setHtml(scenesList.at(m));
-                    docWriter->setDevice(txtFile);
-                    bool written = docWriter->write(textDocument);
-                    resultsList.append(written);
-
-
-                }
-
-            }
-        }
-*/
-        else{
-            qDebug() << "------------------ PROBLEM SPLIT";
-            QApplication::restoreOverrideCursor();
-
-            return;
-        }
-
-        QApplication::restoreOverrideCursor();
-
-
-
-        connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
-
-
-        chaptersList.clear();
-        scenesList.clear();
-
-
-        if(outlinerLaunched){
-
-            killOutliner();
-            launchOutliner();
-        }
-
-
-
-    }
-        break;
-
-    case QMessageBox::Cancel:
-        return;
-        break;
-    default:
-        // should never be reached
-        break;
-    }
+    QDialog *splitDialog = new QDialog(this);
+    splitDialog->setWindowTitle(tr("Split Dialog"));
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QLabel *titleText = new QLabel(tr("<p>With this tool, you can split a text in several parts."
+                                      "For each part, Plume will create a chapter or a scene.</p><br>"));
+    QLabel *mainText = new QLabel(tr("<center><b>Each sheet type has different behaviour !</b></center>"
+                                     "<br>"
+                                     "<p>"
+                                     "<blockquote>In a scene sheet : split <b>only</b> into scenes with *** .</blockquote>"
+                                     "<blockquote>In a chapter sheet : split into scenes with *** and into chapters with ### .</blockquote>"
+                                     "<blockquote>In a book sheet : split into scenes with *** and into chapters with ### .</blockquote></p>"
+                                    ));
+
+    QFormLayout *formLayout = new QFormLayout;
+
+    QComboBox *textChoiceBox = new QComboBox;
+    QStringList textChoices;
+    textChoices << tr("Text") << tr("Synopsys") << tr("Note");
+    textChoiceBox->addItems(textChoices);
+
+    connect(textChoiceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(splitChoiceChanged(int)));
+    textChoiceBox->setCurrentIndex(0);
+    splitChoiceChanged(0);
+
+    formLayout->addRow(tr("Choose the type of document that you want to split :"), textChoiceBox);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+
+    connect(buttonBox, SIGNAL(accepted()), splitDialog, SLOT(close()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(splitYes()));
+    connect(buttonBox, SIGNAL(rejected()), splitDialog, SLOT(close()));
+
+    layout->addWidget(titleText);
+    layout->addSpacing(30);
+    layout->addWidget(mainText);
+  layout->addSpacing(30);
+  layout->addLayout(formLayout);
+    layout->addWidget(buttonBox);
+
+    splitDialog->setLayout(layout);
+
+    splitDialog->exec();
 
 
 
 }
 
 //-------------------------------------------------------------------------------------
+void MainTree::splitChoiceChanged(int choice)
+{
+    switch (choice) {
+    case 0:
+        splitChoice = "textDoc_";
+        break;
+
+    case 1:
+        splitChoice = "synDoc_";
+        break;
+    case 2:
+        splitChoice = "noteDoc_";
+        break;
+    default:
+        splitChoice = "textDoc_";
+        break;
+
+        qDebug() << "splitChoice : " << splitChoice;
+    }
+}
+
+//-------------------------------------------------------------------------------------
+void MainTree::splitYes()
+{
+    // saving
+
+    disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+               this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
 
+
+
+
+    emit textAndNoteSignal(0,"save");
+
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+    //                 set up the progress bar :
+
+    QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    QHBoxLayout *progressLayout = new QHBoxLayout(progressWidget);
+    QProgressBar *progressBar = new QProgressBar(progressWidget);
+    int progressValue = 0;
+
+    progressLayout->addWidget(progressBar);
+    progressWidget->setLayout(progressLayout);
+
+
+
+
+    //splitting :
+
+    itemOfWork = m_itemEntered;
+
+    QFile *txtFile = new QFile;
+    QString txtPath;
+    QTreeWidgetItem *childItem;
+    QTreeWidgetItem *childItem2;
+    QTreeWidgetItem *item;
+    QTreeWidgetItem *childItemOfWork;
+    QTreeWidgetItem *itemOfWork2;
+    QTreeWidgetItem *lastItem = new QTreeWidgetItem;
+    QTreeWidgetItem *nextItem = new QTreeWidgetItem;
+    QStringList chaptersList, scenesList, allScenesList;
+    QList<bool> resultsList;
+    QList<QTreeWidgetItem *> childsList;
+    QTextDocumentWriter *docWriter = new QTextDocumentWriter;
+    docWriter->setFormat("HTML");
+
+
+    QDomElement domItem = domElementForItem.value(itemOfWork);
+
+    int number = domItem.attribute("number").toInt();
+
+    QString string;
+    QTextDocument *textDoc = this->findChild<QTextDocument *>( splitChoice + string.setNum(number,10));
+    QString mainString = textDoc->toHtml("utf-8");
+
+
+    if(domItem.tagName() == "scene"){
+
+        scenesList = mainString.split("***", QString::KeepEmptyParts);
+
+        progressBar->setMaximum(scenesList.size() - 1);
+        progressBar->setValue(progressValue);
+        progressWidget->show();
+
+        if(scenesList.size() == 1){
+            QMessageBox::information(this, tr("Splitting Task"), tr("This sheet does not contain *** ."));
+            return;
+        }
+        //            QString debug;
+        //            qDebug() << "scenesList.size() : " << debug.setNum(scenesList.size(), 10);
+        for(int i = 0; i < scenesList.size(); ++i){
+
+            item = addItemNext(itemOfWork);
+            int num = domElementForItem.value(item).toElement().attribute("number").toInt();
+            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            doc->setHtml(scenesList.at(i));
+
+            itemOfWork = item;
+
+            progressValue += 1;
+            progressBar->setValue(progressValue);
+        }
+
+
+    }
+    else if(domItem.tagName() == "chapter"){
+        chaptersList = mainString.split("###", QString::KeepEmptyParts);
+
+        progressBar->setMaximum(chaptersList.size() - 1);
+        progressBar->setValue(progressValue);
+        progressWidget->show();
+
+        for(int i = 0; i < chaptersList.size(); ++i){
+            item = addItemNext(itemOfWork);
+
+            scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
+            childItem = addChild(item);
+            int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
+            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            doc->setHtml(scenesList.at(0));
+
+            progressValue += 1;
+            progressBar->setValue(progressValue);
+
+            for(int j = 1; j < scenesList.size(); ++j){
+
+                itemOfWork2 = addItemNext(childItem);
+                int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
+                QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+                doc->setHtml(scenesList.at(j));
+                childItem = itemOfWork2;
+            }
+            itemOfWork = item;
+
+            progressValue += 1;
+            progressBar->setValue(progressValue);
+        }
+    }
+    else if(domItem.tagName() == "book"){
+        chaptersList = mainString.split("###", QString::KeepEmptyParts);
+
+        progressBar->setMaximum(chaptersList.size() - 1);
+        progressBar->setValue(progressValue);
+        progressWidget->show();
+
+        // build the first child chapter and its first child :
+
+        childItem = addChild(itemOfWork);
+        //            int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
+        //            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+        //            doc->setHtml(chaptersList.at(0));
+
+        scenesList = chaptersList.at(0).split("***", QString::KeepEmptyParts);
+        childItem2 = addChild(childItem);
+        int num = domElementForItem.value(childItem2).toElement().attribute("number").toInt();
+        QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+        doc->setHtml(scenesList.at(0));
+
+        progressValue += 1;
+        progressBar->setValue(progressValue);
+
+        for(int k = 1; k < scenesList.size(); ++k){
+
+            itemOfWork2 = addItemNext(childItem2);
+            int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
+            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            doc->setHtml(scenesList.at(k));
+            childItem2 = itemOfWork2;
+
+        }
+
+
+
+        // build the next chapters and their first child scenes :
+
+        for(int i = 1; i < chaptersList.size(); ++i){
+            item = addItemNext(childItem);
+
+            scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
+            childItem = addChild(item);
+            int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
+            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            doc->setHtml(scenesList.at(0));
+
+            for(int j = 1; j < scenesList.size(); ++j){
+
+                itemOfWork2 = addItemNext(childItem);
+                int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
+                QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+                doc->setHtml(scenesList.at(j));
+                childItem = itemOfWork2;
+            }
+            childItem = item;
+
+            progressValue += 1;
+            progressBar->setValue(progressValue);
+        }
+    }
+     else{
+        qWarning() << "------------------ PROBLEM SPLIT";
+        QApplication::restoreOverrideCursor();
+        progressWidget->close();
+
+        return;
+    }
+
+    QApplication::restoreOverrideCursor();
+    progressWidget->close();
+
+
+
+    connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
+
+
+    chaptersList.clear();
+    scenesList.clear();
+
+
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
+}
+
+//-------------------------------------------------------------------------------------
 void MainTree::addMulti()
 {
     bool ok;
     int numSheets = QInputDialog::getInt(this, tr("Add X Children"),
                                          tr("Please enter a number :"),
-                                         1, 1, 100, 1, &ok);
+                                         2, 1, 100, 1, &ok);
 
     if (!ok || numSheets == 0)
         return;
@@ -1923,12 +1808,13 @@ void MainTree::addMulti()
 
     buildTree();
 
-    if(outlinerLaunched){
+    //    if(outlinerLaunched){
 
-        killOutliner();
-        launchOutliner();
-    }
-
+    //        killOutliner();
+    //        launchOutliner();
+    //    }
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
 }
 
 
@@ -2187,6 +2073,11 @@ void MainTree::buildTree()
 
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
+
+
+    if(outlinerLaunched && !otoM_UpdateLaunched)
+        updateOutliner();
+
 }
 
 
@@ -2491,7 +2382,7 @@ bool MainTree::saveDoc(QTextDocument *doc)
     //    qDebug() << "saveDoc : " << file->fileName();
     file->close();
     QTextDocumentWriter docWriter(file, "HTML");
-    bool written = docWriter.write(doc);
+    bool written = docWriter.write(doc->clone());
 
     //    qDebug() << "saveDoc finished";
 
@@ -2537,12 +2428,12 @@ bool MainTree::saveDoc(QTextDocument *doc)
 void MainTree::launchOutliner()
 {
 
-        if(outlinerLaunched){
-          // connect to raise and set active windows//        QApplication::setActiveWindow(outliner);
-            //        outliner->raise();
-            emit showOutlinerSignal();
-            return;
-        }
+    if(outlinerLaunched){
+        // connect to raise and set active windows//        QApplication::setActiveWindow(outliner);
+        //   outliner->raise();
+        emit showOutlinerSignal();
+        return;
+    }
 
     outlinerBase = new OutlinerBase(0);
 
@@ -2550,33 +2441,44 @@ void MainTree::launchOutliner()
     connect(this, SIGNAL(showOutlinerSignal()), outlinerBase, SLOT(showOutliner()));
 
 
-   // UpdatesToOutliner :
+    // UpdatesToOutliner :
 
-//    connect(this,SIGNAL(), outlinerBase, SLOT());
+    //    connect(this,SIGNAL(), outlinerBase, SLOT());
 
 
-//for domDocument :
+    //for domDocument :
     //            to Outline :
 
     connect(this, SIGNAL(domDocSignal(QDomDocument)), outlinerBase, SLOT(mtoO_setDomDoc(QDomDocument)));
-emit domDocSignal(domDocument.cloneNode().toDocument());
+    emit domDocSignal(domDocument.cloneNode().toDocument());
+
+    //                    from Outline :
+    connect(outlinerBase, SIGNAL(updateMainDomDocSignal(QDomDocument)), this,SLOT(updateMainDomDocFromOutliner(QDomDocument)));
+    connect(outlinerBase, SIGNAL(otoM_actionSignal(QString,int)), this, SLOT(otoM_actionSlot(QString,int)));
+    //for TextDocuments :
+
+
+    //            to Outline :
+
+    connect(this, SIGNAL(setNumForDocSignal(QHash<QTextDocument *, int>)), outlinerBase, SLOT(mtoO_setNumForDoc(QHash<QTextDocument *, int>)));
+
+    emit setNumForDocSignal(setNumForDoc());
+
+    //                    from Outline :
+
+    connect(outlinerBase, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()));
 
 
 
-//for TextDocuments :
 
+    //for attendance :
+    //           to Outline :
+    connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outlinerBase, SLOT(mtoO_updateAttendances(QHash<int,QString>)));
+    connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
+            ,outlinerBase, SLOT(mtoO_setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
 
-
-
-
-        //for attendance :
-//           to Outline :
-        connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outlinerBase, SLOT(mtoO_updateAttendances(QHash<int,QString>)));
-        connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
-                ,outlinerBase, SLOT(mtoO_setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
-
-        emit projectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
-        readAllAttendances();
+    emit projectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
+    readAllAttendances();
 
 
 
@@ -2587,42 +2489,145 @@ emit domDocSignal(domDocument.cloneNode().toDocument());
 
 
 
-//    if(outlinerLaunched){
-//        QApplication::setActiveWindow(outliner);
-//        outliner->raise();
-//        return;
-//    }
+    //    if(outlinerLaunched){
+    //        QApplication::setActiveWindow(outliner);
+    //        outliner->raise();
+    //        return;
+    //    }
 
-//    outliner = new Outline(0);
+    //    outliner = new Outline(0);
 
-//    outliner->applyConfig();
-//    buildOutliner();
+    //    outliner->applyConfig();
+    //    buildOutliner();
 
-//    connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
-//    connect(outliner, SIGNAL(outlinerClosedSignal()), this, SLOT(outlinerClosed()));
-//    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
-//    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
-//    connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
-//    connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
-//    connect(outliner, SIGNAL(writeThisSignal(int)), this, SLOT(writeThisSlot(int)));
+    //    connect(outliner, SIGNAL(destroyed()), this, SLOT(deletedSlot()));
+    //    connect(outliner, SIGNAL(outlinerClosedSignal()), this, SLOT(outlinerClosed()));
+    //    connect(this, SIGNAL(nameChangedSignal(QString,int)), outliner, SLOT(setItemTitle(QString,int)));
+    //    connect(outliner, SIGNAL(newOutlineTitleSignal(QString,int)), this, SLOT(newOutlineTitleSlot(QString,int)));
+    //    connect(this, SIGNAL(connectUpdateTextsSignal()), outliner, SIGNAL(connectUpdateTextsSignal()));
+    //    connect(this, SIGNAL(disconnectUpdateTextsSignal()), outliner, SIGNAL(disconnectUpdateTextsSignal()));
+    //    connect(outliner, SIGNAL(writeThisSignal(int)), this, SLOT(writeThisSlot(int)));
 
-//    //for attendance :
-//    connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outliner, SLOT(updateAttendances(QHash<int,QString>)));
-//    connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
-//            ,outliner, SLOT(setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
+    //    //for attendance :
+    //    connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outliner, SLOT(updateAttendances(QHash<int,QString>)));
+    //    connect(this, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>))
+    //            ,outliner, SLOT(setProjectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
 
-//    outliner->setProjectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
+    //    outliner->setProjectAttendanceList(attend_domElementForItem, attend_domElementForItemNumber);
 
-//    readAllAttendances();
+    //    readAllAttendances();
 
-//    outlinerLaunched = true;
+    //    outlinerLaunched = true;
 }
+
+//-----------------------------------------------------------------------------------------
+
+QHash<QTextDocument *, int> MainTree::setNumForDoc()
+{
+
+    QHash<QTextDocument *, int> numForDoc;
+    numForDoc.clear();
+
+    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
+    QDomElement element;
+
+    while(iterator->operator *() != 0){
+        element = domElementForItem.value(iterator->operator *());
+        if(element.tagName() != "separator")
+        {
+
+            QString num = element.attribute("number");
+            QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
+            numForDoc.insert(synDocument, num.toInt());
+            QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+            numForDoc.insert(noteDocument, num.toInt());
+
+            //    outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
+
+        }
+        //        if(element.tagName() == "separator")
+        //        {
+
+        //        }
+
+        iterator->operator ++();
+
+    }
+    return numForDoc;
+}
+//-----------------------------------------------------------------------------------------
+
+void MainTree::updateOutliner()
+{
+    if(!outlinerLaunched){
+        return;
+    }
+
+    emit domDocSignal(domDocument.cloneNode().toDocument());
+    emit setNumForDocSignal(setNumForDoc());
+
+    outlinerBase->updateOutliner();
+    qDebug() << "Outliner updated";
+
+
+}
+
+void MainTree::updateMainDomDocFromOutliner(QDomDocument domDoc)
+{
+    otoM_UpdateLaunched = true;
+    if(!outlinerLaunched){
+        return;
+    }
+    domDocument = domDoc;
+    root = domDocument.documentElement();
+
+    buildTree();
+
+    otoM_UpdateLaunched = false;
+
+}
+//-----------------------------------------------------------------------------------------
+
+
+void MainTree::otoM_actionSlot(QString action, int idNumber)
+{
+    m_itemEntered = domElementForItem.key(domElementForNumber.value(idNumber));
+
+    if(action == "rename")
+        this->rename();
+    if(action == "addItemNext")
+        this->addItemNext();
+    if(action == "addChild")
+        this->addChild();
+    if(action == "addSeparator")
+        this->addSeparator();
+    if(action == "moveUp")
+        this->moveUp();
+    if(action == "moveDown")
+        this->moveDown();
+    if(action == "removeItem")
+        this->delYesItem();
+    if(action == "autoRenameChilds")
+        this->autoRenameChilds();
+    if(action == "addMulti")
+        this->addMulti();
+}
+
+
+
+
+
+
+
 
 //-----------------------------------------------------------------------------------------
 
 
 void MainTree::buildOutliner()
 {
+
+    //deprecated
+
     // build outline :
 
     QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
@@ -2673,20 +2678,20 @@ void MainTree::buildOutliner()
 
 void MainTree::killOutliner()
 {
-//    saveOutlineSettings();
-//    outliner->close();
-//    outliner->deleteLater();
-//    outlinerLaunched = false;
+    //    saveOutlineSettings();
+    //    outliner->close();
+    //    outliner->deleteLater();
+    //    outlinerLaunched = false;
 
-//    if(outlinerLaunched){
-//        QApplication::setActiveWindow(outliner);
-//        outliner->raise();
-//        return;
-//    }
+    //    if(outlinerLaunched){
+    //        QApplication::setActiveWindow(outliner);
+    //        outliner->raise();
+    //        return;
+    //    }
 
-outlinerBase->saveConfig();
-outlinerBase->deleteLater();
- outlinerLaunched = false;
+    outlinerBase->saveConfig();
+    outlinerBase->deleteLater();
+    outlinerLaunched = false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -2832,11 +2837,38 @@ QTextDocument * MainTree::prevText(int num)
 
     QString string;
     QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(prevNum,10));
-    qDebug() << "prevNum : " << string;
+    //    qDebug() << "prevNum : " << string;
 
     return textDoc;
 }
 
+//-----------------------------------------------------------------------------------------------
+
+QTextDocument * MainTree::nextText(int num)
+{
+    //find directly before :
+    int nextNum = domElementForNumber.key(domElementForNumber.value(num).nextSiblingElement(domElementForNumber.value(num).tagName()));
+
+
+    //find after the father :
+    if(nextNum == 0){
+        QDomElement father = domElementForNumber.value(num).parentNode().toElement();
+        QDomElement nextFather = father.nextSiblingElement(father.tagName());
+        QDomElement firstChild = nextFather.firstChild().toElement();
+        nextNum = domElementForNumber.key(firstChild);
+    }
+    //cancel :
+    else if(nextNum == 0)
+        return 0;
+
+    QString string;
+    QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(nextNum,10));
+    //    qDebug() << "nextNum : " << string;
+
+    return textDoc;
+}
+
+//-----------------------------------------------------------------------------------------------
 
 void MainTree::readAllAttendances()
 {
@@ -2946,7 +2978,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
 
     QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
-//    qDebug() << "attendString : "<< attendString;
+    //    qDebug() << "attendString : "<< attendString;
     QString string;
     for(int j=0 ; j < list.size(); ++j){
         int itemNumber = list.at(j);
@@ -2958,7 +2990,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
     for( int i = 0 ; i < thisAttendStringList.size(); ++i)
         newAttendString.append(thisAttendStringList.at(i) + "-");
 
-//    qDebug() << "newAttendString : "<< newAttendString;
+    //    qDebug() << "newAttendString : "<< newAttendString;
 
     element.setAttribute("attend", newAttendString);
     //        ++i;
@@ -2977,3 +3009,6 @@ void MainTree::giveDocsAndDomForProjectWordCount()
 }
 
 //----------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ Outline::Outline(QWidget *parent) :
     listSliderAct->setDefaultWidget(listSliderBox);
 
     QWidgetAction *synSliderAct = new QWidgetAction(this);
-    QGroupBox *synSliderBox = new QGroupBox(tr("Synopsies width"), this);
+    QGroupBox *synSliderBox = new QGroupBox(tr("Synopses width"), this);
     QVBoxLayout *synSliderLayout = new QVBoxLayout(synSliderBox);
     synSlider = new QSlider(Qt::Horizontal, this);
     synSlider->setRange(200, 600);
@@ -110,7 +110,7 @@ Outline::Outline(QWidget *parent) :
     // fonts menu :
 
     QWidgetAction *synFontAct = new QWidgetAction(this);
-    QGroupBox *synFontBox = new QGroupBox(tr("Synopsies font"), this);
+    QGroupBox *synFontBox = new QGroupBox(tr("Synopses font"), this);
     QGridLayout *synFontLayout = new QGridLayout(synFontBox);
     synFontCombo = new QFontComboBox(this);
     synTextHeightSpin = new QSpinBox;

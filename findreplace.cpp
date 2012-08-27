@@ -34,7 +34,7 @@ FindReplace::FindReplace(QFile *device, QWidget *parent) :
     QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
     QGridLayout *checkLayout = new QGridLayout;
     textCheckBox = new QCheckBox(tr("Check story"), this);
-    synCheckBox = new QCheckBox(tr("Check synopsies"), this);
+    synCheckBox = new QCheckBox(tr("Check synopses"), this);
     noteCheckBox = new QCheckBox(tr("Check notes"), this);
 
     textCheckBox->setChecked(true);

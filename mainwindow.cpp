@@ -18,7 +18,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), NoProjectOpened(true)
+    : QMainWindow(parent), noProjectOpened(true)
 {
 
 
@@ -26,10 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("Plume Creator");
 
     setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks);
-
+    setFocusPolicy(Qt::WheelFocus);
 
     //temporary config
-    //    setStyleSheet("* {background-color: black; color: beige;}");
+    setStyleSheet("* {background-color: pink; color: black;}");
 
     // netbook mode 10':
     //    setFixedSize(900, 550);
@@ -62,6 +62,10 @@ MainWindow::MainWindow(QWidget *parent)
     readSettings();
     connect(menu, SIGNAL(applyConfigSignal()), this,SLOT(applyConfig()));
     applyConfig();
+
+
+    giveStyle();
+
 
 
     // Welcome dialog at first start
@@ -161,6 +165,9 @@ void MainWindow::createMenuBar()
     connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
 
 
+
+
+
     menu->firstLaunch();
 
     this->setMenuBar(menu->createMenuBar());
@@ -172,6 +179,7 @@ void MainWindow::createMenuBar()
 void MainWindow::createAttendDock()
 {
     attendDock = new QDockWidget;
+    attendDock->setObjectName(tr("Attendance"));
     attendDock->setObjectName("attendDock");
     attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
@@ -272,10 +280,11 @@ void MainWindow::createTreeDock()
 
     treeDock = new QDockWidget;
 
-    treeDock->setObjectName("treeDock");
-    treeDock->setWindowTitle(tr("Tree"));
+    treeDock->setObjectName("projectDock");
+    treeDock->setWindowTitle(tr("Project"));
     treeDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     treeDock->setMinimumSize(160,200);
+    treeDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
 
     mainTree = new MainTree;
 
@@ -287,7 +296,6 @@ void MainWindow::createTreeDock()
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
     connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
-
 
 }
 
@@ -356,14 +364,19 @@ void MainWindow::createNoteDock()
 
 
     synLayout = new QStackedLayout;
+
     noteLayout = new QStackedLayout;
     QGroupBox *synopsisBox = new QGroupBox;
+    synopsisBox->setObjectName("synBox");
+    synopsisBox->setContentsMargins(0,0,0,0);
     QGroupBox *noteBox = new QGroupBox;
-
-    QFrame *frame = new QFrame;
-    frame->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    frame->setLineWidth(2);
-    frame->setMidLineWidth(3);
+    noteBox->setObjectName("noteBox");
+    noteBox->setContentsMargins(0,0,0,0);
+    noteSplitter = new QSplitter;
+    noteSplitter->setObjectName("notesFrame");
+    //    frame->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    //    frame->setLineWidth(2);
+    //    frame->setMidLineWidth(3);
 
 
     //    QFrame *midFrame = new QFrame;
@@ -412,13 +425,15 @@ void MainWindow::createNoteDock()
     noteBox->setLayout(noteLayout);
 
     noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    noteDockLayout->setMargin(0);
+    noteDockLayout->setSpacing(0);
+    noteDockLayout->setContentsMargins(0,0,0,0);
     noteDockLayout->addWidget(synopsisBox);
     //    layout->addWidget(midFrame);
     noteDockLayout->addWidget(noteBox);
-    frame->setLayout(noteDockLayout);
+    noteSplitter->setLayout(noteDockLayout);
 
-
-    noteDock->setWidget(frame);
+    noteDock->setWidget(noteSplitter);
 
     QStringList list;
     list << tr("Draft") << tr("25%") << tr("50%") << tr("75%") << tr("Done") << tr("Corrected");
@@ -434,6 +449,7 @@ void MainWindow::createNoteDock()
 
     connect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
     connect(noteDock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(changeOrientationOfNoteDock(Qt::DockWidgetArea)));
+
 
     //default behaviour :
     noteDock->hide();
@@ -456,10 +472,11 @@ void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
 {
     if(noteDockArea == Qt::LeftDockWidgetArea | noteDockArea == Qt::RightDockWidgetArea){
         noteDockLayout->setDirection(QBoxLayout::TopToBottom);
-
+        noteSplitter->setOrientation(Qt::Vertical);
     }
     else if(noteDockArea == Qt::TopDockWidgetArea | noteDockArea == Qt::BottomDockWidgetArea){
         noteDockLayout->setDirection(QBoxLayout::LeftToRight);
+        noteSplitter->setOrientation(Qt::Horizontal);
     }
 }
 
@@ -469,39 +486,43 @@ void MainWindow::createStatusBar()
 {
     bar = new QStatusBar(this);
 
-    showPrevSceneButton = new QToolButton(this);
-    showPrevSceneButton->setText(tr("&Show Prev. Scene"));
-     showPrevSceneButton->setCheckable(true);
-    showPrevSceneButton->setShortcut(Qt::Key_F10);
-    showPrevSceneButton->setToolTip(tr("Show the end of the previous scene"));
-    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+    //    showPrevSceneButton = new QToolButton(this);
+    //    showPrevSceneButton->setObjectName("showPrvSceneBt");
+    //    showPrevSceneButton->setText(tr("&Show Prev. Scene"));
+    //    showPrevSceneButton->setCheckable(true);
+    //    showPrevSceneButton->setShortcut(Qt::Key_F10);
+    //    showPrevSceneButton->setToolTip(tr("Show the end of the previous scene"));
+    //    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
 
-    QToolButton *status_tabFullscreenButton = new QToolButton(this);
-    status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
-    status_tabFullscreenButton->setShortcut(Qt::Key_F11);
-    status_tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    connect(status_tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
+    //    QToolButton *status_tabFullscreenButton = new QToolButton(this);
+    //    status_tabFullscreenButton->setObjectName("showFullscreenBt");
+    //    status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
+    //    status_tabFullscreenButton->setShortcut(Qt::Key_F11);
+    //    status_tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
+    //    connect(status_tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
 
-    QToolButton *status_outlinerButton = new QToolButton(this);
-    status_outlinerButton->setText(tr("Outliner"));
-    status_outlinerButton->setShortcut(Qt::Key_F12);
-    status_outlinerButton->setToolTip(tr("Launch the project outliner"));
-    connect(status_outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
+    //    QToolButton *status_outlinerButton = new QToolButton(this);
+    //    status_outlinerButton->setObjectName("showOutlinerBt");
+    //    status_outlinerButton->setText(tr("Outliner"));
+    //    status_outlinerButton->setShortcut(Qt::Key_F12);
+    //    status_outlinerButton->setToolTip(tr("Launch the project outliner"));
+    //    connect(status_outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
     sceneWCLabel = new QLabel();
 
     QWidget *stretcher1 = new QWidget();
     stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
-    //        QWidget *stretcher2 = new QWidget();
-    //        stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+    QWidget *stretcher2 = new QWidget();
+    stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     //bar->addPermanentWidget(stretcher1);
 
-    bar->addPermanentWidget(sceneWCLabel,1);
     bar->addPermanentWidget(stretcher1,10);
-    bar->addPermanentWidget(showPrevSceneButton,2);
-    bar->addPermanentWidget(status_tabFullscreenButton,2);
-    bar->addPermanentWidget(status_outlinerButton,2);
+    bar->addPermanentWidget(sceneWCLabel,1);
+    bar->addPermanentWidget(stretcher2,10);
+    //    bar->addPermanentWidget(showPrevSceneButton,2);
+    //    bar->addPermanentWidget(status_tabFullscreenButton,2);
+    //    bar->addPermanentWidget(status_outlinerButton,2);
     //    bar->addPermanentWidget(stretcher2);
 
     this->setStatusBar(bar);
@@ -512,21 +533,48 @@ void MainWindow::createStatusBar()
 
 void MainWindow::setShowPreviousTextButton(bool showPrevTextBool)
 {
-    disconnect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+    disconnect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
 
 
 
-        showPrevSceneButton->setChecked(showPrevTextBool);
+    showPrvScnButton->setChecked(showPrevTextBool);
 
 
 
-    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
 }
+
+//---------------------------------------------------------------------------
+
+void MainWindow::setShowNextTextButton(bool showNextTextBool)
+{
+    disconnect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
+
+
+
+    showNxtScnButton->setChecked(showNextTextBool);
+
+
+
+    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
+}
+
 
 //---------------------------------------------------------------------------
 
 void MainWindow::createDocksToolBar()
 {
+
+    //    For menu bar :
+    connect(menu, SIGNAL(showNotesDockSignal(bool)), noteDock, SLOT(setVisible(bool)));
+    connect(menu, SIGNAL(showAttendDockSignal(bool)), attendDock, SLOT(setVisible(bool)));
+    connect(menu, SIGNAL(showToolsDockSignal(bool)), toolDock, SLOT(setVisible(bool)));
+    connect(menu, SIGNAL(launchOutlinerSignal()), this, SLOT(launchOutliner()));
+    connect(menu, SIGNAL(showFullscreenSignal()), this, SLOT(editFullscreen()));
+
+
+
+
 
     docksToolBar = new QToolBar(tr("Dock Buttons"), this);
     docksToolBar->setObjectName("docksToolBar");
@@ -535,35 +583,80 @@ void MainWindow::createDocksToolBar()
     docksToolBar->setMovable(true);
     docksToolBar->setFloatable(false);
 
-    treeDockButton = new OrientationButton(tr("Tree"));
+    treeDockButton = new OrientationButton(QIcon(":/pics/view-list-tree-90.png"),tr("Project"));
+    treeDockButton->setObjectName("showTreeBt");
     treeDockButton->setOrientation(Qt::Vertical);
     treeDockButton->setCheckable(true);
     treeDockButton->setMirrored(true);
     connect(treeDockButton, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
 
 
-    noteDockButton = new OrientationButton(tr("Notes"));
+    noteDockButton = new OrientationButton(QIcon(":/pics/im-status-message-edit-90.png"),tr("Notes"));
+    noteDockButton->setObjectName("showNotesBt");
     noteDockButton->setOrientation(Qt::Vertical);
     noteDockButton->setCheckable(true);
     noteDockButton->setMirrored(true);
     connect(noteDockButton, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
 
-    toolDockButton = new OrientationButton(tr("Tools (clock)"));
+    toolDockButton = new OrientationButton(QIcon(":/pics/preferences-system-90.png"),tr("Tools"));
+    toolDockButton->setObjectName("showToolsBt");
     toolDockButton->setOrientation(Qt::Vertical);
     toolDockButton->setCheckable(true);
     toolDockButton->setMirrored(true);
     connect(toolDockButton, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
 
-    attendDockButton = new OrientationButton(tr("Attendance"));
+    attendDockButton = new OrientationButton(QIcon(":/pics/meeting-organizer-90.png"),tr("Attendance"));
+    attendDockButton->setObjectName("showAttendBt");
     attendDockButton->setOrientation(Qt::Vertical);
     attendDockButton->setCheckable(true);
     attendDockButton->setMirrored(true);
     connect(attendDockButton, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
 
-    docksToolBar->addWidget(treeDockButton);
+    OrientationButton *outlinerButton = new OrientationButton(QIcon(":/pics/view-time-schedule-90.png"),tr("Outliner"));
+    outlinerButton->setObjectName("outlinerBt");
+    outlinerButton->setOrientation(Qt::Vertical);
+    outlinerButton->setCheckable(false);
+    outlinerButton->setMirrored(true);
+    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
+
+    OrientationButton *fullscreenButton = new OrientationButton(QIcon(":/pics/view-fullscreen-90.png"),tr("Fullscreen"));
+    fullscreenButton->setObjectName("fullscreenBt");
+    fullscreenButton->setToolTip(tr("Edit this document fullscreen"));
+    fullscreenButton->setShortcut(Qt::Key_F11);
+    fullscreenButton->setOrientation(Qt::Vertical);
+    fullscreenButton->setCheckable(false);
+    fullscreenButton->setMirrored(true);
+    connect(fullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
+
+    showPrvScnButton = new OrientationButton(QIcon(":/pics/zoom-previous-90.png"),tr("&Show Prev. Scene"));
+    showPrvScnButton->setObjectName("showPrvScnBt");
+    showPrvScnButton->setToolTip(tr("Show the end of the previous scene"));
+    showPrvScnButton->setOrientation(Qt::Vertical);
+    showPrvScnButton->setShortcut(Qt::Key_F10);
+    showPrvScnButton->setCheckable(true);
+    showPrvScnButton->setMirrored(true);
+    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+
+    showNxtScnButton = new OrientationButton(tr("&Show Next Scene"));
+    showNxtScnButton->setObjectName("showNxtScnBt");
+    showNxtScnButton->setToolTip(tr("Show the start of the next scene"));
+    showNxtScnButton->setOrientation(Qt::Vertical);
+    showNxtScnButton->setShortcut(Qt::Key_F10);
+    showNxtScnButton->setCheckable(true);
+    showNxtScnButton->setMirrored(true);
+    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
+
+    //    docksToolBar->addWidget(treeDockButton);
     docksToolBar->addWidget(noteDockButton);
     docksToolBar->addWidget(toolDockButton);
     docksToolBar->addWidget(attendDockButton);
+    docksToolBar->addSeparator();
+    docksToolBar->addWidget(outlinerButton);
+    docksToolBar->addWidget(fullscreenButton);
+    docksToolBar->addWidget(showPrvScnButton);
+    docksToolBar->addWidget(showNxtScnButton);
+
+
 
     //    this->addToolBar(Qt::LeftToolBarArea, docksToolBar);
 
@@ -580,23 +673,27 @@ void MainWindow::checkHiddenDocks()
         treeDockButton->setChecked(true);
     else
         treeDockButton->setChecked(false);
+    //    menu->setTreeDockAct(treeDock->isVisible());
 
     if(noteDock->isVisible()){
-      noteDockButton->setChecked(true);
+        noteDockButton->setChecked(true);
     }
     else
         noteDockButton->setChecked(false);
+    menu->setNoteDockAct(noteDock->isVisible());
 
     if(toolDock->isVisible())
         toolDockButton->setChecked(true);
     else
         toolDockButton->setChecked(false);
+    menu->setToolDockAct(toolDock->isVisible());
 
     if(attendDock->isVisible()){
         attendDockButton->setChecked(true);
     }
     else
         attendDockButton->setChecked(false);
+    menu->setAttendDockAct(attendDock->isVisible());
 
 
 }
@@ -611,7 +708,9 @@ void MainWindow::setDisplayMode(QString mode)
     settings.beginGroup( "MainWindow" );
 
     if(mode == "desktop"){
-        settings.setValue( "netbook_wmState", saveState(1) );
+
+        if(displayMode == "netbook")
+            settings.setValue( "netbook_wmState", saveState(1) );
 
         disconnect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(attendDockHidesOthers(bool)));
         disconnect(noteDock, SIGNAL(visibilityChanged(bool)), this, SLOT(noteDockHidesOthers(bool)));
@@ -631,18 +730,18 @@ void MainWindow::setDisplayMode(QString mode)
         this->addDockWidget(Qt::RightDockWidgetArea, noteDock, Qt::Horizontal);
         this->changeOrientationOfNoteDock(Qt::RightDockWidgetArea);
 
-        treeDock->setWindowTitle(tr("Tree"));
         treeDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
         this->addDockWidget(Qt::LeftDockWidgetArea, treeDock, Qt::Vertical);
 
-
         restoreState( settings.value( "desktop_wmState" ).toByteArray(),1 );
+
 
     }
 
     if(mode == "netbook"){
 
-        settings.setValue( "desktop_wmState", saveState(1) );
+        if(displayMode == "desktop")
+            settings.setValue( "desktop_wmState", saveState(1) );
 
         docksToolBar->setAllowedAreas(Qt::RightToolBarArea);
         docksToolBar->setOrientation(Qt::Vertical);
@@ -721,7 +820,7 @@ void MainWindow::setDisplayMode(QString mode)
 void MainWindow::openProjectSlot(QFile *projectFile)
 {
 
-
+    readDocksSettings();
     closeAllDocsSlot();
     file = projectFile;
     attendList->readProjectAttendance(projectFile);
@@ -739,24 +838,24 @@ void MainWindow::openExternalProject(QFile *externalFile)
 
 void MainWindow::closeProjectSlot()
 {
-    if(NoProjectOpened == true)
+    if(noProjectOpened == true)
         return;
 
-
+    writeDocksSettings();
     closeAllDocsSlot();
     mainTree->write(file);
     attendList->saveAll();
 
     attendList->closeAll();
     mainTree->closeTree();
-    NoProjectOpened = true;
+    noProjectOpened = true;
 
     attendList->accept(); //to close the manager;
 
     QSettings settings;
     settings.beginWriteArray("Manager/projects");
     settings.setArrayIndex(settingNumber);
-    settings.setValue("lastModified", QDateTime::currentDateTime().toString());
+    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
     settings.endArray();
 
     timer->stop();
@@ -882,12 +981,21 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(noteStack, SIGNAL(connectUpdateTextsSignal()), mainTree, SIGNAL(connectUpdateTextsSignal()));
         connect(noteStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
 
+        //connect note & syn to maintree (for Outliner) :
+
+        connect(noteStack, SIGNAL(noteFocusOutSignal()), mainTree, SLOT(updateOutliner()));
+        connect(synStack, SIGNAL(noteFocusOutSignal()), mainTree, SLOT(updateOutliner()));
+
+        //connect maintree to note & syn (for Outliner) :
+        connect(mainTree, SIGNAL(applySynNoteFontConfigSignal()), noteStack, SLOT(applyNoteFontConfig()));
+        connect(mainTree, SIGNAL(applySynNoteFontConfigSignal()), synStack, SLOT(applySynFontConfig()));
+
         //launch autosaving :
-        if(NoProjectOpened)
+        if(noProjectOpened)
             autosaveTimer();
 
         //other :
-        NoProjectOpened = false;
+        noProjectOpened = false;
 
         //focus on text :
         tab->setTextFocus();
@@ -902,7 +1010,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         //        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
         //        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
 
-
+// show previous and nest text :
 
         //apply config :
 
@@ -943,6 +1051,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
     if(action == "save"){
         //      emit properSaveTabTextSignal(textFile, name);
 
+        qDebug() << "saving start";
 
 
         // Saving
@@ -1043,8 +1152,8 @@ void MainWindow::setConnections()
 
 
 
-//    //to show previous text :
-//    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
+    //    //to show previous text :
+    //    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
 
 
     //for attendance :
@@ -1066,6 +1175,13 @@ void MainWindow::setConnections()
     connect(this, SIGNAL(currentNumber(int)), stats, SIGNAL(setCurrentNumberSignal(int)));
     connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)) );
     connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
+
+
+// for previous and next texts :
+    connect(tabWidget,SIGNAL(currentChanged(int)),this,SLOT(showPrevAndNextTexts()));
+    connect(mainTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(showPrevAndNextTexts()));
+
+
 }
 
 
@@ -1101,7 +1217,7 @@ void MainWindow::tabChangeSlot(int tabNum)
         //        qDebug() << "tabChangeRequest textName :" << textWidgetList->at(preTabNum)->objectName() << "----------- saved :" << textBool;
         //        qDebug() << "tabChangeRequest noteName :" << noteWidgetList->at(preTabNum)->objectName() << "----------- saved :" << noteBool;
         //        qDebug() << "tabChangeRequest synName :" << synWidgetList->at(preTabNum)->objectName() << "----------- saved :" << synBool;
-        //        qDebug() << "tabChangeRequest pre :" << preTabNum;
+//                qDebug() << "tabChangeRequest pre :" << preTabNum;
         //        qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
 
 
@@ -1300,8 +1416,7 @@ void MainWindow::readSettings()
 {
     QSettings settings;
     settings.beginGroup( "MainWindow" );
-    this->setDisplayMode(settings.value("displayMode", "desktop").toString() );
-    resize(settings.value( "size", QSize( 800, 500 ) ).toSize() );
+   resize(settings.value( "size", QSize( 800, 500 ) ).toSize() );
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
     m_firstStart_checkDisplay = settings.value("firstStart_checkDisplay", true).toBool();
@@ -1312,7 +1427,19 @@ void MainWindow::readSettings()
     settings.endGroup();
 
 
-    checkHiddenDocks();
+//    checkHiddenDocks();
+
+
+}
+//---------------------------------------------------------------------------
+
+void MainWindow::readDocksSettings()
+{
+    QSettings settings;
+    settings.beginGroup( "MainWindow" );
+    displayMode = settings.value("displayMode", "desktop").toString();
+    this->setDisplayMode(settings.value("displayMode", "desktop").toString() );
+   settings.endGroup();
 
 
 }
@@ -1343,11 +1470,28 @@ void MainWindow::writeSettings()
 
 //---------------------------------------------------------------------------
 
+void MainWindow::writeDocksSettings()
+{
+
+    QSettings settings;
+    settings.beginGroup( "MainWindow" );
+
+    if(settings.value( "displayMode", "desktop" ).toString() == "netbook")
+        settings.setValue( "netbook_wmState", saveState(1) );
+    else if(settings.value( "displayMode", "desktop" ).toString() == "desktop")
+        settings.setValue( "desktop_wmState", saveState(1) );
+
+
+    settings.endGroup();
+
+}
+
+//---------------------------------------------------------------------------
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 
-    if(NoProjectOpened == true){
+    if(noProjectOpened == true){
         writeSettings();
         event->accept();
     }
@@ -1414,8 +1558,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) //for MAc o
 
 
 
-
-
 //----------------------------------------------------------------------------------------
 
 void MainWindow::autosaveTimer()
@@ -1450,7 +1592,7 @@ void MainWindow::applyConfig()
     //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
     settings.endGroup();
 
-    if(!NoProjectOpened)
+    if(!noProjectOpened)
         configTimer();
 
 
@@ -1543,6 +1685,8 @@ void MainWindow::editFullscreen()
 
 void MainWindow::launchOutliner()
 {
+    if(tabWidget->count() == 0)
+        return;
 
     mainTree->launchOutliner();
 
@@ -1555,6 +1699,8 @@ void MainWindow::launchOutliner()
 
 void MainWindow::showPrevText(bool showPrevTextBool)
 {
+    if(tabWidget->count() == 0)
+        return;
 
     int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
 
@@ -1564,6 +1710,29 @@ void MainWindow::showPrevText(bool showPrevTextBool)
     tab->showPrevText(showPrevTextBool);
 
     tab->setPrevText(mainTree->prevText(number));
+}
+
+//----------------------------------------------------------------------------
+void MainWindow::showNextText(bool showNextTextBool)
+{
+    if(tabWidget->count() == 0)
+        return;
+
+    int number = tabWidget->currentWidget()->objectName().mid(tabWidget->currentWidget()->objectName().indexOf("_") + 1).toInt();
+
+    QString string;
+    TextTab *tab = tabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
+
+    tab->showNextText(showNextTextBool);
+
+    tab->setNextText(mainTree->nextText(number));
+}
+//----------------------------------------------------------------------------
+
+void MainWindow::showPrevAndNextTexts(bool showTextsBool)
+{
+    showPrevText(showTextsBool);
+            showNextText(showTextsBool);
 }
 
 //----------------------------------------------------------------------------
@@ -1598,4 +1767,191 @@ int MainWindow::setCurrentNumber()
     emit currentNumber(number);
 
     return number;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+
+void MainWindow::giveStyle()
+{
+    QString  css =
+            "QDockWidget {"
+            "border: 1px solid lightgray;"
+            //            "titlebar-close-icon: url(close.png);"
+            //            "titlebar-normal-icon: url(undock.png);"
+            "margin: 3px"
+            "}"
+
+            "QDockWidget::title {"
+            "text-align: left;" /* align the text to the left */
+            //            "background: gray;"
+            "padding-left: 5px;"
+            "}"
+
+            "QDockWidget::close-button, QDockWidget::float-button {"
+            "border: 1px solid transparent;"
+            "background: transparent;"
+            " padding: 0px;"
+            "}"
+
+            "QDockWidget::close-button:hover, QDockWidget::float-button:hover {"
+            "background: transparent;"
+            "}"
+
+            "QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {"
+            "padding: 1px -1px -1px 1px;"
+
+            "}"
+
+            //            "QTabWidget::pane {" /* The tab widget frame */
+            //            "border-top: 2px solid #C2C7CB;"
+            //            "}"
+
+            //            "QTabWidget::tab-bar {"
+            //            "left: 5px;" /* move to the right by 5px */
+            //            "}"
+
+            //            /* Style the tab using the tab sub-control. Note that
+            //                it reads QTabBar _not_ QTabWidget */
+            //            "QTabBar::tab {"
+            //            "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+            //            "stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,"
+            //            "stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);"
+            //            "border: 2px solid #C4C4C3;"
+            //            "border-bottom-color: #C2C7CB; /* same as the pane color */"
+            //            "border-top-left-radius: 4px;"
+            //            "border-top-right-radius: 4px;"
+            //            "min-width: 8ex;"
+            //            "padding: 2px;"
+            //            "}"
+
+            //            "QTabBar::tab:selected, QTabBar::tab:hover {"
+            //            "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+            //            "stop: 0 #fafafa, stop: 0.4 #f4f4f4,"
+            //            "stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);"
+            //            "}"
+
+            //            "QTabBar::tab:selected {"
+            //            "border-color: #9B9B9B;"
+            //            "border-bottom-color: #C2C7CB;" /* same as pane color */
+            //            "}"
+
+            //            "QTabBar::tab:!selected {"
+            //            "margin-top: 2px;" /* make non-selected tabs look smaller */
+            //            "}"
+
+            //            "QPushButton#showNotesBt, QPushButton#showToolsBt, "
+            //            "QPushButton#showAttendBt, QPushButton#fullscreenBt, QPushButton#outlinerBt, "
+            //            "QPushButton#showTreeBt, QPushButton#showPrvScnBt {"
+            //            "border: 1px groove #8f8f91;"
+            //            "border-radius: 3px;"
+            //            "font: bold normal 10pt ""Times New Roman"";"
+            //            "padding-top: 4px;"
+            //            "padding-bottom: 4px;"
+            //            "background: mid(midlight);"
+            //            //            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+            //            //            "stop: 0 #f6f7fa, stop: 1 #dadbde);"
+            //            //                        "min-width: 1em;"
+            //            "}"
+
+            //            "QPushButton#showNotesBt:checked, QPushButton#showToolsBt:checked, "
+            //            "QPushButton#showAttendBt:checked, QPushButton#fullscreenBt:checked, QPushButton#outlinerBt:checked,"
+            //            "QPushButton#showTreeBt:checked, QPushButton#showPrvScnBt:checked {"
+            //            "background-color: palette(mid);"
+            //            "border: 2px inset #8f8f91;"
+            //            "}"
+
+            //            "QPushButton#showNotesBt:pressed, QPushButton#showToolsBt:pressed, "
+            //            "QPushButton#showAttendBt:pressed, QPushButton#fullscreenBt:pressed, QPushButton#outlinerBt:pressed,"
+            //            "QPushButton#showTreeBt:pressed, QPushButton#showPrvScnBt:pressed {"
+            //            "background-color: palette(mid);"
+            //            "border: 2px inset #8f8f91;"
+            //            "}"
+
+            //            "QToolButton#showFullscreenBt, QToolButton#showPrvSceneBt, QToolButton#showOutlinerBt {"
+            //            "border: 2px outset #8f8f91;"
+            //            "border-radius: 1px;"
+            //            "font: bold normal 12pt ""Times New Roman"";"
+            //            "padding-left: 4px;"
+            //            "padding-right: 4px;"
+            //            "}"
+
+            //"QToolButton#showFullscreenBt:checked, QToolButton#showPrvSceneBt:checked, QToolButton#showOutlinerBt:checked {"
+            //            "background-color: palette(mid);"
+            //            "border: 2px inset #8f8f91;"
+            //            "}"
+
+            //            "QToolButton#showFullscreenBt:pressed, QToolButton#showPrvSceneBt:pressed, QToolButton#showOutlinerBt:pressed {"
+            //                        "background-color: palette(mid);"
+            //                        "border: 2px inset #8f8f91;"
+            //                        "}"
+
+
+
+            "QStatusBar::item {"
+            "border: 0px none transparent;"
+            "}"
+
+
+
+            "QGroupBox#noteBox, QGroupBox#synBox {"
+            //            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+            //            "stop: 0 #E0E0E0, stop: 1 #FFFFFF);"
+            //            "border: 0px none transparent ;"
+            //            "border-radius: 0px;"
+            "margin-left: -5px;"
+            "margin-right: -5px;"
+            "margin-bottom: -5px;"
+            "margin-top: 1ex;" /* leave space at the top for the title */
+            "spacing: 0px;"
+            "padding-left: -6px;"
+            "padding-right: -6px;"
+            "padding-bottom: -6px;"
+            "padding-top: -3px;"
+            "}"
+
+            "QGroupBox::title {"
+            "subcontrol-origin: margin;"
+            "subcontrol-position: top center;" /* position at the top center */
+            ////            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+            ////            "stop: 0 #FFOECE, stop: 1 #FFFFFF);"
+            "}"
+
+            "QFrame#notesFrame { "
+            "border: 0px none transparent;"
+            "border-radius: 0px;"
+            "spacing: 0px;"
+            "padding: 0px;"
+            "margin: 0px;"
+            "}"
+
+            "NoteZone {"
+            //            "border: 0px none transparent;"
+            "spacing: 0px;"
+            "padding: 0px;"
+            "margin: 0px;"
+            "}"
+
+            "AttendBox {"
+            "border: 0px none transparent;"
+            "border-radius: 1px;"
+            "spacing: 0px;"
+            "padding: -6px;"
+            "margin: -4px;"
+            "}"
+
+            "QToolBar#docksToolBar {"
+            "spacing: 5px;"
+            "padding: 5px;"
+
+            "}"
+
+            //            "QToolBar#docksToolBar::separator {"
+            //            "}"
+
+            ;
+
+    this->setStyleSheet(css);
 }

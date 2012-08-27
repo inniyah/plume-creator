@@ -10,10 +10,13 @@ TextTab::TextTab(QWidget *parent) :
 {
     prevTextDocument = new QTextDocument(this);
     textDocument = new QTextDocument(this);
+    nextTextDocument = new QTextDocument(this);
 
     prevTextZone = new TextZone(prevTextDocument, this);
     prevTextZone->toHtml();
 
+    nextTextZone = new TextZone(nextTextDocument, this);
+    nextTextZone->toHtml();
 
 
     textZone = new TextZone(textDocument, this);
@@ -25,6 +28,7 @@ TextTab::TextTab(QWidget *parent) :
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(prevTextZone);
     splitter->addWidget(textZone);
+    splitter->addWidget(nextTextZone);
 
 
 
@@ -43,7 +47,12 @@ TextTab::TextTab(QWidget *parent) :
 
 
     prevTextZone->hide();
+    nextTextZone->hide();
 
+
+    QList<int> sizesList;
+    sizesList << 0 << textZone->height()  << 0;
+    splitter->setSizes(sizesList);
 
 
     //config
@@ -239,8 +248,9 @@ QTextCharFormat TextTab::tabFontChangedSlot()
 void TextTab::cursorPositionChangedSlot()
 {
                 if((textZone->textCursor().atStart() == true
-                        || textZone->textCursor().position() == 1) && textZone->textCursor().hasSelection() == false)
+                        || textZone->textCursor().position() == 1|| textZone->textCursor().position() == 0) && textZone->textCursor().hasSelection() == false){
                     applyConfig();
+}
 }
 
 //-------------------------------------------------------------------------------
@@ -262,8 +272,9 @@ void TextTab::showPrevText(bool showPrevTextBool)
 {
     prevTextZone->setHidden(!showPrevTextBool);
     prevTextZone->setMaximumHeight(textZone->height()/3);
-    textZone->setFocus();
+        textZone->setFocus();
     textZone->ensureCursorVisible();
+
 }
 
 //-------------------------------------------------------------------------------
@@ -288,6 +299,40 @@ void  TextTab::setPrevText(QTextDocument *prevDoc)
     QTextCursor curs =  prevTextZone->textCursor();
     curs.movePosition(QTextCursor::End);
     prevTextZone->setTextCursor(curs);
+}
+
+//-------------------------------------------------------------------------------
+
+void TextTab::showNextText(bool showNextTextBool)
+{
+    nextTextZone->setHidden(!showNextTextBool);
+    nextTextZone->setMaximumHeight(textZone->height()/3);
+    textZone->setFocus();
+    textZone->ensureCursorVisible();
+}
+
+//-------------------------------------------------------------------------------
+bool TextTab::setShowNextTextButton()
+{
+    return !nextTextZone->isHidden();
+}
+
+//-------------------------------------------------------------------------------
+void  TextTab::setNextText(QTextDocument *nextDoc)
+{
+    if(nextDoc == 0){
+        nextTextZone->setHidden(true);
+        return;
+    }
+
+    nextTextDocument = nextDoc;
+    nextTextZone->setDocument(nextTextDocument);
+    nextTextZone->document()->adjustSize();
+
+
+    QTextCursor curs =  nextTextZone->textCursor();
+    curs.movePosition(QTextCursor::Start);
+    nextTextZone->setTextCursor(curs);
 }
 
 
@@ -358,6 +403,16 @@ void TextTab::giveStyle()
                   "border-style: outset;"
                   "border-radius: 0px;"
                   "margin: 4px"
-                  "}");
-
+                  "}"
+                  "QSplitter {"
+                  "border: 0px none transparent;"
+                  "spacing: 0px;"
+                  "padding: 0px;"
+                  "margin: 0px;"
+                  "}"
+                  "QSplitter::handle {"
+                  "background-color: black;"
+                  "height: 1px"
+  "}"
+                  );
 }

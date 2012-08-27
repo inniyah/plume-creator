@@ -7,7 +7,7 @@
 #include "findreplace.h"
 //
 MenuBar::MenuBar(QWidget *parent) :
-    QFrame(parent), extFile(0), currentVersion(QApplication::applicationVersion())
+    QFrame(parent), extFile(0), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
 {
 
     file = 0;
@@ -95,8 +95,7 @@ void MenuBar::projectManager()
     connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
     connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
     connect(projManager, SIGNAL(openProjectNumberSignal(int)),this, SIGNAL(openProjectNumberSignal(int)));
-
-
+    projManager->projectAlreadyOpened(projectAlreadyOpened);
 
 
     projManager->setModal(true);
@@ -115,7 +114,7 @@ void MenuBar::displayConfig()
     connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString)), this, SIGNAL(setDisplayModeSignal(QString)));
 
 
-            settingsDialog->exec();
+    settingsDialog->exec();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -129,6 +128,9 @@ void MenuBar::displayConfig()
 
 void MenuBar::closeProject()
 {
+    if(projectAlreadyOpened == false)
+        return;
+
     if(file == 0)
         return;
 
@@ -142,7 +144,7 @@ void MenuBar::closeProject()
     switch (ret) {
     case QMessageBox::Ok:
         emit closeProjectSignal();
-
+        projectAlreadyOpened = false;
         break;
 
     case QMessageBox::Cancel:
@@ -213,6 +215,47 @@ void MenuBar::aboutQt()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
 
+
+
+}
+
+//--------------------------------------------------------------------------
+
+void MenuBar::viewReleaseNotes()
+{
+
+
+    QDialog *relNotesDialog = new QDialog(this);
+    relNotesDialog->setWindowTitle(tr("Release Notes"));
+    relNotesDialog->setMinimumSize(600,400);
+
+
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QLabel *relNotesText = new QLabel();
+
+
+
+    QFile *readmeFile = new QFile(":/README");
+    readmeFile->open(QFile::ReadOnly | QFile::Text);
+    QTextStream textFileStream( readmeFile );
+
+    QPlainTextEdit *textViewer = new QPlainTextEdit(textFileStream.readAll());
+    readmeFile->close();
+    textViewer->setReadOnly(true);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+
+    connect(buttonBox, SIGNAL(accepted()), relNotesDialog, SLOT(close()));
+
+
+    layout->addWidget(relNotesText);
+    layout->addWidget(textViewer);
+    layout->addWidget(buttonBox);
+
+    relNotesDialog->setLayout(layout);
+
+    relNotesDialog->exec();
 
 
 }
@@ -288,6 +331,7 @@ QMenuBar *MenuBar::createMenuBar()
 
     menubar->addMenu(projectGroup);
     menubar->addMenu(editGroup);
+    menubar->addMenu(viewGroup);
     menubar->addMenu(helpGroup);
 
     return menubar;
@@ -300,44 +344,37 @@ QMenuBar *MenuBar::createMenuBar()
 
 void MenuBar::createActions()
 {
-    newProjectAct = new QAction(tr("&New Project"), this);
-    newProjectAct->setText(tr("&New Project"));
+    newProjectAct = new QAction(QIcon(":/pics/tools-wizard.png"),tr("&New Project"), this);
     newProjectAct->setShortcut(QKeySequence::New);
     newProjectAct->setToolTip(tr("Create a new project"));
     connect(newProjectAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    projectManagerAct = new QAction(tr("Project &Manager"), this);
-    projectManagerAct->setText(tr("Project &Manager"));
+    projectManagerAct = new QAction(QIcon(":/pics/go-home.png"),tr("Project &Manager"), this);
     // projectManagerAct->setShortcut(QKeySequence::New);
     projectManagerAct->setToolTip(tr("Create and manage your projects"));
     connect(projectManagerAct, SIGNAL(triggered()), this, SLOT(projectManager()));
 
-    displayConfigAct = new QAction(tr("&Configure"), this);
-    displayConfigAct->setText(tr("&Configure"));
+    displayConfigAct = new QAction(QIcon(":/pics/configure.png"),tr("&Configure"), this);
     //    displayConfigAct->setShortcut(QKeySequence::Print);
     displayConfigAct->setToolTip(tr("Display the configuration"));
     connect(displayConfigAct, SIGNAL(triggered()), this, SLOT(displayConfig()));
 
-    exportAct = new QAction(tr("&Export"), this);
-    exportAct->setText(tr("&Export"));
+    exportAct = new QAction(QIcon(":/pics/document-export.png"),tr("&Export"), this);
     //   exportAct->setShortcut(QKeySequence::Print);
     exportAct->setToolTip(tr("Export the project"));
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exporter()));
 
-    printAct = new QAction(tr("&Print"), this);
-    printAct->setText(tr("&Print"));
+    printAct = new QAction(QIcon(":/pics/document-print.png"),tr("&Print"), this);
     printAct->setShortcut(QKeySequence::Print);
     printAct->setToolTip(tr("Print part of the project"));
     connect(printAct, SIGNAL(triggered()), this, SLOT(print()));
 
-    closeProjectAct = new QAction(tr("&Close project"), this);
-    closeProjectAct->setText(tr("&Close project"));
+    closeProjectAct = new QAction(QIcon(":/pics/window-close.png"),tr("&Close project"), this);
     closeProjectAct->setShortcut(QKeySequence::Close);
     closeProjectAct->setToolTip(tr("Print the document"));
     connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));;
 
-    exitAct = new QAction(tr("E&xit"), this);
-    exitAct->setText(tr("E&xit"));
+    exitAct = new QAction(QIcon(":/pics/application-exit.png"),tr("E&xit"), this);
     exitAct->setShortcut(QKeySequence::Quit);
     exitAct->setToolTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(exit()));
@@ -356,8 +393,7 @@ void MenuBar::createActions()
     projectGroup->addAction(closeProjectAct);
     projectGroup->addAction(exitAct);
 
-    findReplaceAct = new QAction(this);
-    findReplaceAct->setText(tr("&Find && Replace"));
+    findReplaceAct = new QAction(QIcon(":/pics/edit-find-replace.png"),tr("&Find && Replace"),this);
     // aboutAct->setShortcut(QKeySequence::Quit);
     findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
     connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
@@ -372,20 +408,67 @@ void MenuBar::createActions()
     editGroup->addSeparator();
     editGroup->addAction(editWidgetAct);
 
-    aboutAct = new QAction(this);
-    aboutAct->setText(tr("About"));
+    showTreeDockAct = new QAction(QIcon(":/pics/view-list-tree.png"),tr("&Project"),this);
+    showTreeDockAct->setCheckable(true);
+    showTreeDockAct->setShortcut(Qt::Key_F5);
+    showTreeDockAct->setToolTip(tr("Show the project dock"));
+    connect(showTreeDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showTreeDockSignal(bool)));
+
+    showNotesDockAct = new QAction(QIcon(":/pics/im-status-message-edit.png"),tr("&Notes"),this);
+    showNotesDockAct->setCheckable(true);
+    showNotesDockAct->setShortcut(Qt::Key_F6);
+    showNotesDockAct->setToolTip(tr("Show the note dock"));
+    connect(showNotesDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showNotesDockSignal(bool)));
+
+    showAttendDockAct = new QAction(QIcon(":/pics/meeting-organizer.png"),tr("&Attendance"),this);
+    showAttendDockAct->setCheckable(true);
+    showAttendDockAct->setShortcut(Qt::Key_F7);
+    showAttendDockAct->setToolTip(tr("Show the attendance dock"));
+    connect(showAttendDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showAttendDockSignal(bool)));
+
+    showToolsDockAct = new QAction(QIcon(":/pics/preferences-system.png"),tr("&Tools"),this);
+    showToolsDockAct->setCheckable(true);
+    showToolsDockAct->setShortcut(Qt::Key_F8);
+    showToolsDockAct->setToolTip(tr("Show the tool dock"));
+    connect(showToolsDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showToolsDockSignal(bool)));
+
+    launchOutlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("&Outliner"),this);
+    launchOutlinerAct->setShortcut(Qt::Key_F9);
+    launchOutlinerAct->setToolTip(tr("Show the outliner"));
+    connect(launchOutlinerAct, SIGNAL(triggered()), this, SIGNAL(launchOutlinerSignal()));
+
+    showFullscreenAct = new QAction(QIcon(":/pics/view-fullscreen.png"),tr("&Fullscreen"), this);
+    showFullscreenAct->setShortcut(Qt::Key_F10);
+    showFullscreenAct->setToolTip(tr("Edit fullscreen"));
+    connect(showFullscreenAct, SIGNAL(triggered()), this, SIGNAL(showFullscreenSignal()));
+
+    viewGroup = new QMenu(tr("&View"),this);
+    //viewGroup->addAction(showTreeDockAct);
+    viewGroup->addAction(showNotesDockAct);
+    viewGroup->addAction(showAttendDockAct);
+    viewGroup->addAction(showToolsDockAct);
+    viewGroup->addSeparator();
+    viewGroup->addAction(launchOutlinerAct);
+    viewGroup->addAction(showFullscreenAct);
+
+
+
+    aboutAct = new QAction(QIcon(":/pics/help-about.png"),tr("About"),this);
     // aboutAct->setShortcut(QKeySequence::Quit);
     aboutAct->setToolTip(tr("about the application"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    aboutQtAct = new QAction(this);
-    aboutQtAct->setText(tr("About Qt"));
+    aboutQtAct = new QAction(tr("About Qt"),this);
     // aboutQtAct->setShortcut(QKeySequence::Quit);
     aboutQtAct->setToolTip(tr("about Qt"));
     connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
-    updaterAct = new QAction(this);
-    updaterAct->setText(tr("Check Update"));
+    viewReleaseNotesAct = new QAction(tr("Release notes"),this);
+    // aboutQtAct->setShortcut(QKeySequence::Quit);
+    viewReleaseNotesAct->setToolTip(tr("Open the Readme with the release notes"));
+    connect(viewReleaseNotesAct, SIGNAL(triggered()), this, SLOT(viewReleaseNotes()));
+
+    updaterAct = new QAction(QIcon(":/pics/download.png"),tr("Check Update"),this);
     // aboutQtAct->setShortcut(QKeySequence::Quit);
     updaterAct->setToolTip(tr("check for an update"));
     connect(updaterAct, SIGNAL(triggered()), this, SLOT(checkUpdate()));
@@ -394,6 +477,7 @@ void MenuBar::createActions()
     helpGroup->addAction(aboutAct);
     helpGroup->addAction(aboutQtAct);
     helpGroup->addSeparator();
+    helpGroup->addAction(viewReleaseNotesAct);
     helpGroup->addAction(updaterAct);
 }
 
@@ -404,20 +488,20 @@ void MenuBar::createActions()
 void MenuBar::createEditWidget()
 {
 
-editWidget = new EditMenu;
+    editWidget = new EditMenu;
 
-//editWidget->setFrameStyle(QFrame::Panel);
-//editWidget->setLineWidth(2);
-//editWidget->setMidLineWidth(3);
+    //editWidget->setFrameStyle(QFrame::Panel);
+    //editWidget->setLineWidth(2);
+    //editWidget->setMidLineWidth(3);
 
-// repeater to join editWidget to MainWindow :
+    // repeater to join editWidget to MainWindow :
 
-connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
+    connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
 
-connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
-connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
+    connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
+    connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
 
-connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
+    connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
 
 }
@@ -431,146 +515,146 @@ connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLO
 
 void MenuBar::createButtons()
 {
-//    QSize buttonSize(120,60);
+    //    QSize buttonSize(120,60);
 
 
-//    QVBoxLayout *baseGridLayout = new QVBoxLayout;
+    //    QVBoxLayout *baseGridLayout = new QVBoxLayout;
 
-//    newProjectButton = new QToolButton(this);
-//    newProjectButton->setMaximumSize(buttonSize);
-//    newProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    newProjectButton->setText(tr("&New Project"));
-//    newProjectButton->setShortcut(QKeySequence::New);
-//    newProjectButton->setToolTip(tr("Create a new project"));
-//    connect(newProjectButton, SIGNAL(clicked()), this, SLOT(newProject()));
+    //    newProjectButton = new QToolButton(this);
+    //    newProjectButton->setMaximumSize(buttonSize);
+    //    newProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    newProjectButton->setText(tr("&New Project"));
+    //    newProjectButton->setShortcut(QKeySequence::New);
+    //    newProjectButton->setToolTip(tr("Create a new project"));
+    //    connect(newProjectButton, SIGNAL(clicked()), this, SLOT(newProject()));
 
-//    projectManagerButton = new QToolButton(this);
-//    projectManagerButton->setMaximumSize(buttonSize);
-//    projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    projectManagerButton->setText(tr("Project &Manager"));
-//    // projectManagerAct->setShortcut(QKeySequence::New);
-//    projectManagerButton->setToolTip(tr("Create and manage your projects"));
-//    connect(projectManagerButton, SIGNAL(clicked()), this, SLOT(projectManager()));
+    //    projectManagerButton = new QToolButton(this);
+    //    projectManagerButton->setMaximumSize(buttonSize);
+    //    projectManagerButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    projectManagerButton->setText(tr("Project &Manager"));
+    //    // projectManagerAct->setShortcut(QKeySequence::New);
+    //    projectManagerButton->setToolTip(tr("Create and manage your projects"));
+    //    connect(projectManagerButton, SIGNAL(clicked()), this, SLOT(projectManager()));
 
-//    //    openButton = new QToolButton(this);
-//    //    openButton->setMaximumSize(buttonSize);
-//    //    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    //    openButton->setText(tr("&Open..."));
-//    //    openButton->setShortcut(QKeySequence::Open);
-//    //    openButton->setToolTip(tr("Open an existing file"));
-//    //    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
+    //    //    openButton = new QToolButton(this);
+    //    //    openButton->setMaximumSize(buttonSize);
+    //    //    openButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    //    openButton->setText(tr("&Open..."));
+    //    //    openButton->setShortcut(QKeySequence::Open);
+    //    //    openButton->setToolTip(tr("Open an existing file"));
+    //    //    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
 
-//    displayConfigButton = new QToolButton(this);
-//    displayConfigButton->setMaximumSize(buttonSize);
-//    displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    displayConfigButton->setText(tr("&Configure"));
-//    //    displayConfigButton->setShortcut(QKeySequence::Print);
-//    displayConfigButton->setToolTip(tr("Display the configuration"));
-//    connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
+    //    displayConfigButton = new QToolButton(this);
+    //    displayConfigButton->setMaximumSize(buttonSize);
+    //    displayConfigButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    displayConfigButton->setText(tr("&Configure"));
+    //    //    displayConfigButton->setShortcut(QKeySequence::Print);
+    //    displayConfigButton->setToolTip(tr("Display the configuration"));
+    //    connect(displayConfigButton, SIGNAL(clicked()), this, SLOT(displayConfig()));
 
-//    findReplaceButton = new QToolButton(this);
-//    findReplaceButton->setText(tr("&Find && Replace"));
-//    // aboutAct->setShortcut(QKeySequence::Quit);
-//    findReplaceButton->setToolTip(tr("Find & Replace Dialog"));
-//    connect(findReplaceButton, SIGNAL(clicked()), this, SLOT(findAndReplace()));
-
-
-//    exportButton = new QToolButton(this);
-//    exportButton->setMaximumSize(buttonSize);
-//    exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    exportButton->setText(tr("&Export"));
-//    //   exportButton->setShortcut(QKeySequence::Print);
-//    exportButton->setToolTip(tr("Export the project"));
-//    connect(exportButton, SIGNAL(clicked()), this, SLOT(exporter()));
-
-//    printButton = new QToolButton(this);
-//    printButton->setMaximumSize(buttonSize);
-//    printButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    printButton->setText(tr("&Print"));
-//    printButton->setShortcut(QKeySequence::Print);
-//    printButton->setToolTip(tr("Print part of the project"));
-//    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
-
-//    closeProjectButton = new QToolButton(this);
-//    closeProjectButton->setMaximumSize(buttonSize);
-//    closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    closeProjectButton->setText(tr("&Close project"));
-//    closeProjectButton->setShortcut(QKeySequence::Close);
-//    closeProjectButton->setToolTip(tr("Print the document"));
-//    connect(closeProjectButton, SIGNAL(clicked()), this, SLOT(closeProject()));;
-
-//    exitButton = new QToolButton(this);
-//    exitButton->setMaximumSize(buttonSize);
-//    exitButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    exitButton->setText(tr("E&xit"));
-//    exitButton->setShortcut(QKeySequence::Quit);
-//    exitButton->setToolTip(tr("Exit the application"));
-//    connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
+    //    findReplaceButton = new QToolButton(this);
+    //    findReplaceButton->setText(tr("&Find && Replace"));
+    //    // aboutAct->setShortcut(QKeySequence::Quit);
+    //    findReplaceButton->setToolTip(tr("Find & Replace Dialog"));
+    //    connect(findReplaceButton, SIGNAL(clicked()), this, SLOT(findAndReplace()));
 
 
-//    aboutButton = new QToolButton(this);
-//    aboutButton->setMaximumSize(buttonSize);
-//    aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    aboutButton->setText(tr("About"));
-//    // aboutButton->setShortcut(QKeySequence::Quit);
-//    aboutButton->setToolTip(tr("about the application"));
-//    connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
+    //    exportButton = new QToolButton(this);
+    //    exportButton->setMaximumSize(buttonSize);
+    //    exportButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    exportButton->setText(tr("&Export"));
+    //    //   exportButton->setShortcut(QKeySequence::Print);
+    //    exportButton->setToolTip(tr("Export the project"));
+    //    connect(exportButton, SIGNAL(clicked()), this, SLOT(exporter()));
 
-//    aboutQtButton = new QToolButton(this);
-//    aboutQtButton->setMaximumSize(buttonSize);
-//    aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    aboutQtButton->setText(tr("About Qt"));
-//    // aboutQtButton->setShortcut(QKeySequence::Quit);
-//    aboutQtButton->setToolTip(tr("about Qt"));
-//    connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
+    //    printButton = new QToolButton(this);
+    //    printButton->setMaximumSize(buttonSize);
+    //    printButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    printButton->setText(tr("&Print"));
+    //    printButton->setShortcut(QKeySequence::Print);
+    //    printButton->setToolTip(tr("Print part of the project"));
+    //    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
 
-//    updaterButton = new QToolButton(this);
-//    updaterButton->setMaximumSize(buttonSize);
-//    updaterButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//    updaterButton->setText(tr("Check Update"));
-//    // aboutQtButton->setShortcut(QKeySequence::Quit);
-//    updaterButton->setToolTip(tr("check for an update"));
-//    connect(updaterButton, SIGNAL(clicked()), this, SLOT(checkUpdate()));
+    //    closeProjectButton = new QToolButton(this);
+    //    closeProjectButton->setMaximumSize(buttonSize);
+    //    closeProjectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    closeProjectButton->setText(tr("&Close project"));
+    //    closeProjectButton->setShortcut(QKeySequence::Close);
+    //    closeProjectButton->setToolTip(tr("Print the document"));
+    //    connect(closeProjectButton, SIGNAL(clicked()), this, SLOT(closeProject()));;
 
-//    //    QSize size(80,30);
-//    //    newProjectButton->setFixedSize(size);
-//    //    projectManagerButton->setFixedSize(size);
-//    // //   openButton->setFixedSize(size);
-//    //    displayConfigButton->setFixedSize(size);
-//    //    closeProjectButton->setFixedSize(size);
-//    //    exitButton->setFixedSize(size);
-//    //    printButton->setFixedSize(size);
-//    //    aboutQtButton->setFixedSize(size);
-//    //    aboutButton->setFixedSize(size);
+    //    exitButton = new QToolButton(this);
+    //    exitButton->setMaximumSize(buttonSize);
+    //    exitButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    exitButton->setText(tr("E&xit"));
+    //    exitButton->setShortcut(QKeySequence::Quit);
+    //    exitButton->setToolTip(tr("Exit the application"));
+    //    connect(exitButton, SIGNAL(clicked()), this, SLOT(exit()));
 
 
+    //    aboutButton = new QToolButton(this);
+    //    aboutButton->setMaximumSize(buttonSize);
+    //    aboutButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    aboutButton->setText(tr("About"));
+    //    // aboutButton->setShortcut(QKeySequence::Quit);
+    //    aboutButton->setToolTip(tr("about the application"));
+    //    connect(aboutButton, SIGNAL(clicked()), this, SLOT(about()));
+
+    //    aboutQtButton = new QToolButton(this);
+    //    aboutQtButton->setMaximumSize(buttonSize);
+    //    aboutQtButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    aboutQtButton->setText(tr("About Qt"));
+    //    // aboutQtButton->setShortcut(QKeySequence::Quit);
+    //    aboutQtButton->setToolTip(tr("about Qt"));
+    //    connect(aboutQtButton, SIGNAL(clicked()), this, SLOT(aboutQt()));
+
+    //    updaterButton = new QToolButton(this);
+    //    updaterButton->setMaximumSize(buttonSize);
+    //    updaterButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //    updaterButton->setText(tr("Check Update"));
+    //    // aboutQtButton->setShortcut(QKeySequence::Quit);
+    //    updaterButton->setToolTip(tr("check for an update"));
+    //    connect(updaterButton, SIGNAL(clicked()), this, SLOT(checkUpdate()));
+
+    //    //    QSize size(80,30);
+    //    //    newProjectButton->setFixedSize(size);
+    //    //    projectManagerButton->setFixedSize(size);
+    //    // //   openButton->setFixedSize(size);
+    //    //    displayConfigButton->setFixedSize(size);
+    //    //    closeProjectButton->setFixedSize(size);
+    //    //    exitButton->setFixedSize(size);
+    //    //    printButton->setFixedSize(size);
+    //    //    aboutQtButton->setFixedSize(size);
+    //    //    aboutButton->setFixedSize(size);
 
 
-//    baseGridLayout->addWidget(newProjectButton);
-//    baseGridLayout->addWidget(projectManagerButton);
-//    //   baseGridLayout->addWidget(openButton);
-//    baseGridLayout->addSpacing(5);
-
-//    baseGridLayout->addWidget(findReplaceButton);
-//    baseGridLayout->addSpacing(5);
-
-//    baseGridLayout->addWidget(displayConfigButton);
-//    baseGridLayout->addWidget(exportButton);
-//    baseGridLayout->addWidget(printButton);
-//    baseGridLayout->addSpacing(5);
 
 
-//    baseGridLayout->addWidget(aboutButton);
-//    baseGridLayout->addWidget(aboutQtButton);
-//    baseGridLayout->addWidget(updaterButton);
-//    baseGridLayout->addSpacing(5);
+    //    baseGridLayout->addWidget(newProjectButton);
+    //    baseGridLayout->addWidget(projectManagerButton);
+    //    //   baseGridLayout->addWidget(openButton);
+    //    baseGridLayout->addSpacing(5);
 
-//    baseGridLayout->addWidget(closeProjectButton);
-//    baseGridLayout->addWidget(exitButton);
-//    baseGridLayout->addStretch(0);
+    //    baseGridLayout->addWidget(findReplaceButton);
+    //    baseGridLayout->addSpacing(5);
 
-//    baseGridLayout->setSpacing(0);
-//    setLayout(baseGridLayout);
+    //    baseGridLayout->addWidget(displayConfigButton);
+    //    baseGridLayout->addWidget(exportButton);
+    //    baseGridLayout->addWidget(printButton);
+    //    baseGridLayout->addSpacing(5);
+
+
+    //    baseGridLayout->addWidget(aboutButton);
+    //    baseGridLayout->addWidget(aboutQtButton);
+    //    baseGridLayout->addWidget(updaterButton);
+    //    baseGridLayout->addSpacing(5);
+
+    //    baseGridLayout->addWidget(closeProjectButton);
+    //    baseGridLayout->addWidget(exitButton);
+    //    baseGridLayout->addStretch(0);
+
+    //    baseGridLayout->setSpacing(0);
+    //    setLayout(baseGridLayout);
 }
 
 
@@ -608,9 +692,9 @@ void MenuBar::openProjectManagerSlot()
 
     projectManager();
 
-
+    // for the drag drop open in OSX :
     if(extFile !=0)
-        openExternalProject(extFile);
+        openExternalProject(externalPrjFile);
 
     extFile = 0;
 
@@ -628,6 +712,7 @@ void MenuBar::openNewProjectSlot()
         projectManager();
 
     }
+
 }
 //---------------------------------------------------------------------------
 
@@ -645,6 +730,7 @@ void MenuBar::openProjectSlot(QFile *device)
         projManager->close();
     }
 
+    projectAlreadyOpened = true;
 
 }
 
@@ -653,6 +739,7 @@ void MenuBar::openProjectSlot(QFile *device)
 
 void MenuBar::setExternalProject(QFile *externalFile)
 {
+
     QFileInfo *externalFileInfo = new QFileInfo(externalFile->fileName());
     QString extFileName = externalFileInfo->fileName();
     QString extFilePath = externalFileInfo->path();
@@ -671,6 +758,7 @@ void MenuBar::setExternalProject(QFile *externalFile)
         return;
     }
 
+    externalPrjFile = externalFile;
 
     //verify if the project isn't already in the manager :
 
@@ -716,9 +804,11 @@ void MenuBar::setExternalProject(QFile *externalFile)
 
 
     if(valueList.contains(QDir::fromNativeSeparators(extFilePath))){
-        QMessageBox::warning(this, tr("Plume Creator Warning"),
-                             tr("The file you are trying to open\n"
-                                " is already in the Plume project manager.\n"));
+        //        QMessageBox::warning(this, tr("Plume Creator Warning"),
+        //                             tr("The file you are trying to open\n"
+        //                                " is already in the Plume project manager.\n"));
+        openProjectSlot(externalFile);
+
         extFile = 0;
         return;
     }
@@ -860,7 +950,6 @@ void MenuBar::setExternalProject(QFile *externalFile)
 
 
 
-    qDebug() << "eee";
     //    }
 
 
@@ -893,7 +982,7 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
                                     tr("<p>You are opening a Plume project.</p>\n"
                                        "<br>"
                                        "<p>Do you want to add this project to the manager list ?</p>"),
-                                    QMessageBox::Yes | QMessageBox::Cancel,
+                                    QMessageBox::Yes | QMessageBox::No,
                                     QMessageBox::Yes);
 
     switch (ret) {
@@ -931,12 +1020,12 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
 
         QDomElement root = domDocument.documentElement();
         if (root.tagName() != "plume-information") {
-            QMessageBox::information(this, tr("Plume Creator Tree"),
+            QMessageBox::information(this, tr("Plume Creator Information Tree"),
                                      tr("The file is not a Plume Creator information file."));
             return false;
         } else if (root.hasAttribute("version")
                    && root.attribute("version") != "0.2") {
-            QMessageBox::information(this, tr("Plume Creator Tree"),
+            QMessageBox::information(this, tr("Plume Creator Information Tree"),
                                      tr("The file is not an Plume Creator information file version 0.2 "
                                         "file."));
             return false;
@@ -980,18 +1069,21 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
 
 
 
-        extFile = 0;
 
+
+        extFile = 0;
 
         //open or update the project manager :
         openProjectManagerSlot();
-
         return true;
     }
         break;
-    case QMessageBox::Cancel:
+    case QMessageBox::No:
+    {
+        qDebug() << "externalPrjFile : "<< externalPrjFile->fileName();
+        openProjectSlot(externalPrjFile);
         return false;
-
+    }
         break;
     default:
         // should never be reached

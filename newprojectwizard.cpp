@@ -18,7 +18,7 @@ NewProjectWizard::NewProjectWizard(QWidget *parent)
 void NewProjectWizard::accept()
 
 {
-    QString creationDate(QDateTime::currentDateTime().toString());
+    QString creationDate(QDateTime::currentDateTime().toString(Qt::ISODate));
 
     QString projectNameFinish = field("projectNameField").toString();
     QString projectDirectoryFinish = field("projectDirectoryField").toString().toUtf8();
@@ -150,7 +150,7 @@ void NewProjectWizard::accept()
     settings.setValue("name", projectNameFinish);
     settings.setValue("path", projectDirectoryFinish);
     settings.setValue("workPath", workingPath);
-    settings.setValue("lastModified", QString(tr("not modified")));
+    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
     settings.setValue("creationDate", creationDate);
 
     settings.endArray();

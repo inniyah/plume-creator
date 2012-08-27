@@ -24,6 +24,9 @@
 #include <QWidget>
 #include <QDomDocument>
 
+#include "outlinerabstractmodel.h"
+#include "outlinerspreadsheet.h"
+
 class OutlinerBase : public QWidget
 
 {
@@ -35,15 +38,23 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 signals:
-//    void toSpreadsheetSignal(bool spreadsheetSignal);
+    void toSpreadsheetSignal(bool spreadsheetSignal);
+    void updateMainDomDocSignal(QDomDocument otoM_domDoc);
+    void applySynNoteFontConfigSignal();
+
+    void otoM_actionSignal(QString action, int idNumber);
 
 public slots:
     void saveConfig();
     void applyConfig();
 void showOutliner();
+void updateOutliner();
 
 // for domDocument :
 void mtoO_setDomDoc(QDomDocument domDoc);
+
+// for textDocument :
+void mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc);
 
 //for attendances :
 void mtoO_updateAttendances(QHash<int, QString> attendStringForNumber);
@@ -52,9 +63,10 @@ void mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElem
 
 
 private slots:
-    void shiftToSpreadsheetSignal();
+    void shiftToSpreadsheet();
+    void applySpreadsheetConfig();
 
-
+void moveViewTo(int hBarValue, int vBarValue);
 
     //for attendance :
     QList<QListWidgetItem *> *sortAttendItems(QList<int> *attend, QString sorting = "nothing");
@@ -65,10 +77,18 @@ private slots:
 
 private:
     QVBoxLayout *zoneLayout;
+    bool spreadsheetMode;
+QAction *shiftToSpreadsheetAct, *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct;
 
-QAction *shiftToSpreadsheetAct;
+OutlinerAbstractModel *absModel;
+OutlinerSpreadsheet *spreadsheet;
+
+QString lastOpened;
 
 QDomDocument mtoO_domDoc;
+
+QHash<QTextDocument *, int> mtoO_numForDoc;
+
     QHash<QListWidgetItem *, QDomElement> attend_domElementForItem;
     QHash<int, QDomElement> attend_domElementForItemNumber;
 

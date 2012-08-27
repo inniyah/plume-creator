@@ -47,6 +47,7 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void dragEnterEvent(QDragEnterEvent *event);
 
+
 signals:
     void textAndNoteSignal(QTextDocument *textDoc, QTextDocument *noteDoc, QTextDocument *synDoc,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
     void textAndNoteSignal(int number, QString action);
@@ -55,13 +56,14 @@ signals:
     // for Outliner :
     void disconnectUpdateTextsSignal();
     void connectUpdateTextsSignal();
-
+    void mainFocusOutSignal();
 
     void showOutlinerSignal();
     void saveOutliner();
-   void domDocSignal(QDomDocument domDoc);
+    void domDocSignal(QDomDocument domDoc);
 
-
+    void setNumForDocSignal(QHash<QTextDocument *, int>);
+    void applySynNoteFontConfigSignal();
 
     // for attendance :
 
@@ -70,8 +72,8 @@ signals:
     void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
 
     // for global wordcount :
-void docsForProjectWordCountSignal(QHash<QTextDocument *, QFile *> fileForDocs);
-void domForProjectWordCountSignal(QDomDocument domDoc);
+    void docsForProjectWordCountSignal(QHash<QTextDocument *, QFile *> fileForDocs);
+    void domForProjectWordCountSignal(QDomDocument domDoc);
 
 
 public slots:
@@ -79,19 +81,21 @@ public slots:
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
     bool saveDoc(QTextDocument *doc);
     QTextDocument * prevText(int num);
+    QTextDocument * nextText(int num);
 
     // Outline :
     void launchOutliner();
+    void updateOutliner();
 
     // for attendance :
     void readAllAttendances();
     void setOutlinerProjectAttendList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
     void removeAttendNumberSlot(int itemNumber);
-void addAttendNumberToSheetSlot(QList<int> list, int sheetNumber);
-void removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber);
+    void addAttendNumberToSheetSlot(QList<int> list, int sheetNumber);
+    void removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber);
 
-// for global wordcount :
-void giveDocsAndDomForProjectWordCount();
+    // for global wordcount :
+    void giveDocsAndDomForProjectWordCount();
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);
@@ -115,12 +119,17 @@ private slots:
     void removeItem(QDomElement element);
     void autoRenameChilds();
     void split();
+    void splitChoiceChanged(int choice);
+    void splitYes();
     void addMulti();
 
     void buildTree();
 
-
     //outliner :
+
+    void otoM_actionSlot(QString action,int idNumber);
+    void  updateMainDomDocFromOutliner(QDomDocument domDoc);
+
     void buildOutliner();
     void  killOutliner();
     void newOutlineTitleSlot(QString newTitle,int number);
@@ -131,7 +140,7 @@ private slots:
     void insertOutlinerItem(int newNumber, int numberOfRef);
     void outlinerClosed(){outlinerLaunched = false;}
 
-
+    QHash<QTextDocument *, int> setNumForDoc();
 
 
 private:
@@ -167,6 +176,8 @@ private:
     *addMultiAct;
     QMenu *delItemMenu,
     *advancedMenu;
+
+    QString splitChoice;
 
     QString devicePath;
     QFile *deviceFile;
@@ -206,8 +217,9 @@ private:
     Outline *outliner;
     int widgetTargetedNumber;
     QTreeWidgetItem *itemTargetedForOutliner;
+    int otoM_UpdateLaunched;
 
-//NEW Outliner :
+    //NEW Outliner :
 
     OutlinerBase *outlinerBase;
     bool outlinerLaunched;

@@ -5,6 +5,7 @@ NoteZone::NoteZone(QWidget *parent) :
 {
     this->setAttribute(Qt::WA_KeyCompression, true);
 
+this->setFocusPolicy(Qt::WheelFocus);
 
     textDocument = new QTextDocument(this);
 
@@ -55,7 +56,6 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
 
 
 
-
     //    noteFile->open(QFile::ReadOnly | QFile::Text);
     //    QApplication::setOverrideCursor(Qt::WaitCursor);
     //    QTextStream noteFileStream( noteFile );
@@ -79,7 +79,9 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceNoteFirstCharFont()));
 
-    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width());
+
+    connect(noteDoc,SIGNAL(documentLayoutChanged()),this,SLOT(applyNoteConfig()), Qt::UniqueConnection);
 
     return true;
 }
@@ -114,8 +116,47 @@ bool NoteZone::openSyn(QTextDocument *synDoc)
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceSynFirstCharFont()));
 
-    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width());
 
+    connect(synDoc,SIGNAL(documentLayoutChanged()),this,SLOT(applySynConfig()), Qt::UniqueConnection);
+
+    return true;
+}
+//------------------------------------------------------------------------------
+
+
+bool NoteZone::openOutlinerDoc(QTextDocument *outlinerDoc)
+{
+
+    textDocument = outlinerDoc;
+
+    this->setEnabled(true);
+
+    //    synFile->open(QFile::ReadOnly | QFile::Text);
+    //    QApplication::setOverrideCursor(Qt::WaitCursor);
+    //    QTextStream synFileStream( synFile );
+    //    textDocument->setHtml(synFileStream.readAll());
+
+    //    QApplication::restoreOverrideCursor();
+
+    //    synFile->close();
+
+    setDocument(textDocument);
+
+
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    setDocumentTitle("Synopsis");
+
+    applyOutlinerDocConfig();
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(forceOutlinerDocFirstCharFont()));
+
+    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width());
+
+    connect(outlinerDoc,SIGNAL(documentLayoutChanged()),this,SLOT(applyOutlinerDocConfig()), Qt::UniqueConnection);
+
+    giveOutlinerStyle();
 
     return true;
 }
@@ -214,6 +255,18 @@ bool NoteZone::closeNote()
 
     return true;
 }
+//------------------------------------------------------------------------------
+
+bool NoteZone::closeOutlinerDoc()
+{
+
+
+    this->setEnabled(false);
+
+    setContextMenuPolicy(Qt::PreventContextMenu);
+
+    return true;
+}
 
 //------------------------------------------------------------------------------
 
@@ -246,6 +299,17 @@ void NoteZone::forceNoteFirstCharFont()
     if(this->textCursor().atStart() == true || this->textCursor().position() == 1 )
         applyNoteFontConfig();
 }
+
+void NoteZone::forceOutlinerDocFirstCharFont()
+{
+    // force the 1 st line to be the correct font
+
+
+    if(this->textCursor().atStart() == true || this->textCursor().position() == 1 )
+        applyOutlinerDocFontConfig();
+}
+
+
 
 void NoteZone::forceAttendFirstCharFont()
 {
@@ -281,35 +345,35 @@ void NoteZone::forceAttendFirstCharFont()
 
 void NoteZone::createActions()
 {
-    undoAct = new QAction(tr("&Undo"), this);
+    undoAct = new QAction(QIcon(":/pics/edit-undo.png"),tr("&Undo"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo the last operation"));
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
 
-    redoAct = new QAction(tr("&Redo"), this);
+    redoAct = new QAction(QIcon(":/pics/edit-redo.png"),tr("&Redo"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo the last operation"));
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
-    cutAct = new QAction(tr("Cu&t"), this);
+    cutAct = new QAction(QIcon(":/pics/edit-cut.png"),tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
-    copyAct = new QAction(tr("&Copy"), this);
+    copyAct = new QAction(QIcon(":/pics/edit-copy.png"),tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
-    pasteAct = new QAction(tr("&Paste"), this);
+    pasteAct = new QAction(QIcon(":/pics/edit-paste.png"),tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
-    boldAct = new QAction(tr("&Bold"), this);
+    boldAct = new QAction(QIcon(":/pics/format-text-bold.png"),tr("&Bold"), this);
     boldAct->setCheckable(true);
     boldAct->setShortcuts(QKeySequence::Bold);
     boldAct->setStatusTip(tr("Make the text bold"));
@@ -319,7 +383,7 @@ void NoteZone::createActions()
     boldFont.setBold(true);
     boldAct->setFont(boldFont);
 
-    italicAct = new QAction(tr("&Italic"), this);
+    italicAct = new QAction(QIcon(":/pics/format-text-italic.png"),tr("&Italic"), this);
     italicAct->setCheckable(true);
     italicAct->setShortcuts(QKeySequence::Italic);
     italicAct->setStatusTip(tr("Make the text italic"));
@@ -339,25 +403,25 @@ void NoteZone::createActions()
     //    connect(setParagraphSpacingAct, SIGNAL(triggered()),
     //            this, SLOT(setParagraphSpacing()));
 
-    leftAlignAct = new QAction(tr("&Left Align"), this);
+    leftAlignAct = new QAction(QIcon(":/pics/format-justify-left.png"),tr("&Left Align"), this);
     leftAlignAct->setCheckable(true);
     leftAlignAct->setShortcut(tr("Ctrl+L"));
     leftAlignAct->setStatusTip(tr("Left align the selected text"));
     connect(leftAlignAct, SIGNAL(triggered(bool)), this, SLOT(leftAlign(bool)));
 
-    rightAlignAct = new QAction(tr("&Right Align"), this);
+    rightAlignAct = new QAction(QIcon(":/pics/format-justify-right.png"),tr("&Right Align"), this);
     rightAlignAct->setCheckable(true);
     rightAlignAct->setShortcut(tr("Ctrl+R"));
     rightAlignAct->setStatusTip(tr("Right align the selected text"));
     connect(rightAlignAct, SIGNAL(triggered(bool)), this, SLOT(rightAlign(bool)));
 
-    justifyAct = new QAction(tr("&Justify"), this);
+    justifyAct = new QAction(QIcon(":/pics/format-justify-fill.png"),tr("&Justify"), this);
     justifyAct->setCheckable(true);
     justifyAct->setShortcut(tr("Ctrl+J"));
     justifyAct->setStatusTip(tr("Justify the selected text"));
     connect(justifyAct, SIGNAL(triggered(bool)), this, SLOT(justify(bool)));
 
-    centerAct = new QAction(tr("&Center"), this);
+    centerAct = new QAction(QIcon(":/pics/format-justify-center.png"),tr("&Center"), this);
     centerAct->setCheckable(true);
     centerAct->setShortcut(tr("Ctrl+E"));
     centerAct->setStatusTip(tr("Center the selected text"));
@@ -762,10 +826,14 @@ QTextCursor yCursor = this->textCursor();
 
         if(source->hasHtml()){
 
+            QString sourceString = qvariant_cast<QString>(source->html());
+            sourceString.replace( QRegExp("</?(?i:script|embed|object|frameset|frame|iframe|meta|link|style|div|p|span)(.|\n)*?>"), "" );
+
+
 
             //htmlText
             QTextDocument *document = new QTextDocument;
-            document->setHtml(qvariant_cast<QString>(source->html()));
+            document->setHtml(sourceString);
 
             QTextBlockFormat blockFormat;
             blockFormat.setBottomMargin(bottMargin);
@@ -774,6 +842,12 @@ QTextCursor yCursor = this->textCursor();
             charFormat.setFontPointSize(textHeight);
             charFormat.setFontFamily(fontFamily);
             charFormat.clearForeground();
+            charFormat.clearProperty(QTextFormat::ForegroundBrush);
+            charFormat.clearProperty(QTextFormat::IsAnchor);
+            charFormat.clearProperty(QTextFormat::AnchorHref);
+            charFormat.clearProperty(QTextFormat::AnchorName);
+            charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
+            charFormat.clearProperty(QTextFormat::FontStrikeOut);
 
             QTextCursor *tCursor = new QTextCursor(document);
             tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
@@ -790,7 +864,7 @@ QTextCursor yCursor = this->textCursor();
         }
         else if(source->hasText()){
             QTextDocument *document = new QTextDocument;
-            document->setHtml(qvariant_cast<QString>(source->text()));
+            document->setPlainText(qvariant_cast<QString>(source->text()));
 
             QTextBlockFormat blockFormat;
             blockFormat.setBottomMargin(bottMargin);
@@ -977,10 +1051,18 @@ bool NoteZone::canInsertFromMimeData (const QMimeData *source) const
 void NoteZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
-    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    textDocument->setTextWidth(this->width()  - this->verticalScrollBar()->width());
     QWidget::resizeEvent(event);
 }
 
+//------------------------------------------------------------------------------------
+void NoteZone::focusOutEvent ( QFocusEvent * event )
+{
+
+    emit  noteFocusOutSignal();
+
+    event->accept();
+}
 
 
 
@@ -1130,10 +1212,92 @@ void NoteZone::applySynFontConfig()
 
 }
 
-
 //-------------------------------------------------------------------------------
 
 
+
+void NoteZone::applyOutlinerDocConfig()
+{
+
+
+    QSettings settings;
+    settings.beginGroup( "Outline" );
+    alwaysCenter = settings.value("OutlinerDocArea/alwaysCenter", true).toBool();
+//    bool outlinerDocShowScrollbar = settings.value("OutlinerDocArea/showScrollbar", true).toBool();
+    settings.endGroup();
+
+
+    centerCursor();
+
+//    if(outlinerShowScrollbar)
+        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+//    else
+//        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+
+    applyOutlinerDocFontConfig();
+
+}
+
+
+void NoteZone::applyOutlinerDocFontConfig()
+{
+
+   QSettings settings;
+   settings.beginGroup( "Outline" );
+    int outlinerDocBottMargin = settings.value("outlinerDocTextMargin", 5).toInt();
+    int outlinerDocTextIndent = settings.value("outlinerDocTextIndent", 20).toInt();
+    int outlinerDocTextHeight = settings.value("outlinerDocTextHeight", 12).toInt();
+    QString outlinerDocFontFamily = settings.value("outlinerDocFontFamily", "Liberation Serif").toString();
+    settings.endGroup();
+
+
+
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(outlinerDocBottMargin);
+    blockFormat.setTextIndent(outlinerDocTextIndent);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(outlinerDocTextHeight);
+    charFormat.setFontFamily(outlinerDocFontFamily);
+    charFormat.clearForeground();
+    QTextCursor *tCursor = new QTextCursor(document());
+    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
+    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
+
+    tCursor->mergeCharFormat(charFormat);
+    tCursor->mergeBlockFormat(blockFormat);
+
+    QFont font;
+    font.setFamily(outlinerDocFontFamily);
+    font.setPointSize(outlinerDocTextHeight);
+    this->document()->setDefaultFont(font);
+
+}
+
+
+void NoteZone::giveOutlinerStyle()
+{
+    this->viewport()->setAutoFillBackground(true);
+    QString css = "NoteZone {"
+            "border: 0px none transparent;"
+            "spacing: 0px;"
+            "padding: 1px;"
+            "margin: 0px;"
+            "}"
+            ;
+
+    this->setStyleSheet(css);
+//    QPalette palette;
+//    palette.setBrush(QPalette::Window, Qt::transparent);
+//this->setPalette(palette);
+
+
+}
+
+
+//-------------------------------------------------------------------------------
 
 void NoteZone::applyAttendConfig()
 {
@@ -1142,13 +1306,13 @@ void NoteZone::applyAttendConfig()
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("AttendArea/alwaysCenter", true).toBool();
-    bool synShowScrollbar = settings.value("AttendArea/showScrollbar", true).toBool();
+    bool attendShowScrollbar = settings.value("AttendArea/showScrollbar", true).toBool();
     settings.endGroup();
 
 
     centerCursor();
 
-    if(synShowScrollbar)
+    if(attendShowScrollbar)
         setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     else
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

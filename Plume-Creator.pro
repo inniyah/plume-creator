@@ -36,7 +36,10 @@ SOURCES += main.cpp\
     outlinerbase.cpp \
     orientationbutton.cpp \
     editmenu.cpp \
-    menubar.cpp
+    menubar.cpp \
+    outlinerabstractmodel.cpp \
+    outlineritemdelegate.cpp \
+    outlinertreeitem.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -64,11 +67,15 @@ HEADERS  += mainwindow.h \
     outlinerbase.h \
     orientationbutton.h \
     editmenu.h \
-    menubar.h
+    menubar.h \
+    outlinerabstractmodel.h \
+    outlineritemdelegate.h \
+    outlinertreeitem.h
 
 RESOURCES += \
     pics.qrc \
-    langs.qrc
+    langs.qrc \
+    readme.qrc
 
 CODECFORTR = UTF-8
 
@@ -76,7 +83,6 @@ TRANSLATIONS = plume-creator_fr_FR.ts \
 #    plume-creator_ro_RO.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
-
 
 
 

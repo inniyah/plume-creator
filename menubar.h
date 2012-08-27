@@ -76,6 +76,16 @@ void charFormatChangedSlotSignal(QTextCharFormat charFmt);
  void tabWidgetChangedSlotSignal(int newTabWidth);
 void tabWitdhChangedSlotSignal(int);
 
+
+
+//docks actions :
+void showTreeDockSignal(bool treeBool);
+void showNotesDockSignal(bool notesBool);
+void showAttendDockSignal(bool attendBool);
+void showToolsDockSignal(bool toolsBool);
+void launchOutlinerSignal();
+void showFullscreenSignal();
+
 public slots:
 
 
@@ -93,6 +103,13 @@ void tabChangedSlot(QTextCharFormat newTabFormat){editWidget->tabChangedSlot(new
 
 void applyConfig();
 
+
+//docks actions :
+void setTreeDockAct(bool treeVisible){showTreeDockAct->setChecked(treeVisible);}
+void setNoteDockAct(bool noteVisible){showNotesDockAct->setChecked(noteVisible);}
+void setToolDockAct(bool toolVisible){showToolsDockAct->setChecked(toolVisible);}
+void setAttendDockAct(bool attendVisible){showAttendDockAct->setChecked(attendVisible);}
+
 private slots:
 
     void newProject();
@@ -105,6 +122,7 @@ private slots:
     void findAndReplace();
     void aboutQt();
     void about();
+    void viewReleaseNotes();
     void checkUpdate(){ launchCheckUpdateDialog("none"); }
     void exit();
 
@@ -114,6 +132,7 @@ private slots:
 private:
 
 QString currentVersion;
+bool projectAlreadyOpened;
 
     QToolButton *newProjectButton,
     *projectManagerButton,
@@ -139,10 +158,11 @@ QString currentVersion;
     *findReplaceAct,
     *aboutQtAct,
     *aboutAct,
-    *updaterAct;
-QMenu *projectGroup;
-QMenu *editGroup;
-QMenu *helpGroup;
+    *viewReleaseNotesAct,
+    *updaterAct,
+   *showTreeDockAct, *showNotesDockAct, *showAttendDockAct, *showToolsDockAct, *launchOutlinerAct, *showFullscreenAct;
+
+QMenu *projectGroup, *editGroup, *helpGroup, *viewGroup;
 
 EditMenu *editWidget;
 
@@ -161,7 +181,7 @@ EditMenu *editWidget;
 
     PrjManager *projManager;
     QFile *file;
-
+QFile *externalPrjFile;
     QFile *extFile;
 };
 

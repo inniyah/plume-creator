@@ -7,5 +7,64 @@
         <file>pics/addobject.png</file>
         <file>pics/addplace.png</file>
         <file>pics/removeItem.png</file>
+        <file>pics/format-text-italic.png</file>
+        <file>pics/edit-undo.png</file>
+        <file>pics/edit-rename.png</file>
+        <file>pics/edit-redo.png</file>
+        <file>pics/edit-paste.png</file>
+        <file>pics/edit-copy.png</file>
+        <file>pics/edit-cut.png</file>
+        <file>pics/format-justify-center.png</file>
+        <file>pics/format-justify-fill.png</file>
+        <file>pics/format-justify-left.png</file>
+        <file>pics/format-justify-right.png</file>
+        <file>pics/format-text-bold.png</file>
+        <file>pics/application-epub+zip.png</file>
+        <file>pics/application-exit.png</file>
+        <file>pics/applications-office.png</file>
+        <file>pics/applications-system.png</file>
+        <file>pics/archive-insert.png</file>
+        <file>pics/bookmarks-organize.png</file>
+        <file>pics/configure.png</file>
+        <file>pics/document-multiple.png</file>
+        <file>pics/document-open.png</file>
+        <file>pics/document-print.png</file>
+        <file>pics/download.png</file>
+        <file>pics/edit-find-replace.png</file>
+        <file>pics/go-home.png</file>
+        <file>pics/help-about.png</file>
+        <file>pics/im-status-message-edit.png</file>
+        <file>pics/insert-horizontal-rule.png</file>
+        <file>pics/knotes_delete.png</file>
+        <file>pics/meeting-organizer.png</file>
+        <file>pics/preferences-system.png</file>
+        <file>pics/tools-wizard.png</file>
+        <file>pics/view-fullscreen.png</file>
+        <file>pics/view-list-tree.png</file>
+        <file>pics/view-pim-contacts.png</file>
+        <file>pics/view-pim-notes.png</file>
+        <file>pics/view-restore.png</file>
+        <file>pics/window-close.png</file>
+        <file>pics/view-time-schedule.png</file>
+        <file>pics/arrow-down.png</file>
+        <file>pics/arrow-up.png</file>
+        <file>pics/document-new.png</file>
+        <file>pics/folder-new.png</file>
+        <file>pics/table.png</file>
+        <file>pics/zoom-in.png</file>
+        <file>pics/zoom-out.png</file>
+        <file>pics/window-close-32x32.png</file>
+        <file>pics/im-status-message-edit-90.png</file>
+        <file>pics/meeting-organizer-90.png</file>
+        <file>pics/view-fullscreen-90.png</file>
+        <file>pics/view-list-tree-90.png</file>
+        <file>pics/view-time-schedule-90.png</file>
+        <file>pics/preferences-system-90.png</file>
+        <file>pics/document-export.png</file>
+        <file>pics/zoom-previous.png</file>
+        <file>pics/zoom-previous-90.png</file>
+        <file>pics/plume-creator-128x128.png</file>
+        <file>pics/go-down-32x32.png</file>
+        <file>pics/go-up-32x32.png</file>
     </qresource>
 </RCC>

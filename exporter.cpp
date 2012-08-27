@@ -76,7 +76,7 @@ Exporter::Exporter(QString mode, QFile *device, QWidget *parent) :
     QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
     QGridLayout *checkLayout = new QGridLayout;
     textCheckBox = new QCheckBox(tr("Insert story"), this);
-    synCheckBox = new QCheckBox(tr("Insert synopsies"), this);
+    synCheckBox = new QCheckBox(tr("Insert synopses"), this);
     noteCheckBox = new QCheckBox(tr("Insert notes"), this);
     sceneTitleCheckBox = new QCheckBox(tr("Insert scene titles"), this);
 

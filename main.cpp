@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
 
-    instance.setApplicationVersion("0.52");
+    instance.setApplicationVersion("0.53");
 
     QString message=argv[1];
 
@@ -201,6 +201,7 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
         QStringList langCodes;
         langCodes << "fr_FR" << "en_US";
 
+
         bool ok;
         QString selectedLang = QInputDialog::getItem(0, "Language Selector",
                                                      "Please select your language : <br> "
@@ -216,6 +217,7 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
             QTranslator *plumeTranslator = new QTranslator(&instance);
             plumeTranslator->load(plumeTranslatorFileName);
             instance.installTranslator(plumeTranslator);
+
 
             settings.setValue("MainWindow/lang", langCodes.at(langs.indexOf(selectedLang)));
         }
@@ -254,8 +256,7 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
 
 
 
-
-
+QApplication::setWheelScrollLines(1);
 
 
 
