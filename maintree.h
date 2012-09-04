@@ -27,6 +27,7 @@
 
 #include <outline.h>
 #include <outlinerbase.h>
+#include <textstyles.h>
 //
 class MainTree : public QTreeWidget
 {
@@ -96,6 +97,10 @@ public slots:
 
     // for global wordcount :
     void giveDocsAndDomForProjectWordCount();
+
+    // for text styles :
+    void changeAllDocsTextStyles();
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
 
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);
@@ -232,6 +237,9 @@ private:
     QHash<int, QDomElement> attend_domElementForItemNumber;
 
 
+    //text styles :
+
+TextStyles *textStyles;
 };
 
 #endif // MAINTREE_H

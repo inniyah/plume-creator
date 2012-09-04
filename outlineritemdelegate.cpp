@@ -154,13 +154,18 @@ QSize OutlinerItemDelegate::sizeHint( const QStyleOptionViewItem& option,
     // to include their size to the returned value)
 
 
-    //    if(index.column() == 1 || index.column() == 2){
-    QTextDocument doc;
-    doc.setDefaultFont(option.font);
-    doc.setHtml(index.data(33).toString());
-    doc.setDocumentMargin(1);
-    return doc.size().toSize();
-    //    }
+//    QTextDocument doc;
+//    doc.setDefaultFont(option.font);
+//    doc.setHtml(index.data(33).toString());
+//    doc.setDocumentMargin(1);
+//    QTextCursor cursor(&doc);
+//    cursor.setPosition(0);
+//    cursor.select(QTextCursor::BlockUnderCursor);
+//    doc.setHtml(cursor.selection().toHtml());
+//    if(doc.size().toSize().height() < 200)
+//    return doc.size().toSize();
+//else
+    QStyledItemDelegate::sizeHint(option,index);
 
 
 }

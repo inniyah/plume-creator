@@ -57,12 +57,12 @@ bool AttendBox::saveAll()
 
         QFile *file = fileForDoc.value(doc);
         file->close();
-        QTextDocumentWriter docWriter(file, "HTML");
-        bool written = docWriter.write(doc);
+        QTextDocumentWriter *docWriter = new QTextDocumentWriter(file, "HTML");
+        bool written = docWriter->write(doc);
 
         //        qDebug() << "QTextDocumentWriter : " << file->fileName();
         //                qDebug() << "QTextDocumentWriter : " << written;
-
+delete docWriter;
 
         ++i;
     }
@@ -845,6 +845,8 @@ void AttendBox::launchAttendManager()
     deleteButton->setIconSize(iconSize);
 
     editZone = new NoteZone;
+
+    connect(editZone, SIGNAL(textChanged()), SIGNAL(textChangedSignal()));
 
     firstnameEdit = new QLineEdit;
     firstnameEdit->setPlaceholderText(tr("First Name :"));

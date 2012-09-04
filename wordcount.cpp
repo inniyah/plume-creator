@@ -41,6 +41,8 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
     QStringList wordsList;
 
+    docText.replace("\n", " ");
+
     wordsList = docText.split(" ", QString::SkipEmptyParts);
 
     finalWordCount = wordsList.size();
@@ -145,6 +147,7 @@ void WordCount::updateWordCount()
     if(blockNum == preBlockNum){
 
         blockText = document->findBlockByNumber(blockNum).text();
+        blockText.replace("\n", " ");
         wordsList = blockText.split(" ", QString::SkipEmptyParts);
 
         finalWordCount = preWordCount + wordsList.size();
@@ -157,6 +160,7 @@ void WordCount::updateWordCount()
 
 
         blockText = document->findBlockByNumber(blockNum).text();
+        blockText.replace("\n", " ");
         wordsList = blockText.split(" ", QString::SkipEmptyParts);
 
         preWordCount = finalWordCount - wordsList.size();;
@@ -195,6 +199,7 @@ void WordCount::updateBlockCount(int blockCount)
     QString docText = document->toPlainText();
     QStringList wordsList;
 
+    docText.replace("\n", " ");
     wordsList = docText.split(" ", QString::SkipEmptyParts);
 
     finalWordCount = wordsList.size();

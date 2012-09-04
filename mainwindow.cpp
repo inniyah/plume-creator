@@ -18,7 +18,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), noProjectOpened(true)
+    : QMainWindow(parent), noProjectOpened(true),noTabCss(""),textAlreadyChanged(false)
 {
 
 
@@ -34,14 +34,17 @@ MainWindow::MainWindow(QWidget *parent)
     // netbook mode 10':
     //    setFixedSize(900, 550);
 
+    textStyles = new TextStyles();
 
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->setDocumentMode(true);
     tabWidget->setMovable(false);
+    tabWidget->setObjectName("mainTabWidget");
 
     setCentralWidget(tabWidget);
+
 
     createMenuBar();
     //    createMenuDock();
@@ -51,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
     createToolDock();
     createDocksToolBar();
     createStatusBar();
-
 
 
 
@@ -155,7 +157,8 @@ MainWindow::~MainWindow()
 void MainWindow::createMenuBar()
 {
     menu = new MenuBar;
-
+    menu->setTextStyles(textStyles);
+    menu->createContent();
 
 
     connect(menu, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
@@ -163,7 +166,7 @@ void MainWindow::createMenuBar()
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
     connect(menu, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
     connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
-
+    connect(menu, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
 
 
 
@@ -193,7 +196,7 @@ void MainWindow::createAttendDock()
     addDockWidget(Qt::RightDockWidgetArea, attendDock);
 
     connect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
-
+    connect(attendList, SIGNAL(textChangedSignal()), this, SLOT(textChangedSlot()));
     attendDock->hide();
 }
 
@@ -290,6 +293,7 @@ void MainWindow::createTreeDock()
 
     connect(mainTree, SIGNAL(textAndNoteSignal(QTextDocument*,QTextDocument*,QTextDocument*, int, int, int, QString, int, QString)), this, SLOT(textSlot(QTextDocument*,QTextDocument*,QTextDocument*, int,int,int, QString, int, QString)));
     connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
+    connect(this, SIGNAL(changeAllDocsTextStylesSignal()), mainTree, SLOT(changeAllDocsTextStyles()));
 
     treeDock->setWidget(mainTree);
 
@@ -297,6 +301,7 @@ void MainWindow::createTreeDock()
 
     connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
 
+    mainTree->setTextStyles(textStyles);
 }
 
 //---------------------------------------------------------------------------
@@ -529,35 +534,7 @@ void MainWindow::createStatusBar()
 
 }
 
-//---------------------------------------------------------------------------
 
-void MainWindow::setShowPreviousTextButton(bool showPrevTextBool)
-{
-    disconnect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
-
-
-
-    showPrvScnButton->setChecked(showPrevTextBool);
-
-
-
-    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
-}
-
-//---------------------------------------------------------------------------
-
-void MainWindow::setShowNextTextButton(bool showNextTextBool)
-{
-    disconnect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
-
-
-
-    showNxtScnButton->setChecked(showNextTextBool);
-
-
-
-    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
-}
 
 
 //---------------------------------------------------------------------------
@@ -628,23 +605,23 @@ void MainWindow::createDocksToolBar()
     fullscreenButton->setMirrored(true);
     connect(fullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
 
-    showPrvScnButton = new OrientationButton(QIcon(":/pics/zoom-previous-90.png"),tr("&Show Prev. Scene"));
-    showPrvScnButton->setObjectName("showPrvScnBt");
-    showPrvScnButton->setToolTip(tr("Show the end of the previous scene"));
-    showPrvScnButton->setOrientation(Qt::Vertical);
-    showPrvScnButton->setShortcut(Qt::Key_F10);
-    showPrvScnButton->setCheckable(true);
-    showPrvScnButton->setMirrored(true);
-    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
+    //    showPrvScnButton = new OrientationButton(QIcon(":/pics/zoom-previous-90.png"),tr("&Show Prev. Scene"));
+    //    showPrvScnButton->setObjectName("showPrvScnBt");
+    //    showPrvScnButton->setToolTip(tr("Show the end of the previous scene"));
+    //    showPrvScnButton->setOrientation(Qt::Vertical);
+    //    showPrvScnButton->setShortcut(Qt::Key_F10);
+    //    showPrvScnButton->setCheckable(true);
+    //    showPrvScnButton->setMirrored(true);
+    //    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
 
-    showNxtScnButton = new OrientationButton(tr("&Show Next Scene"));
-    showNxtScnButton->setObjectName("showNxtScnBt");
-    showNxtScnButton->setToolTip(tr("Show the start of the next scene"));
-    showNxtScnButton->setOrientation(Qt::Vertical);
-    showNxtScnButton->setShortcut(Qt::Key_F10);
-    showNxtScnButton->setCheckable(true);
-    showNxtScnButton->setMirrored(true);
-    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
+    //    showNxtScnButton = new OrientationButton(tr("&Show Next Scene"));
+    //    showNxtScnButton->setObjectName("showNxtScnBt");
+    //    showNxtScnButton->setToolTip(tr("Show the start of the next scene"));
+    //    showNxtScnButton->setOrientation(Qt::Vertical);
+    //    showNxtScnButton->setShortcut(Qt::Key_F10);
+    //    showNxtScnButton->setCheckable(true);
+    //    showNxtScnButton->setMirrored(true);
+    //    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
 
     //    docksToolBar->addWidget(treeDockButton);
     docksToolBar->addWidget(noteDockButton);
@@ -653,8 +630,8 @@ void MainWindow::createDocksToolBar()
     docksToolBar->addSeparator();
     docksToolBar->addWidget(outlinerButton);
     docksToolBar->addWidget(fullscreenButton);
-    docksToolBar->addWidget(showPrvScnButton);
-    docksToolBar->addWidget(showNxtScnButton);
+    //    docksToolBar->addWidget(showPrvScnButton);
+    //    docksToolBar->addWidget(showNxtScnButton);
 
 
 
@@ -822,7 +799,9 @@ void MainWindow::openProjectSlot(QFile *projectFile)
 
     readDocksSettings();
     closeAllDocsSlot();
-    file = projectFile;
+    menu->setMenusEnabled(true);
+    file = new QFile(projectFile->fileName());
+    textStyles->setProjectInfoFile(file);
     attendList->readProjectAttendance(projectFile);
     mainTree->read(projectFile);
     configTimer();
@@ -841,6 +820,12 @@ void MainWindow::closeProjectSlot()
     if(noProjectOpened == true)
         return;
 
+    menu->setMenusEnabled(false);
+
+
+
+
+
     writeDocksSettings();
     closeAllDocsSlot();
     mainTree->write(file);
@@ -858,7 +843,7 @@ void MainWindow::closeProjectSlot()
     settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
     settings.endArray();
 
-    timer->stop();
+    //    timer->stop();
 }
 
 void MainWindow::setProjectNumberSlot(int prjNumber)
@@ -909,9 +894,11 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
 
         TextTab *tab = new TextTab;
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
+
+        //set text Styles :
+        tab->setTextStyles(textStyles);
+
         tab->openText(textDoc);
-        //       tab->setAttribute(Qt::WA_DeleteOnClose);
-        //        qDebug() << "name : " << name;
 
 
         QWidget *noteWidget = new QWidget(this);
@@ -973,6 +960,9 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(menu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
         connect(menu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
+        connect(menu,SIGNAL(styleSelectedSignal(int)), tab, SLOT(changeTextStyleSlot(int)));
+        connect(tab,SIGNAL(setStyleSelectionSignal(int)), menu, SIGNAL(setStyleSelectionSignal(int)));
+        connect(tab,SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
 
 
         //connect note & syn to maintree :
@@ -1010,7 +1000,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         //        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
         //        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
 
-// show previous and nest text :
+        // show previous and nest text :
 
         //apply config :
 
@@ -1018,6 +1008,11 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(this, SIGNAL(applyConfigSignal()), synStack,SLOT(applySynConfig()));
         connect(this, SIGNAL(applyConfigSignal()), noteStack,SLOT(applyNoteConfig()));
 
+
+        //connect save when text change :
+        connect(tab, SIGNAL(textChangedSignal()), this, SLOT(textChangedSlot()));
+        connect(noteStack, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
+        connect(synStack, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
 
         QSettings settings;
         int textWidthValue = settings.value("Settings/TextArea/textWidth", tab->width()/2 ).toInt();
@@ -1035,8 +1030,14 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         //            tab->setStyleSheet("QWidget#textTabWidget { background: white }");
 
 
-
-
+        // if option "one tab only" is activated :
+        if(oneTabOnly){
+            int i = 0 ;
+            while( numList->size() > 1 ){
+                secondTextSlot(numList->at(0), "close");
+                ++i;
+            }
+        }
 
 
 
@@ -1059,6 +1060,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         mainTree->write(file);
         attendList->saveAll();
         //        for(int i = nameList->size()-1; i >= 0; --i){
+        textAlreadyChanged = false;
 
 
 
@@ -1067,7 +1069,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         //            mainTree->saveDoc(synWidgetList->at(i)->document());
 
         //        }
-        qDebug() << "saving all";
+        //        qDebug() << "saving all";
     }
 
 
@@ -1177,7 +1179,7 @@ void MainWindow::setConnections()
     connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
 
 
-// for previous and next texts :
+    // for previous and next texts :
     connect(tabWidget,SIGNAL(currentChanged(int)),this,SLOT(showPrevAndNextTexts()));
     connect(mainTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(showPrevAndNextTexts()));
 
@@ -1217,16 +1219,15 @@ void MainWindow::tabChangeSlot(int tabNum)
         //        qDebug() << "tabChangeRequest textName :" << textWidgetList->at(preTabNum)->objectName() << "----------- saved :" << textBool;
         //        qDebug() << "tabChangeRequest noteName :" << noteWidgetList->at(preTabNum)->objectName() << "----------- saved :" << noteBool;
         //        qDebug() << "tabChangeRequest synName :" << synWidgetList->at(preTabNum)->objectName() << "----------- saved :" << synBool;
-//                qDebug() << "tabChangeRequest pre :" << preTabNum;
+        //                qDebug() << "tabChangeRequest pre :" << preTabNum;
         //        qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
 
 
         //to initialize edit menu fonts:
 
-        TextTab *tab = textWidgetList->at(tabNum);
-        menu->tabChangedSlot(tab->tabFontChangedSlot());
+        //        TextTab *tab = textWidgetList->at(tabNum);
+        //        menu->tabChangedSlot(tab->tabFontChangedSlot());
 
-        this->setShowPreviousTextButton(tab->setShowPrevTextButton());
 
         setCurrentAttendList(tabNum);
 
@@ -1259,15 +1260,20 @@ void MainWindow::tabCloseRequest(int tabNum)
 
     // Closing / removing
 
-    tabWidget->widget(tabNum)->setObjectName("");
+    QWidget* widget = tabWidget->widget(tabNum);
+    widget->setObjectName("");
     tabWidget->removeTab(tabNum);
+    delete widget;
 
-    noteLayout->widget(tabNum)->setObjectName("");
+    QWidget* noteWidget = noteLayout->widget(tabNum);
+    noteWidget->setObjectName("");
     noteLayout->removeWidget(noteLayout->widget(tabNum));
+    delete noteWidget;
 
-    synLayout->widget(tabNum)->setObjectName("");
+    QWidget* synWidget = synLayout->widget(tabNum);
+    synWidget->setObjectName("");
     synLayout->removeWidget(synLayout->widget(tabNum));
-
+    delete synWidget;
 
 
     textDocList->removeAt(tabNum);
@@ -1327,14 +1333,20 @@ void MainWindow::closeAllDocsSlot()
         noteWidgetList->at(i)->closeNote();
         synWidgetList->at(i)->closeSyn();
 
-        tabWidget->widget(i)->setObjectName("");
+        QWidget* widget = tabWidget->widget(i);
+        widget->setObjectName("");
         tabWidget->removeTab(i);
+        delete widget;
 
-        noteLayout->widget(i)->setObjectName("");
+        QWidget* noteWidget = noteLayout->widget(i);
+        noteWidget->setObjectName("");
         noteLayout->removeWidget(noteLayout->widget(i));
+        delete noteWidget;
 
-        synLayout->widget(i)->setObjectName("");
+        QWidget* synWidget = synLayout->widget(i);
+        synWidget->setObjectName("");
         synLayout->removeWidget(synLayout->widget(i));
+        delete synWidget;
 
     }
     tabWidget->clear();
@@ -1416,7 +1428,7 @@ void MainWindow::readSettings()
 {
     QSettings settings;
     settings.beginGroup( "MainWindow" );
-   resize(settings.value( "size", QSize( 800, 500 ) ).toSize() );
+    resize(settings.value( "size", QSize( 800, 500 ) ).toSize() );
     move(settings.value( "pos" ).toPoint() );
     m_firstStart = settings.value("firstStart", true).toBool();
     m_firstStart_checkDisplay = settings.value("firstStart_checkDisplay", true).toBool();
@@ -1427,7 +1439,7 @@ void MainWindow::readSettings()
     settings.endGroup();
 
 
-//    checkHiddenDocks();
+    //    checkHiddenDocks();
 
 
 }
@@ -1439,7 +1451,7 @@ void MainWindow::readDocksSettings()
     settings.beginGroup( "MainWindow" );
     displayMode = settings.value("displayMode", "desktop").toString();
     this->setDisplayMode(settings.value("displayMode", "desktop").toString() );
-   settings.endGroup();
+    settings.endGroup();
 
 
 }
@@ -1562,11 +1574,22 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) //for MAc o
 
 void MainWindow::autosaveTimer()
 {
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(textSlot()));
-    timer->start(autosaveTime);
+    //    timer = new QTimer(this);
+    //    connect(timer, SIGNAL(timeout()), this, SLOT(textSlot()));
+    //    timer->start(autosaveTime);
 }
 
+
+//----------------------------------------------------------------------------------------
+void MainWindow::textChangedSlot()
+{
+    if(!textAlreadyChanged){
+        textAlreadyChanged = true;
+
+        QTimer::singleShot(autosaveTime, this, SLOT(textSlot()));
+        //    qDebug() << "textChangedSlot";
+    }
+}
 
 
 
@@ -1587,6 +1610,8 @@ void MainWindow::applyConfig()
     QSettings settings;
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
+    oneTabOnly = settings.value("oneTabOnly", false).toBool();
+    bool noTabBool = settings.value("TextArea/noTab", false).toBool();
     settings.endGroup();
     settings.beginGroup( "MainWindow" );
     //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
@@ -1595,7 +1620,26 @@ void MainWindow::applyConfig()
     if(!noProjectOpened)
         configTimer();
 
+    if(oneTabOnly){
+        int i = 0 ;
+        while( numList->size() > 1 ){
+            secondTextSlot(numList->at(0), "close");
+            ++i;
+        }
+    }
 
+    if(noTabBool){
+        noTabCss  = "QTabWidget::tab-bar#mainTabWidget {"
+                "height: 0px;"
+                "}"
+                "QTabWidget::pane#mainTabWidget {"
+                "padding-top : -20px"
+                "}";
+    }
+    else
+        noTabCss = "";
+
+    giveStyle();
     //    if(menuBarOnTop == true){
     //        menu->hide();
     //        toolBox->removeItem(toolBox->indexOf(menu));
@@ -1608,8 +1652,8 @@ void MainWindow::applyConfig()
 
 void MainWindow::configTimer()
 {
-    timer->stop();
-    timer->start(autosaveTime);
+    //    timer->stop();
+    //    timer->start(autosaveTime);
 
     //    QString debug;
     //    qDebug() << "autosaveTime" << debug.setNum(autosaveTime);
@@ -1667,18 +1711,21 @@ void MainWindow::editFullscreen()
 
     //    qDebug() << "synStack name : " << synStack->objectName();
 
-    fullEditor = new FullscreenEditor(tab->document(), tab->saveCursorPos(), 0);
+    fullEditor = new FullscreenEditor(0);
+    fullEditor->setTextStyles(textStyles);
+    fullEditor->createContent(tab->document(), tab->saveCursorPos());
 
     fullEditor->setSyn(synStack->document(), synStack->textCursor().position());
     fullEditor->setNote(noteStack->document(), noteStack->textCursor().position());
 
 
-    connect(tab,SIGNAL(wordCountSignal(int)),fullEditor,SLOT(setWordCount(int)));
+    connect(fullEditor,SIGNAL(destroyed()),tab,SLOT(resetWordCounts()));
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
     connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(closeSignal()),synStack, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(closeSignal()),noteStack, SLOT(updateTextZone()));
-
+    connect(fullEditor, SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
+    connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
 }
 
 //----------------------------------------------------------------------------
@@ -1732,7 +1779,7 @@ void MainWindow::showNextText(bool showNextTextBool)
 void MainWindow::showPrevAndNextTexts(bool showTextsBool)
 {
     showPrevText(showTextsBool);
-            showNextText(showTextsBool);
+    showNextText(showTextsBool);
 }
 
 //----------------------------------------------------------------------------
@@ -1935,11 +1982,11 @@ void MainWindow::giveStyle()
             "}"
 
             "AttendBox {"
-            "border: 0px none transparent;"
+            //            "border: 0px none transparent;"
             "border-radius: 1px;"
             "spacing: 0px;"
             "padding: -6px;"
-            "margin: -4px;"
+            //            "margin: -4px;"
             "}"
 
             "QToolBar#docksToolBar {"
@@ -1951,7 +1998,8 @@ void MainWindow::giveStyle()
             //            "QToolBar#docksToolBar::separator {"
             //            "}"
 
+
             ;
 
-    this->setStyleSheet(css);
+    this->setStyleSheet(css+noTabCss);
 }

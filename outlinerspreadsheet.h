@@ -37,8 +37,11 @@ protected :
     void wheelEvent(QWheelEvent* event);
     void contextMenuEvent(QContextMenuEvent *event);
 
+
 signals:
     void otoM_actionSignal(QString action, int idNumber);
+void columnOneResizedSignal(int newSize);
+void columnTwoResizedSignal(int newSize);
 
 public slots:
     void temp_moveUp(){moveUp();}
@@ -61,7 +64,7 @@ private slots:
     void autoRenameChilds(){emit otoM_actionSignal("autoRenameChilds", enteredItemId);}
     void addMulti(){emit otoM_actionSignal("addMulti", enteredItemId);}
 
-
+void columnResizedSlot(int index,int oldSize,int newSize);
 
 
 

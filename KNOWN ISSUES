@@ -1,4 +1,4 @@
-Known issues to Plume version 0.53
+Known issues to Plume version 0.54
 
 
 	--	Project Manager --
@@ -7,9 +7,9 @@ SOLVED - After adding a new project in the project manager, another project mana
 
 SOLVED - splitting chapters and books doesn't work, but splitting scenes does.
 
-- In fullscreen editor, zoom in and out doesn't work.
+SOLVED - In fullscreen editor, zoom in and out doesn't work.
 
-- SOLVED - Same doc in fullscreen editor when the project is changed.
+SOLVED - Same doc in fullscreen editor when the project is changed.
 
 
 

@@ -23,15 +23,24 @@
 #include <QWidget>
 #include <QTextEdit>
 #include <QSettings>
+
+#include "textstyles.h"
+#include "editmenu.h"
 //
 class TextZone : public QTextEdit
 {
     Q_OBJECT
 public:
-    explicit TextZone(QTextDocument *doc, QWidget *parent = 0);
+    explicit TextZone(QWidget *parent = 0);
+    ~TextZone();
+    void createContent();
+    void setDoc(QTextDocument *doc);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
+    void setStyleSelectionSignal(int styleIndex);
+    void styleSelectedSignal(int styleIndex);
+    void manageStylesSignal();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -48,6 +57,8 @@ public slots:
     void applyConfig();
     void scrollBy(QPoint viewportPoint);
 
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
+
 private slots:
 
 
@@ -59,11 +70,11 @@ private slots:
     void paste();
     void bold(bool boldBool);
     void italic(bool italBool);
-    void leftAlign(bool leftBool);
-    void rightAlign(bool rightBool);
-    void justify(bool justBool);
-    void center(bool centBool);
-
+//    void leftAlign(bool leftBool);
+//    void rightAlign(bool rightBool);
+//    void justify(bool justBool);
+//    void center(bool centBool);
+void createEditWidget();
 
     void charFormat(QTextCharFormat cFormat);
 
@@ -87,19 +98,24 @@ private:
     QAction *pasteAct;
     QAction *boldAct;
     QAction *italicAct;
-    QAction *leftAlignAct;
-    QAction *rightAlignAct;
-    QAction *justifyAct;
-    QAction *centerAct;
+    QAction *manageStylesAct;
+//    QAction *leftAlignAct;
+//    QAction *rightAlignAct;
+//    QAction *justifyAct;
+//    QAction *centerAct;
+EditMenu *editWidget;
 
     QMenu *alignmentGroup;
+    QMenu *stylesGroup;
+
+    TextStyles *textStyles;
 
     QPoint mousePos;
 
     bool alwaysCenter;
     bool showScrollbar;
 
-   bool preventDoubleSpaceOption;
+    bool preventDoubleSpaceOption;
 
 };
 

@@ -15,9 +15,6 @@ MainTree::MainTree(QWidget *parent) :
     setDragDropMode(QAbstractItemView::InternalMove);
 
 
-
-
-
     setExpandsOnDoubleClick(false);
     setAutoExpandDelay(1000);
     setAnimated(true);
@@ -40,8 +37,9 @@ MainTree::MainTree(QWidget *parent) :
 }
 bool MainTree::read(QFile *device)
 {
+    deviceFile = new QFile(device->fileName());
 
-    deviceFile = device;
+
 
     QString errorStr;
     int errorLine;
@@ -241,7 +239,6 @@ bool MainTree::read(QFile *device)
 bool MainTree::write(QFile *device)
 {
 
-
     device->waitForBytesWritten(500);
     device->close();
     device->open(QFile::ReadWrite | QFile::Text | QFile::Truncate);
@@ -273,7 +270,7 @@ bool MainTree::write(QFile *device)
         while (i != fileForDoc.end()) {
 
 
-            QTextDocument *doc = i.key();
+
             //            QString objName = doc->objectName();
             //            int number = objName.mid(objName.indexOf("_")).toInt() + 1;
             //            element = domElementForNumber.value(number);
@@ -290,10 +287,9 @@ bool MainTree::write(QFile *device)
             //                QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
             //                QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
 
-            saveDoc(doc);
+            saveDoc(i.key());
             //                saveDoc(synDocument);
             //                saveDoc(noteDocument);
-
 
 
 
@@ -315,58 +311,7 @@ bool MainTree::write(QFile *device)
 
 
 
-        // create and update the information file (*.prjinfo) :
-
-        QStringList filters;
-        filters.clear();
-        filters << "*.plume";
-
-        QString projectName = domDocument.documentElement().attribute("projectName", device->fileName().split("/").last().remove(".plume"));
-
-
-        QFile file(devicePath + "/" + projectName + ".prjinfo");
-
-        file.waitForBytesWritten(500);
-        file.close();
-
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        if(file.isWritable()){
-
-
-            QDomDocument domDoc("plume-information");
-
-            QDomElement root = domDoc.createElement("root");
-            root.setTagName("plume-information");
-            root.setAttribute("projectName", projectName);
-            root.setAttribute("version","0.2");
-            domDoc.appendChild(root);
-
-            QDomElement prjInfoElem = domDoc.createElement("prj");
-            prjInfoElem.setAttribute("name", projectName);
-            prjInfoElem.setAttribute("path", devicePath.left(devicePath.size() - projectName.size() - 1 ));
-            prjInfoElem.setAttribute("workPath", devicePath);
-            prjInfoElem.setAttribute("lastModified", domDocument.documentElement().attribute("lastModified", QString(tr("not modified"))));
-            prjInfoElem.setAttribute("creationDate", domDocument.documentElement().attribute("creationDate"));
-
-            root.appendChild(prjInfoElem);
-
-
-
-            file.flush();
-
-            const int IndentSize = 4;
-
-            QTextStream out(&file);
-            out.flush();
-            domDoc.save(out, IndentSize);
-
-
-        }
-        file.close();
-
         qDebug() << "prjinfo saved";
-
-
 
 
 
@@ -1511,7 +1456,7 @@ void MainTree::split()
                                      "<blockquote>In a scene sheet : split <b>only</b> into scenes with *** .</blockquote>"
                                      "<blockquote>In a chapter sheet : split into scenes with *** and into chapters with ### .</blockquote>"
                                      "<blockquote>In a book sheet : split into scenes with *** and into chapters with ### .</blockquote></p>"
-                                    ));
+                                     ));
 
     QFormLayout *formLayout = new QFormLayout;
 
@@ -1535,8 +1480,8 @@ void MainTree::split()
     layout->addWidget(titleText);
     layout->addSpacing(30);
     layout->addWidget(mainText);
-  layout->addSpacing(30);
-  layout->addLayout(formLayout);
+    layout->addSpacing(30);
+    layout->addLayout(formLayout);
     layout->addWidget(buttonBox);
 
     splitDialog->setLayout(layout);
@@ -1751,7 +1696,7 @@ void MainTree::splitYes()
             progressBar->setValue(progressValue);
         }
     }
-     else{
+    else{
         qWarning() << "------------------ PROBLEM SPLIT";
         QApplication::restoreOverrideCursor();
         progressWidget->close();
@@ -2381,10 +2326,14 @@ bool MainTree::saveDoc(QTextDocument *doc)
     //    qDebug() << "saveDoc : " << doc->objectName();
     //    qDebug() << "saveDoc : " << file->fileName();
     file->close();
-    QTextDocumentWriter docWriter(file, "HTML");
-    bool written = docWriter.write(doc->clone());
+    QTextDocumentWriter *docWriter = new QTextDocumentWriter(file, "HTML");
+    QTextDocument *clonedDoc = doc->clone();
+    bool written = docWriter->write(clonedDoc);
 
     //    qDebug() << "saveDoc finished";
+
+    delete docWriter;
+    delete clonedDoc;
 
     return written;
 }
@@ -3010,5 +2959,25 @@ void MainTree::giveDocsAndDomForProjectWordCount()
 
 //----------------------------------------------------------------------------------
 
+
+void MainTree::changeAllDocsTextStyles()
+{
+    textStyles->loadBaseStyles();
+    textStyles->loadStyles();
+
+    QHash<QTextDocument *, QFile *>::const_iterator i = fileForDoc.constBegin();
+    while (i != fileForDoc.constEnd()) {
+
+        if(i.key()->objectName().left(7) == "textDoc"){
+
+            textStyles->changeDocStyles(i.key());
+
+
+        }
+
+        ++i;
+    }
+
+}
 
 //------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Cyril Jacquet                                   *
+ *   Copyright (C) 2012 by Cyril Jacquet                                   *
  *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
@@ -20,20 +20,28 @@
 #ifndef FULLSCREENEDITOR_H
 #define FULLSCREENEDITOR_H
 
-
 #include <QWidget>
 #include <QLabel>
 #include <QTextDocument>
 #include <QPushButton>
 #include <QSettings>
-#include <fulltextzone.h>
-//
+
+#include "textstyles.h"
+#include "editmenu.h"
+#include "wordcount.h"
+
+namespace Ui {
+class FullscreenEditor;
+}
+
 class FullscreenEditor : public QWidget
 {
     Q_OBJECT
+    
 public:
-    explicit FullscreenEditor(QTextDocument *doc = 0, int cursorPos = 0, QWidget *parent = 0);
-
+    explicit FullscreenEditor(QWidget *parent = 0);
+    ~FullscreenEditor();
+    void createContent(QTextDocument *doc = 0, int cursorPos = 0);
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -41,6 +49,7 @@ protected:
 
 signals:
     void closeSignal();
+    void manageStylesSignal();
 
 public slots:
     void setWordCount(int num);
@@ -48,8 +57,15 @@ public slots:
     void applyConfig();
     void setSyn(QTextDocument *synDocument, int cursorPos);
     void setNote(QTextDocument *noteDocument, int cursorPos);
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
+    void resetFullscreenTextWidthSlot();
 
 private slots:
+
+    void createNotesMenu();
+    void createOptionMenu();
+
+
     void callColorDialog();
     void setBaseStyleSheet();
     void setBackColorDialog();
@@ -65,11 +81,26 @@ private slots:
 
     void showSyn();
     void showNote();
-private:
 
-    FullTextZone *fullTextEdit;
-    QLabel *wordCountLabel;
-    QLabel *timerLabel;
+    void loadTextWidthSliderValue();
+    void sliderTextWidthValueChanged(int sliderValue);
+    void setWidth();
+    void setZoom();
+
+    void zoomIn();
+    void zoomOut();
+
+    void cursorPositionChangedSlot();
+    void changeTextStyleSlot(int styleIndex);
+
+private:
+    Ui::FullscreenEditor *ui;
+
+    TextStyles *textStyles;
+    EditMenu *editWidget;
+    int sliderCurrentValue;
+QTextDocument *originalDoc;
+WordCount *fullscreenWordCount;
 
     QPushButton *backColorButton,
     *textBackColorButton,
@@ -93,6 +124,7 @@ private:
     textBackColorString,
     textColorString,
     addOnColorString;
+
 
 };
 

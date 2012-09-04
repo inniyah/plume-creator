@@ -52,13 +52,16 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     this->setContextMenuPolicy(Qt::DefaultContextMenu);
     this->setAutoExpandDelay(1000);
     this->setAnimated(true);
-this->setUniformRowHeights(true);
+    this->setUniformRowHeights(false);
 
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::ContiguousSelection);
 
+    this->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    this->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
     setMouseTracking(true);
-//    connect(this, SIGNAL(entered(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
+    //    connect(this, SIGNAL(entered(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
     connect(this, SIGNAL(activated(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
 
@@ -71,7 +74,7 @@ this->setUniformRowHeights(true);
     hHeader->setStretchLastSection(true);
     hHeader->setResizeMode(QHeaderView::Interactive);
 
-
+    connect(hHeader, SIGNAL(sectionResized(int,int,int)), this, SLOT(columnResizedSlot(int,int,int)));
 
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 
@@ -88,6 +91,20 @@ void OutlinerSpreadsheet::doNotWarnAgainSlot(bool dontWarnMe)
     QSettings settings;
     settings.beginGroup( "Outline" );
     settings.setValue("dontWarnMe_1", dontWarnMe);
+}
+
+//----------------------------------------------------------------------------------
+void OutlinerSpreadsheet::columnResizedSlot(int index, int oldSize, int newSize)
+{
+    if(index == 1){
+        emit columnOneResizedSignal(newSize - 30);
+        this->expandAll();
+
+    }
+    if(index == 2){
+        emit columnTwoResizedSignal(newSize - 30);
+        this->expandAll();
+    }
 }
 
 //----------------------------------------------------------------------------------
@@ -238,11 +255,11 @@ void OutlinerSpreadsheet::giveStyle()
             "alternate-background-color: rgba(100,100,100,10);"
             "selection-background-color: rgba(100,100,100,20);"
             "selection-color: black;"
-    "}"
-          " QTreeView::item {"
+            "}"
+            " QTreeView::item {"
             "border-top: 1px solid rgba(100,100,100,40);"
             "border-bottom: 1px solid rgba(100,100,100,40);"
-        "}"
+            "}"
             ;
 
     this->setStyleSheet(css);

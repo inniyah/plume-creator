@@ -1,4 +1,14 @@
 PLUME CREATOR
+v 0.54
+	- New feature : styles, with a style manager.
+	- New fullscreen mode
+	- Bug fixed : word count doesn’t see the line breaks 
+	- Bug fixed : for external projects, crash when opening menu options 
+	- text edit options font name and font size disabled
+	- "Show Previous Scene" and "Show Next Scene" buttons removed
+	- added "Keep only one tab opened" option in settings 
+	- added "Hide tabs" option in settings 
+
 v 0.53
 	- Text Splitter Dialog finished.
 	- New Project Manager

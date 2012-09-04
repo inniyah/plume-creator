@@ -1,3 +1,22 @@
+/***************************************************************************
+ *   Copyright (C) 2012 by Cyril Jacquet                                   *
+ *   terreville@gmail.com                                                 *
+ *                                                                         *
+ *  This file is part of Plume Creator.                                    *
+ *                                                                         *
+ *  Plume Creator is free software: you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  Plume Creator is distributed in the hope that it will be useful,       *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
+ ***************************************************************************/
 #ifndef OUTLINERABSTRACTMODEL_H
 #define OUTLINERABSTRACTMODEL_H
 
@@ -36,7 +55,7 @@ public slots:
 
 // set the size hint :
 void shrinkRow(){itemHeight += 20; reset();}
-void expandRow(){itemHeight -= 20; reset();}
+void expandRow(){if(itemHeight > 40)itemHeight -= 20; reset();}
 void setRowHeight(int height){itemHeight = height; reset();}
 
     void resetAbsModel();
@@ -49,6 +68,10 @@ void setRowHeight(int height){itemHeight = height; reset();}
     void mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc);
 void reset_mtoO_setNumForDoc();
 
+void columnOneResizedSlot(int newSize){textZoneColumnOneWidth = newSize;}
+void columnTwoResizedSlot(int newSize){textZoneColumnTwoWidth = newSize;}
+void resetAbsModelColumnOne();
+void resetAbsModelColumnTwo();
 
 private slots:
 
@@ -59,6 +82,8 @@ void updateMainTextDoc(QTextDocument *textDoc, int number);
 private:
 OutlinerTreeItem *rootItem;
 int itemHeight;
+int textZoneColumnOneWidth;
+int textZoneColumnTwoWidth;
 
     QDomDocument mtoO_domDoc;
     QHash<int, QDomElement> domElementForNumber;

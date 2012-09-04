@@ -66,5 +66,11 @@
         <file>pics/plume-creator-128x128.png</file>
         <file>pics/go-down-32x32.png</file>
         <file>pics/go-up-32x32.png</file>
+        <file>pics/list-add-32x32.png</file>
+        <file>pics/list-remove-32x32.png</file>
+        <file>pics/edit-rename-32x32.png</file>
+        <file>pics/gtk-cancel.png</file>
+        <file>pics/gtk-edit.png</file>
+        <file>pics/gtk-preferences.png</file>
     </qresource>
 </RCC>

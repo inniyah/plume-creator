@@ -204,6 +204,11 @@ void OutlinerBase::shiftToSpreadsheet()
 
     zoneLayout->addWidget(spreadsheet);
 
+    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(columnOneResizedSlot(int)));
+    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(columnTwoResizedSlot(int)));
+    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(resetAbsModelColumnOne()));
+    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(resetAbsModelColumnTwo()));
+
 
     QTimer::singleShot(0, this, SLOT(applySpreadsheetConfig()));
     spreadsheet->reset();

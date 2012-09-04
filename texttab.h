@@ -25,6 +25,7 @@
 
 #include "textzone.h"
 #include "wordcount.h"
+#include "textstyles.h"
 //
 
 class TextTab : public QWidget
@@ -38,13 +39,15 @@ public:
 
     //for wordcount:
     QTextDocument* document();
-    void updateWordCounts();
 
 signals:
 
     void wordCountSignal(int wordCount);
     void blockCountSignal(int blockCount);
     void charFormatChangedSignal(QTextCharFormat format);
+void setStyleSelectionSignal(int styleIndex);
+void textChangedSignal();
+void manageStylesSignal();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -54,7 +57,10 @@ public slots:
     void changeWidthSlot(int width);
     void changeTextFontSlot(QFont font);
     void changeTextHeightSlot(int height);
-    void setTextFocus();
+    void changeTextStyleSlot(int styleIndex);
+    void updateWordCounts();
+   void resetWordCounts();
+   void setTextFocus();
     void setCursorPos(int pos);
     int saveCursorPos();
     void applyConfig();
@@ -68,6 +74,8 @@ void showNextText(bool showNextTextBool);
 bool setShowNextTextButton();
 void setNextText(QTextDocument *nextDoc);
 
+void setTextStyles(TextStyles *styles);
+
 private slots:
 
     void wordCountUpdated(int wordCount);
@@ -77,6 +85,7 @@ void cursorPositionChangedSlot();
 void giveStyle();
 
 private:
+TextStyles *textStyles;
 
 QTextDocument *prevTextDocument;
     QTextDocument *textDocument;
@@ -91,6 +100,7 @@ TextZone *prevTextZone;
 
 
     WordCount *tabWordCount;
+
 
 };
 

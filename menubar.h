@@ -34,6 +34,7 @@ class MenuBar : public QFrame
     Q_OBJECT
 public:
     explicit MenuBar(QWidget *parent = 0);
+void createContent();
 
     void openManager()
     {
@@ -63,7 +64,8 @@ signals:
 
     //repeater between Dialog Settings and MainWindow
     void setDisplayModeSignal(QString mode);
-
+void changeAllDocsTextStylesSignal();
+void resetFullscreenTextWidthSignal();
 
     // repeater to join editWidget to MainWindow :
 
@@ -71,11 +73,12 @@ signals:
 void widthChangedSignal(int width);
 void textFontChangedSignal(QFont font);
 void textHeightChangedSignal(int textHeight);
+void setStyleSelectionSignal(int);
 
 void charFormatChangedSlotSignal(QTextCharFormat charFmt);
  void tabWidgetChangedSlotSignal(int newTabWidth);
 void tabWitdhChangedSlotSignal(int);
-
+void styleSelectedSignal(int styleIndex);
 
 
 //docks actions :
@@ -97,11 +100,12 @@ bool openExternalProject(QFile *externalPrjFile);
 QMenuBar *createMenuBar();
 
 
-//repeater for editWidget :
-void tabChangedSlot(QTextCharFormat newTabFormat){editWidget->tabChangedSlot(newTabFormat);}
+////repeater for editWidget :
+//void tabChangedSlot(QTextCharFormat newTabFormat){editWidget->tabChangedSlot(newTabFormat);}
 
 
 void applyConfig();
+void setTextStyles(TextStyles *styles){textStyles = styles;}
 
 
 //docks actions :
@@ -110,16 +114,19 @@ void setNoteDockAct(bool noteVisible){showNotesDockAct->setChecked(noteVisible);
 void setToolDockAct(bool toolVisible){showToolsDockAct->setChecked(toolVisible);}
 void setAttendDockAct(bool attendVisible){showAttendDockAct->setChecked(attendVisible);}
 
+void setMenusEnabled(bool enabledBool);
+
 private slots:
 
     void newProject();
     void projectManager();
     //   void open();
-    void displayConfig();
+    void displayConfig(int tabIndex = 0);
     void exporter();
     void print();
     void closeProject();
     void findAndReplace();
+    void manageStyles();
     void aboutQt();
     void about();
     void viewReleaseNotes();
@@ -155,7 +162,7 @@ bool projectAlreadyOpened;
     *exitAct,
     *printAct,
     *exportAct,
-    *findReplaceAct,
+    *findReplaceAct, *manageStylesAct,
     *aboutQtAct,
     *aboutAct,
     *viewReleaseNotesAct,
@@ -165,7 +172,7 @@ bool projectAlreadyOpened;
 QMenu *projectGroup, *editGroup, *helpGroup, *viewGroup;
 
 EditMenu *editWidget;
-
+TextStyles *textStyles;
 
     void createActions();
     void createButtons();

@@ -22,8 +22,6 @@ SOURCES += main.cpp\
     textzone.cpp \
     timer.cpp \
     wordcount.cpp \
-    settingsdialog.cpp \
-    fullscreeneditor.cpp \
     fulltextzone.cpp \
     exporter.cpp \
     outlineitem.cpp \
@@ -31,15 +29,19 @@ SOURCES += main.cpp\
     attendbox.cpp \
     updater.cpp \
     wordcountthread.cpp \
-    findreplace.cpp \
     outlinerspreadsheet.cpp \
     outlinerbase.cpp \
     orientationbutton.cpp \
-    editmenu.cpp \
     menubar.cpp \
     outlinerabstractmodel.cpp \
     outlineritemdelegate.cpp \
-    outlinertreeitem.cpp
+    outlinertreeitem.cpp \
+    settingsdialog.cpp \
+#    editmenu_.cpp
+    editmenu.cpp \
+    textstyles.cpp \
+    findreplace.cpp \
+    fullscreeneditor.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -53,8 +55,6 @@ HEADERS  += mainwindow.h \
     textzone.h \
     timer.h \
     wordcount.h \
-    settingsdialog.h \
-    fullscreeneditor.h \
     fulltextzone.h \
     exporter.h \
     outlineitem.h \
@@ -62,15 +62,19 @@ HEADERS  += mainwindow.h \
     attendbox.h \
     updater.h \
     wordcountthread.h \
-    findreplace.h \
     outlinerspreadsheet.h \
     outlinerbase.h \
     orientationbutton.h \
-    editmenu.h \
     menubar.h \
     outlinerabstractmodel.h \
     outlineritemdelegate.h \
-    outlinertreeitem.h
+    outlinertreeitem.h \
+    settingsdialog.h \
+#    editmenu_.h
+    editmenu.h \
+    textstyles.h \
+    findreplace.h \
+    fullscreeneditor.h
 
 RESOURCES += \
     pics.qrc \
@@ -83,6 +87,12 @@ TRANSLATIONS = plume-creator_fr_FR.ts \
 #    plume-creator_ro_RO.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
+
+FORMS += \
+    settingsdialog.ui \
+    editmenu.ui \
+    findreplace.ui \
+    fullscreeneditor.ui
 
 
 

@@ -2,25 +2,58 @@
 
 #include "textzone.h"
 //
-TextZone::TextZone(QTextDocument *doc, QWidget *parent) :
+TextZone::TextZone(QWidget *parent) :
     QTextEdit(parent)
 {
-    this->setAttribute(Qt::WA_KeyCompression, true);
 
-    textDocument = doc;
-    createActions();
-    setContextMenuPolicy(Qt::DefaultContextMenu);
-    connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+}
 
-    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+TextZone::~TextZone()
+{
+    delete undoAct;
+    delete redoAct;
+    delete cutAct;
+    delete copyAct;
+    delete pasteAct;
+    delete boldAct;
+    delete italicAct;
+    //    QAction *leftAlignAct;
+    //    QAction *rightAlignAct;
+    //    QAction *justifyAct;
+    //    QAction *centerAct;
 
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    applyConfig();
 }
 
 
+void TextZone::createContent()
+{
+this->setAttribute(Qt::WA_KeyCompression, true);
+
+textDocument = new QTextDocument;
+
+createActions();
+setContextMenuPolicy(Qt::DefaultContextMenu);
+connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
+connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+
+setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+applyConfig();
+}
+
+
+
+
+
+void TextZone::setDoc(QTextDocument *doc)
+{
+    textDocument = doc;
+    this->setDocument(doc);
+}
 
 
 //--------- Context Menu :------------------------------------------------------------------
@@ -76,6 +109,20 @@ void TextZone::createActions()
     italicFont.setItalic(true);
     italicAct->setFont(italicFont);
 
+    createEditWidget();
+    QWidgetAction *editWidgetAct = new QWidgetAction(this);
+    editWidgetAct->setDefaultWidget(editWidget);
+
+    manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
+    // aboutAct->setShortcut(QKeySequence::Quit);
+    manageStylesAct->setToolTip(tr("Manage the styles"));
+    connect(manageStylesAct, SIGNAL(triggered()), this, SIGNAL(manageStylesSignal()));
+
+    stylesGroup = new QMenu(tr("&Styles"),this);
+    stylesGroup->addAction(editWidgetAct);
+    stylesGroup->addAction(manageStylesAct);
+
+
     //    setLineSpacingAct = new QAction(tr("Set &Line Spacing..."), this);
     //    setLineSpacingAct->setStatusTip(tr("Change the gap between the lines of a "
     //                                       "paragraph"));
@@ -86,36 +133,36 @@ void TextZone::createActions()
     //    connect(setParagraphSpacingAct, SIGNAL(triggered()),
     //            this, SLOT(setParagraphSpacing()));
 
-    leftAlignAct = new QAction(QIcon(":/pics/format-justify-left.png"),tr("&Left Align"), this);
-    leftAlignAct->setCheckable(true);
-    leftAlignAct->setShortcut(tr("Ctrl+L"));
-    leftAlignAct->setStatusTip(tr("Left align the selected text"));
-    connect(leftAlignAct, SIGNAL(triggered(bool)), this, SLOT(leftAlign(bool)));
+    //    leftAlignAct = new QAction(QIcon(":/pics/format-justify-left.png"),tr("&Left Align"), this);
+    //    leftAlignAct->setCheckable(true);
+    //    leftAlignAct->setShortcut(tr("Ctrl+L"));
+    //    leftAlignAct->setStatusTip(tr("Left align the selected text"));
+    //    connect(leftAlignAct, SIGNAL(triggered(bool)), this, SLOT(leftAlign(bool)));
 
-    rightAlignAct = new QAction(QIcon(":/pics/format-justify-right.png"),tr("&Right Align"), this);
-    rightAlignAct->setCheckable(true);
-    rightAlignAct->setShortcut(tr("Ctrl+R"));
-    rightAlignAct->setStatusTip(tr("Right align the selected text"));
-    connect(rightAlignAct, SIGNAL(triggered(bool)), this, SLOT(rightAlign(bool)));
+    //    rightAlignAct = new QAction(QIcon(":/pics/format-justify-right.png"),tr("&Right Align"), this);
+    //    rightAlignAct->setCheckable(true);
+    //    rightAlignAct->setShortcut(tr("Ctrl+R"));
+    //    rightAlignAct->setStatusTip(tr("Right align the selected text"));
+    //    connect(rightAlignAct, SIGNAL(triggered(bool)), this, SLOT(rightAlign(bool)));
 
-    justifyAct = new QAction(QIcon(":/pics/format-justify-fill.png"),tr("&Justify"), this);
-    justifyAct->setCheckable(true);
-    justifyAct->setShortcut(tr("Ctrl+J"));
-    justifyAct->setStatusTip(tr("Justify the selected text"));
-    connect(justifyAct, SIGNAL(triggered(bool)), this, SLOT(justify(bool)));
+    //    justifyAct = new QAction(QIcon(":/pics/format-justify-fill.png"),tr("&Justify"), this);
+    //    justifyAct->setCheckable(true);
+    //    justifyAct->setShortcut(tr("Ctrl+J"));
+    //    justifyAct->setStatusTip(tr("Justify the selected text"));
+    //    connect(justifyAct, SIGNAL(triggered(bool)), this, SLOT(justify(bool)));
 
-    centerAct = new QAction(QIcon(":/pics/format-justify-center.png"),tr("&Center"), this);
-    centerAct->setCheckable(true);
-    centerAct->setShortcut(tr("Ctrl+E"));
-    centerAct->setStatusTip(tr("Center the selected text"));
-    connect(centerAct, SIGNAL(triggered(bool)), this, SLOT(center(bool)));
+    //    centerAct = new QAction(QIcon(":/pics/format-justify-center.png"),tr("&Center"), this);
+    //    centerAct->setCheckable(true);
+    //    centerAct->setShortcut(tr("Ctrl+E"));
+    //    centerAct->setStatusTip(tr("Center the selected text"));
+    //    connect(centerAct, SIGNAL(triggered(bool)), this, SLOT(center(bool)));
 
-    alignmentGroup = new QMenu(tr("&Alignment"),this);
-    alignmentGroup->addAction(leftAlignAct);
-    alignmentGroup->addAction(rightAlignAct);
-    alignmentGroup->addAction(justifyAct);
-    alignmentGroup->addAction(centerAct);
-    leftAlignAct->setChecked(true);
+    //    alignmentGroup = new QMenu(tr("&Alignment"),this);
+    //    alignmentGroup->addAction(leftAlignAct);
+    //    alignmentGroup->addAction(rightAlignAct);
+    //    alignmentGroup->addAction(justifyAct);
+    //    alignmentGroup->addAction(centerAct);
+    //    leftAlignAct->setChecked(true);
 
 
 
@@ -171,63 +218,63 @@ void TextZone::italic(bool italBool)
     }
 }
 
-void TextZone::leftAlign(bool leftBool)
-{
-    if(leftBool){
-        centerAct->setChecked(false);
-        rightAlignAct->setChecked(false);
-        justifyAct->setChecked(false);
-        setAlignment(Qt::AlignLeft);
-    }
-    else{
-        leftAlignAct->setChecked(true);
-        leftAlign(true);
-    }
-}
+//void TextZone::leftAlign(bool leftBool)
+//{
+//    if(leftBool){
+//        centerAct->setChecked(false);
+//        rightAlignAct->setChecked(false);
+//        justifyAct->setChecked(false);
+//        setAlignment(Qt::AlignLeft);
+//    }
+//    else{
+//        leftAlignAct->setChecked(true);
+//        leftAlign(true);
+//    }
+//}
 
-void TextZone::rightAlign(bool rightBool)
-{
-    if(rightBool){
-        centerAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        justifyAct->setChecked(false);
-        setAlignment(Qt::AlignRight);
-    }
-    else{
-        leftAlignAct->setChecked(true);
-        leftAlign(true);
-    }
+//void TextZone::rightAlign(bool rightBool)
+//{
+//    if(rightBool){
+//        centerAct->setChecked(false);
+//        leftAlignAct->setChecked(false);
+//        justifyAct->setChecked(false);
+//        setAlignment(Qt::AlignRight);
+//    }
+//    else{
+//        leftAlignAct->setChecked(true);
+//        leftAlign(true);
+//    }
 
-}
+//}
 
-void TextZone::justify(bool justBool)
-{
-    if(justBool){
-        centerAct->setChecked(false);
-        rightAlignAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        setAlignment(Qt::AlignJustify);
-    }
-    else{
-        leftAlignAct->setChecked(true);
-        leftAlign(true);
-    }
+//void TextZone::justify(bool justBool)
+//{
+//    if(justBool){
+//        centerAct->setChecked(false);
+//        rightAlignAct->setChecked(false);
+//        leftAlignAct->setChecked(false);
+//        setAlignment(Qt::AlignJustify);
+//    }
+//    else{
+//        leftAlignAct->setChecked(true);
+//        leftAlign(true);
+//    }
 
-}
+//}
 
-void TextZone::center(bool centBool)
-{
-    if(centBool){
-        rightAlignAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        justifyAct->setChecked(false);
-        setAlignment(Qt::AlignHCenter);
-    }
-    else{
-        leftAlignAct->setChecked(true);
-        leftAlign(true);
-    }
-}
+//void TextZone::center(bool centBool)
+//{
+//    if(centBool){
+//        rightAlignAct->setChecked(false);
+//        leftAlignAct->setChecked(false);
+//        justifyAct->setChecked(false);
+//        setAlignment(Qt::AlignHCenter);
+//    }
+//    else{
+//        leftAlignAct->setChecked(true);
+//        leftAlign(true);
+//    }
+//}
 
 
 
@@ -241,8 +288,9 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(boldAct);
     menu.addAction(italicAct);
     menu.addSeparator();
-    menu.addMenu(alignmentGroup);
-    menu.addSeparator();
+    //    menu.addMenu(alignmentGroup); // styles do that already
+    menu.addMenu(stylesGroup);
+        menu.addSeparator();
     menu.addAction(cutAct);
     menu.addAction(copyAct);
     menu.addAction(pasteAct);
@@ -262,7 +310,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     //  QString family = cFormat.fontFamily();
     int weight = cFormat.fontWeight();
     bool italic = cFormat.fontItalic();
-    Qt::Alignment align = alignment();
+    //    Qt::Alignment align = alignment();
 
     if(weight > 50)
         boldAct->setChecked(true);
@@ -278,30 +326,30 @@ void TextZone::charFormat(QTextCharFormat cFormat)
 
 
 
-    if (align & Qt::AlignLeft){
-        centerAct->setChecked(false);
-        rightAlignAct->setChecked(false);
-        justifyAct->setChecked(false);
-        leftAlignAct->setChecked(true);
-    }
-    else if (align & Qt::AlignHCenter){
-        rightAlignAct->setChecked(false);
-        justifyAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        centerAct->setChecked(true);
-    }
-    else if (align & Qt::AlignRight){
-        centerAct->setChecked(false);
-        justifyAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        rightAlignAct->setChecked(true);
-    }
-    else if (align & Qt::AlignJustify){
-        centerAct->setChecked(false);
-        rightAlignAct->setChecked(false);
-        leftAlignAct->setChecked(false);
-        justifyAct->setChecked(true);
-    }
+    //    if (align & Qt::AlignLeft){
+    //        centerAct->setChecked(false);
+    //        rightAlignAct->setChecked(false);
+    //        justifyAct->setChecked(false);
+    //        leftAlignAct->setChecked(true);
+    //    }
+    //    else if (align & Qt::AlignHCenter){
+    //        rightAlignAct->setChecked(false);
+    //        justifyAct->setChecked(false);
+    //        leftAlignAct->setChecked(false);
+    //        centerAct->setChecked(true);
+    //    }
+    //    else if (align & Qt::AlignRight){
+    //        centerAct->setChecked(false);
+    //        justifyAct->setChecked(false);
+    //        leftAlignAct->setChecked(false);
+    //        rightAlignAct->setChecked(true);
+    //    }
+    //    else if (align & Qt::AlignJustify){
+    //        centerAct->setChecked(false);
+    //        rightAlignAct->setChecked(false);
+    //        leftAlignAct->setChecked(false);
+    //        justifyAct->setChecked(true);
+    //    }
 
 
     setFocus();
@@ -326,6 +374,7 @@ void TextZone::setTextFont(QFont font)
     //    fmt.setForeground(brush);
 
     mergeFormatOnWordOrSelection(fmt);
+
 }
 //--------------------------------------------------------------------------------
 
@@ -350,6 +399,35 @@ void TextZone::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
     mergeCurrentCharFormat(format);
 }
 
+//--------------------------------------------------------------------------------
+
+void TextZone::createEditWidget()
+{
+
+    editWidget = new EditMenu;
+    editWidget->setTextStyles(textStyles);
+    editWidget->createContent();
+
+    QStringList widgetToHideList;
+    widgetToHideList << "zoomBox" << "textWidthBox" << "fontComboBox" << "fontSizeSpinBox";
+    editWidget->hideWidgetsByName(widgetToHideList);
+
+    //editWidget->setFrameStyle(QFrame::Panel);
+    //editWidget->setLineWidth(2);
+    //editWidget->setMidLineWidth(3);
+
+    // repeater to join editWidget to MainWindow :
+
+//    connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
+
+//    connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
+//    connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
+
+//    connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
+
+    connect(editWidget,SIGNAL(styleSelectedSignal(int)), this, SIGNAL(styleSelectedSignal(int)));
+    connect(this,SIGNAL(setStyleSelectionSignal(int)), editWidget, SLOT(setStyleSelectionSlot(int)));
+}
 
 //--------------------------------------------------------------------------------
 
@@ -359,14 +437,14 @@ void TextZone::keyPressEvent(QKeyEvent *event)
         italic(!italicAct->isChecked());
     else if(event->matches(QKeySequence::Bold))
         bold(!boldAct->isChecked());
-    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
-        leftAlign(true);
-    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
-        rightAlign(true);
-    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
-        center(true);
-    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
-        justify(true);
+    //    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
+    //        leftAlign(true);
+    //    else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
+    //        rightAlign(true);
+    //    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
+    //        center(true);
+    //    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
+    //        justify(true);
     else if(event->key() == Qt::Key_Space){
         if(preventDoubleSpaceOption == true)
             preventDoubleSpace();
@@ -401,9 +479,9 @@ void TextZone::cursorPositionChangedSlot()
     if (QApplication::mouseButtons() == Qt::NoButton) {
         centerCursor();
     }
+
+
 }
-
-
 
 
 
@@ -418,29 +496,51 @@ void TextZone::cursorPositionChangedSlot()
 void TextZone::insertFromMimeData (const QMimeData *source )
 {
 
-    QSettings settings;
-    settings.beginGroup( "Settings" );
-    int bottMargin = settings.value("TextArea/bottomMargin", 10).toInt();
-    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
-    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
-    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
-    settings.endGroup();
+    QTextCursor cursor = this->textCursor();
 
+    int bottMargin;
+    int textIndent;
+    int leftMargin;
+    Qt::Alignment textAlignment;
+    int textHeight;
+    QString fontFamily;
+
+    if(cursor.atStart() == true
+            || cursor.position() == 1
+            || cursor.position() == 0){
+        int defaultIndex = textStyles->defaultStyleIndex();
+        bottMargin = textStyles->blockBottomMarginAt(defaultIndex);
+        textIndent = textStyles->blockFirstLineIndentAt(defaultIndex);
+        leftMargin = textStyles->blockLeftMarginAt(defaultIndex);
+        textAlignment = textStyles->blockAlignmentTrueNameAt(defaultIndex);
+        textHeight = textStyles->fontSizeAt(defaultIndex);
+        fontFamily = textStyles->fontFamilyAt(defaultIndex);
+    }
+    else{
+
+        bottMargin = cursor.blockFormat().bottomMargin();
+        textIndent = cursor.blockFormat().textIndent();
+        leftMargin = cursor.blockFormat().leftMargin();
+        textAlignment = cursor.blockFormat().alignment();
+        textHeight = cursor.charFormat().fontPointSize();
+        fontFamily = cursor.charFormat().fontFamily();
+
+    }
 
     if(source->hasHtml()){
         QString sourceString = qvariant_cast<QString>(source->html());
-//        qDebug() << "                         sourceString  :  " << sourceString;
-//        sourceString.replace( QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)"), "<div" );
-//qDebug() << "                       regExpedIs Valid  : " << QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)").isValid();
-////        sourceString.replace( QRegExp("/<(.|\n)*?>/g"), "" );
+        //        qDebug() << "                         sourceString  :  " << sourceString;
+        //        sourceString.replace( QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)"), "<div" );
+        //qDebug() << "                       regExpedIs Valid  : " << QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)").isValid();
+        ////        sourceString.replace( QRegExp("/<(.|\n)*?>/g"), "" );
 
 
 
 
-//        qDebug() << "                       regExpedString  :  " << sourceString;
+        //        qDebug() << "                       regExpedString  :  " << sourceString;
 
-////
-//         /<\s*\w.*?>/g
+        ////
+        //         /<\s*\w.*?>/g
 
         //htmlText
         QTextDocument *document = new QTextDocument;
@@ -448,15 +548,19 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
-          QTextCharFormat charFormat;
+        blockFormat.setLeftMargin(leftMargin);
+        blockFormat.setAlignment(textAlignment);
+        blockFormat.setBottomMargin(0);
+        blockFormat.setRightMargin(0);
+        QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
         charFormat.setFontFamily(fontFamily);
         charFormat.clearProperty(QTextFormat::ForegroundBrush);
         charFormat.clearProperty(QTextFormat::IsAnchor);
         charFormat.clearProperty(QTextFormat::AnchorHref);
         charFormat.clearProperty(QTextFormat::AnchorName);
-        charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
-        charFormat.clearProperty(QTextFormat::FontStrikeOut);
+        //        charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
+        //        charFormat.clearProperty(QTextFormat::FontStrikeOut);
         QTextCursor *tCursor = new QTextCursor(document);
         tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
         tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -464,11 +568,10 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         tCursor->mergeCharFormat(charFormat);
         tCursor->mergeBlockFormat(blockFormat);
 
-        QTextCursor cursor = this->textCursor();
-        qDebug() << "                            insertedString  :  " << document->toHtml("utf-8");
 
+        QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-                qDebug() << "insertFromMimeData Html";
+        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -478,6 +581,8 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
+        blockFormat.setBottomMargin(0);
+        blockFormat.setRightMargin(0);
         QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
         charFormat.setFontFamily(fontFamily);
@@ -491,9 +596,10 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-                qDebug() << "insertFromMimeData plainText";
+        qDebug() << "insertFromMimeData plainText";
 
     }
+
 
 }
 
@@ -517,7 +623,7 @@ void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
     textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
-QWidget::resizeEvent(event);
+    QWidget::resizeEvent(event);
 
 }
 
@@ -581,7 +687,6 @@ void TextZone::applyConfig()
     preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
 
-
     centerCursor();
 
     if(showScrollbar)
@@ -590,5 +695,5 @@ void TextZone::applyConfig()
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 
-
+editWidget->applyConfig();
 }

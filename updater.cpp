@@ -9,8 +9,10 @@
 #include "updater.h"
 
 Updater::Updater(QString mode, QWidget *parent) :
-    QDialog(parent)
+    QDialog(parent), currentAppVersion(QApplication::applicationVersion())
 {
+
+
 
     this->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -79,9 +81,9 @@ Updater::Updater(QString mode, QWidget *parent) :
 
 
         checkConnection();
-//        QTimer *timer = new QTimer(this);
-//        connect(timer, SIGNAL(timeout()), this, SLOT(checkConnection()));
-//        timer->start(10000);
+        //        QTimer *timer = new QTimer(this);
+        //        connect(timer, SIGNAL(timeout()), this, SLOT(checkConnection()));
+        //        timer->start(10000);
     }
 }
 
@@ -152,8 +154,8 @@ bool Updater::checkConnection()
 
     connectionLabel->setText(tr("<p>Connection status :"
                                 "<blockquote>- ") + connectionText + tr("</blockquote>"
-                                "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
-                                "</p>"));
+                                                                        "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
+                                                                                                                      "</p>"));
 
     if(connectionState && webSiteState){
         verifyButton->setEnabled(true);
@@ -228,13 +230,62 @@ void Updater::replyFinished(QNetworkReply *reply)
 
     QString updateVersion = node.toElement().attribute("latest");
 
-    if(thisVersion.toFloat() < updateVersion.toFloat()){
+    QStringList numberStrings;
+    numberStrings = updateVersion.split(".");
+    QStringList currentNumberStrings;
+    currentNumberStrings = currentAppVersion.split(".");
+
+    QList<int> numbers;
+    while(!numberStrings.isEmpty())
+        numbers.append(numberStrings.takeFirst().toInt());
+    QList<int> currentNumbers;
+    while(!currentNumberStrings.isEmpty())
+        currentNumbers.append(currentNumberStrings.takeFirst().toInt());
+
+    if(currentNumbers.size() > 3 || currentNumbers.size() == 0){
+        verifyLabel->setText("<b><h3><center>Your current version " + currentAppVersion + " isn't understood !</h3><b>");
+        verifyLabel->setText(QString::number(currentNumbers.size()) + "  " +QString::number(currentNumberStrings.size()));
+        return;
+    }
+    int sizeMax = qMax(numbers.size(), currentNumbers.size());
+
+    for(int i = 0; i < sizeMax; ++i){
+        if(i >= numbers.size())
+            numbers.append(0);
+        if(i >= currentNumbers.size())
+            currentNumbers.append(0);
+    }
+
+    bool niv1bool = false;
+    bool niv2bool = false;
+    bool niv3bool = false;
+
+    if(numbers.size() == 0 )
+        return;
+    if(sizeMax >= 1 && numbers.at(0) > currentNumbers.at(0)){
+        niv1bool = true;
+    }
+
+    if(sizeMax >= 2 && numbers.at(1) > currentNumbers.at(1)){ //subversion :
+        niv2bool = true;
+
+    }
+
+    if(sizeMax >= 3 && numbers.at(2) > currentNumbers.at(2)){ // beta versions :
+        niv3bool = true;
+
+    }
+
+
+
+
+    if(niv1bool || niv2bool || niv3bool){
         QString downloadLink = node.toElement().attribute("url1") + milestone + node.toElement().attribute("url2") + updateVersion + node.toElement().attribute("url3");
         verifyLabel->setText(("<b><h3><center>An update is available ! Plume Creator version ")
                              + updateVersion + tr("</h3><b><br>Download it directly here : <br><address><a href=")
                              + downloadLink + ">" + downloadLink + tr("</a></address></center>"));
     }
-    else if(thisVersion.toFloat() == updateVersion.toFloat()){
+    else{
         verifyLabel->setText(tr("<b><h3><center>You are up to date !</h3><b>"));
 
     }

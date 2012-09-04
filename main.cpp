@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
 
-    instance.setApplicationVersion("0.53");
+    instance.setApplicationVersion("0.54");
 
     QString message=argv[1];
 

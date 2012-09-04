@@ -1,119 +1,32 @@
-#include <QtGui>
 #include "findreplace.h"
+#include "ui_findreplace.h"
 
 FindReplace::FindReplace(QFile *device, QWidget *parent) :
-    QDialog(parent)
+    QDialog(parent),
+    ui(new Ui::FindReplace)
 {
-
-        setWindowTitle(tr("Find & Replace Dialog"));
-
-
-    setMinimumSize(600,300);
-
-
-    QLabel *label = new QLabel(tr("Please complete the fields below: "));
-    label->setWordWrap(true);
-
-    QLabel *findLabel = new QLabel(tr("Find :"));
-    findLineEdit = new QLineEdit;
-    QPushButton *findButton = new QPushButton(tr("&Find"));
-//    projectNameLabelLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\x002A\?\x0022<>|]+"), projectNameLabelLineEdit));
-
-       QLabel *replaceLabel = new QLabel(tr("Replace with : "));
-    replaceLineEdit = new QLineEdit;
-    QPushButton *replaceButton = new QPushButton(tr("&Replace"));
-    QPushButton *replaceDocButton = new QPushButton(tr("&Replace current doc"));
-    QPushButton *replaceAllButton = new QPushButton(tr("&Replace all"));
-
-    connect(replaceButton, SIGNAL(clicked()), this, SLOT());
-    connect(replaceDocButton, SIGNAL(clicked()), this, SLOT());
-    connect(replaceAllButton, SIGNAL(clicked()), this, SLOT());
-
-
-
-    QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
-    QGridLayout *checkLayout = new QGridLayout;
-    textCheckBox = new QCheckBox(tr("Check story"), this);
-    synCheckBox = new QCheckBox(tr("Check synopses"), this);
-    noteCheckBox = new QCheckBox(tr("Check notes"), this);
-
-    textCheckBox->setChecked(true);
-    synCheckBox->setChecked(true);
-    noteCheckBox->setChecked(true);
-
-    checkLayout->addWidget(textCheckBox, 1,0);
-    checkLayout->addWidget(synCheckBox, 2,0);
-    checkLayout->addWidget(noteCheckBox, 3,0);
-    checkGroupBox->setLayout(checkLayout);
-
-
-
-
-    QWidget *stretcher1 = new QWidget;
-//    stretcher1->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    QWidget *stretcher2 = new QWidget;
-//    stretcher2->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    QPushButton *previousButton = new QPushButton(tr("Previous"), this);
-    QPushButton *nextButton = new QPushButton(tr("Next"), this);
-    QPushButton *replaceAndNextButton = new QPushButton(tr("Replace && Next"), this);
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-
-    connect(previousButton, SIGNAL(clicked()), this, SLOT());
-    connect(nextButton, SIGNAL(clicked()), this, SLOT());
-    connect(replaceAndNextButton, SIGNAL(clicked()), this, SLOT());
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(close()));
-
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label, 0, 0, 1, 3);
-    layout->addWidget(findLabel, 1, 0);
-    layout->addWidget(findLineEdit, 2, 0, 1,3);
-    layout->addWidget(findButton, 2, 3);
-    layout->addWidget(replaceLabel, 3, 0);
-    layout->addWidget(replaceLineEdit, 4, 0, 1,3);
-    layout->addWidget(replaceButton, 4, 3);
-    layout->addWidget(replaceDocButton, 5, 3);
-    layout->addWidget(replaceAllButton, 6, 3);
-    layout->addWidget(stretcher1, 7, 3);
-    layout->addWidget(buttonBox, 8, 3);
-    layout->addWidget(checkGroupBox,6,0,2,3);
-//    layout->addWidget(stretcher2,7,0,1,4);
-    layout->addWidget(previousButton,8,0);
-    layout->addWidget(nextButton,8,1);
-    layout->addWidget(replaceAndNextButton,8,2);
-
-    tree = new QTreeWidget;
-    tree->setFixedWidth(width()/3);
-
-
-    QHBoxLayout *treeLayout = new QHBoxLayout;
-    treeLayout->addWidget(tree);
-    treeLayout->addLayout(layout);
-
-
-
-QTextBrowser *docViewer = new QTextBrowser;
-
-    QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addLayout(treeLayout,0,0);
-    mainLayout->addWidget(docViewer,1,0);
-    setLayout(mainLayout);
-
-
+    ui->setupUi(this);
 
     createTree(device);
     targetDevice = device;
 
 
 
-    QMessageBox msgBox;
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setText(tr("The Find & Replace feature isn't implemented !<br>For now, it's only a mock-up GUI. Please wait for a future release !"));
-    msgBox.exec();
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setText(tr("The Find & Replace feature isn't implemented !<br>For now, it's only a mock-up GUI. Please wait for a future release !"));
+        msgBox.exec();
 
 
 }
+
+FindReplace::~FindReplace()
+{
+    delete ui;
+}
+
+
+
 
 
 
@@ -131,10 +44,6 @@ QTextBrowser *docViewer = new QTextBrowser;
 
 void FindReplace::createTree(QFile *device)
 {
-    tree->setHeaderHidden(true);
-    tree->setExpandsOnDoubleClick(false);
-    tree->setAutoExpandDelay(1000);
-    tree->setAnimated(true);
 
     folderIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
                          QIcon::Normal, QIcon::Off);
@@ -144,18 +53,17 @@ void FindReplace::createTree(QFile *device)
 
 
 
-    tree->setContextMenuPolicy(Qt::PreventContextMenu);
-
     read(device);
 
-    connect(tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
+    connect(ui->tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
 
 }
 
 //-----------------------------------------------------------------------------------
 
-bool FindReplace::read(QFile *device)
+bool FindReplace::read(QFile *file)
 {
+    QFile *device = new QFile(file->fileName());
 
     if(device->isReadable())
         QMessageBox::information(this, tr("Plume Creator Tree"),
@@ -181,7 +89,7 @@ bool FindReplace::read(QFile *device)
     }
 
 
-    QFileInfo *dirInfo = new QFileInfo(*device);
+    //QFileInfo *dirInfo = new QFileInfo(*device);
 
 
     root = domDocument.documentElement();
@@ -206,7 +114,6 @@ bool FindReplace::read(QFile *device)
     device->close();
 
 
-    setEnabled(true);
 
 
 
@@ -221,7 +128,7 @@ bool FindReplace::read(QFile *device)
 void FindReplace::closeTree()
 {
 
-    tree->clear();
+    ui->tree->clear();
 
 
 }
@@ -231,7 +138,7 @@ void FindReplace::closeTree()
 
 
 void FindReplace::parseFolderElement(const QDomElement &element,
-                                  QTreeWidgetItem *parentItem)
+                                     QTreeWidgetItem *parentItem)
 {
     QTreeWidgetItem *item = createItem(element, parentItem);
 
@@ -239,7 +146,7 @@ void FindReplace::parseFolderElement(const QDomElement &element,
     if (title.isEmpty())
         title = QObject::tr("XML problem : parseFolderElement(const QDomElement &element, QTreeWidgetItem *parentItem)");
 
-    tree->setItemExpanded(item, true);
+    ui->tree->setItemExpanded(item, true);
     item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsTristate | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
     item->setIcon(0, folderIcon);
     item->setText(0, title);
@@ -288,13 +195,13 @@ void FindReplace::parseFolderElement(const QDomElement &element,
 //-----------------------------------------------------------------------------------
 
 QTreeWidgetItem *FindReplace::createItem(const QDomElement &element,
-                                      QTreeWidgetItem *parentItem)
+                                         QTreeWidgetItem *parentItem)
 {
     QTreeWidgetItem *item;
     if (parentItem) {
         item = new QTreeWidgetItem(parentItem);
     } else {
-        item = new QTreeWidgetItem(tree);
+        item = new QTreeWidgetItem(ui->tree);
     }
     domElementForItem.insert(item, element);
 
@@ -312,7 +219,7 @@ void FindReplace::buildTree()
 
 
 
-    tree->clear();
+    ui->tree->clear();
 
 
     QDomElement child = root.firstChildElement("book");
@@ -386,155 +293,155 @@ void FindReplace::itemClickedSlot(QTreeWidgetItem* item, int column)
 
 QTextDocument * FindReplace::buildFinalDoc()
 {
-//    //search for checked QTreeWidgetItems :
+    //    //search for checked QTreeWidgetItems :
 
-//    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(tree, QTreeWidgetItemIterator::Checked);
-//    QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
-
-
-//    while(iterator->operator *() != 0){
-//        itemList->append(iterator->operator *());
-//        iterator->operator ++();
-
-//    }
+    //    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(tree, QTreeWidgetItemIterator::Checked);
+    //    QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
 
 
+    //    while(iterator->operator *() != 0){
+    //        itemList->append(iterator->operator *());
+    //        iterator->operator ++();
+
+    //    }
 
 
 
-//    //    QString debug;
-//    //    qDebug() << "itemList" << debug.setNum(itemList->size());
 
-//    QFileInfo *dirInfo = new QFileInfo(*targetDevice);
-//    QString devicePath = dirInfo->path();
+
+    //    //    QString debug;
+    //    //    qDebug() << "itemList" << debug.setNum(itemList->size());
+
+    //    QFileInfo *dirInfo = new QFileInfo(*targetDevice);
+    //    QString devicePath = dirInfo->path();
 
     QTextDocument *textDocument = new QTextDocument;
-//    QTextEdit *edit = new QTextEdit;
+    //    QTextEdit *edit = new QTextEdit;
 
-//    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
-
-
-
-//    for(int i = 0; i < itemList->size(); ++i){
-//        QDomElement element = domElementForItem.value(itemList->at(i));
-//        QTextCursor *tCursor = new QTextCursor(textDocument);
-
-//        QTextBlockFormat blockFormatLeft;
-//        blockFormatLeft.setBottomMargin(0);
-//        blockFormatLeft.setTopMargin(0);
-//        blockFormatLeft.setTextIndent(72);
-//        blockFormatLeft.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
-//        blockFormatLeft.setAlignment(Qt::AlignJustify);
-//        QTextCharFormat charFormatLeft;
-//        charFormatLeft.setFontPointSize(12);
-//        charFormatLeft.setFontFamily("Courrier");
-
-//        QTextBlockFormat blockFormatCenter;
-//        blockFormatCenter.setAlignment(Qt::AlignCenter);
-
-
-//        if(element.tagName() != "separator"){
+    //    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
 
 
 
-//            QString textPath = element.attribute("textPath");
-//            QString synPath = element.attribute("synPath");
-//            QString notePath = element.attribute("notePath");
+    //    for(int i = 0; i < itemList->size(); ++i){
+    //        QDomElement element = domElementForItem.value(itemList->at(i));
+    //        QTextCursor *tCursor = new QTextCursor(textDocument);
 
-//            QFile *textFile = new QFile(devicePath + textPath);
-//            QFile *synFile = new QFile(devicePath + synPath);
-//            QFile *noteFile = new QFile(devicePath + notePath);
+    //        QTextBlockFormat blockFormatLeft;
+    //        blockFormatLeft.setBottomMargin(0);
+    //        blockFormatLeft.setTopMargin(0);
+    //        blockFormatLeft.setTextIndent(72);
+    //        blockFormatLeft.setLineHeight(200, QTextBlockFormat::ProportionalHeight);
+    //        blockFormatLeft.setAlignment(Qt::AlignJustify);
+    //        QTextCharFormat charFormatLeft;
+    //        charFormatLeft.setFontPointSize(12);
+    //        charFormatLeft.setFontFamily("Courrier");
 
-//            QTextDocumentFragment textFrag(prepareTextDoc(textFile));
-//            QTextDocumentFragment synFrag(prepareSynDoc(synFile));
-//            QTextDocumentFragment noteFrag(prepareNoteDoc(noteFile));
-
-//            edit->setDocument(textDocument);
+    //        QTextBlockFormat blockFormatCenter;
+    //        blockFormatCenter.setAlignment(Qt::AlignCenter);
 
 
-
-
-//            if(element.tagName() == "book"){
-//                textDocument->setMetaInformation(QTextDocument::DocumentTitle,element.attribute("name", ""));
-//                edit->append("<h1>" + element.attribute("name", "") + "</h1>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<h4>" + QDateTime::currentDateTime().toString() + "</h4>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<br>");
-//                edit->append("<br>");
-
-//            }
-//            if(element.tagName() == "chapter"){
-//                edit->append("<br>");
-//                edit->append("<br>");
-//                edit->append("<h2>" + element.attribute("name", "") + "</h2>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<br>");
-
-//            }
-
-//            if(element.tagName() == "scene" && sceneTitleCheckBox->isChecked()){
-//                edit->append("<br>");
-//                edit->append("<h3>" + element.attribute("name", "") + "</h3>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<br>");
-
-//            }
-
-//            if(synCheckBox->isChecked() && !synFrag.isEmpty()){
-//                edit->append("<br>");
-//                edit->append("<h4>" + tr("Synopsis") + "</h4>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<br>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
-//                tCursor->insertFragment(synFrag);
-//            }
-
-//            if(noteCheckBox->isChecked() && !noteFrag.isEmpty()){
-//                edit->append("<br>");
-//                edit->append("<h4>" + tr("Note") + "</h4>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->mergeBlockFormat(blockFormatCenter);
-//                edit->append("<br>");
-//                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
-//                tCursor->insertFragment(noteFrag);
-//            }
-
-//            if(textCheckBox->isChecked()){
-//                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag.isEmpty()){
-//                    tCursor->insertBlock();
-//                    tCursor->insertHtml("<h4>" + tr("Story") + "</h4>");
-//                    tCursor->mergeBlockFormat(blockFormatCenter);
-//                    tCursor->insertBlock();
-
-//                }
-//                tCursor->insertHtml("<br>");
-//                //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
-//                tCursor->insertFragment(textFrag);
-//                //                edit->append(textFrag->toHtml());
-//            }
-//        }
-//        else if(element.tagName() == "separator"){
-//            edit->append("<br>");
-//            edit->append("<h3>#</h3>");
-//            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//            tCursor->mergeBlockFormat(blockFormatCenter);
-//            edit->append("<br>");
-//            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
-//            tCursor->mergeBlockFormat(blockFormatLeft);
-//        }
+    //        if(element.tagName() != "separator"){
 
 
 
-//    }
+    //            QString textPath = element.attribute("textPath");
+    //            QString synPath = element.attribute("synPath");
+    //            QString notePath = element.attribute("notePath");
+
+    //            QFile *textFile = new QFile(devicePath + textPath);
+    //            QFile *synFile = new QFile(devicePath + synPath);
+    //            QFile *noteFile = new QFile(devicePath + notePath);
+
+    //            QTextDocumentFragment textFrag(prepareTextDoc(textFile));
+    //            QTextDocumentFragment synFrag(prepareSynDoc(synFile));
+    //            QTextDocumentFragment noteFrag(prepareNoteDoc(noteFile));
+
+    //            edit->setDocument(textDocument);
+
+
+
+
+    //            if(element.tagName() == "book"){
+    //                textDocument->setMetaInformation(QTextDocument::DocumentTitle,element.attribute("name", ""));
+    //                edit->append("<h1>" + element.attribute("name", "") + "</h1>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<h4>" + QDateTime::currentDateTime().toString() + "</h4>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<br>");
+    //                edit->append("<br>");
+
+    //            }
+    //            if(element.tagName() == "chapter"){
+    //                edit->append("<br>");
+    //                edit->append("<br>");
+    //                edit->append("<h2>" + element.attribute("name", "") + "</h2>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<br>");
+
+    //            }
+
+    //            if(element.tagName() == "scene" && sceneTitleCheckBox->isChecked()){
+    //                edit->append("<br>");
+    //                edit->append("<h3>" + element.attribute("name", "") + "</h3>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<br>");
+
+    //            }
+
+    //            if(synCheckBox->isChecked() && !synFrag.isEmpty()){
+    //                edit->append("<br>");
+    //                edit->append("<h4>" + tr("Synopsis") + "</h4>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<br>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+    //                tCursor->insertFragment(synFrag);
+    //            }
+
+    //            if(noteCheckBox->isChecked() && !noteFrag.isEmpty()){
+    //                edit->append("<br>");
+    //                edit->append("<h4>" + tr("Note") + "</h4>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->mergeBlockFormat(blockFormatCenter);
+    //                edit->append("<br>");
+    //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+    //                tCursor->insertFragment(noteFrag);
+    //            }
+
+    //            if(textCheckBox->isChecked()){
+    //                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag.isEmpty()){
+    //                    tCursor->insertBlock();
+    //                    tCursor->insertHtml("<h4>" + tr("Story") + "</h4>");
+    //                    tCursor->mergeBlockFormat(blockFormatCenter);
+    //                    tCursor->insertBlock();
+
+    //                }
+    //                tCursor->insertHtml("<br>");
+    //                //                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //                tCursor->insertBlock(blockFormatLeft, charFormatLeft);
+    //                tCursor->insertFragment(textFrag);
+    //                //                edit->append(textFrag->toHtml());
+    //            }
+    //        }
+    //        else if(element.tagName() == "separator"){
+    //            edit->append("<br>");
+    //            edit->append("<h3>#</h3>");
+    //            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //            tCursor->mergeBlockFormat(blockFormatCenter);
+    //            edit->append("<br>");
+    //            tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+    //            tCursor->mergeBlockFormat(blockFormatLeft);
+    //        }
+
+
+
+    //    }
 
     return textDocument;
 }

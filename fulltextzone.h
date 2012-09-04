@@ -27,16 +27,18 @@
 #include <QTextEdit>
 #include <QSettings>
 #include <QSlider>
+
+#include "textstyles.h"
 //
 class FullTextZone : public QTextEdit
 {
     Q_OBJECT
 public:
-    explicit FullTextZone(QTextDocument *doc, QWidget *parent = 0);
+    explicit FullTextZone(QWidget *parent = 0);
+    void setDoc(QTextDocument *doc);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
-    void callColorDialogSignal();
     void quitFullScreen();
 
 protected:
@@ -57,8 +59,8 @@ public slots:
     void applyTextConfig();
     void applySynConfig();
     void applyNoteConfig();
-    void loadSliderValue();
-    void setXMax(int value);
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
+
 
 private slots:
 
@@ -69,13 +71,11 @@ private slots:
     void paste();
     void bold(bool boldBool);
     void italic(bool italBool);
-    void leftAlign(bool leftBool);
-    void rightAlign(bool rightBool);
-    void justify(bool justBool);
-    void center(bool centBool);
-    void setWidth();
-    void setColors();
-    void setZoom();
+//    void leftAlign(bool leftBool);
+//    void rightAlign(bool rightBool);
+//    void justify(bool justBool);
+//    void center(bool centBool);
+
 
     void charFormat(QTextCharFormat cFormat);
 
@@ -84,7 +84,6 @@ private slots:
 
     void preventDoubleSpace();
 
-    void sliderValueChanged(int sliderValue);
 
 private:
 
@@ -101,16 +100,15 @@ private:
     *pasteAct,
     *boldAct,
     *italicAct,
-    *leftAlignAct,
-    *rightAlignAct,
-    *justifyAct,
-    *centerAct,
+//    *leftAlignAct,
+//    *rightAlignAct,
+//    *justifyAct,
+//    *centerAct,
     *setWidthAct,
     *setColorsAct,
     *setZoomAct;
 
-    QMenu *alignmentGroup,
-    *optionGroup;
+    QMenu *optionGroup;
     QPoint mousePos;
 
     bool mDragging;
@@ -123,6 +121,8 @@ private:
     int xMax;
 
     bool preventDoubleSpaceOption;
+
+    TextStyles *textStyles;
 
 };
 

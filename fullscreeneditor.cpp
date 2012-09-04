@@ -1,107 +1,180 @@
+#include "fullscreeneditor.h"
+#include "ui_fullscreeneditor.h"
 #include <QtGui>
 
-#include "fulltextzone.h"
-#include "fullscreeneditor.h"
-#include "digitalclock.h"
-#include "timer.h"
-//
-FullscreenEditor::FullscreenEditor(QTextDocument *doc, int cursorPos, QWidget *parent) :
-    QWidget(parent)
+FullscreenEditor::FullscreenEditor(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::FullscreenEditor)
 {
-this->setMouseTracking(true);
-
-    fullTextEdit = new FullTextZone(doc, this);
-    fullTextEdit->applyTextConfig();
-    fullTextEdit->setFrameShape(QFrame::NoFrame);
-
-    QHBoxLayout *baseLayout= new QHBoxLayout;
-    baseLayout->setMargin(0);
-
-    QWidget *mainWidget = new QWidget;
-    mainWidget->setObjectName("mainBackground");
-mainWidget->setMouseTracking(true);
-
-    QHBoxLayout *textLayout = new QHBoxLayout;
-
-    textLayout->addStretch();
-    textLayout->addWidget(fullTextEdit);
-    textLayout->addStretch();
+    ui->setupUi(this);
+    setWindowModality(Qt::ApplicationModal);
 
 
+}
+
+FullscreenEditor::~FullscreenEditor()
+{
+
+    settings.setValue( "FullTextArea/areaWidth", sliderCurrentValue);
+    settings.setValue( "FullTextArea/zoom", textStyles->zoomModifier());
+
+    if(textStyles->zoomModifier() != 0){
+        textStyles->changeDocStyles(ui->fullTextEdit->document(), "removeZoom");
+        originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
+    }
+
+    delete ui;
+}
+//------------------------------------------------------------------------------------
+
+void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
+{
+    this->setAttribute(Qt::WA_DeleteOnClose);
+
+    originalDoc = doc;
+    QTextDocument *clonedDoc = doc->clone();
+
+    textStyles->setZoomModifier(settings.value( "FullTextArea/zoom", 0).toInt());
+    textStyles->changeDocStyles(clonedDoc, "applyZoom");
+
+    ui->fullTextEdit->setDoc(clonedDoc);
+    ui->fullTextEdit->setTextStyles(textStyles);
+    ui->fullTextEdit->applyTextConfig();
+    ui->fullTextEdit->setFrameShape(QFrame::NoFrame);
 
 
-    DigitalClock *clock = new DigitalClock(this);
-    //    Timer *timer = new Timer(this);
-    clock->setMouseTracking(true);
-    clock->setObjectName("add-on");
-    timerLabel = new QLabel;
-    timerLabel->setObjectName("add-on");
-        wordCountLabel = new QLabel;
-wordCountLabel->setObjectName("add-on");
+    createNotesMenu();
 
-    QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
-    connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
-    showSynButton->setFixedSize(50,20);
-
-    QPushButton *showNoteButton = new QPushButton(tr("Note"), this);
-    connect(showNoteButton, SIGNAL(clicked()),this,SLOT(showNote()));
-    showNoteButton->setFixedSize(50,20);
-
-    QPushButton *exitFullscreenButton = new QPushButton(tr("Exit"), this);
-    connect(exitFullscreenButton, SIGNAL(clicked()),this,SLOT(close()));
-    connect(fullTextEdit, SIGNAL(quitFullScreen()),this,SLOT(close()));
-    exitFullscreenButton->setFixedSize(50,20);
+    createOptionMenu();
 
 
+    //        QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
+    //        connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
+    //        showSynButton->setFixedSize(50,20);
 
+    //        QPushButton *showNoteButton = new QPushButton(tr("Note"), this);
+    //        connect(showNoteButton, SIGNAL(clicked()),this,SLOT(showNote()));
+    //        showNoteButton->setFixedSize(50,20);
 
-    QHBoxLayout *statsLayout = new QHBoxLayout();
-    statsLayout->addWidget(wordCountLabel);
-    //      statsLayout->addWidget(timer);
-    statsLayout->addWidget(timerLabel);
-    statsLayout->addWidget(clock);
-    statsLayout->addWidget(showSynButton);
-    statsLayout->addWidget(showNoteButton);
-    statsLayout->addWidget(exitFullscreenButton);
+    //        QPushButton *exitFullscreenButton = new QPushButton(tr("Exit"), this);
+    //        connect(exitFullscreenButton, SIGNAL(clicked()),this,SLOT(close()));
+    //        exitFullscreenButton->setFixedSize(50,20);
 
 
 
-    QVBoxLayout *mainLayout = new QVBoxLayout();
 
-    mainLayout->addLayout(textLayout);
-    mainLayout->addLayout(statsLayout);
-
-
-    mainWidget->setLayout(mainLayout);
-
-
-    baseLayout->addWidget(mainWidget);
-    setLayout(baseLayout);
-
-    connect(fullTextEdit, SIGNAL(callColorDialogSignal()), this, SLOT(callColorDialog()));
+    connect(ui->fullTextEdit, SIGNAL(quitFullScreen()),this,SLOT(close()));
+    connect(editWidget, SIGNAL(styleSelectedSignal(int)), this, SLOT(changeTextStyleSlot(int)));
 
     applyConfig();
 
-    showFullScreen();
+    this->showFullScreen();
 
     // get screen width for fullscreen text width option :
-    fullTextEdit->setXMax(QApplication::desktop()->screenGeometry().width() - 50);
+    editWidget->setTextWidthMax( QApplication::desktop()->screenGeometry().width() * 0.75);
+    this->loadTextWidthSliderValue();
 
     //set cursor position :
     for(int i = 0; i < cursorPos ; i++)
-        fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
+        ui->fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
+
+    //for wordcount :
+    fullscreenWordCount = new WordCount(clonedDoc, this);
+    //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
+    connect(fullscreenWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(setWordCount(int)));
+//    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
+    fullscreenWordCount->updateAll();
+
+
 
 
     this->setWindowState(this->windowState() | Qt::WindowActive);
-    fullTextEdit->ensureCursorVisible();
+    ui->fullTextEdit->ensureCursorVisible();
 
-
+    connect(ui->fullTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
     mouseTimer = new QTimer(this);
     connect(mouseTimer, SIGNAL(timeout()), this, SLOT(hideMouse()));
-mouseTimer->start(3000);
+    mouseTimer->start(3000);
+
+    ui->timerBuddyLabel->hide();
+    ui->timerLabel->hide();
 
 }
+
+//------------------------------------------------------------------------------------
+void FullscreenEditor::createNotesMenu()
+{
+    QMenu *notesMenu = new QMenu();
+
+
+    QAction *synAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Synopsis"),this);
+    synAct->setShortcut(Qt::Key_F9);
+    synAct->setToolTip(tr("Show the synopsis"));
+    connect(synAct, SIGNAL(triggered()),this,SLOT(showSyn()));
+
+    QAction *noteAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Note"),this);
+    noteAct->setShortcut(Qt::Key_F10);
+    noteAct->setToolTip(tr("Show the note"));
+    connect(noteAct, SIGNAL(triggered()),this,SLOT(showNote()));
+
+
+    notesMenu->addAction(synAct);
+    notesMenu->addAction(noteAct);
+    ui->notesButton->setMenu(notesMenu);
+}
+//------------------------------------------------------------------------------------
+
+
+void FullscreenEditor::zoomIn()
+{
+    textStyles->setPreviousZoomModifier(textStyles->zoomModifier());
+    textStyles->setZoomModifier(textStyles->zoomModifier() + 1);
+    textStyles->changeDocStyles(ui->fullTextEdit->document(), "modifyZoom");
+}
+
+//------------------------------------------------------------------------------------
+
+void FullscreenEditor::zoomOut()
+{
+    textStyles->setPreviousZoomModifier(textStyles->zoomModifier());
+    textStyles->setZoomModifier(textStyles->zoomModifier() - 1);
+    textStyles->changeDocStyles(ui->fullTextEdit->document(), "modifyZoom");
+}
+//------------------------------------------------------------------------------------
+
+void FullscreenEditor::createOptionMenu()
+{
+    editWidget = new EditMenu();
+    editWidget->setTextStyles(textStyles);
+    editWidget->createContent();
+
+    connect(editWidget, SIGNAL(zoomInSignal()), this, SLOT(zoomIn()));
+    connect(editWidget, SIGNAL(zoomOutSignal()), this, SLOT(zoomOut()));
+
+
+    QMenu *optionsMenu = new QMenu();
+
+    QWidgetAction *editWidgetAct = new QWidgetAction(this);
+    editWidgetAct->setDefaultWidget(editWidget);
+
+    QAction *manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
+    manageStylesAct->setShortcut(Qt::Key_F11);
+    manageStylesAct->setToolTip(tr("Manage the styles"));
+    connect(manageStylesAct, SIGNAL(triggered()), this, SIGNAL(manageStylesSignal()));
+
+    QAction *setColorsAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Colors"),this);
+    setColorsAct->setShortcut(Qt::Key_F12);
+    setColorsAct->setToolTip(tr("Set the colors"));
+    connect(setColorsAct, SIGNAL(triggered()), this, SLOT(callColorDialog()));
+
+    optionsMenu->addAction(editWidgetAct);
+    optionsMenu->addAction(manageStylesAct);
+    optionsMenu->addAction(setColorsAct);
+    ui->optionsButton->setMenu(optionsMenu);
+}
+
+
 
 //------------------------------------------------------------------------------------
 
@@ -109,36 +182,42 @@ mouseTimer->start(3000);
 void FullscreenEditor::setWordCount(int num)
 {
     QString text;
-    wordCountLabel->setText(text.setNum(num,10));
+    ui->wordCountLabel->setText(text.setNum(num,10));
 }
-
+//----------------------------------------------------------------------------------------
 void FullscreenEditor::setTimer(QString text)
 {
-    timerLabel->setText(text);
+    ui->timerBuddyLabel->show();
+    ui->timerLabel->show();
+    if(text.left(1) == "-"){
+        ui->timerBuddyLabel->hide();
+        ui->timerLabel->hide();
+    }
+    ui->timerLabel->setText(text);
 }
 
 
 
-
+//----------------------------------------------------------------------------------------
 
 void FullscreenEditor::closeEvent(QCloseEvent* event)
 {
     synWidget->close();
     noteWidget->close();
-mouseTimer->stop();
+    mouseTimer->stop();
     emit closeSignal();
     event->accept();
 
 
 }
 
-
+//----------------------------------------------------------------------------------------
 void FullscreenEditor::mouseMoveEvent(QMouseEvent* event)
 {
 
 
-this->unsetCursor();
- fullTextEdit->viewport()->setCursor(QCursor(Qt::IBeamCursor));
+    this->unsetCursor();
+    ui->fullTextEdit->viewport()->setCursor(QCursor(Qt::IBeamCursor));
 
 
     mouseTimer->stop();
@@ -146,12 +225,12 @@ this->unsetCursor();
     event->accept();
 
 }
-
+//----------------------------------------------------------------------------------------
 void FullscreenEditor::hideMouse()
 {
 
-this->setCursor(QCursor(Qt::BlankCursor));
-   fullTextEdit->viewport()->setCursor(QCursor(Qt::BlankCursor));
+    this->setCursor(QCursor(Qt::BlankCursor));
+    ui->fullTextEdit->viewport()->setCursor(QCursor(Qt::BlankCursor));
 
 
 }
@@ -160,7 +239,7 @@ this->setCursor(QCursor(Qt::BlankCursor));
 
 
 
-
+//----------------------------------------------------------------------------------------
 
 
 void FullscreenEditor::callColorDialog()
@@ -207,13 +286,14 @@ void FullscreenEditor::callColorDialog()
 
     fullColorDialog->show();
 }
-
+//----------------------------------------------------------------------------------------
 
 void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
 {
     synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
 
-    FullTextZone *fullSynEdit = new FullTextZone(doc, synWidget);
+    FullTextZone *fullSynEdit = new FullTextZone(synWidget);
+    fullSynEdit->setDoc(doc);
     fullSynEdit->applySynConfig();
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -232,7 +312,7 @@ void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
     //    synCursorPos = cursorPos;
 
 }
-
+//----------------------------------------------------------------------------------------
 
 void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
 {
@@ -240,7 +320,8 @@ void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
 
     noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
 
-    FullTextZone *fullNoteEdit = new FullTextZone(doc, noteWidget);
+    FullTextZone *fullNoteEdit = new FullTextZone(noteWidget);
+    fullNoteEdit->setDoc(doc);
     fullNoteEdit->applyNoteConfig();
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -257,25 +338,157 @@ void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
     //    noteDoc = doc;
     //    noteCursorPos = cursorPos;
 }
-
+//----------------------------------------------------------------------------------------
 void FullscreenEditor::showSyn()
 {
     synWidget->show();
 }
-
+//----------------------------------------------------------------------------------------
 void FullscreenEditor::showNote()
 {
     noteWidget->show();
 
 }
 
+//----------------------------------------------------------------------------------------
+
+void FullscreenEditor::loadTextWidthSliderValue()
+{
+    QSettings settings;
+    int sliderValue = settings.value("FullTextArea/areaWidth", 600).toInt();
+    editWidget->setTextWidthSliderValue(sliderValue);
+
+
+    sliderTextWidthValueChanged(sliderValue);
+    connect(editWidget, SIGNAL(textWidthSliderValueChanged(int)), this, SLOT(sliderTextWidthValueChanged(int)), Qt::UniqueConnection);
+
+}
+
+//----------------------------------------------------------------------------------------
+
+void FullscreenEditor::sliderTextWidthValueChanged(int value)
+{
+    sliderCurrentValue = value;
+    ui->fullTextEdit->setFixedWidth(value);
+
+
+}
+
+void FullscreenEditor::resetFullscreenTextWidthSlot()
+{
 
 
 
 
+    ui->fullTextEdit->setFixedWidth(sliderCurrentValue + 1);
+    ui->fullTextEdit->setFixedWidth(sliderCurrentValue - 1);
+
+
+}
+//--------------------------------------------------------------------------------
 
 
 
+void FullscreenEditor::setWidth()
+{
+    //    QWidget *widthDialog = new QWidget(this, Qt::Dialog);
+    //    QVBoxLayout *layout = new QVBoxLayout;
+
+    //    QLabel *textZoneWidthLabel = new QLabel(tr("Text Area Width :"));
+    //    widthSlider = new QSlider(Qt::Horizontal);
+    //    widthSlider->setRange(500, xMax);
+
+    //    QPushButton *closeButton = new QPushButton(tr("Ok"),widthDialog);
+    //    connect(closeButton,SIGNAL(clicked()), widthDialog, SLOT(close()));
+
+    //    layout->addWidget(textZoneWidthLabel);
+    //    layout->addWidget(widthSlider);
+    //    layout->addWidget(closeButton);
+    //    widthDialog->setLayout(layout);
+
+
+    //    loadSliderValue();
+
+    //    widthDialog->show();
+
+}
+
+//----------------------------------------------------------------------------------------
+void FullscreenEditor::setZoom()
+{
+
+
+}
+
+
+//-------------------------------------------------------------------------------
+void FullscreenEditor::cursorPositionChangedSlot()
+{
+    QTextCursor tCursor = ui->fullTextEdit->textCursor();
+
+    if((tCursor.atStart() == true
+        || tCursor.position() == 1
+        || tCursor.position() == 0) && tCursor.hasSelection() == false){
+        this->changeTextStyleSlot(textStyles->defaultStyleIndex());
+    }
+
+    int currentStyleIndex = textStyles->compareStylesWithText(tCursor.charFormat(), tCursor.blockFormat(), "zoom");
+//    qDebug() << "currentStyleIndex : " << QString::number(currentStyleIndex);
+    editWidget->setStyleSelectionSlot(currentStyleIndex);
+
+}
+
+
+//-------------------------------------------------------------------------------
+void FullscreenEditor::changeTextStyleSlot(int styleIndex)
+{
+    qDebug() << "changeTextStyleSlot";
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));
+    blockFormat.setTextIndent(textStyles->blockFirstLineIndentAt(styleIndex));
+    blockFormat.setLeftMargin(textStyles->blockLeftMarginAt(styleIndex));
+    blockFormat.setAlignment(textStyles->blockAlignmentTrueNameAt(styleIndex));
+    blockFormat.setTopMargin(0);
+    blockFormat.setRightMargin(0);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(textStyles->fontSizeAt(styleIndex) + textStyles->zoomModifier());
+    charFormat.setFontFamily(textStyles->fontFamilyAt(styleIndex));
+    //    charFormat.setFontItalic(textStyles->fontItalicAt(styleIndex));
+    //    if (textStyles->fontBoldAt(styleIndex) == true)
+    //        charFormat.setFontWeight(75);
+    //    else
+    //        charFormat.setFontWeight(50);
+    //    charFormat.setFontUnderline(textStyles->fontUnderlineAt(styleIndex));
+    //    charFormat.setFontStrikeOut(textStyles->fontStrikeOutAt(styleIndex));
+
+    //    charFormat.clearForeground();
+
+
+    QTextCursor tCursor = ui->fullTextEdit->textCursor();
+
+    // select all of the blocks selected :
+
+    QTextCursor tStartCursor = ui->fullTextEdit->textCursor();
+    tStartCursor.setPosition(tCursor.selectionStart());
+    tStartCursor.movePosition(QTextCursor::StartOfBlock);
+    int startFirstBlock = tStartCursor.position();
+
+    QTextCursor tEndCursor = ui->fullTextEdit->textCursor();
+    tEndCursor.setPosition(tCursor.selectionEnd());
+    tEndCursor.movePosition(QTextCursor::EndOfBlock);
+    int endLastBlock = tEndCursor.position();
+
+    tCursor.setPosition(startFirstBlock);
+    tCursor.setPosition(endLastBlock, QTextCursor::KeepAnchor);
+
+
+    // merge :
+    tCursor.mergeBlockFormat(blockFormat);
+    tCursor.mergeCharFormat(charFormat);
+    ui->fullTextEdit->mergeCurrentCharFormat(charFormat);
+
+}
 
 
 //---------------------------------------------------------------------------
@@ -354,7 +567,7 @@ void FullscreenEditor::setTextBackColor()
     textBackColorString = "FullTextZone {background-color: rgb(" + r + ", " + g + ", " + b + ");"
             "border: 0px none black; border-radius: 0px;"
             "}"
-    "QPushButton#textBackColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QPushButton#textBackColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
 }
@@ -387,7 +600,7 @@ void FullscreenEditor::setTextColor()
     QString b = string.setNum(textColor.blue(),10);
 
     textColorString = "FullTextZone {color: rgb(" + r + ", " + g + ", " + b + ");}"
-    "QPushButton#textColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QPushButton#textColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 }
 
 void FullscreenEditor::setAddOnColorDialog()
@@ -417,9 +630,17 @@ void FullscreenEditor::setAddOnColor()
     QString g = string.setNum(addOnColor.green(), 10);
     QString b = string.setNum(addOnColor.blue(),10);
 
-    addOnColorString = "QLabel#add-on {color: rgb(" + r + ", " + g + ", " + b + ");}"
+    addOnColorString =
+            "QLabel#timerLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#timerBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#clockLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#clockBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordCountLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordCountBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
-;
+
+    //    "QToolButton {background-color: red; border: none;}"
+    ;
 }
 
 

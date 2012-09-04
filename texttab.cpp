@@ -12,14 +12,14 @@ TextTab::TextTab(QWidget *parent) :
     textDocument = new QTextDocument(this);
     nextTextDocument = new QTextDocument(this);
 
-    prevTextZone = new TextZone(prevTextDocument, this);
+    prevTextZone = new TextZone(this);
     prevTextZone->toHtml();
 
-    nextTextZone = new TextZone(nextTextDocument, this);
+    nextTextZone = new TextZone(this);
     nextTextZone->toHtml();
 
 
-    textZone = new TextZone(textDocument, this);
+    textZone = new TextZone(this);
     textZone->toHtml();
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -43,7 +43,6 @@ TextTab::TextTab(QWidget *parent) :
     setContextMenuPolicy(Qt::PreventContextMenu);
 
 
-    connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
 
 
     prevTextZone->hide();
@@ -53,6 +52,9 @@ TextTab::TextTab(QWidget *parent) :
     QList<int> sizesList;
     sizesList << 0 << textZone->height()  << 0;
     splitter->setSizes(sizesList);
+
+
+
 
 
     //config
@@ -86,6 +88,12 @@ TextTab::TextTab(QWidget *parent) :
     giveStyle();
 }
 
+void TextTab::setTextStyles(TextStyles *styles)
+{
+    textStyles = styles;
+
+
+}
 
 
 
@@ -94,22 +102,35 @@ TextTab::TextTab(QWidget *parent) :
 bool TextTab::openText(QTextDocument *doc)
 {
 
+    prevTextZone->setTextStyles(textStyles);
+    prevTextZone->createContent();
+    nextTextZone->setTextStyles(textStyles);
+    nextTextZone->createContent();
+    textZone->setTextStyles(textStyles);
+    textZone->createContent();
+
+
+
+
+
+
     //  stackName = name;
 
     textDocument = doc;
-    textZone->setDocument(textDocument);
+    textZone->setDoc(textDocument);
     textZone->document()->adjustSize();
 
 
 
     //for wordcount :
-    tabWordCount = new WordCount(textDocument, this);
-    //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
-    connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
-    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
-    tabWordCount->updateAll();
+this->resetWordCounts();
 
     connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+    connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
+    connect(textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
+    connect(textZone,SIGNAL(styleSelectedSignal(int)), this,SLOT(changeTextStyleSlot(int)));
+    connect(this, SIGNAL(setStyleSelectionSignal(int)), textZone, SIGNAL(setStyleSelectionSignal(int)));
+    connect(textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
 
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
@@ -196,13 +217,24 @@ void TextTab::updateWordCounts()
 
 }
 //-------------------------------------------------------------------------------
+void TextTab::resetWordCounts()
+{
+    tabWordCount = new WordCount(textDocument, this);
+    //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
+    connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
+    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
+    updateWordCounts();
+}
+//-------------------------------------------------------------------------------
 
 void TextTab::changeWidthSlot(int width)
 {
     textZone->setFixedWidth(width);
-    textZone->document()->setTextWidth(width - 20);
+    textZone->document()->setTextWidth(width - 30);
     prevTextZone->setFixedWidth(width);
-    prevTextZone->document()->setTextWidth(width - 20);
+    prevTextZone->document()->setTextWidth(width - 30);
+    nextTextZone->setFixedWidth(width);
+    nextTextZone->document()->setTextWidth(width - 30);
 }
 //-------------------------------------------------------------------------------
 void TextTab::changeTextFontSlot(QFont font)
@@ -214,6 +246,58 @@ void TextTab::changeTextHeightSlot(int height)
 {
     textZone->setTextHeight(height);
 }
+
+//-------------------------------------------------------------------------------
+void TextTab::changeTextStyleSlot(int styleIndex)
+{
+
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));
+    blockFormat.setTextIndent(textStyles->blockFirstLineIndentAt(styleIndex));
+    blockFormat.setLeftMargin(textStyles->blockLeftMarginAt(styleIndex));
+    blockFormat.setAlignment(textStyles->blockAlignmentTrueNameAt(styleIndex));
+    blockFormat.setTopMargin(0);
+    blockFormat.setRightMargin(0);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(textStyles->fontSizeAt(styleIndex));
+    charFormat.setFontFamily(textStyles->fontFamilyAt(styleIndex));
+    //    charFormat.setFontItalic(textStyles->fontItalicAt(styleIndex));
+    //    if (textStyles->fontBoldAt(styleIndex) == true)
+    //        charFormat.setFontWeight(75);
+    //    else
+    //        charFormat.setFontWeight(50);
+    //    charFormat.setFontUnderline(textStyles->fontUnderlineAt(styleIndex));
+    //    charFormat.setFontStrikeOut(textStyles->fontStrikeOutAt(styleIndex));
+
+    //    charFormat.clearForeground();
+
+
+    QTextCursor tCursor = textZone->textCursor();
+
+    // select all of the blocks selected :
+
+    QTextCursor tStartCursor = textZone->textCursor();
+    tStartCursor.setPosition(tCursor.selectionStart());
+    tStartCursor.movePosition(QTextCursor::StartOfBlock);
+    int startFirstBlock = tStartCursor.position();
+
+    QTextCursor tEndCursor = textZone->textCursor();
+    tEndCursor.setPosition(tCursor.selectionEnd());
+    tEndCursor.movePosition(QTextCursor::EndOfBlock);
+    int endLastBlock = tEndCursor.position();
+
+    tCursor.setPosition(startFirstBlock);
+    tCursor.setPosition(endLastBlock, QTextCursor::KeepAnchor);
+
+
+    // merge :
+    tCursor.mergeBlockFormat(blockFormat);
+    tCursor.mergeCharFormat(charFormat);
+    textZone->mergeCurrentCharFormat(charFormat);
+
+}
+
 
 //-------------------------------------------------------------------------------
 void TextTab::setTextFocus()
@@ -247,10 +331,18 @@ QTextCharFormat TextTab::tabFontChangedSlot()
 //-------------------------------------------------------------------------------
 void TextTab::cursorPositionChangedSlot()
 {
-                if((textZone->textCursor().atStart() == true
-                        || textZone->textCursor().position() == 1|| textZone->textCursor().position() == 0) && textZone->textCursor().hasSelection() == false){
-                    applyConfig();
-}
+    QTextCursor tCursor = textZone->textCursor();
+
+    if((tCursor.atStart() == true
+        || tCursor.position() == 1
+        || tCursor.position() == 0) && tCursor.hasSelection() == false){
+        this->changeTextStyleSlot(textStyles->defaultStyleIndex());
+    }
+
+    int currentStyleIndex = textStyles->compareStylesWithText(tCursor.charFormat(), tCursor.blockFormat());
+
+    emit setStyleSelectionSignal(currentStyleIndex);
+
 }
 
 //-------------------------------------------------------------------------------
@@ -272,7 +364,7 @@ void TextTab::showPrevText(bool showPrevTextBool)
 {
     prevTextZone->setHidden(!showPrevTextBool);
     prevTextZone->setMaximumHeight(textZone->height()/3);
-        textZone->setFocus();
+    textZone->setFocus();
     textZone->ensureCursorVisible();
 
 }
@@ -292,7 +384,7 @@ void  TextTab::setPrevText(QTextDocument *prevDoc)
     }
 
     prevTextDocument = prevDoc;
-    prevTextZone->setDocument(prevTextDocument);
+    prevTextZone->setDoc(prevTextDocument);
     prevTextZone->document()->adjustSize();
 
 
@@ -326,7 +418,7 @@ void  TextTab::setNextText(QTextDocument *nextDoc)
     }
 
     nextTextDocument = nextDoc;
-    nextTextZone->setDocument(nextTextDocument);
+    nextTextZone->setDoc(nextTextDocument);
     nextTextZone->document()->adjustSize();
 
 
@@ -347,44 +439,15 @@ void TextTab::applyConfig()
 
     QSettings settings;
     settings.beginGroup( "Settings" );
-    int bottMargin = settings.value("TextArea/bottomMargin", 10).toInt();
-    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
-    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
-    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
+    //    int bottMargin = settings.value("TextArea/bottomMargin", 10).toInt();
+    //    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
+    //    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
+    //    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
     changeWidthSlot(settings.value("TextArea/textWidth", this->width()/2).toInt());
     settings.endGroup();
 
 
-    QTextBlockFormat blockFormat;
-    blockFormat.setBottomMargin(bottMargin);
-    blockFormat.setTextIndent(textIndent);
-    QTextCursor *tCursor = new QTextCursor(document());
-    tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
-    tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
-    tCursor->mergeBlockFormat(blockFormat);
 
-
-
-
-    //apply default font in empty documents :
-
-        if((textZone->textCursor().atStart() == true
-              || textZone->textCursor().position() == 1 )&& textZone->document()->isEmpty()){
-            QFont font;
-            font.setFamily(fontFamily);
-            font.setPointSize(textHeight);
-            document()->setDefaultFont(font);
-    //        document()->firstBlock().blockFormat().toCharFormat().setFont(font);
-
-
-        }
-
-    QFont font;
-    font.setFamily(fontFamily);
-    font.setPointSize(textHeight);
-    this->document()->setDefaultFont(font);
-    changeTextFontSlot(font);
-    changeTextHeightSlot(textHeight);
 }
 
 
@@ -399,20 +462,25 @@ void TextTab::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------
 void TextTab::giveStyle()
 {
-    setStyleSheet(" TextZone {    border-width: 0px;"
-                  "border-style: outset;"
-                  "border-radius: 0px;"
-                  "margin: 4px"
-                  "}"
-                  "QSplitter {"
-                  "border: 0px none transparent;"
-                  "spacing: 0px;"
-                  "padding: 0px;"
-                  "margin: 0px;"
-                  "}"
-                  "QSplitter::handle {"
-                  "background-color: black;"
-                  "height: 1px"
-  "}"
-                  );
+    QString css = " TextZone {    border-width: 0px;"
+            "border-style: outset;"
+            "border-radius: 0px;"
+            "margin: 4px"
+            "}"
+            "QSplitter {"
+            "border: 0px none transparent;"
+            "spacing: 0px;"
+            "padding: 0px;"
+            "margin: 0px;"
+            "}"
+            "QSplitter::handle {"
+            "background-color: gray;"
+            "height: 1px"
+            "}"
+            ;
+
+
+
+
+    setStyleSheet(css);
 }

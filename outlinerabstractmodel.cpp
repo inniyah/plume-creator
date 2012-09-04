@@ -1,12 +1,15 @@
 #include <QDebug>
 #include <QObject>
 #include <QTextDocument>
+#include <QTextDocumentFragment>
+#include <QTextCursor>
 
 #include "outlinerabstractmodel.h"
 #include "outlinertreeitem.h"
 
 OutlinerAbstractModel::OutlinerAbstractModel(QObject *parent) :
-    QAbstractItemModel(parent),itemHeight(40)
+    QAbstractItemModel(parent),itemHeight(40),
+    textZoneColumnOneWidth(300), textZoneColumnTwoWidth(300)
 {
 
 }
@@ -79,8 +82,8 @@ QVariant OutlinerAbstractModel::headerData(int section, Qt::Orientation orientat
 
 QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
 {
-        int row = index.row();
-        int col = index.column();
+    int row = index.row();
+    int col = index.column();
 
 
 
@@ -153,14 +156,61 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
     if ((role == Qt::DisplayRole || role == Qt::EditRole) && col == 0){
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
         return item->data(col).toString();
-     }
+    }
 
     if (role == 33 && (col == 1 || col == 2)){
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
-return item->data(col).toString();
+        return item->data(col).toString();
     }
-    if (role == Qt::SizeHintRole)
-        return (QSize(100,itemHeight));
+
+    //    if (role == Qt::SizeHintRole&& (col == 0))
+    //        return (QSize(100,itemHeight));
+
+    if (role == Qt::SizeHintRole){
+        QTextDocument synDoc;
+        synDoc.setTextWidth(textZoneColumnOneWidth);
+        synDoc.setHtml(this->index(row,1, index.parent()).data(33).toString());
+        synDoc.setDocumentMargin(1);
+        QTextCursor cursor(&synDoc);
+        cursor.setPosition(0);
+        cursor.select(QTextCursor::BlockUnderCursor);
+        synDoc.setHtml(cursor.selection().toHtml());
+        QSize synSize(synDoc.size().toSize());
+        synSize.setHeight(synSize.height() + 5);
+
+        QTextDocument noteDoc;
+        noteDoc.setTextWidth(textZoneColumnTwoWidth);
+        noteDoc.setHtml(this->index(row,2, index.parent()).data(33).toString());
+        noteDoc.setDocumentMargin(1);
+        QTextCursor tcursor(&noteDoc);
+        tcursor.setPosition(0);
+        tcursor.select(QTextCursor::BlockUnderCursor);
+        noteDoc.setHtml(tcursor.selection().toHtml());
+        QSize noteSize(noteDoc.size().toSize());
+        noteSize.setHeight(noteSize.height() + 5);
+
+        if(qMax(synSize.height(), noteSize.height()) < itemHeight + 200
+                && qMax(synSize.height(), noteSize.height()) > itemHeight){
+            qDebug() << "qMax";
+            if(synSize.height() >= noteSize.height())
+                return synSize;
+            else
+                return noteSize;
+        }
+        else if((synSize.height() > itemHeight + 200 || noteSize.height() > itemHeight + 200)
+                && (synSize.height() < itemHeight + 200 || noteSize.height() < itemHeight + 200)
+                && (synSize.height() > itemHeight || noteSize.height() > itemHeight)){
+            qDebug() << "minimum";
+            if(synSize.height() >= noteSize.height())
+                return noteSize;
+            else
+                return synSize;
+        }
+        else{
+
+            return (QSize(100,itemHeight));
+        }
+    }
 
     if (role == Qt::UserRole){
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
@@ -269,7 +319,7 @@ bool OutlinerAbstractModel::setData(const QModelIndex &index,
                 synDoc->setHtml(value.toString());
 
                 OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
-            //for separator which don't have data :
+                //for separator which don't have data :
                 if (item->dataList()->size() == 1)
                     return false;
                 item->dataList()->replace(1,value.toString());
@@ -298,9 +348,9 @@ bool OutlinerAbstractModel::setData(const QModelIndex &index,
 
                 OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
                 //for separator which don't have data :
-                    if (item->dataList()->size() == 1)
-                        return false;
-                    item->dataList()->replace(2,value.toString());
+                if (item->dataList()->size() == 1)
+                    return false;
+                item->dataList()->replace(2,value.toString());
 
             }
         }
@@ -315,8 +365,16 @@ bool OutlinerAbstractModel::setData(const QModelIndex &index,
     return false;
 }
 
+//--------------------------------------------------------------------------------------------------
+void OutlinerAbstractModel::resetAbsModelColumnOne()
+{
+}
 
+  //--------------------------------------------------------------------------------------------------
+void OutlinerAbstractModel::resetAbsModelColumnTwo()
+{
 
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -630,7 +688,6 @@ void OutlinerAbstractModel::reset_mtoO_setNumForDoc()
             textDocClone->setObjectName("noteDocClone_" + QString::number(i.value()));
 
         mtoO_numForClonedDoc.insert(textDocClone, i.value());
-
 
 
 

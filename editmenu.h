@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Cyril Jacquet                                   *
+ *   Copyright (C) 2012 by Cyril Jacquet                                   *
  *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
@@ -20,41 +20,63 @@
 #ifndef EDITMENU_H
 #define EDITMENU_H
 
-#include <QtGui>
 #include <QWidget>
-#include <QFrame>
-#include <QToolButton>
-//
-class EditMenu : public QFrame
+#include <QSettings>
+#include <QTextCharFormat>
+
+#include "textstyles.h"
+
+namespace Ui {
+class EditMenu;
+}
+
+class EditMenu : public QWidget
 {
     Q_OBJECT
+    
 public:
     explicit EditMenu(QWidget *parent = 0);
+    ~EditMenu();
+    void createContent();
 
 signals:
     void widthChangedSignal(int sliderValue);
     void textFontChangedSignal(QFont font);
     void textHeightChangedSignal(int textHeight);
+    void styleSelectedSignal(int styleIndex);
+    void textWidthSliderValueChanged(int value);
+    void zoomOutSignal();
+    void zoomInSignal();
 
 public slots:
-    void applyConfig();
     void charFormatChangedSlot(QTextCharFormat format);
     void tabChangedSlot(QTextCharFormat newTabFormat);
+    void setStyleSelectionSlot(int selection);
+    void applyConfig();
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
+    void hideWidgetsByName(QStringList widgetToHideList);
+    void setTextWidthMax(int max);
+    void setTextWidthSliderValue(int sliderValue);
+
+    int textWidthSliderValue();
 
 private slots:
-    void applyStyleSheet();
+    void styleSelectedSlot(QListWidgetItem *item);
+    void zoomIn();
+    void zoomOut();
 
 private:
+    Ui::EditMenu *ui;
 
-    QToolButton *showPreviousTextButton;
     int xMax;
-    QSlider *widthSlider;
     int sliderValue;
     QSettings settings;
-    QFontComboBox *textFontCombo;
     QFont textFont;
-    QSpinBox *textSpin;
-    int textSpinValue;
+    int textSpinValue;;
+
+    TextStyles *textStyles;
+
+
 };
 
 #endif // EDITMENU_H

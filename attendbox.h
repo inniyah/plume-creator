@@ -39,6 +39,7 @@ signals:
     void removeAttendNumberSignal(int itemNumber);
     void addAttendNumberToSheetSignal(QList<int> list, int sheetNumber);
     void removeAttendNumberFromSheetSignal(QList<int> list, int sheetNumber);
+    void textChangedSignal();
 
 public slots:
     void openSheetAttendList(int number ,QString attendString);

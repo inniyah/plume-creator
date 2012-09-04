@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Cyril Jacquet                                   *
+ *   Copyright (C) 2012 by Cyril Jacquet                                   *
  *   terreville@gmail.com                                                 *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *

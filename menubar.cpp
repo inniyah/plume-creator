@@ -12,14 +12,22 @@ MenuBar::MenuBar(QWidget *parent) :
 
     file = 0;
     giveStyle();
-    createActions(); // if buttons with menus
-    createButtons();
 
 
-    readSettings();
+
 
 }
+//---------------------------------------------------------------------------
 
+void MenuBar::createContent()
+{
+createActions(); // if buttons with menus
+createButtons();
+
+
+readSettings();
+setMenusEnabled(false);
+}
 //---------------------------------------------------------------------------
 
 void MenuBar::newProject()
@@ -106,15 +114,23 @@ void MenuBar::projectManager()
 //---------------------------------------------------------------------------
 
 
-void MenuBar::displayConfig()
+void MenuBar::displayConfig(int tabIndex)
 {
-
     SettingsDialog *settingsDialog = new SettingsDialog(this);
+    settingsDialog->setTextStyles(textStyles);
+    textStyles->saveBaseStyles();
+    settingsDialog->createContent();
+
     connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
     connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString)), this, SIGNAL(setDisplayModeSignal(QString)));
+    connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
+    connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
 
+
+    settingsDialog->setCurrentTab(tabIndex);
 
     settingsDialog->exec();
+    emit resetFullscreenTextWidthSignal();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -208,6 +224,14 @@ void MenuBar::findAndReplace()
 
 }
 
+//--------------------------------------------------------------------------
+
+void MenuBar::manageStyles()
+{
+this->displayConfig(2);
+
+
+}
 
 //--------------------------------------------------------------------------
 
@@ -398,15 +422,20 @@ void MenuBar::createActions()
     findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
     connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
 
+//    createEditWidget();
+//    QWidgetAction *editWidgetAct = new QWidgetAction(this);
+//    editWidgetAct->setDefaultWidget(editWidget);
 
-    createEditWidget();
-    QWidgetAction *editWidgetAct = new QWidgetAction(this);
-    editWidgetAct->setDefaultWidget(editWidget);
+    manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
+    // aboutAct->setShortcut(QKeySequence::Quit);
+    manageStylesAct->setToolTip(tr("Manage the styles"));
+    connect(manageStylesAct, SIGNAL(triggered()), this, SLOT(manageStyles()));
 
     editGroup = new QMenu(tr("&Edit"),this);
     editGroup->addAction(findReplaceAct);
     editGroup->addSeparator();
-    editGroup->addAction(editWidgetAct);
+//    editGroup->addAction(editWidgetAct);
+    editGroup->addAction(manageStylesAct);
 
     showTreeDockAct = new QAction(QIcon(":/pics/view-list-tree.png"),tr("&Project"),this);
     showTreeDockAct->setCheckable(true);
@@ -489,6 +518,12 @@ void MenuBar::createEditWidget()
 {
 
     editWidget = new EditMenu;
+  editWidget->setTextStyles(textStyles);
+  editWidget->createContent();
+
+QStringList widgetToHideList;
+widgetToHideList << "zoomBox" << "textWidthBox";
+  editWidget->hideWidgetsByName(widgetToHideList);
 
     //editWidget->setFrameStyle(QFrame::Panel);
     //editWidget->setLineWidth(2);
@@ -503,16 +538,24 @@ void MenuBar::createEditWidget()
 
     connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
-
+    connect(editWidget,SIGNAL(styleSelectedSignal(int)), this, SIGNAL(styleSelectedSignal(int)));
+    connect(this,SIGNAL(setStyleSelectionSignal(int)), editWidget, SLOT(setStyleSelectionSlot(int)));
 }
 
 
 
+//---------------------------------------------------------------------------
+
+void MenuBar::setMenusEnabled(bool enabledBool)
+{
+    editGroup->setEnabled(enabledBool);
+    displayConfigAct->setEnabled(enabledBool);
+printAct->setEnabled(enabledBool);
+        exportAct->setEnabled(enabledBool);
+}
 
 
-
-
-
+//---------------------------------------------------------------------------
 void MenuBar::createButtons()
 {
     //    QSize buttonSize(120,60);
@@ -718,11 +761,11 @@ void MenuBar::openNewProjectSlot()
 
 void MenuBar::openProjectSlot(QFile *device)
 {
-
+    qDebug() << "openProjectSlot : " << device->fileName();
     closeProject();
 
-    file = new QFile;
-    file = device;
+    file = new QFile(device->fileName());
+
 
     emit openProjectSignal(device);
 
@@ -801,13 +844,17 @@ void MenuBar::setExternalProject(QFile *externalFile)
 
 
 
-
+// open directly the clicked file :
 
     if(valueList.contains(QDir::fromNativeSeparators(extFilePath))){
         //        QMessageBox::warning(this, tr("Plume Creator Warning"),
         //                             tr("The file you are trying to open\n"
         //                                " is already in the Plume project manager.\n"));
         openProjectSlot(externalFile);
+
+        int prjNumber = valueList.indexOf(QDir::fromNativeSeparators(extFilePath));
+//        qDebug() << "prjNumber  : "<< QString::number(prjNumber);
+        emit openProjectNumberSignal(prjNumber);
 
         extFile = 0;
         return;
@@ -836,8 +883,9 @@ void MenuBar::setExternalProject(QFile *externalFile)
         // create an empty file :
 
         QFile file(extFilePath + "/" + projectName + ".prjinfo");
+        file.waitForBytesWritten(500);
         file.close();
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
+        file.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate);
 
 
         QDomDocument domDoc("plume-information");
@@ -856,7 +904,7 @@ void MenuBar::setExternalProject(QFile *externalFile)
         prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString());
         root.appendChild(prjInfoElem);
 
-
+        if(file.isWritable()){
         file.flush();
 
         const int IndentSize = 4;
@@ -864,7 +912,7 @@ void MenuBar::setExternalProject(QFile *externalFile)
         QTextStream out(&file);
         out.flush();
         domDoc.save(out, IndentSize);
-
+}
         file.close();
     }
 
@@ -876,12 +924,12 @@ void MenuBar::setExternalProject(QFile *externalFile)
     QFile plumeFile(extFilePath + "/" + dir.entryList(filters).first());
     QString projectName = plumeFile.fileName().split("/").last().remove(".prjinfo");
 
-    QString string;
-    qDebug() << "dirCount : "  << string.setNum(dir.entryList(filters).count()) << " = " << dir.entryList(filters).first();
-    qDebug() << "plumeFile : " << plumeFile.fileName();
-    QFileInfo *dirInfo = new QFileInfo(plumeFile);
-    QString devicePath = dirInfo->absolutePath();
-    qDebug() << "File path:" << devicePath;
+//    QString string;
+//    qDebug() << "dirCount : "  << string.setNum(dir.entryList(filters).count()) << " = " << dir.entryList(filters).first();
+//    qDebug() << "plumeFile : " << plumeFile.fileName();
+//    QFileInfo *dirInfo = new QFileInfo(plumeFile);
+//    QString devicePath = dirInfo->absolutePath();
+//    qDebug() << "File path:" << devicePath;
 
     plumeFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
@@ -992,7 +1040,25 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
 
         QFile file(externalPrjFile->fileName());
 
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
+        QFileInfo *externalFileInfo = new QFileInfo(file.fileName());
+//        QString extFileName = externalFileInfo->fileName();
+        QString extFilePath = externalFileInfo->path();
+        QDir dir(extFilePath);
+        QStringList filters;
+
+        filters.clear();
+        filters << "*.prjinfo";
+
+
+        QFile infoFile(extFilePath + "/" + dir.entryList(filters).first());
+
+        QFileInfo *dirInfo = new QFileInfo(infoFile);
+        QString devicePath = dirInfo->path();
+        qDebug() << "File path:" << devicePath;
+        qDebug() << "File name :" << infoFile.fileName();
+
+
+        infoFile.open(QIODevice::ReadWrite | QIODevice::Text);
 
 
         QDomDocument domDocument;
@@ -1000,8 +1066,7 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
         int errorLine;
         int errorColumn;
 
-
-        if (!domDocument.setContent(&file, true, &errorStr, &errorLine,
+        if (!domDocument.setContent(&infoFile, true, &errorStr, &errorLine,
                                     &errorColumn)) {
             QMessageBox::information(this, tr("Plume Creator XML"),
                                      tr("Parse error at line %1, column %2:\n%3\n")
@@ -1013,9 +1078,7 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
             return false;
         }
 
-        //        QFileInfo *dirInfo = new QFileInfo(file);
-        //        QString devicePath = dirInfo->path();
-        //        qDebug() << "File path:" << devicePath;
+
 
 
         QDomElement root = domDocument.documentElement();
@@ -1044,8 +1107,8 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
 
 
 
-        file.close();
-
+        infoFile.close();
+file.close();
 
 
         //Saving to .conf the new project :
@@ -1130,8 +1193,7 @@ void MenuBar::giveStyle()
 
 void MenuBar::applyConfig()
 {
-
-    editWidget->applyConfig();
+//    editWidget->applyConfig();
 
     emit applyConfigSignal();
 }

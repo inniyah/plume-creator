@@ -55,8 +55,10 @@ signals:
     void closeTabTextSignal(QFile *textFile);
     void tabWidgetWidth(int value);
     void applyConfigSignal();
+void changeAllDocsTextStylesSignal();
 
     void currentNumber(int);
+
 
 public slots:
     void openProjectSlot(QFile *projectFile);
@@ -76,9 +78,8 @@ private slots:
     void editFullscreen();
     void launchOutliner();
 
+void textChangedSlot();
 
-    void setShowPreviousTextButton(bool showPrevTextBool);
-    void setShowNextTextButton(bool showNextTextBool);
     void showPrevAndNextTexts(bool showTextsBool = true);
 
     //config :
@@ -119,6 +120,8 @@ private:
     void createAttendDock();
     void createDocksToolBar();
     void createStatusBar();
+
+    TextStyles *textStyles;
 
     QWidget *widgetToHideWith;
     MenuBar *menu;
@@ -181,10 +184,16 @@ OrientationButton *showPrvScnButton, *showNxtScnButton;
     int autosaveTime;
     QTimer *timer;
     QString displayMode;
+bool oneTabOnly;
 
     void setEditMenuConnections();
 
     FullscreenEditor *fullEditor;
+
+    QString noTabCss;
+
+    bool textAlreadyChanged;
+
 };
 
 #endif // MAINWINDOW_H

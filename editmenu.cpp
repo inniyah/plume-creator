@@ -1,51 +1,67 @@
 #include "editmenu.h"
-//
+#include "ui_editmenu.h"
+
+#include <QtGui>
+
 EditMenu::EditMenu(QWidget *parent) :
-    QFrame(parent), xMax(0)
+    QWidget(parent),
+    ui(new Ui::EditMenu)
 {
+    ui->setupUi(this);
 
 
-
-
-    textFontCombo = new QFontComboBox;
-    connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-
-    textSpin = new QSpinBox;
-    textSpin->setRange(6,30);
-    connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
-
-
-    QWidget *stretcher = new QWidget;
-    stretcher->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-
-
-    QGridLayout *baseGridLayout = new QGridLayout;
-
-    baseGridLayout->addWidget(textFontCombo,2,0);
-    baseGridLayout->addWidget(textSpin,3,0);
-    baseGridLayout->addWidget(stretcher,4,0);
-    setLayout(baseGridLayout);
-
-    connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-    connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
-
-    applyStyleSheet();
-    applyConfig();
 }
+
+EditMenu::~EditMenu()
+{
+    delete ui;
+}
+//----------------------------------------------------------------------------------------
+
+void EditMenu::createContent()
+{
+    ui->styleListWidget->clear();
+    ui->styleListWidget->addItems(textStyles->namesList());
+
+    connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+    connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+
+    connect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
+
+
+    connect(ui->textWidthSlider, SIGNAL(valueChanged(int)), this, SIGNAL(textWidthSliderValueChanged(int)));
+
+    connect(ui->zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
+    connect(ui->zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
+
+}
+
+//----------------------------------------------------------------------------------------
+
+void EditMenu::hideWidgetsByName(QStringList widgetToHideList)
+{
+    while(!widgetToHideList.isEmpty()){
+        QString objName = widgetToHideList.takeFirst();
+
+        QWidget *widget = this->findChild<QWidget *>(objName);
+        widget->hide();
+    }
+}
+
 
 //----------------------------------------------------------------------------------------
 void EditMenu::charFormatChangedSlot(QTextCharFormat format)
 {
-    disconnect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-    disconnect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+    disconnect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+    disconnect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
 
-    textSpin->setValue(format.fontPointSize());
-    textFontCombo->setCurrentFont(format.fontFamily());
+    ui->fontComboBox->setCurrentFont(format.fontFamily());
+    ui->fontSizeSpinBox->setValue(format.fontPointSize());
 
 
-    connect(textFontCombo, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
-    connect(textSpin, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+    connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
+    connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
 
 }
 
@@ -56,45 +72,97 @@ void EditMenu::tabChangedSlot(QTextCharFormat newTabFormat)
 {
 
 
+
+
     charFormatChangedSlot(newTabFormat);
 }
 
+//----------------------------------------------------------------------------------------
+void EditMenu::styleSelectedSlot(QListWidgetItem *item)
+{
 
+    emit styleSelectedSignal(ui->styleListWidget->row(item));
+}
+
+//----------------------------------------------------------------------------------------
+void EditMenu::setStyleSelectionSlot(int selection)
+{
+
+    if(selection == 99999){
+        for (int i = 0; i < textStyles->namesList().size(); ++i) {
+            ui->styleListWidget->item(i)->setSelected(false);
+        }
+        return;
+    }
+
+
+    disconnect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
+
+            ui->styleListWidget->item(selection)->setSelected(true);
+
+    connect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
+}
+
+
+
+
+
+
+void EditMenu::setTextWidthMax(int max)
+{
+    ui->textWidthSlider->setRange(200, max);
+}
 //----------------------------------------------------------------------------------------
 
 
+void EditMenu::setTextWidthSliderValue(int sliderValue)
+{
+    ui->textWidthSlider->setValue(sliderValue);
+
+}
+//----------------------------------------------------------------------------------------
+int EditMenu::textWidthSliderValue()
+{
+    return ui->textWidthSlider->value();
+
+}
 
 
 
 
 
 
+//------------------------------------------------------------------------------------
 
 
-//---------------------------------------------------------------------------
-//----------Apply Config---------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
+void EditMenu::zoomIn()
+{
+    emit zoomInSignal();
+}
+
+//------------------------------------------------------------------------------------
+
+void EditMenu::zoomOut()
+{
+    emit zoomOutSignal();
+
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------
 
 
 void EditMenu::applyConfig()
 {
-    QSettings settings;
-    settings.beginGroup( "Settings" );
-    textSpinValue = settings.value("TextArea/textHeight", 12).toInt();
-    textFont.setFamily(settings.value("TextArea/textFontFamily", "Liberation Serif").toString());
-    settings.endGroup();
+
+    ui->styleListWidget->clear();
+    ui->styleListWidget->addItems(textStyles->namesList());
 
 
-    textSpin->setValue(textSpinValue);
-    textFontCombo->setCurrentFont(textFont);
 
 }
 
-//---------------------------------------------------------------------------
-void EditMenu::applyStyleSheet()
-{
-        this->setStyleSheet(
-                            "QSpinBox::up-button{subcontrol-origin: padding; subcontrol-position: left top;}"
-                            "QSpinBox::down-button{subcontrol-origin: padding; subcontrol-position: left bottom;}"
-                            );
-}
