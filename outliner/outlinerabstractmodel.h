@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QTextDocument>
 
-#include "outlinertreeitem.h"
+#include "outliner/outlinertreeitem.h"
 
 class OutlinerAbstractModel : public QAbstractItemModel
 {

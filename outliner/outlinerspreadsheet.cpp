@@ -1,8 +1,8 @@
-#include "outlinerspreadsheet.h"
+#include "outliner/outlinerspreadsheet.h"
 
 #include <QtGui>
 #include "notezone.h"
-#include "outlinertreeitem.h"
+#include "outliner/outlinertreeitem.h"
 
 OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     QTreeView(parent)

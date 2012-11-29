@@ -1,4 +1,4 @@
-#include "outlineritemdelegate.h"
+#include "outliner/outlineritemdelegate.h"
 
 #include <QtGui>
 

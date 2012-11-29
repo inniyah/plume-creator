@@ -1,7 +1,7 @@
 #include <QtGui>
 
-#include "outline.h"
-#include "outlineitem.h"
+#include "outliner/outline.h"
+#include "outliner/outlineitem.h"
 
 
 

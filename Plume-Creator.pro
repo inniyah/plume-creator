@@ -22,26 +22,25 @@ SOURCES += main.cpp\
     textzone.cpp \
     timer.cpp \
     wordcount.cpp \
-    fulltextzone.cpp \
     exporter.cpp \
-    outlineitem.cpp \
-    outline.cpp \
     attendbox.cpp \
     updater.cpp \
     wordcountthread.cpp \
-    outlinerspreadsheet.cpp \
-    outlinerbase.cpp \
     orientationbutton.cpp \
     menubar.cpp \
-    outlinerabstractmodel.cpp \
-    outlineritemdelegate.cpp \
-    outlinertreeitem.cpp \
+    outliner/outline.cpp \
+    outliner/outlineitem.cpp \
+    outliner/outlinerbase.cpp \
+    outliner/outlinerspreadsheet.cpp \
+    outliner/outlinerabstractmodel.cpp \
+    outliner/outlineritemdelegate.cpp \
+    outliner/outlinertreeitem.cpp \
     settingsdialog.cpp \
-#    editmenu_.cpp
     editmenu.cpp \
     textstyles.cpp \
     findreplace.cpp \
-    fullscreeneditor.cpp
+    fullscreen/fulltextzone.cpp \
+    fullscreen/fullscreeneditor.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -55,26 +54,25 @@ HEADERS  += mainwindow.h \
     textzone.h \
     timer.h \
     wordcount.h \
-    fulltextzone.h \
     exporter.h \
-    outlineitem.h \
-    outline.h \
     attendbox.h \
     updater.h \
     wordcountthread.h \
-    outlinerspreadsheet.h \
-    outlinerbase.h \
     orientationbutton.h \
     menubar.h \
-    outlinerabstractmodel.h \
-    outlineritemdelegate.h \
-    outlinertreeitem.h \
+    outliner/outline.h \
+    outliner/outlineitem.h \
+    outliner/outlinerbase.h \
+    outliner/outlinerspreadsheet.h \
+    outliner/outlinerabstractmodel.h \
+    outliner/outlineritemdelegate.h \
+    outliner/outlinertreeitem.h \
     settingsdialog.h \
-#    editmenu_.h
     editmenu.h \
     textstyles.h \
     findreplace.h \
-    fullscreeneditor.h
+    fullscreen/fulltextzone.h \
+    fullscreen/fullscreeneditor.h
 
 RESOURCES += \
     pics.qrc \
@@ -84,7 +82,8 @@ RESOURCES += \
 CODECFORTR = UTF-8
 
 TRANSLATIONS = plume-creator_fr_FR.ts \
-#    plume-creator_ro_RO.ts
+#    plume-creator_ro_RO.ts \
+    plume-creator_it_IT.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
 

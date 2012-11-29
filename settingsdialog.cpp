@@ -40,8 +40,8 @@ void SettingsDialog::createGeneralTab()
 
 
 
-    langs << "Français" << "English";
-    langCodes << "fr_FR" << "en_US";
+    langs << "Français" << "English" << "Italiano";
+    langCodes << "fr_FR" << "en_US" << "it_IT";
     ui->langComboBox->addItems(langs);
 
 

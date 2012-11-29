@@ -1,6 +1,6 @@
 #include <QStringList>
 
-#include "outlinertreeitem.h"
+#include "outliner/outlinertreeitem.h"
 
 OutlinerTreeItem::OutlinerTreeItem(const QList<QVariant> &data, OutlinerTreeItem *parent)
 {

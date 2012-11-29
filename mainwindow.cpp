@@ -11,7 +11,7 @@
 #include "itembox.h"
 #include "texttab.h"
 #include "notezone.h"
-#include "outline.h"
+#include "outliner/outline.h"
 #include "attendbox.h"
 //
 

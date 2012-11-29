@@ -1,4 +1,4 @@
-#include "fullscreeneditor.h"
+#include "fullscreen/fullscreeneditor.h"
 #include "ui_fullscreeneditor.h"
 #include <QtGui>
 
@@ -15,6 +15,7 @@ FullscreenEditor::FullscreenEditor(QWidget *parent) :
 FullscreenEditor::~FullscreenEditor()
 {
 
+
     settings.setValue( "FullTextArea/areaWidth", sliderCurrentValue);
     settings.setValue( "FullTextArea/zoom", textStyles->zoomModifier());
 
@@ -22,6 +23,9 @@ FullscreenEditor::~FullscreenEditor()
         textStyles->changeDocStyles(ui->fullTextEdit->document(), "removeZoom");
         originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
     }
+    else if(textStyles->zoomModifier() == 0){
+        originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
+}
 
     delete ui;
 }

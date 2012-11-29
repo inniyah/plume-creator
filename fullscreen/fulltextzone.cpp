@@ -1,6 +1,6 @@
 #include <QtGui>
 
-#include "fulltextzone.h"
+#include "fullscreen/fulltextzone.h"
 //
 FullTextZone::FullTextZone(QWidget *parent) :
     QTextEdit(parent)

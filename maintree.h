@@ -25,8 +25,8 @@
 #include <QtGui>
 #include <QDomDocument>
 
-#include <outline.h>
-#include <outlinerbase.h>
+#include <outliner/outline.h>
+#include <outliner/outlinerbase.h>
 #include <textstyles.h>
 //
 class MainTree : public QTreeWidget

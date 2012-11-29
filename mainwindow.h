@@ -28,8 +28,8 @@
 #include "itembox.h"
 #include "notezone.h"
 #include "texttab.h"
-#include "fullscreeneditor.h"
-#include "outline.h"
+#include "fullscreen/fullscreeneditor.h"
+#include "outliner/outline.h"
 #include "attendbox.h"
 #include "orientationbutton.h"
 

@@ -4,8 +4,8 @@
 #include <QTextDocumentFragment>
 #include <QTextCursor>
 
-#include "outlinerabstractmodel.h"
-#include "outlinertreeitem.h"
+#include "outliner/outlinerabstractmodel.h"
+#include "outliner/outlinertreeitem.h"
 
 OutlinerAbstractModel::OutlinerAbstractModel(QObject *parent) :
     QAbstractItemModel(parent),itemHeight(40),

@@ -1,6 +1,6 @@
-#include "outlinerbase.h"
-#include "outlinerabstractmodel.h"
-#include "outlineritemdelegate.h"
+#include "outliner/outlinerbase.h"
+#include "outliner/outlinerabstractmodel.h"
+#include "outliner/outlineritemdelegate.h"
 
 #include <QtGui>
 

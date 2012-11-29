@@ -24,8 +24,8 @@
 #include <QWidget>
 #include <QDomDocument>
 
-#include "outlinerabstractmodel.h"
-#include "outlinerspreadsheet.h"
+#include "outliner/outlinerabstractmodel.h"
+#include "outliner/outlinerspreadsheet.h"
 
 class OutlinerBase : public QWidget
 
