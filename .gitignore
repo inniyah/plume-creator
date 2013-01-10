@@ -1,0 +1,5 @@
+# ignore temp files
+*~
+
+#ignore qt creator's *.user
+*.pro.user
