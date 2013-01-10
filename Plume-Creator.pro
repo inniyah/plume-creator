@@ -83,7 +83,8 @@ CODECFORTR = UTF-8
 
 TRANSLATIONS = plume-creator_fr_FR.ts \
 #    plume-creator_ro_RO.ts \
-    plume-creator_it_IT.ts
+    plume-creator_it_IT.ts \
+    plume-creator_de_DE.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
 

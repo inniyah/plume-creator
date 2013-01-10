@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>langs/plume-creator_fr_FR.qm</file>
         <file>langs/plume-creator_it_IT.qm</file>
+        <file>langs/plume-creator_de_DE.qm</file>
     </qresource>
 </RCC>
