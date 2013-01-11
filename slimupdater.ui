@@ -13,96 +13,129 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,1,0,0,0">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
    <property name="margin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="updateLabel">
-     <property name="text">
-      <string/>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="packageComboBox">
-     <item>
-      <property name="text">
-       <string extracomment="Select your packaging">source</string>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="midLineWidth">
+      <number>0</number>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0,0,0">
+      <property name="margin">
+       <number>0</number>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>.deb 32-bit</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>.deb 64-bit</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
-    <widget class="QToolButton" name="verifyButton">
-     <property name="toolTip">
-      <string>Verify again</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="pics.qrc">
-       <normaloff>:/pics/view-refresh-32x32.png</normaloff>:/pics/view-refresh-32x32.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="shortcut">
-      <string/>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="DontAskCheckBox">
-     <property name="toolTip">
-      <string>Do not show again ?</string>
-     </property>
-     <property name="text">
-      <string>?</string>
-     </property>
-     <property name="shortcut">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QToolButton" name="closeButton">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="pics.qrc">
-       <normaloff>:/pics/window-close-32x32.png</normaloff>:/pics/window-close-32x32.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="shortcut">
-      <string extracomment="Close"/>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
+      <item>
+       <widget class="QLabel" name="updateLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="packageComboBox">
+        <item>
+         <property name="text">
+          <string extracomment="Select your packaging">source</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>.deb 32-bit</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>.deb 64-bit</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="verifyButton">
+        <property name="toolTip">
+         <string>Verify again</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="pics.qrc">
+          <normaloff>:/pics/view-refresh-32x32.png</normaloff>:/pics/view-refresh-32x32.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="shortcut">
+         <string/>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkUpdateAtStartupBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>Check update at startup ?</string>
+        </property>
+        <property name="text">
+         <string>?</string>
+        </property>
+        <property name="shortcut">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="closeButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="pics.qrc">
+          <normaloff>:/pics/window-close-32x32.png</normaloff>:/pics/window-close-32x32.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="shortcut">
+         <string extracomment="Close"/>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

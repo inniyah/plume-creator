@@ -113,8 +113,6 @@ void Updater::checkUpdate()
     manager->get(QNetworkRequest(QUrl("http://www.plume-creator.eu/version.latest")));
 
 
-    //http://188.165.39.41/~btvuhmyz/version.latest
-
 
 
 

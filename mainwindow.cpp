@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     //temporary config
     setStyleSheet("* {background-color: pink; color: black;}");
 
-    // netbook mode 10':
-    //    setFixedSize(900, 550);
+//     netbook mode 10':
+        setFixedSize(900, 550);
 
     textStyles = new TextStyles();
 
@@ -136,9 +136,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    if (checkUpdateAtStartupBool){
-        menu->launchCheckUpdateDialog("auto");
-    }
 
     menu->openManager();
 
@@ -170,7 +167,7 @@ void MainWindow::createMenuBar()
     connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
     connect(menu, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
 
-
+    connect(menu, SIGNAL(launchCheckUpdateSignal(QString)), this, SLOT(launchSlimUpdater(QString)));
 
 
     menu->firstLaunch();
@@ -1828,6 +1825,7 @@ void MainWindow::launchSlimUpdater(QString mode)
     updater = new SlimUpdater;
     connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
 ui->baseWidget->layout()->addWidget(updater);
+updater->setMode(mode);
 }
 
 void MainWindow::closeSlimUpdater()

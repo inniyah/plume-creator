@@ -321,11 +321,7 @@ void MenuBar::about()
 
 void MenuBar::launchCheckUpdateDialog(QString mode)
 {
-
-    Updater *checkUpdateDialog = new Updater(mode);
-    checkUpdateDialog->setCurrentVersion(currentVersion);
-
-    checkUpdateDialog->exec();
+    emit launchCheckUpdateSignal(mode);
 
 }
 //--------------------------------------------------------------------------

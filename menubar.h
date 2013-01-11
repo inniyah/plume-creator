@@ -62,6 +62,9 @@ signals:
 
     void applyConfigSignal();
 
+    void launchCheckUpdateSignal(QString mode);
+
+
     //repeater between Dialog Settings and MainWindow
     void setDisplayModeSignal(QString mode);
 void changeAllDocsTextStylesSignal();
