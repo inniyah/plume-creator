@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     wordcount.cpp \
     exporter.cpp \
     attendbox.cpp \
-    updater.cpp \
     wordcountthread.cpp \
     orientationbutton.cpp \
     menubar.cpp \
@@ -57,7 +56,6 @@ HEADERS  += mainwindow.h \
     wordcount.h \
     exporter.h \
     attendbox.h \
-    updater.h \
     wordcountthread.h \
     orientationbutton.h \
     menubar.h \

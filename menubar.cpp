@@ -3,7 +3,6 @@
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter.h"
-#include "updater.h"
 #include "findreplace.h"
 //
 MenuBar::MenuBar(QWidget *parent) :

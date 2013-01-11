@@ -22,7 +22,7 @@ SlimUpdater::SlimUpdater(QString mode, QWidget *parent) :
     ui->packageComboBox->show();
 #endif
 
-    connect(ui->closeButton, SIGNAL(clicked()), this, SIGNAL(closeUpdaterSignal()));
+    connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeUpdater()));
     connect(ui->verifyButton, SIGNAL(clicked()), this, SLOT(checkConnection()));
 
 
@@ -54,6 +54,12 @@ SlimUpdater::SlimUpdater(QString mode, QWidget *parent) :
 
 SlimUpdater::~SlimUpdater()
 {
+
+
+
+
+
+
     writeSettings();
     delete ui;
 
@@ -274,12 +280,41 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
     }
     else{
         ui->updateLabel->setText(tr("<b><h3><center>You are up to date !</h3><b>"));
-        QTimer::singleShot(5000, this, SIGNAL(closeUpdaterSignal()));
+
+
+        QTimer::singleShot(5000, this, SLOT(closeUpdater()));
     }
 
 
 
 }
+
+//---------------------------------------------------------------------------
+
+void SlimUpdater::closeUpdater()
+{
+    int animDuration = 500;
+
+    QTimer::singleShot(animDuration, this, SIGNAL(closeUpdaterSignal()));
+
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+    animation->setEasingCurve(QEasingCurve::OutCubic);
+    animation->setDuration(animDuration);
+
+    int xManager = this->geometry().x();
+    int yManager = this->geometry().y();
+    int wManager = this->width();
+    int hManager = this->height();
+
+
+    animation->setStartValue(QRect(xManager,yManager,wManager,hManager));
+    animation->setEndValue(QRect(xManager,yManager + height(),wManager,0));
+    animation->start();
+
+
+
+}
+
 //---------------------------------------------------------------------------
 void SlimUpdater::slotError(QNetworkReply::NetworkError netError)
 {

@@ -1831,6 +1831,8 @@ updater->setMode(mode);
 void MainWindow::closeSlimUpdater()
 {
 
+
+
 QWidget *widget = ui->baseWidget->findChild<QWidget *>("SlimUpdater");
 ui->baseWidget->layout()->removeWidget(widget);
 widget->deleteLater();

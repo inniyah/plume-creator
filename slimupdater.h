@@ -43,6 +43,8 @@ private slots:
     void readSettings();
     void writeSettings();
 
+    void closeUpdater();
+
 private :
     Ui::SlimUpdater *ui;
 
