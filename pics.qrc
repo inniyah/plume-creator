@@ -72,5 +72,6 @@
         <file>pics/gtk-cancel.png</file>
         <file>pics/gtk-edit.png</file>
         <file>pics/gtk-preferences.png</file>
+        <file>pics/view-refresh-32x32.png</file>
     </qresource>
 </RCC>
