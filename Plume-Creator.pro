@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     textstyles.cpp \
     findreplace.cpp \
     fullscreen/fulltextzone.cpp \
-    fullscreen/fullscreeneditor.cpp
+    fullscreen/fullscreeneditor.cpp \
+    slimupdater.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -72,7 +73,8 @@ HEADERS  += mainwindow.h \
     textstyles.h \
     findreplace.h \
     fullscreen/fulltextzone.h \
-    fullscreen/fullscreeneditor.h
+    fullscreen/fullscreeneditor.h \
+    slimupdater.h
 
 RESOURCES += \
     pics.qrc \
@@ -92,7 +94,8 @@ FORMS += \
     settingsdialog.ui \
     editmenu.ui \
     findreplace.ui \
-    fullscreeneditor.ui
+    fullscreeneditor.ui \
+    slimupdater.ui
 
 
 

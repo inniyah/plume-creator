@@ -32,6 +32,7 @@
 #include "outliner/outline.h"
 #include "attendbox.h"
 #include "orientationbutton.h"
+#include "slimupdater.h"
 
 //
 class MainWindow : public QMainWindow
@@ -108,6 +109,9 @@ void textChangedSlot();
     //wordcount :
     void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
 
+    //updater :
+    void launchSlimUpdater(QString mode = "auto");
+    void closeSlimUpdater();
 
     void giveStyle();
 private:
@@ -139,6 +143,8 @@ private:
     AttendBox *attendList;
     QBoxLayout *noteDockLayout;
 QSplitter *noteSplitter;
+QWidget *leftStretcher;
+SlimUpdater *updater;
 
     QStatusBar *bar;
     QToolBar *docksToolBar;

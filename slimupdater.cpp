@@ -1,9 +1,9 @@
 #include "slimupdater.h"
 #include "ui_slimupdater.h"
 
-slimUpdater::slimUpdater(QWidget *parent) :
+SlimUpdater::SlimUpdater(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::slimUpdater)
+    ui(new Ui::SlimUpdater)
 {
     ui->setupUi(this);
 
@@ -13,11 +13,13 @@ slimUpdater::slimUpdater(QWidget *parent) :
     ui->packageComboBox->show();
 #endif
 
+    connect(ui->closeButton, SIGNAL(clicked()), this, SIGNAL(closeUpdaterSignal()));
 
 
+    ui->updateLabel->setText("test");
 }
 
-slimUpdater::~slimUpdater()
+SlimUpdater::~SlimUpdater()
 {
     delete ui;
 }

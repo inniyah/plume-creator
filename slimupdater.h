@@ -4,19 +4,23 @@
 #include <QWidget>
 
 namespace Ui {
-class slimUpdater;
+class SlimUpdater;
 }
 
-class slimUpdater : public QWidget
+class SlimUpdater : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit slimUpdater(QWidget *parent = 0);
-    ~slimUpdater();
+    explicit SlimUpdater(QWidget *parent = 0);
+    ~SlimUpdater();
     
+signals:
+    void closeUpdaterSignal();
+
+
 private:
-    Ui::slimUpdater *ui;
+    Ui::SlimUpdater *ui;
 };
 
 #endif // SLIMUPDATER_H

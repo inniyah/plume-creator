@@ -142,7 +142,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     menu->openManager();
 
-
+    if (checkUpdateAtStartupBool){
+        launchSlimUpdater("auto");
+    }
 }
 
 MainWindow::~MainWindow()
@@ -515,14 +517,13 @@ void MainWindow::createStatusBar()
 
     sceneWCLabel = new QLabel();
 
-    QWidget *stretcher1 = new QWidget();
-    stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+    leftStretcher = new QWidget();
+    leftStretcher->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
     QWidget *stretcher2 = new QWidget();
     stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     //bar->addPermanentWidget(stretcher1);
-
-    bar->addPermanentWidget(stretcher1,10);
+    bar->addWidget(leftStretcher,10);
     bar->addPermanentWidget(sceneWCLabel,1);
     bar->addPermanentWidget(stretcher2,10);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
@@ -1815,6 +1816,37 @@ int MainWindow::setCurrentNumber()
 
     return number;
 }
+
+//----------------------------------------------------------------------------
+//---------------------Updater-----------------------------------
+//----------------------------------------------------------------------------
+
+
+
+void MainWindow::launchSlimUpdater(QString mode)
+{
+    leftStretcher->hide();
+
+    updater = new SlimUpdater;
+    connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
+    bar->insertPermanentWidget(0,updater,10);
+
+}
+
+void MainWindow::closeSlimUpdater()
+{
+  bar->removeWidget(updater);
+  leftStretcher->show();
+}
+
+
+
+
+
+
+
+
+
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
