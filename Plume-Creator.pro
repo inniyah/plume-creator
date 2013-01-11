@@ -95,7 +95,8 @@ FORMS += \
     editmenu.ui \
     findreplace.ui \
     fullscreeneditor.ui \
-    slimupdater.ui
+    slimupdater.ui \
+    mainwindow.ui
 
 
 

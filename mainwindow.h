@@ -35,12 +35,16 @@
 #include "slimupdater.h"
 
 //
+namespace Ui {
+class MainWindow;
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 protected:
@@ -56,7 +60,7 @@ signals:
     void closeTabTextSignal(QFile *textFile);
     void tabWidgetWidth(int value);
     void applyConfigSignal();
-void changeAllDocsTextStylesSignal();
+    void changeAllDocsTextStylesSignal();
 
     void currentNumber(int);
 
@@ -79,7 +83,7 @@ private slots:
     void editFullscreen();
     void launchOutliner();
 
-void textChangedSlot();
+    void textChangedSlot();
 
     void showPrevAndNextTexts(bool showTextsBool = true);
 
@@ -96,7 +100,7 @@ void textChangedSlot();
     void showNextText(bool showNextTextBool);
 
     void checkHiddenDocks();
-// for netbook mode :
+    // for netbook mode :
     void attendDockHidesOthers(bool attendIsVisible){if(attendIsVisible) noteDock->hide();}
     void noteDockHidesOthers(bool noteIsVisible){if(noteIsVisible) attendDock->hide();}
 
@@ -115,6 +119,7 @@ void textChangedSlot();
 
     void giveStyle();
 private:
+    Ui::MainWindow *ui;
 
     void createMenuBar();
     void createMenuDock();
@@ -142,11 +147,10 @@ private:
     ItemBox *items;
     AttendBox *attendList;
     QBoxLayout *noteDockLayout;
-QSplitter *noteSplitter;
-QWidget *leftStretcher;
-SlimUpdater *updater;
+    QSplitter *noteSplitter;
 
-    QStatusBar *bar;
+    SlimUpdater *updater;
+
     QToolBar *docksToolBar;
     OrientationButton *menuDockButton;
     OrientationButton *toolDockButton;
@@ -164,7 +168,6 @@ SlimUpdater *updater;
     bool checkUpdateAtStartupBool;
     bool checkScreenResAtStartupBool;
 
-    QTabWidget *tabWidget;
     void setConnections();
     QList<QTextDocument *> *textDocList;
     QList<QTextDocument *> *noteDocList;
@@ -178,8 +181,8 @@ SlimUpdater *updater;
     QList<int> *tabNumList;
     QList<int> *numList;
 
-QToolButton *showPrevSceneButton, *showNextSceneButton;
-OrientationButton *showPrvScnButton, *showNxtScnButton;
+    QToolButton *showPrevSceneButton, *showNextSceneButton;
+    OrientationButton *showPrvScnButton, *showNxtScnButton;
     //settings
     void readSettings();
     void writeSettings();
@@ -190,7 +193,7 @@ OrientationButton *showPrvScnButton, *showNxtScnButton;
     int autosaveTime;
     QTimer *timer;
     QString displayMode;
-bool oneTabOnly;
+    bool oneTabOnly;
 
     void setEditMenuConnections();
 
