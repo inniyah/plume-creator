@@ -2,7 +2,7 @@ PLUME CREATOR
 
 v 0.57
 	- New updater
-	- Gtk style temporarily removed because of problems
+	- Outliner : right-menu in headers to hide/show them
 	
 v 0.56
 	- added german translation (de_DE)

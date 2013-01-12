@@ -22,5 +22,5 @@ void OutlinerSpreadsheetHeaderSection::hideOrShowThisSection(bool showSectionBoo
 
 void OutlinerSpreadsheetHeaderSection::hideThisSection()
 {
-    emit hideOrShowSectionSignal(sectionId, true);
+    emit hideOrShowSectionSignal(sectionId, false);
 }
