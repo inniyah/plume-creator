@@ -3,6 +3,7 @@
 #include <QtGui>
 #include "notezone.h"
 #include "outliner/outlinertreeitem.h"
+#include "outliner/outlinerspreadsheetheader.h"
 
 OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     QTreeView(parent)
@@ -66,13 +67,10 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
 
 
-    QHeaderView *hHeader = this->header();
-    hHeader->setMinimumSectionSize(40);
-    hHeader->setDefaultSectionSize(50);
-    hHeader->setMovable(true);
-    hHeader->setClickable(true);
-    hHeader->setStretchLastSection(true);
-    hHeader->setResizeMode(QHeaderView::Interactive);
+    OutlinerSpreadsheetHeader *hHeader = new OutlinerSpreadsheetHeader(Qt::Horizontal);
+this->setHeader(hHeader);
+
+
 
     connect(hHeader, SIGNAL(sectionResized(int,int,int)), this, SLOT(columnResizedSlot(int,int,int)));
 

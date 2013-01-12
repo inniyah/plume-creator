@@ -40,7 +40,9 @@ SOURCES += main.cpp\
     findreplace.cpp \
     fullscreen/fulltextzone.cpp \
     fullscreen/fullscreeneditor.cpp \
-    slimupdater.cpp
+    slimupdater.cpp \
+    outliner/outlinerspreadsheetheader.cpp \
+    outliner/outlinerspreadsheetheadersection.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -72,7 +74,9 @@ HEADERS  += mainwindow.h \
     findreplace.h \
     fullscreen/fulltextzone.h \
     fullscreen/fullscreeneditor.h \
-    slimupdater.h
+    slimupdater.h \
+    outliner/outlinerspreadsheetheader.h \
+    outliner/outlinerspreadsheetheadersection.h
 
 RESOURCES += \
     pics.qrc \
