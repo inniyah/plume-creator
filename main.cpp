@@ -19,6 +19,7 @@
 #endif
 
 
+
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
 //
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
 
-    instance.setApplicationVersion("0.56");
+    instance.setApplicationVersion("0.57");
 
     QString message=argv[1];
 
@@ -109,6 +110,7 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
 #ifdef Q_OS_LINUX
     else if(plumeStyle == "gtk" ){
         QApplication::setStyle(new QGtkStyle);
+        QApplication::setStyle(new QCleanlooksStyle);
     }
 #endif
 #ifdef Q_OS_WIN32
@@ -151,6 +153,7 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
         myProcess->waitForFinished();
         if(myProcess->readAllStandardOutput().size() > 0){
             QApplication::setStyle(new QGtkStyle);
+            QApplication::setStyle(new QCleanlooksStyle);
             qDebug() << "Running on Gnome";
         }
         myProcess->close();
@@ -161,8 +164,8 @@ QString plumeStyle = settings.value("MainWindow/style", "default").toString();
         if(myProcess->readAllStandardOutput().size() > 0){
             QApplication::setStyle(new QGtkStyle);
             qDebug() << "Running on XFCE";
-            myProcess->close();
         }
+        myProcess->close();
         //    if [ "$(pidof ksmserver)" ]; then
         //       echo "KDE running."
         //       # KDE-specific stuff here
