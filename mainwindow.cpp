@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     setStyleSheet("* {background-color: pink; color: black;}");
 
 //     netbook mode 10':
-        setFixedSize(900, 550);
+//        setFixedSize(900, 550);
 
     textStyles = new TextStyles();
 
@@ -1432,7 +1432,7 @@ void MainWindow::readSettings()
     checkScreenResAtStartupBool = settings.value("checkScreenResAtStartup", true).toBool();
     settings.endGroup();
     settings.beginGroup( "Updater" );
-    checkUpdateAtStartupBool = settings.value("checkAtStartup", true).toBool();
+    checkUpdateAtStartupBool = settings.value("checkAtStartup_1", true).toBool();
     settings.endGroup();
 
 

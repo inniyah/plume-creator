@@ -144,7 +144,7 @@ bool SlimUpdater::checkConnection()
     ui->updateLabel->setText(tr("<p>Connection status :"
                                 "<blockquote>- ") + connectionText + tr("</blockquote>"
                                 "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
-                                "<blockquote>- Click again on the refresh button --\></blockquote>"
+                                "<blockquote>- Click again on the refresh button --></blockquote>"
                                                                               "</p>"));
 
     if(connectionState && webSiteState){
@@ -329,7 +329,7 @@ void SlimUpdater::readSettings()
 {
     QSettings settings;
     settings.beginGroup( "Updater" );
-    ui->checkUpdateAtStartupBox->setChecked(settings.value( "checkAtStartup", true).toBool());
+    ui->checkUpdateAtStartupBox->setChecked(settings.value( "checkAtStartup_1", true).toBool());
  ui->packageComboBox->setCurrentIndex(settings.value("linuxDistrib", 1).toInt());
     settings.endGroup();
 }
@@ -341,7 +341,7 @@ void SlimUpdater::writeSettings()
 {
     QSettings settings;
     settings.beginGroup( "Updater" );
-    settings.setValue( "checkAtStartup", ui->checkUpdateAtStartupBox->checkState());
+    settings.setValue( "checkAtStartup_1", ui->checkUpdateAtStartupBox->checkState());
     settings.setValue( "linuxDistrib", ui->packageComboBox->currentIndex());
     settings.endGroup();
 }

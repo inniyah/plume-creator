@@ -322,8 +322,7 @@ void SettingsDialog::readSettings()
     ui->noTabCheckBox->setChecked(settings.value("TextArea/noTab", false).toBool());
     settings.endGroup();
     settings.beginGroup("Updater");
-    ui->checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup", true).toBool());
-    ui->checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup", true).toBool());
+    ui->checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup_1", true).toBool());
     settings.endGroup();
 
 
@@ -410,7 +409,7 @@ void SettingsDialog::accept()
     settings.setValue("TextArea/noTab", ui->noTabCheckBox->isChecked());
     settings.endGroup();
     settings.beginGroup("Updater");
-    settings.setValue("checkAtStartup", ui->checkUpdateAtStartupCheckBox->isChecked());
+    settings.setValue("checkAtStartup_1", ui->checkUpdateAtStartupCheckBox->isChecked());
     settings.endGroup();
 
 

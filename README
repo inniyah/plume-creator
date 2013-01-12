@@ -1,5 +1,8 @@
 PLUME CREATOR
 
+v 0.57.1
+	- Bug fixed : main window stuck in 550x800
+
 v 0.57
 	- New updater
 	- Outliner : right-menu in headers to hide/show columns
