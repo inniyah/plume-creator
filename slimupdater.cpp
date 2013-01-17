@@ -4,6 +4,7 @@
 #include <QNetworkSession>
 #include <QNetworkConfigurationManager>
 #include <QNetworkReply>
+#include <QNetworkProxy>
 #include <QtGlobal>
 
 #include "slimupdater.h"
@@ -33,7 +34,26 @@ SlimUpdater::SlimUpdater(QString mode, QWidget *parent) :
     readSettings();
 
 
+    // proxy setup :
+
+    QNetworkProxy proxy;
+    if(proxyEnabled){
+        if(proxySystemEnabled){
+            proxy = QNetworkProxyFactory::systemProxyForQuery().first();
+        }
+        else{
+            proxy.setType(QNetworkProxy::Socks5Proxy);
+            proxy.setHostName(proxyHostName);
+            proxy.setPort(proxyPort);
+            proxy.setUser(proxyUserName);
+            proxy.setPassword(proxyPassword);
+        }
+    }
+    else
+        proxy.setType(QNetworkProxy::NoProxy);
+
     manager = new QNetworkAccessManager;
+    manager->setProxy(proxy);
     connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
@@ -143,9 +163,10 @@ bool SlimUpdater::checkConnection()
 
     ui->updateLabel->setText(tr("<p>Connection status :"
                                 "<blockquote>- ") + connectionText + tr("</blockquote>"
-                                "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
-                                "<blockquote>- Click again on the refresh button --></blockquote>"
-                                                                              "</p>"));
+                                                                        "<blockquote>- Verify the proxy settings"
+                                                                        "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
+                                                                                                                      "<blockquote>- Click again on the refresh button --></blockquote>"
+                                                                                                                      "</p>"));
 
     if(connectionState && webSiteState){
         checkUpdate();
@@ -330,7 +351,13 @@ void SlimUpdater::readSettings()
     QSettings settings;
     settings.beginGroup( "Updater" );
     ui->checkUpdateAtStartupBox->setChecked(settings.value( "checkAtStartup_1", true).toBool());
- ui->packageComboBox->setCurrentIndex(settings.value("linuxDistrib", 1).toInt());
+    ui->packageComboBox->setCurrentIndex(settings.value("linuxDistrib", 1).toInt());
+    proxyEnabled = settings.value("Proxy/proxyEnabled", false).toBool();
+    proxySystemEnabled = settings.value("Proxy/proxySystemEnabled", true).toBool();
+    proxyHostName = settings.value("Proxy/proxyHostName", "").toString();
+    proxyPort = settings.value("Proxy/proxyUserName", 1080).toInt();
+    proxyUserName = settings.value("Proxy/proxyUserName", "").toString();
+    proxyPassword = settings.value("Proxy/proxyEnabled", "").toString();
     settings.endGroup();
 }
 

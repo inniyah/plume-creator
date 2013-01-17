@@ -48,6 +48,15 @@ private slots:
 private :
     Ui::SlimUpdater *ui;
 
+    bool proxyEnabled;
+    bool proxySystemEnabled;
+    QString proxyHostName;
+    int proxyPort;
+    QString proxyUserName;
+    QString proxyPassword;
+
+
+
     QNetworkAccessManager *manager;
     QString currentAppVersion;
 

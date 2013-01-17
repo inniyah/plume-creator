@@ -384,6 +384,16 @@ void SettingsDialog::readSettings()
     ui->styleListWidget->addItems(textStyles->namesList());
     ui->styleListWidget->setCurrentRow(0);
 
+    // proxy tab :
+
+    settings.beginGroup("Updater");
+    ui->proxyBox->setChecked(settings.value("Proxy/proxyEnabled", false).toBool());
+    ui->proxySystemSettingsCheckBox->setChecked(settings.value("Proxy/proxySystemEnabled", true).toBool());
+    ui->proxyHostNameLineEdit->setText(settings.value("Proxy/proxyHostName", "").toString());
+    ui->proxyPortSpinBox->setValue(settings.value("Proxy/proxyPort", 1080).toInt());
+    ui->proxyUserNameLineEdit->setText(settings.value("Proxy/proxyUserName", "").toString());
+    ui->proxyPasswordLineEdit->setText(settings.value("Proxy/proxyPassword", "").toString());
+    settings.endGroup();
 
 
 
@@ -411,9 +421,6 @@ void SettingsDialog::accept()
     settings.beginGroup("Updater");
     settings.setValue("checkAtStartup_1", ui->checkUpdateAtStartupCheckBox->isChecked());
     settings.endGroup();
-
-
-
 
 
 
@@ -455,8 +462,23 @@ void SettingsDialog::accept()
     textStyles->saveStyles();
  if(styleInfoModified){
      emit changeAllDocsTextStylesSignal();
-
  }
+
+ // proxy tab :
+
+ settings.beginGroup("Updater");
+ settings.setValue("Proxy/proxyEnabled", ui->proxyBox->isChecked());
+ settings.setValue("Proxy/proxySystemEnabled", ui->proxySystemSettingsCheckBox->isChecked());
+ settings.setValue("Proxy/proxyHostName", ui->proxyHostNameLineEdit->text());
+ settings.setValue("Proxy/proxyPort", ui->proxyPortSpinBox->value());
+ settings.setValue("Proxy/proxyUserName", ui->proxyUserNameLineEdit->text());
+ settings.setValue("Proxy/proxyPassword", ui->proxyPasswordLineEdit->text());
+ settings.endGroup();
+
+
+
+
+
 
 
     QDialog::accept();

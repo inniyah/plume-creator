@@ -209,7 +209,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="showFullScrollbarBox">
             <property name="text">
-             <string>CheckBox</string>
+             <string>Show scrollbar</string>
             </property>
            </widget>
           </item>
@@ -698,6 +698,118 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="proxyTab">
+      <attribute name="title">
+       <string>Proxy</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="proxyBox">
+         <property name="title">
+          <string>Enable proxy</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <layout class="QFormLayout" name="formLayout_5">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="1" column="0">
+             <widget class="QLabel" name="proxyHostNameLabel">
+              <property name="text">
+               <string>Host name :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="proxyHostNameLineEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="proxyPortLabel">
+              <property name="text">
+               <string>Port :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="proxyUserNameLabel">
+              <property name="text">
+               <string>User Name :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="proxyUserNameLineEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="proxyPasswordLabel">
+              <property name="text">
+               <string>Password :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="proxyPasswordLineEdit">
+              <property name="inputMask">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true"/>
+              </property>
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="proxyPortSpinBox">
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="decimals">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="proxySystemSettingsLabel">
+              <property name="text">
+               <string>Use system settings :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QCheckBox" name="proxySystemSettingsCheckBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0">
@@ -755,12 +867,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>67</x>
-     <y>277</y>
+     <x>76</x>
+     <y>242</y>
     </hint>
     <hint type="destinationlabel">
-     <x>67</x>
-     <y>259</y>
+     <x>76</x>
+     <y>217</y>
     </hint>
    </hints>
   </connection>
@@ -771,12 +883,140 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>276</y>
+     <x>339</x>
+     <y>242</y>
     </hint>
     <hint type="destinationlabel">
-     <x>336</x>
-     <y>255</y>
+     <x>339</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyHostNameLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPortSpinBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>169</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>130</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyUserNameLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>170</x>
+     <y>158</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPasswordLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyHostNameLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>118</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPortLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyUserNameLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>154</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>113</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPasswordLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>176</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>114</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>
