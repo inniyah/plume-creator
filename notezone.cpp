@@ -1064,11 +1064,10 @@ void NoteZone::focusOutEvent ( QFocusEvent * event )
 {
 
     emit  noteFocusOutSignal();
-
-    event->accept();
+    QTextEdit::focusOutEvent(event);
 }
 
-
+//------------------------------------------------------------------------------------
 
 
 
