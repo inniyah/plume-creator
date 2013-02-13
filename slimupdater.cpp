@@ -286,11 +286,17 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
     }
 
     if(sizeMax >= 3 && numbers.at(2) > currentNumbers.at(2)){ // beta versions :
+
         niv3bool = true;
 
     }
 
-
+//    if web version is behind the current version :
+    if(numbers.at(0) < currentNumbers.at(0) || numbers.at(1) < currentNumbers.at(1)){
+        niv1bool = false;
+        niv2bool = false;
+        niv3bool = false;
+}
 
 
     if(niv1bool || niv2bool || niv3bool){
