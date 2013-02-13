@@ -1,5 +1,10 @@
 PLUME CREATOR
 
+v 0.58
+	- More consistent key bindings
+	- Added updater support for proxy
+	- Fixed the size of the exporter preview window for netbooks
+
 v 0.57.1
 	- Bug fixed : main window stuck in 550x800
 

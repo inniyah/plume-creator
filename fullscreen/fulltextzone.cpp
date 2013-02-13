@@ -405,7 +405,7 @@ void FullTextZone::keyPressEvent(QKeyEvent *event)
             QTextEdit::keyPressEvent(event);
 
     }
-    else if(event->key() == Qt::Key_Escape)
+    else if(event->key() == Qt::Key_Escape || event->key() == Qt::Key_F11)
         emit quitFullScreen();
     else
         QTextEdit::keyPressEvent(event);

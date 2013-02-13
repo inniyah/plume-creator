@@ -95,6 +95,20 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="isPortableToBeCreatedLabel">
+           <property name="text">
+            <string>Portable :</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QCheckBox" name="isPortableToBeCreated">
+           <property name="toolTip">
+            <string>Allow the use of Plume on a USB stick</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="0">

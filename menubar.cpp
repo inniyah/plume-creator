@@ -422,7 +422,7 @@ void MenuBar::createActions()
 //    editWidgetAct->setDefaultWidget(editWidget);
 
     manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
-    // aboutAct->setShortcut(QKeySequence::Quit);
+    manageStylesAct->setShortcut(Qt::Key_F7);
     manageStylesAct->setToolTip(tr("Manage the styles"));
     connect(manageStylesAct, SIGNAL(triggered()), this, SLOT(manageStyles()));
 
@@ -440,29 +440,29 @@ void MenuBar::createActions()
 
     showNotesDockAct = new QAction(QIcon(":/pics/im-status-message-edit.png"),tr("&Notes"),this);
     showNotesDockAct->setCheckable(true);
-    showNotesDockAct->setShortcut(Qt::Key_F6);
+    showNotesDockAct->setShortcut(Qt::Key_F2);
     showNotesDockAct->setToolTip(tr("Show the note dock"));
     connect(showNotesDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showNotesDockSignal(bool)));
 
     showAttendDockAct = new QAction(QIcon(":/pics/meeting-organizer.png"),tr("&Attendance"),this);
     showAttendDockAct->setCheckable(true);
-    showAttendDockAct->setShortcut(Qt::Key_F7);
+    showAttendDockAct->setShortcut(Qt::Key_F5);
     showAttendDockAct->setToolTip(tr("Show the attendance dock"));
     connect(showAttendDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showAttendDockSignal(bool)));
 
     showToolsDockAct = new QAction(QIcon(":/pics/preferences-system.png"),tr("&Tools"),this);
     showToolsDockAct->setCheckable(true);
-    showToolsDockAct->setShortcut(Qt::Key_F8);
+    showToolsDockAct->setShortcut(Qt::Key_F4);
     showToolsDockAct->setToolTip(tr("Show the tool dock"));
     connect(showToolsDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showToolsDockSignal(bool)));
 
     launchOutlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("&Outliner"),this);
-    launchOutlinerAct->setShortcut(Qt::Key_F9);
+    launchOutlinerAct->setShortcut(Qt::Key_F6);
     launchOutlinerAct->setToolTip(tr("Show the outliner"));
     connect(launchOutlinerAct, SIGNAL(triggered()), this, SIGNAL(launchOutlinerSignal()));
 
     showFullscreenAct = new QAction(QIcon(":/pics/view-fullscreen.png"),tr("&Fullscreen"), this);
-    showFullscreenAct->setShortcut(Qt::Key_F10);
+    showFullscreenAct->setShortcut(Qt::Key_F11);
     showFullscreenAct->setToolTip(tr("Edit fullscreen"));
     connect(showFullscreenAct, SIGNAL(triggered()), this, SIGNAL(showFullscreenSignal()));
 

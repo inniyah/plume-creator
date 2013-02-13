@@ -883,7 +883,7 @@ void Exporter::seePreview()
         previewDialog = new QDialog(this);
         previewDialog->setAttribute(Qt::WA_DeleteOnClose);
         previewDialog->setWindowTitle(document->metaInformation(QTextDocument::DocumentTitle));
-        previewDialog->setMinimumSize(600,800);
+        previewDialog->setMinimumSize(500,500);
 
         QVBoxLayout *layout = new QVBoxLayout;
 

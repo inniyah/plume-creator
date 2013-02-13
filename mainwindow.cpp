@@ -596,7 +596,6 @@ void MainWindow::createDocksToolBar()
     OrientationButton *fullscreenButton = new OrientationButton(QIcon(":/pics/view-fullscreen-90.png"),tr("Fullscreen"));
     fullscreenButton->setObjectName("fullscreenBt");
     fullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    fullscreenButton->setShortcut(Qt::Key_F11);
     fullscreenButton->setOrientation(Qt::Vertical);
     fullscreenButton->setCheckable(false);
     fullscreenButton->setMirrored(true);

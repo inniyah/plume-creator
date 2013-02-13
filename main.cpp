@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
 
-    instance.setApplicationVersion("0.57.2");
+    instance.setApplicationVersion("0.58");
 
     QString message=argv[1];
 
@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
 
 
 
-
     //Names for the QSettings
 
     QCoreApplication::setOrganizationName( "PlumeSoft" );
@@ -97,8 +96,83 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName( "Plume-Creator" );
 
 
-    // style :
-    QSettings settings;
+
+
+    // update from native settings to settings in .ini file
+
+    QSettings iniSettings(QSettings::IniFormat, QSettings::UserScope, "PlumeSoft","Plume-Creator" );
+    if(iniSettings.value("Settings/isMovedtoIniFile", false).toBool() == false){
+        QSettings nativeSettings(QSettings::NativeFormat, QSettings::UserScope, "PlumeSoft","Plume-Creator" );
+
+        QStringList keys = nativeSettings.allKeys();
+        for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+        {
+            iniSettings.setValue( *i, nativeSettings.value( *i ) );
+        }
+
+    iniSettings.setValue("Settings/isMovedtoIniFile", true);
+    }
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+
+
+#ifdef Q_OS_WIN32
+    // not finished !
+    // move .ini file to app path for portable app (Microsoft Windows only)
+
+        if (iniSettings.value("Settings/isPortableToBeCreated", false).toBool() == true
+                && iniSettings.value("Settings/isPortableToBeUnset", false).toBool() == false){
+
+            QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::applicationDirPath ());
+            iniSettings.setValue("Settings/isPortableToBeCreated", false);
+            iniSettings.setValue("Settings/isPortable", true);
+
+            QSettings portableSettings;
+
+                QStringList keys = iniSettings.allKeys();
+                for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+                {
+                    portableSettings.setValue( *i, iniSettings.value( *i ) );
+                }
+
+
+
+
+}
+
+        if (iniSettings.value("Settings/isPortable", false).toBool() == true){
+
+            QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::applicationDirPath ());
+        }
+
+        if (iniSettings.value("Settings/isPortableToBeCreated", false).toBool() == false
+                && iniSettings.value("Settings/isPortable", false).toBool() == false
+               && iniSettings.value("Settings/isPortableToBeUnset", false).toBool() == true){
+
+
+            iniSettings.setValue("Settings/isPortableToBeCreated", false);
+            iniSettings.setValue("Settings/isPortable", false);
+            iniSettings.setValue("Settings/isPortableToBeUnset", false);
+
+            QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, getenv("APPDATA"));
+                QSettings localSettings;
+
+                QStringList keys = iniSettings.allKeys();
+                for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+                {
+                    localSettings.setValue( *i, iniSettings.value( *i ) );
+                }
+
+
+}
+
+
+#endif
+
+
+        // style :
+
+ QSettings settings;
+
 QString plumeStyle = settings.value("MainWindow/style", "default").toString();
 
     if (plumeStyle == "plastique" ){

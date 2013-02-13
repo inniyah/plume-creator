@@ -70,6 +70,7 @@ private slots:
     void langChanged();
     void programStyleChanged();
     void displayModeChanged(int dispModeIndex);
+    void portableModeChanged(bool mode);
 
     // text tab :
     void setStyleInfos(int index);
@@ -99,7 +100,7 @@ private:
     int autosaveTime;
 
     QString displayMode, prev_displayMode;
-
+    bool previousIsPortable;
 
     // text tab :
 

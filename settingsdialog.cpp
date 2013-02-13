@@ -10,7 +10,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    ui->isPortableToBeCreated->hide();
+    ui->isPortableToBeCreatedLabel->hide();
+#ifdef Q_OS_WIN32
+    ui->isPortableToBeCreated->hide();
+    ui->isPortableToBeCreatedLabel->hide();
+#endif
 }
 
 SettingsDialog::~SettingsDialog()
@@ -106,6 +111,16 @@ void SettingsDialog::displayModeChanged(int dispModeIndex)
 
 }
 
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::portableModeChanged(bool mode)
+{
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("A different portable mode has been selected.<br>The change will be effective after restarting the program."));
+    msgBox.exec();
+
+}
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 
@@ -312,7 +327,10 @@ void SettingsDialog::readSettings()
     displayMode = settings.value("displayMode", "desktop").toString();
     prev_displayMode = displayMode;
     ui->displayModeComboBox->setCurrentIndex(displayModeCodes.indexOf(displayMode));
-
+#ifdef Q_OS_WIN32
+    ui->isPortableToBeCreated->setChecked(settings.value("isPortable", false).toBool());
+    previousIsPortable = settings.value("isPortable", false).toBool();
+ #endif
     settings.endGroup();
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
@@ -329,7 +347,7 @@ void SettingsDialog::readSettings()
     connect(ui->langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
     connect(ui->styleComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(programStyleChanged()), Qt::UniqueConnection);
     connect(ui->displayModeComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(displayModeChanged(int)), Qt::UniqueConnection);
-
+    connect(ui->isPortableToBeCreated,SIGNAL(toggled(bool)),this,SLOT(portableModeChanged(bool)));
 
 
     // text tab :
@@ -411,7 +429,15 @@ void SettingsDialog::accept()
     settings.setValue("lang", langCodes.at(langs.indexOf(ui->langComboBox->currentText())));
     settings.setValue("style", styleCodes.at(styles.indexOf(ui->styleComboBox->currentText())));
     settings.setValue("displayMode", displayModeCodes.at(displayModes.indexOf(ui->displayModeComboBox->currentText())));
+
+    settings.setValue("isPortable", ui->isPortableToBeCreated->isChecked());
+    if(ui->isPortableToBeCreated->isChecked() && !previousIsPortable)
+        settings.setValue("isPortableToBeCreated", true);
+    else if(previousIsPortable)
+        settings.setValue("isPortableToBeUnset", true);
+
     settings.endGroup();
+
     settings.beginGroup( "Settings" );
     settings.setValue("autosaveTime", ui->autosaveTimeSpinBox->value() * 1000);
     settings.setValue("preventDoubleSpace", ui->preventDoubleSpaceCheckBox->isChecked());

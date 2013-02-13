@@ -112,19 +112,20 @@ void FullscreenEditor::createNotesMenu()
     QMenu *notesMenu = new QMenu();
 
 
-    QAction *synAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Synopsis"),this);
-    synAct->setShortcut(Qt::Key_F9);
-    synAct->setToolTip(tr("Show the synopsis"));
-    connect(synAct, SIGNAL(triggered()),this,SLOT(showSyn()));
+//    QAction *synAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Synopsis"),this);
+//    synAct->setShortcut(Qt::Key_F2);
+//    synAct->setToolTip(tr("Show the synopsis"));
+//    connect(synAct, SIGNAL(triggered()),this,SLOT(showSyn()));
 
-    QAction *noteAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Note"),this);
-    noteAct->setShortcut(Qt::Key_F10);
-    noteAct->setToolTip(tr("Show the note"));
-    connect(noteAct, SIGNAL(triggered()),this,SLOT(showNote()));
+    QAction *notesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Note"),this);
+    notesAct->setShortcut(Qt::Key_F10);
+    notesAct->setToolTip(tr("Show the notes"));
+    connect(notesAct, SIGNAL(triggered()),this,SLOT(showNote()));
+    connect(notesAct, SIGNAL(triggered()),this,SLOT(showSyn()));
 
 
-    notesMenu->addAction(synAct);
-    notesMenu->addAction(noteAct);
+//    notesMenu->addAction(synAct);
+    notesMenu->addAction(notesAct);
     ui->notesButton->setMenu(notesMenu);
 }
 //------------------------------------------------------------------------------------
@@ -163,12 +164,12 @@ void FullscreenEditor::createOptionMenu()
     editWidgetAct->setDefaultWidget(editWidget);
 
     QAction *manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
-    manageStylesAct->setShortcut(Qt::Key_F11);
+    manageStylesAct->setShortcut(Qt::Key_F7);
     manageStylesAct->setToolTip(tr("Manage the styles"));
     connect(manageStylesAct, SIGNAL(triggered()), this, SIGNAL(manageStylesSignal()));
 
     QAction *setColorsAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Colors"),this);
-    setColorsAct->setShortcut(Qt::Key_F12);
+//    setColorsAct->setShortcut(Qt::Key_F12);
     setColorsAct->setToolTip(tr("Set the colors"));
     connect(setColorsAct, SIGNAL(triggered()), this, SLOT(callColorDialog()));
 
