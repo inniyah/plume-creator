@@ -2,8 +2,9 @@ PLUME CREATOR
 
 v 0.58
 	- More consistent key bindings
-	- Added updater support for proxy
+	- Added proxy support for updater
 	- Fixed the size of the exporter preview window for netbooks
+	- Bug fixed : text cursor keeps blinking when losing focus in notes 
 
 v 0.57.1
 	- Bug fixed : main window stuck in 550x800
