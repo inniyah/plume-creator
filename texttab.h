@@ -44,6 +44,7 @@ signals:
 
     void wordCountSignal(int wordCount);
     void blockCountSignal(int blockCount);
+    void countDeltaUpdatedSignal(int countDelta);
     void charFormatChangedSignal(QTextCharFormat format);
 void setStyleSelectionSignal(int styleIndex);
 void textChangedSignal();

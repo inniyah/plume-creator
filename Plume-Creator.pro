@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     fullscreen/fullscreeneditor.cpp \
     slimupdater.cpp \
     outliner/outlinerspreadsheetheader.cpp \
-    outliner/outlinerspreadsheetheadersection.cpp
+    outliner/outlinerspreadsheetheadersection.cpp \
+    wordgoalprogressbar.cpp
 
 HEADERS  += mainwindow.h \
     newprojectwizard.h \
@@ -76,7 +77,8 @@ HEADERS  += mainwindow.h \
     fullscreen/fullscreeneditor.h \
     slimupdater.h \
     outliner/outlinerspreadsheetheader.h \
-    outliner/outlinerspreadsheetheadersection.h
+    outliner/outlinerspreadsheetheadersection.h \
+    wordgoalprogressbar.h
 
 RESOURCES += \
     pics.qrc \
@@ -98,7 +100,8 @@ FORMS += \
     findreplace.ui \
     fullscreeneditor.ui \
     slimupdater.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    wordgoalprogressbar.ui
 
 
 

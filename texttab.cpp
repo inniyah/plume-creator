@@ -223,6 +223,7 @@ void TextTab::resetWordCounts()
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
     connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
     connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
+    connect(tabWordCount, SIGNAL(countDeltaSignal(int)), this, SIGNAL(countDeltaUpdatedSignal(int)));
     updateWordCounts();
 }
 //-------------------------------------------------------------------------------

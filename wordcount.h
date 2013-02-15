@@ -39,6 +39,8 @@ signals:
     //    void charCountSignal(int charCount);
     void wordCountSignal(int wordCount);
     void blockCountSignal(int blockCount);
+    void countDeltaSignal(int countDelta);
+
 public slots:
 
 private slots:

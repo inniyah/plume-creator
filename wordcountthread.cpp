@@ -138,44 +138,44 @@ void WordCountThread::run()
 
         prjNodeList = currNode.childNodes();
 
-        i = 0;
-        while(i < prjNodeList.length()){
-            currNode = prjNodeList.at(i);
-            nodesNumberList.append(currNode.toElement().attribute("number").toInt());
+                i = 0;
+                while(i < prjNodeList.length()){
+                    currNode = prjNodeList.at(i);
+                    nodesNumberList.append(currNode.toElement().attribute("number").toInt());
 
-            QDomNodeList prjChildNodeList;
-            prjChildNodeList = currNode.childNodes();
-            int j = 0;
-            while(j < prjChildNodeList.length()){
-                if(prjChildNodeList.at(j).toElement().tagName() == "scene")
-                    nodesNumberList.append(prjChildNodeList.at(j).toElement().attribute("number").toInt());
-                ++j;
+                    QDomNodeList prjChildNodeList;
+                    prjChildNodeList = currNode.childNodes();
+                    int j = 0;
+                    while(j < prjChildNodeList.length()){
+                        if(prjChildNodeList.at(j).toElement().tagName() == "scene")
+                            nodesNumberList.append(prjChildNodeList.at(j).toElement().attribute("number").toInt());
+                        ++j;
+                    }
+                    ++i;
+                }
+
             }
-            ++i;
+
+            int bookWordCount = 0;
+            i = 0;
+            while(i < nodesNumberList.size()){
+                bookWordCount += countWords(docForNumber.value(nodesNumberList.at(i)));
+                QString string;
+                qDebug() << "bookWordCount : " + string.setNum(bookWordCount);
+                ++i;
+            }
+
+            emit bookWordCountSignal(bookWordCount);
+
+
+
+            // calculate current book wordcount (all doc) :
+            int prjWordCount = 0;
+            QHashIterator<int,QTextDocument *> e(docForNumber);
+            while (e.hasNext()) {
+                e.next();
+                prjWordCount += countWords(e.value());
+            }
+            emit projectWordCountSignal(prjWordCount);
+
         }
-
-    }
-
-    int bookWordCount = 0;
-    i = 0;
-    while(i < nodesNumberList.size()){
-        bookWordCount += countWords(docForNumber.value(nodesNumberList.at(i)));
-        QString string;
-        qDebug() << "bookWordCount : " + string.setNum(bookWordCount);
-        ++i;
-    }
-
-    emit bookWordCountSignal(bookWordCount);
-
-
-
-    // calculate current book wordcount (all doc) :
-    int prjWordCount = 0;
-    QHashIterator<int,QTextDocument *> e(docForNumber);
-    while (e.hasNext()) {
-        e.next();
-        prjWordCount += countWords(e.value());
-    }
-    emit projectWordCountSignal(prjWordCount);
-
-}

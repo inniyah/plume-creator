@@ -139,6 +139,9 @@ return finalWordCount;
 void WordCount::updateWordCount()
 {
 
+    int preFinalWordCount = finalWordCount;
+
+
     QString blockText;
 
 
@@ -173,6 +176,10 @@ void WordCount::updateWordCount()
         preBlockNum = blockNum;
 
     }
+
+    int postFinalWordCount = finalWordCount;
+
+emit countDeltaSignal(postFinalWordCount - preFinalWordCount);
 
 }
 

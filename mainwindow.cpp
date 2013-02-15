@@ -14,6 +14,7 @@
 #include "outliner/outline.h"
 #include "attendbox.h"
 #include "ui_mainwindow.h"
+
 //
 
 MainWindow::MainWindow(QWidget *parent)
@@ -518,10 +519,14 @@ void MainWindow::createStatusBar()
     QWidget *stretcher2 = new QWidget();
     stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
+    wordGoalBar = new WordGoalProgressBar();
+
     //bar->addPermanentWidget(stretcher1);
     ui->bar->addWidget(stretcher1,10);
     ui->bar->addPermanentWidget(sceneWCLabel,1);
     ui->bar->addPermanentWidget(stretcher2,10);
+    ui->bar->addPermanentWidget(stretcher2,10);
+    ui->bar->addPermanentWidget(wordGoalBar,1);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
     //    bar->addPermanentWidget(status_tabFullscreenButton,2);
     //    bar->addPermanentWidget(status_outlinerButton,2);
@@ -1019,6 +1024,10 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         // For wordcount :
         connect(tab,SIGNAL(wordCountSignal(int)),this,SLOT(updateSceneWC(int)));
         tab->updateWordCounts();
+
+        // For word count target :
+        connect(tab, SIGNAL(countDeltaUpdatedSignal(int)), wordGoalBar, SLOT(changeProgressBy(int)) );
+
 
         //    temporary config
 

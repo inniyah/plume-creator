@@ -33,6 +33,7 @@
 #include "attendbox.h"
 #include "orientationbutton.h"
 #include "slimupdater.h"
+#include "wordgoalprogressbar.h"
 
 //
 namespace Ui {
@@ -203,6 +204,7 @@ private:
 
     bool textAlreadyChanged;
 
+WordGoalProgressBar *wordGoalBar;
 };
 
 #endif // MAINWINDOW_H
