@@ -1724,13 +1724,20 @@ void MainWindow::editFullscreen()
     fullEditor->setNote(noteStack->document(), noteStack->textCursor().position());
 
 
-    connect(fullEditor,SIGNAL(destroyed()),tab,SLOT(resetWordCounts()));
+    connect(fullEditor,SIGNAL(destroyed()),tab,SLOT(updateWordCounts()));
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
     connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(closeSignal()),synStack, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(closeSignal()),noteStack, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
     connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
+
+
+//progressBar :
+
+fullEditor->setProgressBarValue(wordGoalBar->value());
+fullEditor->setProgressBarGoal(wordGoalBar->goal());
+
 }
 
 //----------------------------------------------------------------------------

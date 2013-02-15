@@ -42,6 +42,7 @@ signals:
     void countDeltaSignal(int countDelta);
 
 public slots:
+void calculateCounts();
 
 private slots:
 
@@ -56,7 +57,7 @@ private:
 
     QTextDocument *document;
     QStringList wordsList;
-
+QString docText;
     //    int finalCharCount;
     //    int preCharCount;
 

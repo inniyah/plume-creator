@@ -123,7 +123,7 @@ bool TextTab::openText(QTextDocument *doc)
 
 
     //for wordcount :
-this->resetWordCounts();
+this->setWordCounts();
 
     connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
     connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -173,8 +173,8 @@ QTextDocument* TextTab::document()
 //-------------------------------------------------------------------------------
 void TextTab::wordCountUpdated(int wordCount)
 {
-    //    QString debug;
-    //    qDebug() << "wordCount : " << debug.setNum(wordCount,10);
+//        QString debug;
+//        qDebug() << "wordCount : " << debug.setNum(wordCount,10);
 
 
     emit wordCountSignal(wordCount);
@@ -213,11 +213,12 @@ void TextTab::blockCountUpdated(int blockCount)
 //-------------------------------------------------------------------------------
 void TextTab::updateWordCounts()
 {
+    tabWordCount->calculateCounts();
     tabWordCount->updateAll();
 
 }
 //-------------------------------------------------------------------------------
-void TextTab::resetWordCounts()
+void TextTab::setWordCounts()
 {
     tabWordCount = new WordCount(textDocument, this);
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));

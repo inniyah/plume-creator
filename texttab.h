@@ -60,7 +60,7 @@ public slots:
     void changeTextHeightSlot(int height);
     void changeTextStyleSlot(int styleIndex);
     void updateWordCounts();
-   void resetWordCounts();
+   void setWordCounts();
    void setTextFocus();
     void setCursorPos(int pos);
     int saveCursorPos();

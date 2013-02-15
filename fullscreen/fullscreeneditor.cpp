@@ -26,7 +26,6 @@ FullscreenEditor::~FullscreenEditor()
     else if(textStyles->zoomModifier() == 0){
         originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
 }
-
     delete ui;
 }
 //------------------------------------------------------------------------------------
@@ -86,6 +85,7 @@ void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
     fullscreenWordCount = new WordCount(clonedDoc, this);
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
     connect(fullscreenWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(setWordCount(int)));
+    connect(fullscreenWordCount, SIGNAL(countDeltaSignal(int)), ui->progressBar, SLOT(changeProgressBy(int)));
 //    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
     fullscreenWordCount->updateAll();
 
@@ -424,7 +424,16 @@ void FullscreenEditor::setZoom()
 
 
 }
-
+//-------------------------------------------------------------------------------
+void FullscreenEditor::setProgressBarValue(int value)
+{
+    ui->progressBar->setValue(value);
+}
+//-------------------------------------------------------------------------------
+void FullscreenEditor::setProgressBarGoal(int goal)
+{
+    ui->progressBar->setGoal(goal);
+}
 
 //-------------------------------------------------------------------------------
 void FullscreenEditor::cursorPositionChangedSlot()
@@ -642,6 +651,7 @@ void FullscreenEditor::setAddOnColor()
             "QLabel#clockBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QLabel#wordCountLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QLabel#wordCountBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordGoalLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
     //    "QToolButton {background-color: red; border: none;}"

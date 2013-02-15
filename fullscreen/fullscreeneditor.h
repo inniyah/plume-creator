@@ -29,6 +29,7 @@
 #include "textstyles.h"
 #include "editmenu.h"
 #include "wordcount.h"
+#include "wordgoalprogressbar.h"
 
 namespace Ui {
 class FullscreenEditor;
@@ -59,6 +60,8 @@ public slots:
     void setNote(QTextDocument *noteDocument, int cursorPos);
     void setTextStyles(TextStyles *styles){textStyles = styles;}
     void resetFullscreenTextWidthSlot();
+    void setProgressBarValue(int value);
+    void setProgressBarGoal(int goal);
 
 private slots:
 

@@ -11,8 +11,16 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
 
 
-    QString docText = doc->toPlainText();
     document = doc;
+
+    //    connect(doc,SIGNAL(contentsChanged()), this, SLOT(updateCharCount()));
+
+    connect(document, SIGNAL(contentsChanged()), this, SLOT(updateWordCount()));
+    connect(document, SIGNAL(cursorPositionChanged(QTextCursor)), this, SLOT(updateCursorPosition(QTextCursor)));
+
+
+    connect(document,SIGNAL(blockCountChanged(int)), this, SLOT(updateBlockCount(int)));
+
 
     //Character Count:
 
@@ -21,15 +29,15 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
     //    emit charCountSignal(preCharCount);
 
-    //    connect(doc,SIGNAL(contentsChanged()), this, SLOT(updateCharCount()));
+    this->calculateCounts();
+}
 
+//--------------------------------------------------------------------------------------------------------------------------------
 
+void WordCount::calculateCounts()
+{
 
-
-
-
-
-
+    docText = document->toPlainText();
 
 
 
@@ -55,7 +63,7 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
     QStringList blockWordsList;
     QString blockText;
 
-    QTextCursor textCursor(doc);
+    QTextCursor textCursor(document);
     textCursor.setPosition(0);
     blockNum = textCursor.blockNumber();
 
@@ -77,9 +85,6 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
 
 
-    connect(doc, SIGNAL(contentsChanged()), this, SLOT(updateWordCount()));
-    connect(doc, SIGNAL(cursorPositionChanged(QTextCursor)), this, SLOT(updateCursorPosition(QTextCursor)));
-
 
 
 
@@ -91,11 +96,10 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
     //Paragraph Count:
 
-    preBlockCount = doc->blockCount();
+    preBlockCount = document->blockCount();
 
     //   emit blockCountSignal(preBlockCount);
 
-    connect(doc,SIGNAL(blockCountChanged(int)), this, SLOT(updateBlockCount(int)));
 
 
 
@@ -110,14 +114,12 @@ WordCount::WordCount(QTextDocument *doc, QObject *parent) :
 
 int WordCount::updateAll()
 {
-
     //     emit charCountSignal(preCharCount);
 
     emit wordCountSignal(finalWordCount);
-
     emit blockCountSignal(preBlockCount);
 
-return finalWordCount;
+    return finalWordCount;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
@@ -179,7 +181,7 @@ void WordCount::updateWordCount()
 
     int postFinalWordCount = finalWordCount;
 
-emit countDeltaSignal(postFinalWordCount - preFinalWordCount);
+    emit countDeltaSignal(postFinalWordCount - preFinalWordCount);
 
 }
 

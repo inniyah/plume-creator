@@ -3,6 +3,7 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include "ui_wordgoalprogressbar.h"
+#include <QtGui>
 
 WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
     QWidget(parent),
@@ -13,8 +14,22 @@ WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
     createActions();
 
     ui->progressBar->setFormat("%v");
-    ui->progressBar->setRange(0,1000);
+    ui->progressBar->setMinimum(0);
 ui->progressBar->reset();
+
+
+ui->progressBar->setStyleSheet("QProgressBar {"
+                               "border: 1px solid grey;"
+                               "border-radius: 2px;"
+                               "text-align: center;"
+                               "}"
+                               "QProgressBar::chunk {"
+                               "background-color: #05B8CC;"
+                               "width: 20px;"
+                               "}");
+
+
+
 }
 
 WordGoalProgressBar::~WordGoalProgressBar()
@@ -29,18 +44,33 @@ void WordGoalProgressBar::setGoalDialog()
                                  tr("Word count target :"), 1000, 0, 999999, 1, &ok);
     if (ok)
         setGoal(i);
-    ui->wordGoalLabel->setText(tr("/%1 words").arg(i));
 }
 
 
 void WordGoalProgressBar::setGoal(int goal)
 {
     ui->progressBar->setMaximum(goal);
+    ui->wordGoalLabel->setText(tr("/%1 words").arg(goal));
+}
+
+int WordGoalProgressBar::goal()
+{
+    return ui->progressBar->maximum();
 }
 
 void WordGoalProgressBar::setBase(int base)
 {
     ui->progressBar->setMinimum(base);
+}
+
+void WordGoalProgressBar::setValue(int value)
+{
+    ui->progressBar->setValue(value);
+}
+
+int WordGoalProgressBar::value()
+{
+    return ui->progressBar->value();
 }
 
 void WordGoalProgressBar::changeProgressBy(int progress)
@@ -50,6 +80,8 @@ void WordGoalProgressBar::changeProgressBy(int progress)
 
 
     ui->progressBar->setValue(ui->progressBar->value() + progress);
+
+//    qDebug() << "progressBy : " << QString::number(progress);
 
 
     // set colors :
@@ -67,8 +99,8 @@ void WordGoalProgressBar::changeProgressBy(int progress)
 
 
     ui->progressBar->setStyleSheet("QProgressBar {"
-                                   "border: 2px solid grey;"
-                                   "border-radius: 5px;"
+                                   "border: 1px solid grey;"
+                                   "border-radius: 2px;"
                                    "text-align: center;"
                                    "}"
                                     "QProgressBar::chunk {"

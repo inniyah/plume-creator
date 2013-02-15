@@ -17,7 +17,10 @@ public:
     ~WordGoalProgressBar();
     
     void setGoal(int goal);
+    int goal();
     void setBase(int base);
+    void setValue(int value);
+    int value();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
