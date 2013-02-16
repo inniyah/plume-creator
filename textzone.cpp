@@ -28,21 +28,21 @@ TextZone::~TextZone()
 
 void TextZone::createContent()
 {
-this->setAttribute(Qt::WA_KeyCompression, true);
+    this->setAttribute(Qt::WA_KeyCompression, true);
 
-textDocument = new QTextDocument;
+    textDocument = new QTextDocument;
 
-createActions();
-setContextMenuPolicy(Qt::DefaultContextMenu);
-connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
-connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+    createActions();
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+    connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this, SLOT(charFormat(QTextCharFormat)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 
-setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 
-applyConfig();
+    applyConfig();
 }
 
 
@@ -290,7 +290,7 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
     menu.addSeparator();
     //    menu.addMenu(alignmentGroup); // styles do that already
     menu.addMenu(stylesGroup);
-        menu.addSeparator();
+    menu.addSeparator();
     menu.addAction(cutAct);
     menu.addAction(copyAct);
     menu.addAction(pasteAct);
@@ -418,12 +418,12 @@ void TextZone::createEditWidget()
 
     // repeater to join editWidget to MainWindow :
 
-//    connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
+    //    connect(editWidget, SIGNAL(widthChangedSignal(int)), this, SIGNAL(widthChangedSignal(int)));
 
-//    connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
-//    connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
+    //    connect(editWidget,SIGNAL(textFontChangedSignal(QFont)),this,SIGNAL(textFontChangedSignal(QFont)));
+    //    connect(editWidget,SIGNAL(textHeightChangedSignal(int)),this,SIGNAL(textHeightChangedSignal(int)));
 
-//    connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
+    //    connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
     connect(editWidget,SIGNAL(styleSelectedSignal(int)), this, SIGNAL(styleSelectedSignal(int)));
     connect(this,SIGNAL(setStyleSelectionSignal(int)), editWidget, SLOT(setStyleSelectionSlot(int)));
@@ -555,19 +555,19 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
         charFormat.setFontFamily(fontFamily);
-        charFormat.clearProperty(QTextFormat::ForegroundBrush);
-        charFormat.clearProperty(QTextFormat::IsAnchor);
-        charFormat.clearProperty(QTextFormat::AnchorHref);
-        charFormat.clearProperty(QTextFormat::AnchorName);
-        //        charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
-        //        charFormat.clearProperty(QTextFormat::FontStrikeOut);
+
+        charFormat.setBackground(QBrush(Qt::NoBrush));
+        charFormat.setForeground(QBrush(Qt::NoBrush));
+        charFormat.setAnchor(false);
+        charFormat.setUnderlineStyle(QTextCharFormat::NoUnderline);
+        charFormat.setFontStrikeOut(false);
+
         QTextCursor *tCursor = new QTextCursor(document);
         tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
         tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
 
         tCursor->mergeCharFormat(charFormat);
         tCursor->mergeBlockFormat(blockFormat);
-
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
@@ -695,5 +695,5 @@ void TextZone::applyConfig()
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 
-editWidget->applyConfig();
+    editWidget->applyConfig();
 }

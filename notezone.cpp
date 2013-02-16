@@ -843,13 +843,11 @@ QTextCursor yCursor = this->textCursor();
              QTextCharFormat charFormat;
             charFormat.setFontPointSize(textHeight);
             charFormat.setFontFamily(fontFamily);
-            charFormat.clearForeground();
-            charFormat.clearProperty(QTextFormat::ForegroundBrush);
-            charFormat.clearProperty(QTextFormat::IsAnchor);
-            charFormat.clearProperty(QTextFormat::AnchorHref);
-            charFormat.clearProperty(QTextFormat::AnchorName);
-            charFormat.clearProperty(QTextFormat::TextUnderlineStyle);
-            charFormat.clearProperty(QTextFormat::FontStrikeOut);
+            charFormat.setBackground(QBrush(Qt::NoBrush));
+            charFormat.setForeground(QBrush(Qt::NoBrush));
+            charFormat.setAnchor(false);
+            charFormat.setUnderlineStyle(QTextCharFormat::NoUnderline);
+            charFormat.setFontStrikeOut(false);
 
             QTextCursor *tCursor = new QTextCursor(document);
             tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
