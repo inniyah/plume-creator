@@ -1,109 +1,174 @@
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2011-07-25T11:13:12
 #
 #-------------------------------------------------
+QT += core gui xml
 
-QT       += core gui xml
+#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+#to compile with QT5, replace <QtGui> with <QtWidgets>
 
 TARGET = Plume-Creator
 TEMPLATE = app
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    newprojectwizard.cpp \
-    prjmanager.cpp \
-    maintree.cpp \
-    statsbox.cpp \
-    itembox.cpp \
-    digitalclock.cpp \
-    notezone.cpp \
-    texttab.cpp \
-    textzone.cpp \
-    timer.cpp \
-    wordcount.cpp \
-    exporter.cpp \
-    attendbox.cpp \
-    wordcountthread.cpp \
-    orientationbutton.cpp \
-    menubar.cpp \
-    outliner/outline.cpp \
-    outliner/outlineitem.cpp \
-    outliner/outlinerbase.cpp \
-    outliner/outlinerspreadsheet.cpp \
-    outliner/outlinerabstractmodel.cpp \
-    outliner/outlineritemdelegate.cpp \
-    outliner/outlinertreeitem.cpp \
-    settingsdialog.cpp \
-    editmenu.cpp \
-    textstyles.cpp \
-    findreplace.cpp \
-    fullscreen/fulltextzone.cpp \
-    fullscreen/fullscreeneditor.cpp \
-    slimupdater.cpp \
-    outliner/outlinerspreadsheetheader.cpp \
-    outliner/outlinerspreadsheetheadersection.cpp \
-    wordgoalprogressbar.cpp
+VERSION = 0.59
+DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
-HEADERS  += mainwindow.h \
-    newprojectwizard.h \
-    prjmanager.h \
-    maintree.h \
-    statsbox.h \
-    itembox.h \
-    digitalclock.h \
-    notezone.h \
-    texttab.h \
-    textzone.h \
-    timer.h \
-    wordcount.h \
-    exporter.h \
-    attendbox.h \
-    wordcountthread.h \
-    orientationbutton.h \
-    menubar.h \
-    outliner/outline.h \
-    outliner/outlineitem.h \
-    outliner/outlinerbase.h \
-    outliner/outlinerspreadsheet.h \
-    outliner/outlinerabstractmodel.h \
-    outliner/outlineritemdelegate.h \
-    outliner/outlinertreeitem.h \
-    settingsdialog.h \
-    editmenu.h \
-    textstyles.h \
-    findreplace.h \
-    fullscreen/fulltextzone.h \
-    fullscreen/fullscreeneditor.h \
-    slimupdater.h \
-    outliner/outlinerspreadsheetheader.h \
-    outliner/outlinerspreadsheetheadersection.h \
-    wordgoalprogressbar.h
+DESTDIR = bin
+MOC_DIR = build
+OBJECTS_DIR = build
+RCC_DIR = build
+UI_DIR = build
+INCLUDEPATH += .\
+src
 
-RESOURCES += \
-    pics.qrc \
-    langs.qrc \
-    readme.qrc
+unix: !macx {
+TARGET = plume-creator
+} else {
+TARGET = Plume-Creator
+}
+
+
+SOURCES += src/main.cpp\
+src/mainwindow.cpp \
+src/newprojectwizard.cpp \
+src/prjmanager.cpp \
+src/maintree.cpp \
+src/statsbox.cpp \
+src/itembox.cpp \
+src/digitalclock.cpp \
+src/notezone.cpp \
+src/texttab.cpp \
+src/textzone.cpp \
+src/timer.cpp \
+src/wordcount.cpp \
+src/exporter.cpp \
+src/attend/attendbox.cpp \
+src/wordcountthread.cpp \
+src/orientationbutton.cpp \
+src/menubar.cpp \
+#src/outliner/outline.cpp \
+#src/outliner/outlineitem.cpp \
+src/outliner/outlinerbase.cpp \
+src/outliner/outlinerspreadsheet.cpp \
+src/outliner/outlinerabstractmodel.cpp \
+src/outliner/outlineritemdelegate.cpp \
+src/outliner/outlinertreeitem.cpp \
+src/settingsdialog.cpp \
+src/editmenu.cpp \
+src/textstyles.cpp \
+src/findreplace.cpp \
+src/fullscreen/fulltextzone.cpp \
+src/fullscreen/fullscreeneditor.cpp \
+src/slimupdater.cpp \
+src/outliner/outlinerspreadsheetheader.cpp \
+src/outliner/outlinerspreadsheetheadersection.cpp \
+src/wordgoalprogressbar.cpp \
+src/fileupdater.cpp
+
+HEADERS += src/mainwindow.h \
+src/newprojectwizard.h \
+src/prjmanager.h \
+src/maintree.h \
+src/statsbox.h \
+src/itembox.h \
+src/digitalclock.h \
+src/notezone.h \
+src/texttab.h \
+src/textzone.h \
+src/timer.h \
+src/wordcount.h \
+src/exporter.h \
+src/attend/attendbox.h \
+src/wordcountthread.h \
+src/orientationbutton.h \
+src/menubar.h \
+#src/outliner/outline.h \
+#src/outliner/outlineitem.h \
+src/outliner/outlinerbase.h \
+src/outliner/outlinerspreadsheet.h \
+src/outliner/outlinerabstractmodel.h \
+src/outliner/outlineritemdelegate.h \
+src/outliner/outlinertreeitem.h \
+src/settingsdialog.h \
+src/editmenu.h \
+src/textstyles.h \
+src/findreplace.h \
+src/fullscreen/fulltextzone.h \
+src/fullscreen/fullscreeneditor.h \
+src/slimupdater.h \
+src/outliner/outlinerspreadsheetheader.h \
+src/outliner/outlinerspreadsheetheadersection.h \
+src/wordgoalprogressbar.h \
+src/fileupdater.h
 
 CODECFORTR = UTF-8
 
-TRANSLATIONS = plume-creator_fr_FR.ts \
-#    plume-creator_ro_RO.ts \
-    plume-creator_it_IT.ts \
-    plume-creator_de_DE.ts
+TRANSLATIONS = translations/plume-creator_fr_FR.ts \
+# translations/plume-creator_ro_RO.ts \
+translations/plume-creator_it_IT.ts \
+translations/plume-creator_de_DE.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
 
 FORMS += \
-    settingsdialog.ui \
-    editmenu.ui \
-    findreplace.ui \
-    fullscreeneditor.ui \
-    slimupdater.ui \
-    mainwindow.ui \
-    wordgoalprogressbar.ui
+src/settingsdialog.ui \
+src/editmenu.ui \
+src/findreplace.ui \
+src/fullscreen/fullscreeneditor.ui \
+src/slimupdater.ui \
+src/mainwindow.ui \
+src/wordgoalprogressbar.ui
+
+RESOURCES += \
+src/pics.qrc \
+translations/langs.qrc \
+readme.qrc
+
+
+macx {
+# ICON = resources/mac/plume-creator.icns
+}
 
 
 
+win32 {
+RC_FILE = resources/windows/icon.rc
+}
 
 
+macx {
+ICONS.files = resources/images/icons/oxygen/hicolor
+ICONS.path = Contents/Resources/icons
+QMAKE_BUNDLE_DATA += ICONS
+}
+
+
+unix: !macx {
+isEmpty(PREFIX) {
+PREFIX = /usr
+}
+isEmpty(BINDIR) {
+BINDIR = $$PREFIX/bin
+}
+isEmpty(DATADIR) {
+DATADIR = $$PREFIX/share
+}
+DEFINES += DATADIR=\\\"$${DATADIR}/plume-creator\\\"
+target.path = $$BINDIR
+icon.files = resources/images/icons/hicolor/*
+icon.path = $$DATADIR/icons/hicolor
+pixmap.files = resources/unix/plume-creator.png
+pixmap.path = $$DATADIR/pixmaps
+desktop.files = resources/unix/plume-creator.desktop
+desktop.path = $$DATADIR/applications/
+#useless for now :
+qm.files = translations/*.qm
+qm.path = $$DATADIR/plume-creator/translations
+# sounds.files = resources/sounds/*
+# sounds.path = $$DATADIR/plume-creator/sounds
+# symbols.files = resources/symbols/symbols.dat
+# symbols.path = $$DATADIR/plume-creator
+INSTALLS += target icon pixmap desktop qm
+}
