@@ -24,11 +24,13 @@
 
 #include <QDomElement>
 
+#include "hub.h"
+
 class TextStyles : public QObject
 {
 public:
     TextStyles(QObject *parent = 0);
-    void setProjectInfoFile(QFile *file);
+    void setProjectInfoFile();
     void addDefaultStyle(QString name = "New Style");
     void removeStyleAt(int index = 99999);
     void renameStyle(int index, QString newName);
@@ -42,6 +44,7 @@ public:
 
 public slots:
 
+    void setHub(Hub *varHub){hub = varHub;}
     QStringList namesList();
 
     int zoomModifier(){return zoom;}
@@ -86,6 +89,7 @@ private slots:
     void writeDomDoc();
 
 private:
+    Hub *hub;
     QSettings settings;
 
     int currentStyleIndex;

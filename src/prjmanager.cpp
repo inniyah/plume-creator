@@ -33,11 +33,11 @@ PrjManager::PrjManager(QWidget *parent) :
     QVBoxLayout *pictureLayout = new QVBoxLayout;
 
     QLabel *pictureLabel = new QLabel;
-pictureLabel->setPixmap(QPixmap(":/pics/plume-creator-128x128.png"));
-QLabel *versionLabel = new QLabel("V "+ QApplication::applicationVersion());
+    pictureLabel->setPixmap(QPixmap(":/pics/plume-creator-128x128.png"));
+    QLabel *versionLabel = new QLabel("V "+ QApplication::applicationVersion());
 
-pictureLayout->addWidget(pictureLabel);
-pictureLayout->addWidget(versionLabel,0,Qt::AlignCenter);
+    pictureLayout->addWidget(pictureLabel);
+    pictureLayout->addWidget(versionLabel,0,Qt::AlignCenter);
 
 
     QVBoxLayout *projectButtonsLayout = new QVBoxLayout;
@@ -130,7 +130,7 @@ pictureLayout->addWidget(versionLabel,0,Qt::AlignCenter);
 
 
     QDesktopWidget *desktop = QApplication::desktop();
-        this->move(desktop->width()/2 - this->width()/2, desktop->height()/2 - this->height()/2);
+    this->move(desktop->width()/2 - this->width()/2, desktop->height()/2 - this->height()/2);
 
 }
 
@@ -163,8 +163,8 @@ void PrjManager::displayProjects(){
     table->setRowCount(size);
 
     settings.endGroup();
-    //    QString string;
-    //    qDebug() << "size : " << string.setNum(size,10);
+//        QString string;
+//        qDebug() << "size : " << string.setNum(size,10);
     // int size = settings.value("Manager/projects/size").toInt();
 
 
@@ -358,16 +358,16 @@ void PrjManager::setPrjActivated(int row,int column)
     // change info labels :
 
     nameLabel->setText(table->item(row, 0)->data(0).toString());
-QString time;
+    QString time;
     QString projCreateTime = table->item(row, 4)->data(0).toString();
     QDateTime *createTime = new QDateTime(QDateTime::fromString(projCreateTime, Qt::ISODate));
     if(!createTime->isValid())
         createTime = new QDateTime(QDateTime::fromString(projCreateTime, Qt::TextDate));
     if(!createTime->isValid())
         time = projCreateTime;
-//        createTime = new QDateTime(QDateTime::fromString(projCreateTime,"ddd MMM d HH:mm:ss yyyy"));
-//    qDebug() << projCreateTime;
-   if(createTime->isValid())
+    //        createTime = new QDateTime(QDateTime::fromString(projCreateTime,"ddd MMM d HH:mm:ss yyyy"));
+    //    qDebug() << projCreateTime;
+    if(createTime->isValid())
         time = createTime->toString(Qt::TextDate);
     creationDateLabel->setText(time);
 
@@ -380,7 +380,7 @@ QString time;
     if(!createTime->isValid())
         time = projLastModifiedTime;
     if(createTime->isValid())
-         time = modTime->toString(Qt::TextDate);
+        time = modTime->toString(Qt::TextDate);
     modifiedDateLabel->setText(modTime->toString(Qt::TextDate));
     pathLabel->setText(table->item(row, 1)->data(0).toString());
 
@@ -409,17 +409,25 @@ void PrjManager::itemsSelectionChangedSlot()
 void PrjManager::openPrj()
 {
     if(prjOpened)
-       return;
+        return;
     if(table->isHidden())
         return;
 
-    QString proj( table->item(currentRow, 2)->data(0).toString() + "/" + table->item(currentRow, 0)->data(0).toString() + ".plume");
-    QFile *file = new QFile(proj);
+QString proj;
+    if(table->item(currentRow, 2)->data(0).toString() == "OBSOLETE")
+        proj =  table->item(currentRow, 1)->data(0).toString() + "/" + table->item(currentRow, 0)->data(0).toString() + ".plume";
+    else// compatibility for old system :
+        proj = table->item(currentRow, 2)->data(0).toString() + "/" + table->item(currentRow, 0)->data(0).toString() + ".plume";
 
-    emit openProjectSignal(file);
+    //    QFile *file = new QFile(proj);
+//    emit openProjectSignal(file);
+
+    hub->startProject(proj);
     emit openProjectNumberSignal(prjActivated);
 
-prjOpened = true;
+    prjOpened = true;
+
+    this->close();
 }
 //-----------------------------------------------------------------------------------
 
@@ -475,7 +483,8 @@ void PrjManager::delProject()
     }
     settings.endArray();
 
-    QString del_projName = projWorkPath.value(prjActivated);
+    QString del_projName = projName.value(prjActivated);
+    QString del_projPath = projPath.value(prjActivated);
     QString del_projWorkPath = projWorkPath.value(prjActivated);
 
 
@@ -524,7 +533,13 @@ void PrjManager::delProject()
     settings.endArray();
 
 
-
+    if(del_projWorkPath =="OBSOLETE"){
+        QFile file(del_projPath + "/" + del_projName +".plume");
+        file.remove();
+        QFile bckFile(del_projPath + "/" + del_projName +".plume_backup");
+        bckFile.remove();
+    }
+        else  // compatibility for old system :
     removeDir(del_projWorkPath);
 
 
@@ -656,8 +671,8 @@ void PrjManager::acceptRenaming()
     QString newPrjWorkPath = prjPath + "/" + newName;
     bool renameSuccess = dir->rename(prjPath + "/" + oldName, newPrjWorkPath);
 
-    qDebug() << dir->absolutePath();
-    qDebug() << "renameSuccess : " <<renameSuccess;
+//    qDebug() << dir->absolutePath();
+//    qDebug() << "renameSuccess : " <<renameSuccess;
 
     QSettings settings;
 

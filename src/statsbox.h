@@ -24,6 +24,8 @@
 #include <QtGui>
 #include <QDomDocument>
 //
+#include "hub.h"
+
 class StatsBox : public QFrame
 {
     Q_OBJECT
@@ -39,6 +41,7 @@ signals:
     void setCurrentNumberSignal(int);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void setWordCount(int num);
 
 private slots:
@@ -48,6 +51,7 @@ private slots:
     void setProjectWordCount(int count);
 
 private:
+    Hub *hub;
     QPushButton *projectWordCountButton;
     QLabel *wordCountLabel;
     QLabel *currentProjectCountLabel, *currentBookCountLabel, *currentChapterCountLabel;

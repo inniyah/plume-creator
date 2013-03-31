@@ -98,9 +98,10 @@ void MenuBar::projectManager()
 {
 
     projManager = new PrjManager(this);
+    projManager->setHub(hub);
     connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
     connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
-    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+//    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
     connect(projManager, SIGNAL(openProjectNumberSignal(int)),this, SIGNAL(openProjectNumberSignal(int)));
     projManager->projectAlreadyOpened(projectAlreadyOpened);
 
@@ -117,6 +118,7 @@ void MenuBar::projectManager()
 void MenuBar::displayConfig(int tabIndex)
 {
     SettingsDialog *settingsDialog = new SettingsDialog(this);
+    settingsDialog->setHub(hub);
     settingsDialog->setTextStyles(textStyles);
     textStyles->saveBaseStyles();
     settingsDialog->createContent();
@@ -144,11 +146,11 @@ void MenuBar::displayConfig(int tabIndex)
 
 void MenuBar::closeProject()
 {
-    if(projectAlreadyOpened == false)
-        return;
+//    if(projectAlreadyOpened == false)
+//        return;
 
-    if(file == 0)
-        return;
+//    if(file == 0)
+//        return;
 
     QMessageBox msgBox(this);
     msgBox.setText(tr("Do you want to close the current project ?"));
@@ -159,7 +161,7 @@ void MenuBar::closeProject()
 
     switch (ret) {
     case QMessageBox::Ok:
-        emit closeProjectSignal();
+        hub->closeCurrentProject();
         projectAlreadyOpened = false;
         break;
 
@@ -188,6 +190,7 @@ void MenuBar::exporter()
     emit saveProjectSignal();
 
     Exporter *exporterDialog = new Exporter(QString("export"), file, this);
+    exporterDialog->setHub(hub);
     exporterDialog->exec();
 
 }
@@ -204,6 +207,7 @@ void MenuBar::print()
     emit saveProjectSignal();
 
     Exporter *exporterDialog = new Exporter(QString("print"), file, this);
+    exporterDialog->setHub(hub);
     exporterDialog->exec();
 
 
@@ -220,6 +224,7 @@ void MenuBar::findAndReplace()
     emit saveProjectSignal();
 
     FindReplace *findReplaceDialog = new FindReplace(file, this);
+    findReplaceDialog->setHub(hub);
     findReplaceDialog->exec();
 
 }
@@ -514,6 +519,7 @@ void MenuBar::createEditWidget()
 {
 
     editWidget = new EditMenu;
+    editWidget->setHub(hub);
   editWidget->setTextStyles(textStyles);
   editWidget->createContent();
 
@@ -757,7 +763,7 @@ void MenuBar::openNewProjectSlot()
 
 void MenuBar::openProjectSlot(QFile *device)
 {
-    qDebug() << "openProjectSlot : " << device->fileName();
+//    qDebug() << "openProjectSlot : " << device->fileName();
     closeProject();
 
     file = new QFile(device->fileName());
@@ -1021,7 +1027,6 @@ bool MenuBar::openExternalProject(QFile *externalPrjFile)
 {
 
 
-
     int ret = QMessageBox::question(this, tr("Open Project"),
                                     tr("<p>You are opening a Plume project.</p>\n"
                                        "<br>"
@@ -1139,7 +1144,6 @@ file.close();
         break;
     case QMessageBox::No:
     {
-        qDebug() << "externalPrjFile : "<< externalPrjFile->fileName();
         openProjectSlot(externalPrjFile);
         return false;
     }

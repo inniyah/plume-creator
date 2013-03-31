@@ -11,15 +11,14 @@
 #include "itembox.h"
 #include "texttab.h"
 #include "notezone.h"
-#include "outliner/outline.h"
-#include "attend/attendbox.h"
 #include "ui_mainwindow.h"
 
 //
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), noProjectOpened(true),noTabCss(""),textAlreadyChanged(false)
-    ,ui(new Ui::MainWindow)
+    ,ui(new Ui::MainWindow),  isExternalProjectOpeningBool(false)
+
 {
 
     ui->setupUi(this);
@@ -33,12 +32,15 @@ MainWindow::MainWindow(QWidget *parent)
     //temporary config
     setStyleSheet("* {background-color: pink; color: black;}");
 
-//     netbook mode 10':
-//        setFixedSize(900, 550);
+    //     netbook mode 10':
+    //        setFixedSize(900, 550);
 
+    hub = new Hub(this);
+    connect(hub, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+    connect(hub, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
+    connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
     textStyles = new TextStyles();
-
-
+    textStyles->setHub(hub);
 
     ui->mainTabWidget->setTabsClosable(true);
     ui->mainTabWidget->setTabShape(QTabWidget::Triangular);
@@ -145,7 +147,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::postConstructor()
 {
-    menu->openManager();
+    if(isExternalProjectOpeningBool == false){
+        menu->openManager();
+    }
+    isExternalProjectOpeningBool = false;
 
     if (checkUpdateAtStartupBool){
         launchSlimUpdater("auto");
@@ -154,6 +159,8 @@ void MainWindow::postConstructor()
 
 MainWindow::~MainWindow()
 {
+
+
     delete ui;
 }
 
@@ -165,13 +172,12 @@ void MainWindow::createMenuBar()
 {
     menu = new MenuBar;
     menu->setTextStyles(textStyles);
+    menu->setHub(hub);
     menu->createContent();
 
 
-    connect(menu, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
-    connect(menu, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
     connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
     connect(menu, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
 
@@ -193,17 +199,17 @@ void MainWindow::createAttendDock()
     attendDock->setObjectName("attendDock");
     attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
-    attendList = new AttendBox;
+    attendBase = new AttendBase;
+    attendBase->setHub(hub);
+    attendBase->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    attendBase->setLineWidth(2);
+    attendBase->setMidLineWidth(3);
 
-    attendList->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    attendList->setLineWidth(2);
-    attendList->setMidLineWidth(3);
-
-    attendDock->setWidget(attendList);
+    attendDock->setWidget(attendBase);
     addDockWidget(Qt::RightDockWidgetArea, attendDock);
 
     connect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
-    connect(attendList, SIGNAL(textChangedSignal()), this, SLOT(textChangedSlot()));
+    connect(attendBase, SIGNAL(textChangedSignal()), this, SLOT(textChangedSlot()));
     attendDock->hide();
 }
 
@@ -297,6 +303,7 @@ void MainWindow::createTreeDock()
     treeDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
 
     mainTree = new MainTree;
+    mainTree->setHub(hub);
 
     connect(mainTree, SIGNAL(textAndNoteSignal(QTextDocument*,QTextDocument*,QTextDocument*, int, int, int, QString, int, QString)), this, SLOT(textSlot(QTextDocument*,QTextDocument*,QTextDocument*, int,int,int, QString, int, QString)));
     connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
@@ -329,7 +336,7 @@ void MainWindow::createToolDock()
 
     QToolBox *toolBox = new QToolBox;
     stats = new StatsBox;
-    //    items = new ItemBox;
+    stats->setHub(hub);//    items = new ItemBox;
 
     // page 1
 
@@ -527,6 +534,7 @@ void MainWindow::createStatusBar()
     stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     wordGoalBar = new WordGoalProgressBar();
+    wordGoalBar->setHub(hub);
 
     //bar->addPermanentWidget(stretcher1);
     ui->bar->addWidget(stretcher1,10);
@@ -799,7 +807,13 @@ void MainWindow::setDisplayMode(QString mode)
 
 
 
+//---------------------------------------------------------------------------
 
+void MainWindow::openExternalProject(QFile *externalFile)
+{
+    isExternalProjectOpeningBool = true;  //need to avoid the opening of the project manager at startup
+    hub->startProject(externalFile->fileName());
+}
 //---------------------------------------------------------------------------
 
 void MainWindow::openProjectSlot(QFile *projectFile)
@@ -807,19 +821,14 @@ void MainWindow::openProjectSlot(QFile *projectFile)
 
     readDocksSettings();
     closeAllDocsSlot();
+
     menu->setMenusEnabled(true);
-    file = new QFile(projectFile->fileName());
-    textStyles->setProjectInfoFile(file);
-    attendList->readProjectAttendance(projectFile);
-    mainTree->read(projectFile);
+    textStyles->setProjectInfoFile();
+    attendBase->startAttendance();
+    mainTree->startTree();
     configTimer();
 }
-//---------------------------------------------------------------------------
 
-void MainWindow::openExternalProject(QFile *externalFile)
-{
-    menu->setExternalProject(externalFile);
-}
 
 //---------------------------------------------------------------------------
 
@@ -836,14 +845,11 @@ void MainWindow::closeProjectSlot()
 
     writeDocksSettings();
     closeAllDocsSlot();
-    mainTree->write(file);
-    attendList->saveAll();
 
-    attendList->closeAll();
     mainTree->closeTree();
     noProjectOpened = true;
 
-    attendList->accept(); //to close the manager;
+    //    attendList->accept(); //to close the manager;
 
     QSettings settings;
     settings.beginWriteArray("Manager/projects");
@@ -851,6 +857,8 @@ void MainWindow::closeProjectSlot()
     settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
     settings.endArray();
 
+    hub->closeCurrentProject();
+    //    attendList->closeAll();
     //    timer->stop();
 }
 
@@ -901,6 +909,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         // open and mem in :
 
         TextTab *tab = new TextTab;
+        tab->setHub(hub);
         connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
 
         //set text Styles :
@@ -912,6 +921,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         QWidget *noteWidget = new QWidget(this);
         QVBoxLayout *nLayout = new QVBoxLayout(noteWidget);
         NoteZone *noteStack = new NoteZone(noteWidget);
+        noteStack->setHub(hub);
         nLayout->addWidget(noteStack);
         noteStack->openNote(noteDoc);
         noteWidget->setLayout(nLayout);
@@ -920,6 +930,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         QWidget *synWidget = new QWidget(this);
         QVBoxLayout *sLayout = new QVBoxLayout(synWidget);
         NoteZone *synStack = new NoteZone(synWidget);
+        synStack->setHub(hub);
         sLayout->addWidget(synStack);
         synStack->openSyn(synDoc);
         synWidget->setLayout(sLayout);
@@ -1054,38 +1065,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
 
 
     }
-    //    if(action == "tempSave"){
-    //        tempSaveNote(noteFile, noteFile, synFile);
-    //    }
 
-
-
-
-    if(action == "save"){
-        //      emit properSaveTabTextSignal(textFile, name);
-
-        qDebug() << "saving start";
-
-
-        // Saving
-
-        mainTree->write(file);
-        attendList->saveAll();
-        //        for(int i = nameList->size()-1; i >= 0; --i){
-        textAlreadyChanged = false;
-
-
-
-        //            mainTree->saveDoc(textWidgetList->at(i)->document());
-        //            mainTree->saveDoc(noteWidgetList->at(i)->document());
-        //            mainTree->saveDoc(synWidgetList->at(i)->document());
-
-        //        }
-        //        qDebug() << "saving all";
-    }
-
-
-    //    qDebug() << "Action Note :" << action;
 
 }
 
@@ -1172,14 +1152,14 @@ void MainWindow::setConnections()
 
     //for attendance :
 
-    connect(mainTree, SIGNAL(attendStringSignal(int,QString)), attendList, SLOT(openSheetAttendList(int,QString)));
-    connect(mainTree, SIGNAL(allAttendancesSignal(QHash<int,QString>)), attendList, SLOT(updateAllAttendances(QHash<int,QString>)));
-    connect(attendList, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)),
-            mainTree,SLOT(setOutlinerProjectAttendList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
+    //    connect(mainTree, SIGNAL(attendStringSignal(int,QString)), attendBase, SLOT(openSheetAttendList(int,QString)));
+    //    connect(mainTree, SIGNAL(allAttendancesSignal(QHash<int,QString>)), attendBase, SLOT(updateAllAttendances(QHash<int,QString>)));
+    //    connect(attendBase, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)),
+    //            mainTree,SLOT(setOutlinerProjectAttendList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
     connect(ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(setCurrentAttendList(int)));
-    connect(attendList, SIGNAL(removeAttendNumberSignal(int)), mainTree, SLOT(removeAttendNumberSlot(int)));
-    connect(attendList, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>, int)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>, int)));
-    connect(attendList, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
+    //    connect(attendBase, SIGNAL(removeAttendNumberSignal(int)), mainTree, SLOT(removeAttendNumberSlot(int)));
+    //    connect(attendBase, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>, int)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>, int)));
+    //    connect(attendBase, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
 
 
     //for global wordcount :
@@ -1241,7 +1221,7 @@ void MainWindow::tabChangeSlot(int tabNum)
         //        menu->tabChangedSlot(tab->tabFontChangedSlot());
 
 
-        setCurrentAttendList(tabNum);
+        //        setCurrentAttendList(tabNum);
 
 
     }
@@ -1333,7 +1313,7 @@ void MainWindow::closeAllDocsSlot()
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
 
-        qDebug() << "closeAllRequest name :" << nameList->at(i);
+        //        qDebug() << "closeAllRequest name :" << nameList->at(i);
         //        qDebug() << "closeAllRequest textName :" << textWidgetList->at(i)->objectName() << "----------- saved :" << textBool;
         //        qDebug() << "closeAllRequest noteName :" << noteWidgetList->at(i)->objectName() << "----------- saved :" << noteBool;
         //        qDebug() << "closeAllRequest synName :" << synWidgetList->at(i)->objectName() << "----------- saved :" << synBool;
@@ -1403,7 +1383,6 @@ void MainWindow::saveAllDocsSlot()
         //        qDebug() << "tabSaveRequest noteName n° " << i << " ---> " << noteWidgetList->at(i)->objectName() << "----- saved :" << noteBool;
         //        qDebug() << "tabSaveRequest synName  n° " << i << " ---> " << synWidgetList->at(i)->objectName() << "----- saved :" << synBool;
     }
-    mainTree->write(file);
 }
 
 //---------------------------------------------------------------------------
@@ -1533,8 +1512,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 
         writeSettings();
-
-        closeProjectSlot();
+        hub->closeCurrentProject();
         event->accept();
 
         break;
@@ -1570,7 +1548,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) //for MAc o
     if(event->type() == QEvent::FileOpen)
     {
         QFile *extFile = new QFile(((QFileOpenEvent*)event)->file());
-        openExternalProject(extFile);
+        hub->startProject(extFile->fileName());
         return true;
     }
     else
@@ -1598,8 +1576,8 @@ void MainWindow::textChangedSlot()
     if(!textAlreadyChanged){
         textAlreadyChanged = true;
 
-        QTimer::singleShot(autosaveTime, this, SLOT(textSlot()));
-        //    qDebug() << "textChangedSlot";
+        QTimer::singleShot(autosaveTime, hub, SLOT(addToSaveQueue()));
+
     }
 }
 
@@ -1724,6 +1702,7 @@ void MainWindow::editFullscreen()
     //    qDebug() << "synStack name : " << synStack->objectName();
 
     fullEditor = new FullscreenEditor(0);
+    fullEditor->setHub(hub);
     fullEditor->setTextStyles(textStyles);
     fullEditor->createContent(tab->document(), tab->saveCursorPos());
 
@@ -1740,10 +1719,10 @@ void MainWindow::editFullscreen()
     connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
 
 
-//progressBar :
+    //progressBar :
 
-fullEditor->setProgressBarValue(wordGoalBar->value());
-fullEditor->setProgressBarGoal(wordGoalBar->goal());
+    fullEditor->setProgressBarValue(wordGoalBar->value());
+    fullEditor->setProgressBarGoal(wordGoalBar->goal());
 
 }
 
@@ -1811,13 +1790,15 @@ void MainWindow::setCurrentAttendList(int tabNum)
     if(ui->mainTabWidget->count() == 0)
         return;
 
+
+
     int number = ui->mainTabWidget->widget(tabNum)->objectName().mid(ui->mainTabWidget->widget(tabNum)->objectName().indexOf("_") + 1).toInt();
+    hub->setCurrentSheetNumber(number); //updates also the attendance list
 
-    attendList->setCurrentList(number);
+    //    attendList->setCurrentList(number);
+    //    QString currentTabName = ui->mainTabWidget->tabText(tabNum);
 
-    QString currentTabName = ui->mainTabWidget->tabText(tabNum);
-
-    attendList->setCurrentListName(currentTabName);
+    //    attendList->setCurrentListName(currentTabName);
 }
 
 //----------------------------------------------------------------------------
@@ -1845,9 +1826,10 @@ void MainWindow::launchSlimUpdater(QString mode)
 {
 
     updater = new SlimUpdater;
+    updater->setHub(hub);
     connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
-ui->baseWidget->layout()->addWidget(updater);
-updater->setMode(mode);
+    ui->baseWidget->layout()->addWidget(updater);
+    updater->setMode(mode);
 }
 
 void MainWindow::closeSlimUpdater()
@@ -1855,9 +1837,9 @@ void MainWindow::closeSlimUpdater()
 
 
 
-QWidget *widget = ui->baseWidget->findChild<QWidget *>("SlimUpdater");
-ui->baseWidget->layout()->removeWidget(widget);
-widget->deleteLater();
+    QWidget *widget = ui->baseWidget->findChild<QWidget *>("SlimUpdater");
+    ui->baseWidget->layout()->removeWidget(widget);
+    widget->deleteLater();
 }
 
 
@@ -2034,7 +2016,7 @@ void MainWindow::giveStyle()
             "margin: 0px;"
             "}"
 
-            "AttendBox {"
+            "AttendBase {"
             //            "border: 0px none transparent;"
             "border-radius: 1px;"
             "spacing: 0px;"

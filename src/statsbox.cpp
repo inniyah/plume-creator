@@ -12,6 +12,7 @@ StatsBox::StatsBox(QWidget *parent) :
 
     QGroupBox *clockBox = new QGroupBox(tr("Time"));
     DigitalClock *clock = new DigitalClock(this);
+    clock->setHub(hub);
     QVBoxLayout *clockLayout = new QVBoxLayout;
     clockLayout->addWidget(clock);
     clockLayout->setContentsMargins(3,3,3,3);
@@ -19,6 +20,7 @@ StatsBox::StatsBox(QWidget *parent) :
 
     QGroupBox *timerBox = new QGroupBox(tr("Timer"));
     Timer *timer = new Timer(this);
+    timer->setHub(hub);
     QVBoxLayout *timerLayout = new QVBoxLayout;
     timerLayout->addWidget(timer);
     timerLayout->setContentsMargins(3,3,3,3);
@@ -88,6 +90,7 @@ countWindow->show();
 // launch wordcount thread :
 
 WordCountThread *prjWordCountThread = new WordCountThread();
+prjWordCountThread->setHub(hub);
 
 connect(this, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), prjWordCountThread, SLOT(setDocs(QHash<QTextDocument*,QFile*>)), Qt::UniqueConnection);
 connect(this, SIGNAL(domForProjectWordCountSignal(QDomDocument)), prjWordCountThread, SLOT(setDom(QDomDocument)), Qt::UniqueConnection);

@@ -17,10 +17,7 @@ TextZone::~TextZone()
     delete pasteAct;
     delete boldAct;
     delete italicAct;
-    //    QAction *leftAlignAct;
-    //    QAction *rightAlignAct;
-    //    QAction *justifyAct;
-    //    QAction *centerAct;
+
 
 
 }
@@ -405,6 +402,7 @@ void TextZone::createEditWidget()
 {
 
     editWidget = new EditMenu;
+    editWidget->setHub(hub);
     editWidget->setTextStyles(textStyles);
     editWidget->createContent();
 

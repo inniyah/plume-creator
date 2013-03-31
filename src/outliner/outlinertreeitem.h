@@ -23,6 +23,9 @@
 #include <QString>
 #include <QVariant>
 
+#include "hub.h"
+
+
 class OutlinerTreeItem
 {
 public:
@@ -41,8 +44,12 @@ public:
     int idNumber() const;
     void setIdNumber(int number);
 
+public slots:
+    void setHub(Hub *varHub){hub = varHub;}
+
 private:
-    QList<OutlinerTreeItem*> childItems;
+    Hub *hub;
+   QList<OutlinerTreeItem*> childItems;
     QList<QVariant> itemData;
     OutlinerTreeItem *parentItem;
     int itemId;

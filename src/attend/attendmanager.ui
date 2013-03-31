@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AttendManager</class>
+ <widget class="QDialog" name="AttendManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>854</width>
+    <height>494</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Attendance manager</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedKingdom"/>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,4">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="1">
+        <widget class="QToolButton" name="addButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../pics.qrc">
+           <normaloff>:/pics/list-add-32x32.png</normaloff>:/pics/list-add-32x32.png</iconset>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="removeButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../pics.qrc">
+           <normaloff>:/pics/list-remove-32x32.png</normaloff>:/pics/list-remove-32x32.png</iconset>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTreeView" name="managerTreeView">
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::EditKeyPressed</set>
+       </property>
+       <property name="indentation">
+        <number>40</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,10">
+     <item>
+      <widget class="QFrame" name="optionsFrame">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="4" column="5">
+         <widget class="QToolButton" name="settingsButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../pics.qrc">
+            <normaloff>:/pics/configure.png</normaloff>:/pics/configure.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" rowspan="2" colspan="5">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QComboBox" name="comboBox_1">
+            <property name="locale">
+             <locale language="English" country="UnitedKingdom"/>
+            </property>
+            <item>
+             <property name="text">
+              <string/>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QComboBox" name="comboBox_3">
+            <item>
+             <property name="text">
+              <string/>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QSpinBox" name="spinBox_1">
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="value">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="spinBox_1_label">
+            <property name="text">
+             <string>Age :</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QComboBox" name="comboBox_2">
+            <item>
+             <property name="text">
+              <string/>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="nameEdit">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="placeholderText">
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="quickDetailsEdit">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="placeholderText">
+           <string>One-line description</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="aliasesEdit">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="placeholderText">
+           <string>Aliases (separated by , (comma) )</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5" rowspan="2">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Close</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="NoteZone" name="textEdit"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="addObjectAction">
+   <property name="text">
+    <string>add object</string>
+   </property>
+   <property name="toolTip">
+    <string>add an object (character, item, places, ...) to the list</string>
+   </property>
+  </action>
+  <action name="addGroupAction">
+   <property name="text">
+    <string>add group</string>
+   </property>
+   <property name="toolTip">
+    <string>add a group to the list</string>
+   </property>
+  </action>
+  <action name="removeAction">
+   <property name="text">
+    <string>remove</string>
+   </property>
+   <property name="toolTip">
+    <string>remove the selected object or group</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>NoteZone</class>
+   <extends>QTextEdit</extends>
+   <header location="global">notezone.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../pics.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AttendManager</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>807</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>859</x>
+     <y>496</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

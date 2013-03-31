@@ -8,6 +8,7 @@ FullscreenEditor::FullscreenEditor(QWidget *parent) :
     ui->setupUi(this);
     setWindowModality(Qt::ApplicationModal);
 
+    ui->fullTextEdit->setHub(hub);
 
 }
 
@@ -82,6 +83,7 @@ void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
 
     //for wordcount :
     fullscreenWordCount = new WordCount(clonedDoc, this);
+    fullscreenWordCount->setHub(hub);
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
     connect(fullscreenWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(setWordCount(int)));
     connect(fullscreenWordCount, SIGNAL(countDeltaSignal(int)), ui->progressBar, SLOT(changeProgressBy(int)));
@@ -150,6 +152,7 @@ void FullscreenEditor::zoomOut()
 void FullscreenEditor::createOptionMenu()
 {
     editWidget = new EditMenu();
+    editWidget->setHub(hub);
     editWidget->setTextStyles(textStyles);
     editWidget->createContent();
 
@@ -297,6 +300,7 @@ void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
     synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
 
     FullTextZone *fullSynEdit = new FullTextZone(synWidget);
+    fullSynEdit->setHub(hub);
     fullSynEdit->setDoc(doc);
     fullSynEdit->applySynConfig();
 
@@ -325,6 +329,7 @@ void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
     noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
 
     FullTextZone *fullNoteEdit = new FullTextZone(noteWidget);
+    fullNoteEdit->setHub(hub);
     fullNoteEdit->setDoc(doc);
     fullNoteEdit->applyNoteConfig();
 
@@ -455,7 +460,7 @@ void FullscreenEditor::cursorPositionChangedSlot()
 //-------------------------------------------------------------------------------
 void FullscreenEditor::changeTextStyleSlot(int styleIndex)
 {
-    qDebug() << "changeTextStyleSlot";
+//    qDebug() << "changeTextStyleSlot";
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));

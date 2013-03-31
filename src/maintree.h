@@ -26,7 +26,8 @@
 #include <QDomDocument>
 
 #include <outliner/outlinerbase.h>
-#include <textstyles.h>
+#include "textstyles.h"
+#include "hub.h"
 //
 class MainTree : public QTreeWidget
 {
@@ -34,8 +35,7 @@ class MainTree : public QTreeWidget
 public:
     explicit MainTree(QWidget *parent = 0);
 
-    bool read(QFile *device);
-    bool write(QFile *device);
+    bool startTree();
     void closeTree();
 
 protected:
@@ -77,6 +77,7 @@ signals:
 
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
     bool saveDoc(QTextDocument *doc);
@@ -148,6 +149,7 @@ private slots:
 
 
 private:
+    Hub *hub;
     void parseFolderElement(const QDomElement &element,
                             QTreeWidgetItem *parentItem = 0);
     QTreeWidgetItem *createItem(const QDomElement &element,
@@ -155,7 +157,6 @@ private:
     QDomElement modifyAttributes(QDomElement originalElement,QDomElement newElement, QString level);
 
     QDomDocument domDocument;
-    QDomElement root;
     QHash<QTreeWidgetItem *, QDomElement> domElementForItem;
     QHash<QTreeWidgetItem *, QDomElement>::iterator h;
     QHash<int, QDomElement> domElementForNumber;
@@ -184,7 +185,7 @@ private:
     QString splitChoice;
 
     QString devicePath;
-    QFile *deviceFile;
+//    QFile *deviceFile;
 
     QString name;
 
@@ -212,8 +213,8 @@ private:
 
 
 
-    QHash<QTextDocument *, QFile *> fileForDoc;
-    QHash<QTextDocument *, QFile *>::iterator u;
+//    QHash<QTextDocument *, QFile *> fileForDoc;
+//    QHash<QTextDocument *, QFile *>::iterator u;
 
 
     //Outline :

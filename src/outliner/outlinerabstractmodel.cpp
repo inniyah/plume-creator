@@ -191,7 +191,7 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
 
         if(qMax(synSize.height(), noteSize.height()) < itemHeight + 200
                 && qMax(synSize.height(), noteSize.height()) > itemHeight){
-            qDebug() << "qMax";
+//            qDebug() << "qMax";
             if(synSize.height() >= noteSize.height())
                 return synSize;
             else
@@ -200,7 +200,7 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
         else if((synSize.height() > itemHeight + 200 || noteSize.height() > itemHeight + 200)
                 && (synSize.height() < itemHeight + 200 || noteSize.height() < itemHeight + 200)
                 && (synSize.height() > itemHeight || noteSize.height() > itemHeight)){
-            qDebug() << "minimum";
+//            qDebug() << "minimum";
             if(synSize.height() >= noteSize.height())
                 return noteSize;
             else
@@ -385,6 +385,7 @@ void OutlinerAbstractModel::resetAbsModel()
     QList<QVariant> rootData;
     rootData << tr("Titles") << tr("Synopsis") << tr("Notes");
     rootItem = new OutlinerTreeItem(rootData);
+rootItem->setHub(hub);
 
     numberOfDomElements = 0;
     mtoO_numForClonedDoc.clear();
@@ -545,6 +546,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
             }
 
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, rootItem);
+            treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
 
             rootItem->appendChild(treeItem);
@@ -581,6 +583,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
             }
 
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, treeBookItemList->last());
+            treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
 
             treeBookItemList->last()->appendChild(treeItem);
@@ -623,6 +626,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
             }
 
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, treeChapterItemList->last());
+            treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
 
             treeChapterItemList->last()->appendChild(treeItem);
@@ -642,6 +646,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
             QList<QVariant> itemData;
             itemData.append(child.attribute("name", "error"));
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, treeChapterItemList->last());
+            treeItem->setHub(hub);
             treeChapterItemList->last()->appendChild(treeItem);
         }
 

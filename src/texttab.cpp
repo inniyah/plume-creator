@@ -13,13 +13,16 @@ TextTab::TextTab(QWidget *parent) :
     nextTextDocument = new QTextDocument(this);
 
     prevTextZone = new TextZone(this);
+    prevTextZone->setHub(hub);
     prevTextZone->toHtml();
 
     nextTextZone = new TextZone(this);
+    nextTextZone->setHub(hub);
     nextTextZone->toHtml();
 
 
     textZone = new TextZone(this);
+    textZone->setHub(hub);
     textZone->toHtml();
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -221,6 +224,7 @@ void TextTab::updateWordCounts()
 void TextTab::setWordCounts()
 {
     tabWordCount = new WordCount(textDocument, this);
+    tabWordCount->setHub(hub);
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
     connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
     connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));

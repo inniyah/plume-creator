@@ -25,6 +25,8 @@
 #include <QDomDocument>
 #include <QTextDocument>
 
+#include "hub.h"
+
 class WordCountThread : public QThread
 {
     Q_OBJECT
@@ -40,6 +42,7 @@ signals:
     void projectWordCountSignal(int count);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void setDocs(QHash<QTextDocument*,QFile*> fileForDocs);
     void setDom(QDomDocument domDoc);
     void setCurrentNumber(int number);
@@ -48,6 +51,7 @@ private slots:
     int countWords(QTextDocument *doc);
 
 private:
+    Hub *hub;
     QList<QTextDocument *> textDocList;
     QDomDocument domDocument;
     int currNumber;

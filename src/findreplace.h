@@ -24,6 +24,9 @@
 #include <QDialog>
 #include <QDomDocument>
 
+#include "hub.h"
+
+
 namespace Ui {
 class FindReplace;
 }
@@ -39,6 +42,7 @@ public:
 signals:
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 
 private slots:
     //tree :
@@ -52,6 +56,7 @@ private slots:
 
 
 private:
+    Hub *hub;
     Ui::FindReplace *ui;
 
 

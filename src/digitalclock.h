@@ -22,6 +22,9 @@
 #define DIGITALCLOCK_H
 
 #include <QLabel>
+
+#include "hub.h"
+
 //
 class DigitalClock : public QLabel
 {
@@ -30,8 +33,15 @@ class DigitalClock : public QLabel
 public:
     DigitalClock(QWidget *parent = 0);
 
+public slots:
+    void setHub(Hub *varHub){hub = varHub;}
+
 private slots:
     void showTime();
+
+private:
+    Hub *hub;
+
 };
 
 #endif

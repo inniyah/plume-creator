@@ -171,10 +171,11 @@ void OutlinerBase::shiftToSpreadsheet()
     lastOpened = "spreadsheet";
 
     spreadsheet = new OutlinerSpreadsheet();
-
+    spreadsheet->setHub(hub);
 
 
     absModel = new OutlinerAbstractModel();
+    absModel->setHub(hub);
     absModel->mtoO_setDomDoc(mtoO_domDoc);
     absModel->mtoO_setNumForDoc(mtoO_numForDoc);
 
@@ -188,6 +189,8 @@ void OutlinerBase::shiftToSpreadsheet()
     spreadsheet->setWordWrap(true);
 
     OutlinerItemDelegate *delegate = new OutlinerItemDelegate;
+    delegate->setHub(hub);
+
     //spreadsheet->setItemDelegateForColumn(0, delegate); //tree
     spreadsheet->setItemDelegateForColumn(1, delegate); //syn
     spreadsheet->setItemDelegateForColumn(2, delegate); //notes

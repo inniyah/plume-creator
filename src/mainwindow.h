@@ -22,6 +22,7 @@
 
 #include <QtGui>
 
+#include "hub.h"
 #include "menubar.h"
 #include "maintree.h"
 #include "statsbox.h"
@@ -30,7 +31,7 @@
 #include "texttab.h"
 #include "fullscreen/fullscreeneditor.h"
 #include "outliner/outline.h"
-#include "attend/attendbox.h"
+#include "attend/attendbase.h"
 #include "orientationbutton.h"
 #include "slimupdater.h"
 #include "wordgoalprogressbar.h"
@@ -88,6 +89,7 @@ private slots:
     void launchOutliner();
 
     void textChangedSlot();
+    void textAlreadyChangedSlot(bool textChanged){textAlreadyChanged = textChanged;}
 
     void showPrevAndNextTexts(bool showTextsBool = true);
 
@@ -125,6 +127,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    TextStyles *textStyles;
+    Hub *hub;
 
     void createMenuBar();
     void createMenuDock();
@@ -135,7 +139,6 @@ private:
     void createDocksToolBar();
     void createStatusBar();
 
-    TextStyles *textStyles;
 
     QWidget *widgetToHideWith;
     MenuBar *menu;
@@ -150,7 +153,7 @@ private:
     QStackedLayout *noteLayout;
     StatsBox *stats;
     ItemBox *items;
-    AttendBox *attendList;
+    AttendBase *attendBase;
     QBoxLayout *noteDockLayout;
     QSplitter *noteSplitter;
 
@@ -166,7 +169,6 @@ private:
 
     QLabel *sceneWCLabel;
 
-    QFile *file;
 
     bool m_firstStart;
     bool m_firstStart_checkDisplay;
@@ -181,7 +183,7 @@ private:
     QList<TextTab *> *textWidgetList;
     QList<NoteZone *> *noteWidgetList;
     QList<NoteZone *> *synWidgetList;
-    int objectNum;
+
 
     QList<int> *tabNumList;
     QList<int> *numList;
@@ -207,8 +209,9 @@ private:
     QString noTabCss;
 
     bool textAlreadyChanged;
+ bool isExternalProjectOpeningBool;
 
-WordGoalProgressBar *wordGoalBar;
+    WordGoalProgressBar *wordGoalBar;
 };
 
 #endif // MAINWINDOW_H

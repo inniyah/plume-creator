@@ -24,6 +24,7 @@
 #include <QTextEdit>
 #include <QSettings>
 
+#include "hub.h"
 #include "textstyles.h"
 #include "editmenu.h"
 //
@@ -51,6 +52,7 @@ protected:
 
 public slots:
 
+    void setHub(Hub *varHub){hub = varHub;}
     void setTextFont(QFont font);
     void setTextHeight(int height);
     void centerCursor();
@@ -84,6 +86,7 @@ void createEditWidget();
     void preventDoubleSpace();
 
 private:
+    Hub *hub;
 
     QTextDocument *textDocument;
 

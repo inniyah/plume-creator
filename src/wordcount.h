@@ -25,6 +25,7 @@
 #include <QTextCursor>
 #include <QProcess>
 //
+#include "hub.h"
 
 class WordCount : public QObject
 {
@@ -42,6 +43,7 @@ signals:
     void countDeltaSignal(int countDelta);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 void calculateCounts();
 
 private slots:
@@ -53,6 +55,7 @@ private slots:
     void updateBlockCount(int blockCount);
 
 private:
+    Hub *hub;
 
 
     QTextDocument *document;

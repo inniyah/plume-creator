@@ -117,9 +117,14 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
 
+
+
+
+    // ----------------------------------------------------
+    //move .ini file to app path for portable app (Microsoft Windows only)
+    //- not finished !
+
 #ifdef Q_OS_WIN32
-    // not finished !
-    // move .ini file to app path for portable app (Microsoft Windows only)
 
     if (iniSettings.value("Settings/isPortableToBeCreated", false).toBool() == true
             && iniSettings.value("Settings/isPortableToBeUnset", false).toBool() == false){
@@ -171,7 +176,7 @@ int main(int argc, char *argv[])
 #endif
 
 
-    // style :
+    // ---------------------------------------style :
 
     QSettings settings;
 

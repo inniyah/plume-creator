@@ -28,6 +28,9 @@
 //#include <QtPrintSupport/QPrintDialog>
 //#include <QtPrintSupport/QPrintPreviewDialog>
 //
+
+#include "hub.h"
+
 class Exporter : public QDialog
 {
     Q_OBJECT
@@ -40,6 +43,7 @@ protected:
 signals:
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 
 private slots:
     void setExistingDirectory();
@@ -59,6 +63,7 @@ private slots:
     void previewPrint(QPrinter *printer);
 
 private:
+    Hub *hub;
 
 
     QString dialogMode;

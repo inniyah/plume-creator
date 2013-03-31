@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QSettings>
 
+#include "hub.h"
 #include "textstyles.h"
 
 namespace Ui {
@@ -56,6 +57,7 @@ signals:
 
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void setTextStyles(TextStyles *styles){textStyles = styles;}
 
 
@@ -83,6 +85,7 @@ private slots:
     void renameStyle();
 
 private:
+    Hub *hub;
     Ui::SettingsDialog *ui;
 
     QSettings settings;

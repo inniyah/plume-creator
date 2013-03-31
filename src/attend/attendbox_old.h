@@ -24,6 +24,7 @@
 #include <QtGui>
 #include <QDomDocument>
 
+#include "hub.h"
 #include "notezone.h"
 //
 class AttendBox : public QFrame
@@ -31,7 +32,7 @@ class AttendBox : public QFrame
     Q_OBJECT
 public:
     explicit AttendBox(QWidget *parent = 0);
-    bool readProjectAttendance(QFile *device);
+    bool startAttendance();
 
 signals:
     void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
@@ -41,10 +42,10 @@ signals:
     void textChangedSignal();
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void openSheetAttendList(int number ,QString attendString);
     bool saveAll();
     bool saveThisDoc();
-    bool saveDomDocument();
     bool closeAll();
     void setCurrentList(int number);
     void setCurrentListName(QString currentTabName);
@@ -101,6 +102,7 @@ private slots:
     void projectListSelectionChanged();
 
 private:
+    Hub *hub;
     QListWidget *attendList, *abstractList;
     QDomDocument domDocument;
     QDomElement root;

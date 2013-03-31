@@ -25,6 +25,8 @@
 #include <QtXml>
 #include <QtGui>
 //
+#include "hub.h"
+
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGroupBox;

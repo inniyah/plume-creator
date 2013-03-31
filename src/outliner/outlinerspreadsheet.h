@@ -23,6 +23,9 @@
 #include <QtGui>
 #include <QWidget>
 
+#include "hub.h"
+
+
 class OutlinerSpreadsheet : public QTreeView
 {
     Q_OBJECT
@@ -44,6 +47,7 @@ void columnOneResizedSignal(int newSize);
 void columnTwoResizedSignal(int newSize);
 
 public slots:
+void setHub(Hub *varHub){hub = varHub;}
     void temp_moveUp(){moveUp();}
     void temp_moveDown(){moveDown();}
     void giveStyle();
@@ -72,6 +76,7 @@ void columnResizedSlot(int index,int oldSize,int newSize);
 
 
 private:
+Hub *hub;
     bool wasClickedOnce;
     int itemIdClickedOnce;
     int enteredItemId;

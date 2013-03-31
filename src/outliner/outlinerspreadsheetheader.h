@@ -3,6 +3,8 @@
 
 #include <QHeaderView>
 
+#include "hub.h"
+
 class OutlinerSpreadsheetHeader : public QHeaderView
 {
     Q_OBJECT
@@ -15,9 +17,14 @@ protected:
 signals:
     
 public slots:
-    
+    void setHub(Hub *varHub){hub = varHub;}
+
 private slots:
     void hideOrShowSectionSlot(int logicalIndex, bool showSectionBool);
+
+private:
+    Hub *hub;
+
 };
 
 #endif // OUTLINERSPREADSHEETHEADER_H

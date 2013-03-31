@@ -23,6 +23,8 @@
 #include <QtGui>
 //
 
+#include "hub.h"
+
 //QT_BEGIN_NAMESPACE
 //class DeletePrjButton;
 //class OpenPrjButton;
@@ -44,6 +46,7 @@ signals:
     void deleteProjectNum(int numPrj);
 
     public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void projectAlreadyOpened(bool projectAlreadyOpened){if(projectAlreadyOpened) noProjectAlreadyOpened = false; else noProjectAlreadyOpened = true;}
 
 private slots:
@@ -60,6 +63,7 @@ void renameXML(QFile *xmlFile, QString oldName, QString newName);
 void itemsSelectionChangedSlot();
 
 private:
+Hub *hub;
     QVBoxLayout *projListLayout;
     QGridLayout *itemLayout;
 QTableWidget *table;

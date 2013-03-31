@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <QTextCharFormat>
 
+#include "hub.h"
 #include "textstyles.h"
 
 namespace Ui {
@@ -49,6 +50,7 @@ signals:
     void zoomInSignal();
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void charFormatChangedSlot(QTextCharFormat format);
     void tabChangedSlot(QTextCharFormat newTabFormat);
     void setStyleSelectionSlot(int selection);
@@ -66,6 +68,7 @@ private slots:
     void zoomOut();
 
 private:
+    Hub *hub;
     Ui::EditMenu *ui;
 
     int xMax;

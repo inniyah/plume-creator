@@ -1,4 +1,3 @@
-
 #include "attendbox.h"
 #include "fileupdater.h"
 
@@ -41,60 +40,12 @@ AttendBox::AttendBox(QWidget *parent) :
 
 bool AttendBox::saveAll()
 {
-
-
-
-    saveDomDocument();
-
-
-    QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
-
-    while (i != fileForDoc.end()) {
-
-
-        QTextDocument *doc = i.key();
-
-
-        QFile *file = fileForDoc.value(doc);
-        file->close();
-        QTextDocumentWriter *docWriter = new QTextDocumentWriter(file, "HTML");
-        bool written = docWriter->write(doc);
-
-        //        qDebug() << "QTextDocumentWriter : " << file->fileName();
-        //                qDebug() << "QTextDocumentWriter : " << written;
-        delete docWriter;
-
-        ++i;
-    }
+hub->saveProject();
 
     return true;
 }
 
-//--------------------------------------------------------------------------------------
 
-bool AttendBox::saveDomDocument()
-{
-    attFile->waitForBytesWritten(500);
-    attFile->close();
-    attFile->open(QFile::ReadWrite | QFile::Text | QFile::Truncate);
-    if(attFile->isWritable())
-    {
-        attFile->flush();
-
-
-        const int IndentSize = 4;
-
-        QTextStream out(attFile);
-        out.flush();
-        domDocument.save(out, IndentSize);
-        attFile->close();
-
-        //        qDebug() << "saveDomDocument()";
-        return true;
-    }
-    else
-        return false;
-}
 //--------------------------------------------------------------------------------------
 
 
@@ -113,7 +64,7 @@ bool AttendBox::saveThisDoc()
     bool written = docWriter.write(doc);
 
 
-    //    qDebug() << "file : " << file->fileName();
+        qDebug() << "file : " << file->fileName();
 
 
 
@@ -156,59 +107,19 @@ bool AttendBox::closeAll()
     domElementForItemNumber.clear();
     attendStringForNumber.clear();
     fileForDoc.clear();
+hub->set_attendTree_fileForDocHash(fileForDoc);
 
     return true;
 
 }
 //--------------------------------------------------------------------------------------
 
-bool AttendBox::readProjectAttendance(QFile *device)
+bool AttendBox::startAttendance()
 {
     firstDetailOpening = true;
 
-    FileUpdater *fileUpdater = new FileUpdater;
-    fileUpdater->checkAttendanceFile(device->fileName());
 
-    // read file :
-
-    QFileInfo *dirInfo = new QFileInfo(*device);
-    devicePath = dirInfo->path();
-
-
-    QStringList filters;
-    QDir dir(devicePath);
-
-
-    filters.clear();
-    filters << "*.attend";
-
-
-    attFile = new QFile(devicePath + "/" + dir.entryList(filters).first());
-
-
-    //opening :
-
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    if (!domDocument.setContent(attFile, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("Parse error at line %1, column %2:\n%3\n")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
-
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
-
-
-        return false;
-    }
-
-
+domDocument = hub->attendTreeDomDoc();
 
 
     root = domDocument.documentElement();
@@ -224,7 +135,6 @@ bool AttendBox::readProjectAttendance(QFile *device)
 
     //  open all attend docs :
 
-    QApplication::setOverrideCursor(Qt::WaitCursor);
 
 
     //                 set up the progress bar :
@@ -250,7 +160,7 @@ bool AttendBox::readProjectAttendance(QFile *device)
 
     QDomElement element;
     QString attendPath;
-
+fileForDoc = hub->attendTree_fileForDocHash();
 
 
     for(int i = 0; i < abstractList->count(); ++i){
@@ -265,7 +175,7 @@ bool AttendBox::readProjectAttendance(QFile *device)
         attendFile->setFileName(attendPath);
         attendFile->open(QFile::ReadOnly | QFile::Text);
         QTextStream attendFileStream( attendFile );
-        QTextDocument *attendDocument = new QTextDocument(this);
+        QTextDocument *attendDocument = new QTextDocument(hub);
         attendDocument->setHtml(attendFileStream.readAll());
         attendFile->close();
         attendDocument->setObjectName("attendDoc_" + element.attribute("number"));
@@ -284,6 +194,8 @@ bool AttendBox::readProjectAttendance(QFile *device)
 
 
     }
+
+
     QApplication::restoreOverrideCursor();
     progressWidget->close();
 
@@ -764,6 +676,7 @@ void AttendBox::launchAttendManager()
     deleteButton->setIconSize(iconSize);
 
     editZone = new NoteZone;
+editZone->setHub(hub);
 
     connect(editZone, SIGNAL(textChanged()), SIGNAL(textChangedSignal()));
 
@@ -1073,7 +986,7 @@ void AttendBox::openDetail(QListWidgetItem* item)
 
     // fill the QtextEdit :
 
-    QTextDocument *attendDoc = this->findChild<QTextDocument *>("attendDoc_" + number);
+    QTextDocument *attendDoc = hub->findChild<QTextDocument *>("attendDoc_" + number);
     editZone->openAttendDetail(attendDoc);
 
     editZone->setFocus();
@@ -1230,7 +1143,9 @@ void AttendBox::saveAndUpdate()
     if(deletingItemBool == false && detailsHiddenBool == false ){
         saveThisDoc();
     }
-    saveDomDocument();
+
+    hub->set_attendTree_fileForDocHash(fileForDoc);
+    hub->saveProject();
 
     // updating :
     buildList();
@@ -1379,7 +1294,6 @@ void AttendBox::newAttendElementSlot(QString tagName)
 
 
 
-
     saveAndUpdate();
 
 
@@ -1454,12 +1368,11 @@ void AttendBox::deleteItems()
 
 
         for(int l=0; l < domElementList.size(); ++l){
-            QTextDocument *text = this->findChild<QTextDocument *>("attendDoc_" + domElementList.at(l).attribute("number"));
+            QTextDocument *text = hub->findChild<QTextDocument *>("attendDoc_" + domElementList.at(l).attribute("number"));
             QFile *textFile = fileForDoc.value(text);
             textFile->remove();
             text->setObjectName("");
-            fileForDoc.remove(text);
-
+           fileForDoc.remove(text);
 
             emit removeAttendNumberSignal(domElementList.at(l).attribute("number").toInt());
 

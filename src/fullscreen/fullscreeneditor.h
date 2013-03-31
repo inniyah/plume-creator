@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <QSettings>
 
+#include "hub.h"
 #include "textstyles.h"
 #include "editmenu.h"
 #include "wordcount.h"
@@ -54,6 +55,7 @@ signals:
     void manageStylesSignal();
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void setWordCount(int num);
     void setTimer(QString);
     void applyConfig();
@@ -98,6 +100,7 @@ private slots:
     void changeTextStyleSlot(int styleIndex);
 
 private:
+    Hub *hub;
     Ui::FullscreenEditor *ui;
 
     TextStyles *textStyles;

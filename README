@@ -1,5 +1,13 @@
 PLUME CREATOR
 
+v 0.58.1
+	- New Attendance Manager and dock.
+	- The projects are now one single file
+	- added .plume_backup for worst cases
+	- major change of Plume inner workings
+	- Qt5 ready, waiting for packages in Linux distribs
+	
+	
 v 0.58
 	- More consistent key bindings
 	- Added proxy support for updater

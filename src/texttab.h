@@ -23,6 +23,7 @@
 #include <QtGui>
 #include <QWidget>
 
+#include "hub.h"
 #include "textzone.h"
 #include "wordcount.h"
 #include "textstyles.h"
@@ -55,6 +56,7 @@ protected:
 
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void changeWidthSlot(int width);
     void changeTextFontSlot(QFont font);
     void changeTextHeightSlot(int height);
@@ -86,6 +88,7 @@ void cursorPositionChangedSlot();
 void giveStyle();
 
 private:
+Hub *hub;
 TextStyles *textStyles;
 
 QTextDocument *prevTextDocument;

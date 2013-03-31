@@ -524,7 +524,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-        qDebug() << "insertFromMimeData Html";
+//        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -549,7 +549,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-        qDebug() << "insertFromMimeData plainText";
+//        qDebug() << "insertFromMimeData plainText";
 
     }
 

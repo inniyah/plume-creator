@@ -35,51 +35,14 @@ MainTree::MainTree(QWidget *parent) :
     setContextMenuPolicy(Qt::PreventContextMenu);
 
 }
-bool MainTree::read(QFile *device)
+bool MainTree::startTree()
 {
-    deviceFile = new QFile(device->fileName());
 
+    devicePath = hub->projectWorkPath();
+domDocument = hub->mainTreeDomDoc();
 
-
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    if (!domDocument.setContent(device, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("Parse error at line %1, column %2:\n%3\n")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
-
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
-
-
-        return false;
-    }
-
-    QFileInfo *dirInfo = new QFileInfo(*device);
-    devicePath = dirInfo->path();
-    //    qDebug() << "File path:" << devicePath;
-
-
-    root = domDocument.documentElement();
-    if (root.tagName() != "plume") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not a Plume Creator project file."));
-        return false;
-    } else if (root.hasAttribute("version")
-               && root.attribute("version") != "0.2") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not an Plume Creator project file version 0.2 "
-                                    "file."));
-        return false;
-    }
-
-
+//qDebug() << "domDocument : " << domDocument.toString();
+//qDebug() << "devicePath : " << devicePath;
 
     buildTree();
 
@@ -100,7 +63,6 @@ bool MainTree::read(QFile *device)
 
 
 
-    device->close();
 
 
     //    prjIsJustOpened = true;
@@ -109,108 +71,8 @@ bool MainTree::read(QFile *device)
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
 
-
-    //  open all docs :
-
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-
-
-    //                 set up the progress bar :
-    QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    QHBoxLayout *progressLayout = new QHBoxLayout(progressWidget);
-    QProgressBar *progressBar = new QProgressBar(progressWidget);
-    int progressValue = 0;
-
-    progressLayout->addWidget(progressBar);
-    progressWidget->setLayout(progressLayout);
-
-    progressBar->setMaximum(domDocument.elementsByTagName("book").size()
-                            + domDocument.elementsByTagName("chapter").size()
-                            + domDocument.elementsByTagName("scene").size()
-                            );
-    progressBar->setValue(progressValue);
-    progressWidget->show();
-
-
-
-
-
-
-    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
-    QDomElement element;
-    QString textPath;
-    QString synPath;
-    QString notePath;
-
-
-    while(iterator->operator *() != 0){
-
-
-        //      itemList->append(iterator->operator *());
-        element = domElementForItem.value(iterator->operator *());
-        if(element.tagName() != "separator")
-        {
-            textPath = devicePath + element.attribute("textPath");
-            synPath = devicePath + element.attribute("synPath");
-            notePath = devicePath + element.attribute("notePath");
-
-            QFile *textFile = new QFile;
-            textFile->setFileName(textPath);
-            textFile->open(QFile::ReadOnly | QFile::Text);
-            QTextStream textFileStream( textFile );
-            QTextDocument *textDocument = new QTextDocument(this);
-            textDocument->setHtml(textFileStream.readAll());
-            textFile->close();
-            textDocument->setObjectName("textDoc_" + element.attribute("number"));
-            fileForDoc.insert(textDocument, textFile);
-
-            QFile *synFile = new QFile;
-            synFile->setFileName(synPath);
-            synFile->open(QFile::ReadOnly | QFile::Text);
-            QTextStream synFileStream( synFile );
-            QTextDocument *synDocument = new QTextDocument(this);
-            synDocument->setHtml(synFileStream.readAll());
-            synFile->close();
-            synDocument->setObjectName("synDoc_" + element.attribute("number"));
-            fileForDoc.insert(synDocument, synFile);
-
-            QFile *noteFile = new QFile;
-            noteFile->setFileName(notePath);
-            noteFile->open(QFile::ReadOnly | QFile::Text);
-            QTextStream noteFileStream( noteFile );
-            QTextDocument *noteDocument = new QTextDocument(this);
-            noteDocument->setHtml(noteFileStream.readAll());
-            noteFile->close();
-            noteDocument->setObjectName("noteDoc_" + element.attribute("number"));
-            fileForDoc.insert(noteDocument, noteFile);
-
-            //            qDebug() << "doc opened : "<< element.attribute("number");
-
-            QFile *file = fileForDoc.value(noteDocument);
-            //            qDebug() << "saveDoc : " << file->fileName();
-        }
-
-        progressValue += 1;
-        progressBar->setValue(progressValue);
-
-        iterator->operator ++();
-
-    }
-    QApplication::restoreOverrideCursor();
-    progressWidget->close();
     //    QString debug;
     //    qDebug() << "fileForDoc : " << debug.setNum(fileForDoc.size());
-
-    for (u = fileForDoc.begin(); u != fileForDoc.end(); ++u){
-
-        //        QFile *file = u.value();
-        //        qDebug() << "saveDoc iterator : " << file->fileName();
-        //        QString debug;
-        //        qDebug() << "doc witdh iterator : " << debug.setNum(u.key()->textWidth());
-
-    }
-
-
 
 
     // read all attendance attributes :
@@ -220,7 +82,7 @@ bool MainTree::read(QFile *device)
     //open first book
 
 
-    QDomElement child_ = root.firstChildElement("book");
+    QDomElement child_ = domDocument.documentElement().firstChildElement("book");
 
 
     QTreeWidgetItem *item;
@@ -236,100 +98,7 @@ bool MainTree::read(QFile *device)
 
 
 
-bool MainTree::write(QFile *device)
-{
 
-    device->waitForBytesWritten(500);
-    device->close();
-    device->open(QFile::ReadWrite | QFile::Text | QFile::Truncate);
-    if(device->isWritable())
-    {
-        device->flush();
-
-
-        const int IndentSize = 4;
-
-        QTextStream out(device);
-        out.flush();
-        domDocument.save(out, IndentSize);
-        device->close();
-
-
-        //        qDebug() << "Dom saved in xml via write(QFile *device)";
-
-
-        // save all docs :
-
-
-
-        //       QDomElement element;
-        //        QHash<QTextDocument *, QFile *> clonefileForDoc(fileForDoc);
-
-        QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
-
-        while (i != fileForDoc.end()) {
-
-
-
-            //            QString objName = doc->objectName();
-            //            int number = objName.mid(objName.indexOf("_")).toInt() + 1;
-            //            element = domElementForNumber.value(number);
-
-            //            if(element.tagName() != "separator"){
-
-
-
-
-
-
-            //                QString num = element.attribute("number");
-            //                QTextDocument *document = this->findChild<QTextDocument *>("textDoc_" + num);
-            //                QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
-            //                QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
-
-            saveDoc(i.key());
-            //                saveDoc(synDocument);
-            //                saveDoc(noteDocument);
-
-
-
-
-
-            //            }
-            ++i;
-
-
-        }
-
-
-
-
-
-
-
-        domDocument.documentElement().setAttribute("lastModified", QDateTime::currentDateTime().toString());
-
-
-
-        qDebug() << "prjinfo saved";
-
-
-
-
-        return true;
-
-    }
-    else{
-
-
-        //        qDebug() << "Dom saved in xml via write(QFile *device) :     error ";
-        return false;
-    }
-
-
-
-
-}
 
 //---------------------------------------------------------------------------------------
 
@@ -345,14 +114,6 @@ void MainTree::closeTree()
 
 
 
-    QHash<QTextDocument *, QFile *>::iterator i = fileForDoc.begin();
-
-    while (i != fileForDoc.end()) {
-        QTextDocument *doc = i.key();
-        doc->setObjectName("");
-
-        ++i;
-    }
     //    qDebug() << "closeTree";
 
 
@@ -367,9 +128,9 @@ void MainTree::closeTree()
     //        {
     //            if(element.tagName() != "separator"){
     //                QString num = element.attribute("number");
-    //                QTextDocument *textDocument = this->findChild<QTextDocument *>("textDoc_" + num);
-    //                QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
-    //                QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+    //                QTextDocument *textDocument = hub->findChild<QTextDocument *>("textDoc_" + num);
+    //                QTextDocument *synDocument = hub->findChild<QTextDocument *>("synDoc_" + num);
+    //                QTextDocument *noteDocument =  hub->findChild<QTextDocument *>("noteDoc_" + num);
 
     //                textDocument->setObjectName("");
     //                synDocument->setObjectName("");
@@ -393,8 +154,6 @@ void MainTree::closeTree()
     setContextMenuPolicy(Qt::PreventContextMenu);
 
 
-
-    fileForDoc.clear();
     domElementForItem.clear();
     domElementForNumber.clear();
 }
@@ -410,14 +169,9 @@ void MainTree::updateDomElement(QTreeWidgetItem *item, int column)
     newElement.setAttribute("name", item->text(0));
 
 
-
-    this->write(deviceFile);
+hub->addToSaveQueue();
 
     buildTree();
-
-    //    this->write(deviceFile);
-
-
 
     //    if(newElement.attribute("name") == root.attribute("name") && newElement.tagName() == "book"){
     //        QStringList labels;
@@ -521,7 +275,7 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     emit disconnectUpdateTextsSignal();
 
 
-    //    qDebug() << "itemOpened :" << treeItem->text(0);
+//        qDebug() << "itemOpened :" << treeItem->text(0);
 
     QString action;
     action = "open";
@@ -539,19 +293,21 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     int synCursorPos = domItem.attribute("synCursorPos", "0").toInt();
     int noteCursorPos = domItem.attribute("noteCursorPos", "0").toInt();
     QString string;
-    QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number,10));
-    QTextDocument *noteDoc = this->findChild<QTextDocument *>("noteDoc_" + string.setNum(number,10));
-    QTextDocument *synDoc = this->findChild<QTextDocument *>("synDoc_" + string.setNum(number,10));
+    QTextDocument *textDoc = hub->findChild<QTextDocument *>("textDoc_" + string.setNum(number,10));
+    QTextDocument *noteDoc = hub->findChild<QTextDocument *>("noteDoc_" + string.setNum(number,10));
+    QTextDocument *synDoc = hub->findChild<QTextDocument *>("synDoc_" + string.setNum(number,10));
 
     //debug :
 
     //    qDebug() << "textCursorPos : "<< domItem.attribute("textCursorPos", "0");
     //                qDebug() << "synCursorPos : "<< domItem.attribute("synCursorPos", "0");
     //                qDebug() << "noteCursorPos : "<< domItem.attribute("noteCursorPos", "0");
-    //                qDebug() << "number : " << domItem.attribute("number");
+//                    qDebug() << "number : " << domItem.attribute("number");
 
 
-
+//qDebug() << textDoc->toHtml();
+//qDebug() << synDoc->toHtml();
+//qDebug() << noteDoc->toHtml();
 
 
     emit textAndNoteSignal(textDoc, noteDoc, synDoc, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
@@ -736,7 +492,7 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
 
 
     // adding to Dom
-    //    qDebug() << "Item worked with:" << item->text(0);
+//        qDebug() << "Item worked with:" << item->text(0);
     QDomElement element = domElementForItem.value(item);
 
 
@@ -751,7 +507,7 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
     modifyAttributes(element, newElement, "sibling");
 
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
 
     buildTree();
@@ -802,7 +558,7 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     itemExpandedSlot(item);
 
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
     buildTree();
 
@@ -925,7 +681,7 @@ QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
 
 
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
 
     buildTree();
@@ -985,7 +741,7 @@ void MainTree::moveUp()
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
     buildTree();
 
@@ -1059,7 +815,7 @@ void MainTree::moveDown()
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
     buildTree();
 
@@ -1293,7 +1049,7 @@ void MainTree::delYesItem()
         //free freeNumList
 
 
-        this->write(deviceFile);
+        hub->addToSaveQueue();
 
 
         buildTree();
@@ -1339,11 +1095,12 @@ void MainTree::removeItem(QDomElement element)
     emit(textAndNoteSignal(number,"close"));
 
     QString string;
-    QTextDocument *text = this->findChild<QTextDocument *>("textDoc_" + string.setNum(number));
-    QTextDocument *note = this->findChild<QTextDocument *>("noteDoc_" + string.setNum(number));
-    QTextDocument *syn = this->findChild<QTextDocument *>("synDoc_" + string.setNum(number));
+    QTextDocument *text = hub->findChild<QTextDocument *>("textDoc_" + string.setNum(number));
+    QTextDocument *note = hub->findChild<QTextDocument *>("noteDoc_" + string.setNum(number));
+    QTextDocument *syn = hub->findChild<QTextDocument *>("synDoc_" + string.setNum(number));
 
 
+QHash<QTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
 
     QFile *textFile = fileForDoc.value(text);
     QFile *noteFile = fileForDoc.value(note);
@@ -1356,6 +1113,8 @@ void MainTree::removeItem(QDomElement element)
     fileForDoc.remove(text);
     fileForDoc.remove(note);
     fileForDoc.remove(syn);
+
+    hub->set_mainTree_fileForDocHash(fileForDoc);
 
     text->deleteLater();
     note->deleteLater();
@@ -1432,7 +1191,7 @@ void MainTree::autoRenameChilds()
     }
 
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
     buildTree();
 
@@ -1510,7 +1269,7 @@ void MainTree::splitChoiceChanged(int choice)
         splitChoice = "textDoc_";
         break;
 
-        qDebug() << "splitChoice : " << splitChoice;
+//        qDebug() << "splitChoice : " << splitChoice;
     }
 }
 
@@ -1570,7 +1329,7 @@ void MainTree::splitYes()
     int number = domItem.attribute("number").toInt();
 
     QString string;
-    QTextDocument *textDoc = this->findChild<QTextDocument *>( splitChoice + string.setNum(number,10));
+    QTextDocument *textDoc = hub->findChild<QTextDocument *>( splitChoice + string.setNum(number,10));
     QString mainString = textDoc->toHtml("utf-8");
 
 
@@ -1592,7 +1351,7 @@ void MainTree::splitYes()
 
             item = addItemNext(itemOfWork);
             int num = domElementForItem.value(item).toElement().attribute("number").toInt();
-            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
             doc->setHtml(scenesList.at(i));
 
             itemOfWork = item;
@@ -1616,7 +1375,7 @@ void MainTree::splitYes()
             scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
             childItem = addChild(item);
             int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
-            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
             doc->setHtml(scenesList.at(0));
 
             progressValue += 1;
@@ -1626,7 +1385,7 @@ void MainTree::splitYes()
 
                 itemOfWork2 = addItemNext(childItem);
                 int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
-                QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+                QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
                 doc->setHtml(scenesList.at(j));
                 childItem = itemOfWork2;
             }
@@ -1647,13 +1406,13 @@ void MainTree::splitYes()
 
         childItem = addChild(itemOfWork);
         //            int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
-        //            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+        //            QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
         //            doc->setHtml(chaptersList.at(0));
 
         scenesList = chaptersList.at(0).split("***", QString::KeepEmptyParts);
         childItem2 = addChild(childItem);
         int num = domElementForItem.value(childItem2).toElement().attribute("number").toInt();
-        QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+        QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
         doc->setHtml(scenesList.at(0));
 
         progressValue += 1;
@@ -1663,7 +1422,7 @@ void MainTree::splitYes()
 
             itemOfWork2 = addItemNext(childItem2);
             int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
-            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
             doc->setHtml(scenesList.at(k));
             childItem2 = itemOfWork2;
 
@@ -1679,14 +1438,14 @@ void MainTree::splitYes()
             scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
             childItem = addChild(item);
             int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
-            QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+            QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
             doc->setHtml(scenesList.at(0));
 
             for(int j = 1; j < scenesList.size(); ++j){
 
                 itemOfWork2 = addItemNext(childItem);
                 int num = domElementForItem.value(itemOfWork2).toElement().attribute("number").toInt();
-                QTextDocument *doc = this->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
+                QTextDocument *doc = hub->findChild<QTextDocument *>(splitChoice + string.setNum(num,10));
                 doc->setHtml(scenesList.at(j));
                 childItem = itemOfWork2;
             }
@@ -1748,7 +1507,7 @@ void MainTree::addMulti()
 
     }
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
 
     buildTree();
@@ -1848,11 +1607,12 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
             originalTextFile = originalTextFile.left(numOriginalTextChar_point);
 
             numFile = originalTextFile.toInt();
-
+//            QString debug;
+//            qDebug() << "numFile : " << debug.setNum(numFile);
             if(letter == "T"){
                 numList.append(numFile);
-                //                QString debug;
-                //                qDebug() << "numFile : " << debug.setNum(numFile);
+//                                QString debug;
+//                                qDebug() << "numFile : " << debug.setNum(numFile);
             }
         }
 
@@ -1861,8 +1621,10 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
 
 
 
+//        qDebug() << "numList.size() : "<< numList.size() ;
 
         int maxNumList = numList.last();
+//        qDebug() << "maxNumList : "  <<QString::number(maxNumList) ;
 
         int num = 1;
         while(!numList.isEmpty()){
@@ -1936,8 +1698,9 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     //    QTextStream out(&textFile);
     //    out << "";
     //    textFile.close();
+ QHash<QTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
 
-    QTextDocument *textDocument = new QTextDocument(this);
+    QTextDocument *textDocument = new QTextDocument(hub);
     textDocument->toHtml();
     QTextDocumentWriter textDocWriter(textFile, "HTML");
     textDocWriter.write(textDocument);
@@ -1946,7 +1709,7 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
 
 
 
-    QTextDocument *noteDocument = new QTextDocument(this);
+    QTextDocument *noteDocument = new QTextDocument(hub);
     noteDocument->toHtml();
     QTextDocumentWriter noteDocWriter(noteFile, "HTML");
     noteDocWriter.write(noteDocument);
@@ -1954,12 +1717,14 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     fileForDoc.insert(noteDocument, noteFile);
 
 
-    QTextDocument *synDocument = new QTextDocument(this);
+    QTextDocument *synDocument = new QTextDocument(hub);
     synDocument->toHtml();
     QTextDocumentWriter synDocWriter(synFile, "HTML");
     synDocWriter.write(synDocument);
     synDocument->setObjectName("synDoc_" + newElement.attribute("number"));
     fileForDoc.insert(synDocument, synFile);
+
+    hub->set_mainTree_fileForDocHash(fileForDoc);
 
     if(level == "sibling"){
         newElement.setTagName(originalElement.tagName());
@@ -2010,7 +1775,7 @@ void MainTree::buildTree()
     clear();
 
 
-    QDomElement child = root.firstChildElement("book");
+    QDomElement child = domDocument.documentElement().firstChildElement("book");
     while (!child.isNull()) {
         parseFolderElement(child);
         child = child.nextSiblingElement("book");
@@ -2096,8 +1861,7 @@ void MainTree::dropEvent(QDropEvent* event)
         qWarning() << "drop event  mParent - 0";
         QTreeView::dropEvent(event);
 
-
-        this->write(deviceFile);
+        hub->addToSaveQueue();
         buildTree();
 
         if(outlinerLaunched){
@@ -2133,7 +1897,7 @@ void MainTree::dropEvent(QDropEvent* event)
         QTreeView::dropEvent(event);
 
 
-        this->write(deviceFile);
+        hub->addToSaveQueue();
         buildTree();
 
 
@@ -2170,7 +1934,7 @@ void MainTree::dropEvent(QDropEvent* event)
         qWarning() << "drop event  mParent - 1 below";
         QTreeView::dropEvent(event);
 
-        this->write(deviceFile);
+        hub->addToSaveQueue();
         buildTree();
 
         if(outlinerLaunched){
@@ -2312,6 +2076,8 @@ void MainTree::saveCursorPos(int textCursorPosition, int synCursorPosition, int 
     element.setAttribute("noteCursorPos", noteCursorPosition);
     //   this->write(deviceFile);
 
+    hub->addToSaveQueue();
+
 }
 
 
@@ -2322,7 +2088,7 @@ bool MainTree::saveDoc(QTextDocument *doc)
 {
     //    qDebug() << "saveDoc";
 
-    QFile *file = fileForDoc.value(doc);
+    QFile *file = hub->mainTree_fileForDocHash().value(doc);
     //    qDebug() << "saveDoc : " << doc->objectName();
     //    qDebug() << "saveDoc : " << file->fileName();
     file->close();
@@ -2385,7 +2151,7 @@ void MainTree::launchOutliner()
     }
 
     outlinerBase = new OutlinerBase(0);
-
+    outlinerBase->setHub(hub);
 
     connect(this, SIGNAL(showOutlinerSignal()), outlinerBase, SLOT(showOutliner()));
 
@@ -2474,35 +2240,7 @@ void MainTree::launchOutliner()
 QHash<QTextDocument *, int> MainTree::setNumForDoc()
 {
 
-    QHash<QTextDocument *, int> numForDoc;
-    numForDoc.clear();
-
-    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(this);
-    QDomElement element;
-
-    while(iterator->operator *() != 0){
-        element = domElementForItem.value(iterator->operator *());
-        if(element.tagName() != "separator")
-        {
-
-            QString num = element.attribute("number");
-            QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
-            numForDoc.insert(synDocument, num.toInt());
-            QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
-            numForDoc.insert(noteDocument, num.toInt());
-
-            //    outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
-
-        }
-        //        if(element.tagName() == "separator")
-        //        {
-
-        //        }
-
-        iterator->operator ++();
-
-    }
-    return numForDoc;
+    return hub->mainTree_numForDocHash();
 }
 //-----------------------------------------------------------------------------------------
 
@@ -2528,7 +2266,6 @@ void MainTree::updateMainDomDocFromOutliner(QDomDocument domDoc)
         return;
     }
     domDocument = domDoc;
-    root = domDocument.documentElement();
 
     buildTree();
 
@@ -2590,8 +2327,8 @@ void MainTree::buildOutliner()
 //        {
 
 //            QString num = element.attribute("number");
-//            QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + num);
-//            QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + num);
+//            QTextDocument *synDocument = hub->findChild<QTextDocument *>("synDoc_" + num);
+//            QTextDocument *noteDocument =  hub->findChild<QTextDocument *>("noteDoc_" + num);
 
 //            outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
 
@@ -2655,7 +2392,7 @@ void MainTree::newOutlineTitleSlot(QString newTitle,int number)
     QDomElement element = domElementForNumber.value(number);
     element.setAttribute("name", newTitle);
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
 
 
     buildTree();
@@ -2668,8 +2405,8 @@ void MainTree::insertOutlinerItem(int newNumber, int numberOfRef)
 //    QDomElement element = domElementForNumber.value(newNumber);
 
 //    QString string;
-//    QTextDocument *synDocument = this->findChild<QTextDocument *>("synDoc_" + string.setNum(newNumber));
-//    QTextDocument *noteDocument =  this->findChild<QTextDocument *>("noteDoc_" + string.setNum(newNumber));
+//    QTextDocument *synDocument = hub->findChild<QTextDocument *>("synDoc_" + string.setNum(newNumber));
+//    QTextDocument *noteDocument =  hub->findChild<QTextDocument *>("noteDoc_" + string.setNum(newNumber));
 
 //    OutlineItem *newWidget = outliner->buildItem(synDocument, noteDocument, element.attribute("name"), element.attribute("number").toInt(), element.tagName());
 
@@ -2785,7 +2522,7 @@ QTextDocument * MainTree::prevText(int num)
         return 0;
 
     QString string;
-    QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(prevNum,10));
+    QTextDocument *textDoc = hub->findChild<QTextDocument *>("textDoc_" + string.setNum(prevNum,10));
     //    qDebug() << "prevNum : " << string;
 
     return textDoc;
@@ -2811,7 +2548,7 @@ QTextDocument * MainTree::nextText(int num)
         return 0;
 
     QString string;
-    QTextDocument *textDoc = this->findChild<QTextDocument *>("textDoc_" + string.setNum(nextNum,10));
+    QTextDocument *textDoc = hub->findChild<QTextDocument *>("textDoc_" + string.setNum(nextNum,10));
     //    qDebug() << "nextNum : " << string;
 
     return textDoc;
@@ -2872,7 +2609,7 @@ void MainTree::removeAttendNumberSlot(int itemNumber)
         ++i;
     }
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
     readAllAttendances();
 }
 
@@ -2907,8 +2644,8 @@ void MainTree::addAttendNumberToSheetSlot(QList<int> list, int sheetNumber)
     //        ++i;
     //    }
 
-    this->write(deviceFile);
 
+    hub->addToSaveQueue();
     readAllAttendances();
 }
 
@@ -2945,7 +2682,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
     //        ++i;
     //    }
 
-    this->write(deviceFile);
+    hub->addToSaveQueue();
     readAllAttendances();
 }
 
@@ -2953,7 +2690,7 @@ void MainTree::removeAttendNumberFromSheetSlot(QList<int> list, int sheetNumber)
 
 void MainTree::giveDocsAndDomForProjectWordCount()
 {
-    emit docsForProjectWordCountSignal(fileForDoc);
+    emit docsForProjectWordCountSignal(hub->mainTree_fileForDocHash());
     emit domForProjectWordCountSignal(domDocument.cloneNode().toDocument());
 }
 
@@ -2965,6 +2702,7 @@ void MainTree::changeAllDocsTextStyles()
     textStyles->loadBaseStyles();
     textStyles->loadStyles();
 
+QHash<QTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
     QHash<QTextDocument *, QFile *>::const_iterator i = fileForDoc.constBegin();
     while (i != fileForDoc.constEnd()) {
 

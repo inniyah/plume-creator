@@ -20,9 +20,11 @@
 #ifndef OUTLINERITEMDELEGATE_H
 #define OUTLINERITEMDELEGATE_H
 
-#include "notezone.h"
 #include <QStyledItemDelegate>
 #include <QtGui>
+
+#include "hub.h"
+#include "notezone.h"
 
 class OutlinerItemDelegate : public QStyledItemDelegate
 {
@@ -49,12 +51,14 @@ protected:
     signals:
     
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 
 
 private slots:
 
 
 private :
+    Hub *hub;
     NoteZone *note;
     NoteZone *syn;
     bool editorLaunched;

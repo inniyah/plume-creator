@@ -23,6 +23,9 @@
 #include <QFrame>
 #include <QWidget>
 //
+#include "hub.h"
+
+
 class ItemBox : public QFrame
 {
     Q_OBJECT
@@ -32,6 +35,11 @@ public:
 signals:
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
+
+private:
+    Hub *hub;
+
 
 };
 

@@ -22,6 +22,7 @@
 
 #include <QProgressBar>
 
+#include "hub.h"
 
 namespace Ui {
 class WordGoalProgressBar;
@@ -45,6 +46,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void changeProgressBy(int progress);
 
 private slots:
@@ -52,6 +54,7 @@ private slots:
 void createActions();
 
 private:
+Hub *hub;
     Ui::WordGoalProgressBar *ui;
 QAction *resetAct, *setGoalAct;
 

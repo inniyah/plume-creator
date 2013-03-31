@@ -23,6 +23,8 @@
 #include <QtGui>
 #include <QTextEdit>
 //
+#include "hub.h"
+
 class NoteZone : public QTextEdit
 {
     Q_OBJECT
@@ -63,6 +65,7 @@ protected:
 
 public slots:
 
+    void setHub(Hub *varHub){hub = varHub;}
 
     void setTextFont(QFont font);
     void setTextHeight(int height);
@@ -113,6 +116,7 @@ void preventDoubleSpace();
 
 private:
 
+Hub *hub;
     QTextDocument *textDocument;
 
     //    QString synStackName;

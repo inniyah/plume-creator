@@ -9,10 +9,9 @@ QT += core gui xml
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 #to compile with QT5, replace <QtGui> with <QtWidgets>
 
-TARGET = Plume-Creator
 TEMPLATE = app
 
-VERSION = 0.59
+VERSION = 0.58.1
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 DESTDIR = bin
@@ -22,12 +21,25 @@ RCC_DIR = build
 UI_DIR = build
 INCLUDEPATH += .\
 src
+DEPENDPATH +=  .
 
 unix: !macx {
 TARGET = plume-creator
 } else {
 TARGET = Plume-Creator
 }
+
+
+# dossier de zlib.h
+INCLUDEPATH += ./externals/zlib
+
+LIBS += -L external/zlib
+win32: LIBS += -lzdll
+!win32: LIBS += -lz
+
+# dossier des headers de quazip
+INCLUDEPATH +=  ./externals/quazip
+
 
 
 SOURCES += src/main.cpp\
@@ -44,7 +56,6 @@ src/textzone.cpp \
 src/timer.cpp \
 src/wordcount.cpp \
 src/exporter.cpp \
-src/attend/attendbox.cpp \
 src/wordcountthread.cpp \
 src/orientationbutton.cpp \
 src/menubar.cpp \
@@ -65,7 +76,20 @@ src/slimupdater.cpp \
 src/outliner/outlinerspreadsheetheader.cpp \
 src/outliner/outlinerspreadsheetheadersection.cpp \
 src/wordgoalprogressbar.cpp \
-src/fileupdater.cpp
+src/fileupdater.cpp \
+src/changestests.cpp \
+src/zipper.cpp \
+src/hub.cpp \
+    src/fileutils.cpp \
+    src/attend/attendbase.cpp \
+    src/attend/attendabstractmodel.cpp \
+    src/attend/attendtreeitem.cpp \
+    src/attend/attendsheettreeproxymodel.cpp \
+    src/attend/attendglobaltreeproxymodel.cpp \
+    src/attend/attendmanager.cpp \
+    src/attend/attendmanagertreeproxymodel.cpp \
+    src/attend/attendsettings.cpp
+
 
 HEADERS += src/mainwindow.h \
 src/newprojectwizard.h \
@@ -80,7 +104,6 @@ src/textzone.h \
 src/timer.h \
 src/wordcount.h \
 src/exporter.h \
-src/attend/attendbox.h \
 src/wordcountthread.h \
 src/orientationbutton.h \
 src/menubar.h \
@@ -101,7 +124,19 @@ src/slimupdater.h \
 src/outliner/outlinerspreadsheetheader.h \
 src/outliner/outlinerspreadsheetheadersection.h \
 src/wordgoalprogressbar.h \
-src/fileupdater.h
+src/fileupdater.h \
+src/zipper.h \
+src/changestests.h \
+src/hub.h \
+    src/fileutils.h \
+    src/attend/attendbase.h \
+    src/attend/attendabstractmodel.h \
+    src/attend/attendtreeitem.h \
+    src/attend/attendsheettreeproxymodel.h \
+    src/attend/attendglobaltreeproxymodel.h \
+    src/attend/attendmanager.h \
+    src/attend/attendmanagertreeproxymodel.h \
+    src/attend/attendsettings.h
 
 CODECFORTR = UTF-8
 
@@ -111,6 +146,7 @@ translations/plume-creator_it_IT.ts \
 translations/plume-creator_de_DE.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
+include(./externals/quazip/quazip.pro)
 
 FORMS += \
 src/settingsdialog.ui \
@@ -119,7 +155,10 @@ src/findreplace.ui \
 src/fullscreen/fullscreeneditor.ui \
 src/slimupdater.ui \
 src/mainwindow.ui \
-src/wordgoalprogressbar.ui
+src/wordgoalprogressbar.ui \
+    src/attend/attendbase.ui \
+    src/attend/attendmanager.ui \
+    src/attend/attendsettings.ui
 
 RESOURCES += \
 src/pics.qrc \

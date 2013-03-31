@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QFrame>
 
+#include "hub.h"
 #include "prjmanager.h"
 #include "settingsdialog.h"
 #include "editmenu.h"
@@ -40,6 +41,7 @@ void createContent();
     {
         projectManager();
     }
+
 
     void firstLaunch()
     {
@@ -109,6 +111,7 @@ QMenuBar *createMenuBar();
 
 void applyConfig();
 void setTextStyles(TextStyles *styles){textStyles = styles;}
+void setHub(Hub *varHub){hub = varHub;}
 
 
 //docks actions :
@@ -140,6 +143,7 @@ private slots:
 
 
 private:
+    Hub *hub;
 
 QString currentVersion;
 bool projectAlreadyOpened;

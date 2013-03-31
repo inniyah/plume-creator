@@ -21,8 +21,9 @@
 #define TIMER_H
 
 #include <QtGui>
-#include <QtGui>
 //
+#include "hub.h"
+
 class Timer : public QWidget
 {
     Q_OBJECT
@@ -33,6 +34,7 @@ signals:
     void timerSignal(QString string);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
 
 private slots:
 
@@ -45,6 +47,7 @@ private slots:
 
 private:
 
+    Hub *hub;
     QTimer *timer;
 
     QFrame *timerRunningFrame, *timerSettingFrame;

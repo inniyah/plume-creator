@@ -28,6 +28,8 @@
 #include <QNetworkConfigurationManager>
 #include <QDomDocument>
 
+#include "hub.h"
+
 namespace Ui {
 class SlimUpdater;
 }
@@ -44,6 +46,7 @@ signals:
     void closeUpdaterSignal();
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void setCurrentVersion(QString currentVersion);
     void setMode(QString mode);
 
@@ -64,6 +67,7 @@ private slots:
     void closeUpdater();
 
 private :
+    Hub *hub;
     Ui::SlimUpdater *ui;
 
     bool proxyEnabled;

@@ -68,7 +68,8 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
 
 
     OutlinerSpreadsheetHeader *hHeader = new OutlinerSpreadsheetHeader(Qt::Horizontal);
-this->setHeader(hHeader);
+hHeader->setHub(hub);
+   this->setHeader(hHeader);
 
 
 
@@ -240,7 +241,7 @@ void OutlinerSpreadsheet::prepareContextMenu()
 void OutlinerSpreadsheet::itemEntered(QModelIndex index)
 {
     enteredItemId = this->model()->data(index,Qt::UserRole ).toInt();
-    qDebug() << "itemEntered";
+//    qDebug() << "itemEntered";
 }
 
 //--------------------------------------------------------------------------------

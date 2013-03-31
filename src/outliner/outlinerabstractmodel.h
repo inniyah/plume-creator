@@ -26,6 +26,7 @@
 #include <QObject>
 #include <QTextDocument>
 
+#include "hub.h"
 #include "outliner/outlinertreeitem.h"
 
 class OutlinerAbstractModel : public QAbstractItemModel
@@ -33,10 +34,10 @@ class OutlinerAbstractModel : public QAbstractItemModel
     Q_OBJECT
 public:
     explicit OutlinerAbstractModel(QObject *parent = 0);
-~OutlinerAbstractModel();
+    ~OutlinerAbstractModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
-        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
@@ -44,19 +45,21 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole);
-QModelIndex index(int, int, const QModelIndex&) const;
-QModelIndex parent(const QModelIndex&) const;
+    QModelIndex index(int, int, const QModelIndex&) const;
+    QModelIndex parent(const QModelIndex&) const;
 signals:
 
     void updateMainDomDocSignal(QDomDocument otoM_domDoc);
-void applySynNoteFontConfigSignal();
+    void applySynNoteFontConfigSignal();
 
 public slots:
 
-// set the size hint :
-void shrinkRow(){itemHeight += 20; reset();}
-void expandRow(){if(itemHeight > 40)itemHeight -= 20; reset();}
-void setRowHeight(int height){itemHeight = height; reset();}
+    void setHub(Hub *varHub){hub = varHub;}
+
+    // set the size hint :
+    void shrinkRow(){itemHeight += 20; reset();}
+    void expandRow(){if(itemHeight > 40)itemHeight -= 20; reset();}
+    void setRowHeight(int height){itemHeight = height; reset();}
 
     void resetAbsModel();
 
@@ -66,24 +69,25 @@ void setRowHeight(int height){itemHeight = height; reset();}
     void parseFolderElement(const QDomElement &element);
 
     void mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc);
-void reset_mtoO_setNumForDoc();
+    void reset_mtoO_setNumForDoc();
 
-void columnOneResizedSlot(int newSize){textZoneColumnOneWidth = newSize;}
-void columnTwoResizedSlot(int newSize){textZoneColumnTwoWidth = newSize;}
-void resetAbsModelColumnOne();
-void resetAbsModelColumnTwo();
+    void columnOneResizedSlot(int newSize){textZoneColumnOneWidth = newSize;}
+    void columnTwoResizedSlot(int newSize){textZoneColumnTwoWidth = newSize;}
+    void resetAbsModelColumnOne();
+    void resetAbsModelColumnTwo();
 
 private slots:
 
-void updateMainDomDoc();
-void updateMainTextDoc(QTextDocument *textDoc, int number);
+    void updateMainDomDoc();
+    void updateMainTextDoc(QTextDocument *textDoc, int number);
 
 
 private:
-OutlinerTreeItem *rootItem;
-int itemHeight;
-int textZoneColumnOneWidth;
-int textZoneColumnTwoWidth;
+    Hub *hub;
+    OutlinerTreeItem *rootItem;
+    int itemHeight;
+    int textZoneColumnOneWidth;
+    int textZoneColumnTwoWidth;
 
     QDomDocument mtoO_domDoc;
     QHash<int, QDomElement> domElementForNumber;
@@ -95,8 +99,8 @@ int textZoneColumnTwoWidth;
     QHash<QTextDocument *, int> mtoO_numForDoc;
     QHash<QTextDocument *, int> mtoO_numForClonedDoc;
 
-QList<OutlinerTreeItem *> *treeBookItemList;
-QList<OutlinerTreeItem *> *treeChapterItemList;
+    QList<OutlinerTreeItem *> *treeBookItemList;
+    QList<OutlinerTreeItem *> *treeChapterItemList;
 };
 
 #endif // OUTLINERABSTRACTMODEL_H

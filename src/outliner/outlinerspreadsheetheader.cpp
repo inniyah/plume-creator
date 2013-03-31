@@ -26,6 +26,7 @@ void OutlinerSpreadsheetHeader::contextMenuEvent(QContextMenuEvent *event)
     QString clickedSectionData = this->model()->headerData(clickedSectionIndex, Qt::Horizontal).toString();
 
     OutlinerSpreadsheetHeaderSection *clickedSection = new OutlinerSpreadsheetHeaderSection();
+ clickedSection->setHub(hub);
     clickedSection->setId(clickedSectionIndex);
 
     QAction *clickedSectionAction = new QAction(tr("Hide ") + clickedSectionData + tr(""), this);
@@ -48,6 +49,7 @@ void OutlinerSpreadsheetHeader::contextMenuEvent(QContextMenuEvent *event)
 
         QString otherSectionData = this->model()->headerData(i, Qt::Horizontal).toString();
         OutlinerSpreadsheetHeaderSection *otherSection = new OutlinerSpreadsheetHeaderSection();
+        otherSection->setHub(hub);
         otherSection->setId(i);
         QAction *otherSectionAction = new QAction(otherSectionData, this);
         otherSectionAction->setCheckable(true);

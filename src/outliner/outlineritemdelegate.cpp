@@ -47,7 +47,7 @@ QWidget *OutlinerItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
 
 
     NoteZone *note = new NoteZone(parent);
-    //     te->setFixedHeight(maxHeight+maxHeight/8);
+  note->setHub(hub);  //     te->setFixedHeight(maxHeight+maxHeight/8);
     note->document()->setDocumentMargin(0);
     note->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //        qDebug()<< "createEditor";

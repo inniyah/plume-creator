@@ -11,166 +11,24 @@ TextStyles::TextStyles(QObject *parent) :
 
 }
 
-void TextStyles::setProjectInfoFile(QFile *file)
+void TextStyles::setProjectInfoFile()
 {
-    QFile *prjFile = new QFile(file->fileName()); // *.plume
 
-    QFileInfo *externalFileInfo = new QFileInfo(prjFile->fileName());
-    QString extFileName = externalFileInfo->fileName();
-    QString filePath = externalFileInfo->path();
+    domDocument = hub->infoTreeDomDoc();
 
 
 
-    //find the .prjinfo, else create it :
-
-    QStringList filters;
-    QDir dir(filePath);
-    filters.clear();
-    filters << "*.prjinfo";
-
-
-
-    if(dir.entryList(filters).isEmpty()){
-        filters.clear();
-        filters << "*.plume";
-
-        QFile plumeFile(dir.entryList(filters).first());
-        QString projectName = plumeFile.fileName().split("/").last().remove(".plume");
-
-
-
-        // create an empty file :
-
-        QFile file(filePath + "/" + projectName + ".prjinfo");
-
-        QDomDocument domDoc("plume-information");
-
-        QDomElement root = domDoc.createElement("root");
-        root.setTagName("plume-information");
-        root.setAttribute("projectName", projectName);
-        root.setAttribute("version","0.2");
-        domDoc.appendChild(root);
-
-        QDomElement prjInfoElem = domDoc.createElement("prj");
-        prjInfoElem.setAttribute("name", projectName);
-        prjInfoElem.setAttribute("path", filePath.left(filePath.size() - projectName.size() - 1 ));
-        prjInfoElem.setAttribute("workPath", filePath);
-        prjInfoElem.setAttribute("lastModified", QDateTime::currentDateTime().toString());
-        prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString());
-        root.appendChild(prjInfoElem);
-
-        file.waitForBytesWritten(500);
-
-        file.close();
-        file.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
-        if(file.isWritable())
-        {
-            file.flush();
-
-            const int IndentSize = 4;
-
-
-            QTextStream out(&file);
-            out.flush();
-            domDoc.save(out, IndentSize);
-        }
-        file.close();
-
-
-    }
-
-    //modify the path attributes in case the project was moved:
-
-    filters.clear();
-    filters << "*.prjinfo";
-
-    QFile plumeFile(filePath + "/" + dir.entryList(filters).first());
-    QString projectName = plumeFile.fileName().split("/").last().remove(".prjinfo");
-
-    //    QString string;
-    //    qDebug() << "dirCount : "  << string.setNum(dir.entryList(filters).count()) << " = " << dir.entryList(filters).first();
-    //    qDebug() << "plumeFile : " << plumeFile.fileName();
-    //    QFileInfo *dirInfo = new QFileInfo(plumeFile);
-    //    QString devicePath = dirInfo->absolutePath();
-    //    qDebug() << "File path:" << devicePath;
-
-    plumeFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    //    QString f(plumeFile.readAll());
-    //    qDebug() << "f : "<< f;
-
-
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-
-    if (!domDocument.setContent(&plumeFile, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        qWarning() << "Plume Creator Prj XML. Parse error. Rewriting the *.prjinfo file.";
-
-        QDomDocument domDoc("plume-information");
-
-        QDomElement root = domDoc.createElement("root");
-        root.setTagName("plume-information");
-        root.setAttribute("projectName", projectName);
-        root.setAttribute("version","0.2");
-        domDoc.appendChild(root);
-
-        QDomElement prjInfoElem = domDoc.createElement("prj");
-        prjInfoElem.setAttribute("name", projectName);
-        prjInfoElem.setAttribute("path", filePath.left(filePath.size() - projectName.size() - 1 ));
-        prjInfoElem.setAttribute("workPath", filePath);
-        prjInfoElem.setAttribute("lastModified", QDateTime::currentDateTime().toString());
-        prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString());
-        root.appendChild(prjInfoElem);
-
-        plumeFile.waitForBytesWritten(500);
-
-        plumeFile.close();
-        plumeFile.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
-        if(plumeFile.isWritable())
-        {
-            plumeFile.flush();
-
-            const int IndentSize = 4;
-
-
-            QTextStream out(&plumeFile);
-            out.flush();
-            domDoc.save(out, IndentSize);
-        }
-        plumeFile.close();
-
-        if (!domDocument.setContent(&plumeFile, true, &errorStr, &errorLine,
-                                    &errorColumn)) {
-            qWarning() << "Plume Creator Prj XML. Parse error. Rewriting failed.";
-            return;
-
-        }
-    }
-
-
-
-    QDomElement root = domDocument.documentElement();
-    if (root.tagName() != "plume-information") {
-        qWarning() << "Plume Creator Prj Tree. The file is not a Plume Creator information file.";
-        return;
-    } else if (root.hasAttribute("version")
-               && root.attribute("version") != "0.2") {
-        qWarning() <<"Plume Creator Prj Tree. The file is not an Plume Creator information file version 0.2 file.";
-        return;
-    }
-
+QDomElement root = domDocument.documentElement();
 
     QDomElement prjInfoElem = root.firstChildElement("prj");
     //    if(extFilePath != prjInfoElem.attribute("workPath")){
 
 
+    QDir dir(hub->projectWorkPath());
 
-
-    prjInfoElem.setAttribute("path", filePath.left(filePath.size() - projectName.size() - 1 ));
-    prjInfoElem.setAttribute("workPath", filePath);
+    prjInfoElem.setAttribute("workPath", dir.absolutePath());
+    dir.cdUp();
+    prjInfoElem.setAttribute("path", dir.absolutePath());
 
     if(domDocument.elementsByTagName("styles").size() == 0){
         QDomElement elem = domDocument.createElement("styles");
@@ -184,12 +42,6 @@ void TextStyles::setProjectInfoFile(QFile *file)
     }
     baseStyleElem = root.firstChildElement("baseStyles");
 
-
-    filters.clear();
-    filters << "*.prjinfo";
-
-
-    prjinfoFile = new QFile(filePath + "/" + dir.entryList(filters).first());
 
 
     readSettings();
@@ -732,20 +584,6 @@ QString TextStyles::boolToString(bool value)
 
 void TextStyles::writeDomDoc()
 {
-    prjinfoFile->waitForBytesWritten(500);
-
-    prjinfoFile->close();
-    prjinfoFile->open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
-    if(prjinfoFile->isWritable())
-    {
-        prjinfoFile->flush();
-
-        const int IndentSize = 4;
-
-
-        QTextStream out(prjinfoFile);
-        out.flush();
-        domDocument.save(out, IndentSize);
-    }
-    prjinfoFile->close();
+    qDebug() << hub->infoTreeDomDoc().toString();
+    hub->addToSaveQueue();
 }

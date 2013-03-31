@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QSlider>
 
+#include "hub.h"
 #include "textstyles.h"
 //
 class FullTextZone : public QTextEdit
@@ -53,6 +54,7 @@ protected:
 
 public slots:
 
+    void setHub(Hub *varHub){hub = varHub;}
     void setTextFont(QFont font);
     void setTextHeight(int height);
     void centerCursor();
@@ -87,6 +89,7 @@ private slots:
 
 private:
 
+    Hub *hub;
     QTextDocument *textDocument;
 
     //context menu:

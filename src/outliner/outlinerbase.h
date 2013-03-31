@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QDomDocument>
 
+#include "hub.h"
 #include "outliner/outlinerabstractmodel.h"
 #include "outliner/outlinerspreadsheet.h"
 
@@ -45,6 +46,7 @@ signals:
     void otoM_actionSignal(QString action, int idNumber);
 
 public slots:
+    void setHub(Hub *varHub){hub = varHub;}
     void saveConfig();
     void applyConfig();
 void showOutliner();
@@ -76,6 +78,7 @@ void moveViewTo(int hBarValue, int vBarValue);
 
 
 private:
+    Hub *hub;
     QVBoxLayout *zoneLayout;
     bool spreadsheetMode;
 QAction *shiftToSpreadsheetAct, *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct;
