@@ -129,8 +129,8 @@ PrjManager::PrjManager(QWidget *parent) :
     setLayout(layout);
 
 
-    QDesktopWidget *desktop = QApplication::desktop();
-    this->move(desktop->width()/2 - this->width()/2, desktop->height()/2 - this->height()/2);
+//    QDesktopWidget *desktop = QApplication::desktop();
+//    this->move(desktop->width()/2 - this->width()/2, desktop->height()/2 - this->height()/2);
 
 }
 

@@ -57,7 +57,7 @@ protected:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
-    void changeWidthSlot(int width);
+    void changeWidthSlot(int width = -1);
     void changeTextFontSlot(QFont font);
     void changeTextHeightSlot(int height);
     void changeTextStyleSlot(int styleIndex);

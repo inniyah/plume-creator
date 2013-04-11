@@ -32,6 +32,12 @@ public slots:
 private slots:
     void launchAttendManager();
     void setManagerLaunched(){isManagerLaunched = false;}
+    void on_collapseButton_clicked();
+
+    void on_splitter_splitterMoved(int pos, int index);
+
+    void expandAll();
+
 private:
     Ui::AttendBase *ui;
     Hub *hub;

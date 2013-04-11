@@ -89,6 +89,7 @@ TextTab::TextTab(QWidget *parent) :
 
 
     giveStyle();
+
 }
 
 void TextTab::setTextStyles(TextStyles *styles)
@@ -235,12 +236,21 @@ void TextTab::setWordCounts()
 
 void TextTab::changeWidthSlot(int width)
 {
+    if(width == -1){
+    QSettings settings;
+    width = settings.value("Settings/TextArea/textWidth", this->width()/2 ).toInt();
+
+    }
+
+
+    int scrollBarWidth = 30;
+
     textZone->setFixedWidth(width);
-    textZone->document()->setTextWidth(width - 30);
+    textZone->document()->setTextWidth(width - scrollBarWidth);
     prevTextZone->setFixedWidth(width);
-    prevTextZone->document()->setTextWidth(width - 30);
+    prevTextZone->document()->setTextWidth(width - scrollBarWidth);
     nextTextZone->setFixedWidth(width);
-    nextTextZone->document()->setTextWidth(width - 30);
+    nextTextZone->document()->setTextWidth(width - scrollBarWidth);
 }
 //-------------------------------------------------------------------------------
 void TextTab::changeTextFontSlot(QFont font)
@@ -468,10 +478,11 @@ void TextTab::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------
 void TextTab::giveStyle()
 {
-    QString css = " TextZone {    border-width: 0px;"
+    QString css = ""
+            "TextZone {    border-width: 0px;"
             "border-style: outset;"
             "border-radius: 0px;"
-            "margin: 4px"
+//            "margin: 4px"
             "}"
             "QSplitter {"
             "border: 0px none transparent;"

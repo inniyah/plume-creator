@@ -165,7 +165,7 @@ QSize OutlinerItemDelegate::sizeHint( const QStyleOptionViewItem& option,
 //    if(doc.size().toSize().height() < 200)
 //    return doc.size().toSize();
 //else
-    QStyledItemDelegate::sizeHint(option,index);
+    return QStyledItemDelegate::sizeHint(option,index);
 
 
 }

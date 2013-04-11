@@ -44,7 +44,7 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
 
     filters.clear();
     filters << "attendance";
-    qDebug() << "size : " << QString::number(filters.size());
+
     if(dir.entryList(filters, QDir::Files).isEmpty()){
 
 
@@ -54,7 +54,7 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
         // check if the .attend file is here (old system) :
         filters.clear();
         filters << "*.attend";
-
+QStringList list = dir.entryList(filters, QDir::Files);
         if(dir.entryList(filters, QDir::Files).isEmpty()){
 
             QString projectName = dir.dirName();
@@ -111,9 +111,9 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
+                qDebug() << "File path:" << device->fileName();
+                qDebug() << "File readable:" << device->isReadable();
+                qDebug() << "File open:" << device->isOpen();
 
 
         return false;
@@ -418,9 +418,9 @@ bool FileUpdater::checkTreeFile(QString projectFileName)
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
+                qDebug() << "File path:" << device->fileName();
+                qDebug() << "File readable:" << device->isReadable();
+                qDebug() << "File open:" << device->isOpen();
 
 
         return false;

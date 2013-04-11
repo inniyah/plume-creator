@@ -9,4 +9,4 @@ Exec=plume-creator
 Terminal=false
 Type=Application
 Categories=Qt;Office;
-MimeType=application/x-plume
+MimeType=application/x-plume;application/x-plumebackup;

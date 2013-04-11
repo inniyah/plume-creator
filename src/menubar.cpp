@@ -752,11 +752,10 @@ void MenuBar::openNewProjectSlot()
 
     newProject();
 
-    if(projManager->isVisible()){
-        projManager->close();
+
         projectManager();
 
-    }
+
 
 }
 //---------------------------------------------------------------------------
@@ -1156,7 +1155,7 @@ file.close();
     }
 
 
-
+return true;
 }
 
 

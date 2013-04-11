@@ -84,8 +84,10 @@ int main(int argc, char *argv[])
 
     // UTF-8 codec
 
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8")); // delete for QT5
+#if QT_VERSION < 0x050000
+//    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8")); // delete for QT5
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8")); // delete for QT5
+#endif
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 
@@ -349,10 +351,14 @@ int main(int argc, char *argv[])
     QApplication::instance()->installEventFilter(&mw);
 
     if(argc > 1){
-        QFile file(argv[argc - 1]); //pick the last argument
-        //        if(file.exists() && file.isReadable() && file.isWritable()){
+
+        QString argument = argv[argc - 1];
+//        argument = QDir::fromNativeSeparators(argument);
+//        argument = ;
+        QFile file(argument); //pick the last argument
+                if(file.exists() && file.isReadable() && file.isWritable()){
         mw.openExternalProject(&file);
-        //        }
+                }
     }
 
     splash.finish(&mw);

@@ -41,16 +41,16 @@ $$PWD/quazipnewinfo.cpp \
 $$PWD/unzip.c \
 $$PWD/zip.c
 
-unix:!symbian {
-    headers.path=$$PREFIX/include/quazip
-    headers.files=$$HEADERS
-    target.path=$$PREFIX/lib
-    INSTALLS += headers target
+#unix:!symbian {
+#    headers.path=$$PREFIX/include/quazip
+#    headers.files=$$HEADERS
+#    target.path=$$PREFIX/lib
+#    INSTALLS += headers target
 
-	OBJECTS_DIR=.obj
-	MOC_DIR=.moc
+#	OBJECTS_DIR=.obj
+#	MOC_DIR=.moc
 	
-}
+#}
 
 #win32 {
 #    headers.path=$$PREFIX/include/quazip

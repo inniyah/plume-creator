@@ -1,7 +1,7 @@
 #include "attendsheettreeproxymodel.h"
 
 AttendSheetTreeProxyModel::AttendSheetTreeProxyModel(QObject *parent) :
-    QSortFilterProxyModel(parent)
+    QSortFilterProxyModel(parent), nothingWasClicked(true)
 {
 
 }
@@ -10,6 +10,9 @@ bool AttendSheetTreeProxyModel::filterAcceptsRow(int sourceRow,
                                                  const QModelIndex &sourceParent) const
 {
     QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
+
+//    if(!index0.isValid())
+//        return false;
 
     AttendTreeItem *treeItem = static_cast<AttendTreeItem*>(index0.internalPointer());
     if(treeItem->isGroup()){         // groups
@@ -39,6 +42,7 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
 
     domElementForNumber.clear();
     attendList.clear();
+    povList.clear();
 
 
     QDomDocument treeDomDoc = hub->mainTreeDomDoc();
@@ -80,13 +84,17 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
 
 
     QString attendString = openedElement.attribute("attend", "0");
-
     QStringList attendStringList = attendString.split("-", QString::SkipEmptyParts);
-
     foreach(const QString &str, attendStringList)
         attendList.append(str.toInt());
 
+    QString povString = openedElement.attribute("pov", "0");
+    QStringList povStringList = povString.split("-", QString::SkipEmptyParts);
+    foreach(const QString &str, povStringList)
+        povList.append(str.toInt());
+
     invalidateFilter();
+    nothingWasClicked = true;
 }
 
 //----------------------------------------------------------------------
@@ -96,9 +104,11 @@ void AttendSheetTreeProxyModel::removeSheetObjects(QList<int> objectsList)
         return;
 
     foreach(const int &object, objectsList)
-        if(attendList.contains(object) && object != 0)
+        if(attendList.contains(object) && object != 0){
             attendList.removeOne(object);
-
+            if(povList.contains(object))
+                povList.removeOne(object);
+        }
     // modify DomDocument :
 
     QString attendString;
@@ -115,8 +125,8 @@ void AttendSheetTreeProxyModel::removeSheetObjects(QList<int> objectsList)
 
     hub->addToSaveQueue();
 
-
     invalidateFilter();
+    nothingWasClicked = true;
 
 }
 
@@ -149,6 +159,7 @@ void AttendSheetTreeProxyModel::addSheetObjects(QList<int> objectsList)
     hub->addToSaveQueue();
 
     invalidateFilter();
+    nothingWasClicked = true;
 
 }
 
@@ -241,3 +252,93 @@ Qt::ItemFlags AttendSheetTreeProxyModel::flags(const QModelIndex &index) const
     else
         return Qt::ItemIsDropEnabled |defaultFlags;
 }
+
+
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+
+
+QVariant AttendSheetTreeProxyModel::data(const QModelIndex &index, int role) const
+{
+    int row = index.row();
+    int col = index.column();
+
+    if (!index.isValid())
+        return QVariant();
+
+    if ((role == Qt::DecorationRole) && col == 0){
+
+
+        QModelIndex index0 = this->mapToSource(index);
+
+        AttendTreeItem *treeItem = static_cast<AttendTreeItem*>(index0.internalPointer());
+        if(treeItem->isGroup()){         // groups
+
+            QList<AttendTreeItem*> childrenList= treeItem->childrenItems();
+
+            for(int i = 0; i < childrenList.size(); ++i)
+                if(povList.contains(childrenList.at(i)->idNumber()))
+                    return QIcon(":/pics/eye_pencil.png");
+
+
+
+        }
+        else if(povList.contains(index0.data(Qt::UserRole).toInt()))
+            return QIcon(":/pics/eye_pencil.png");
+    }
+    else
+        return QSortFilterProxyModel::data(index,role);
+
+}
+
+void AttendSheetTreeProxyModel::setPointOfView()
+{
+    if(nothingWasClicked)
+        return;
+
+    AttendTreeItem *treeItem = static_cast<AttendTreeItem*>(clickedSourceIndex.internalPointer());
+
+
+
+    if(treeItem->isGroup())
+        return;
+
+
+
+    if(attendList.contains(treeItem->idNumber())
+            && !povList.contains(treeItem->idNumber()))
+        povList.append(treeItem->idNumber());
+
+    else if(attendList.contains(treeItem->idNumber())
+            && povList.contains(treeItem->idNumber()))
+        povList.removeOne(treeItem->idNumber());
+
+
+
+    // modify DomDocument :
+
+    QString povString;
+    foreach(const int &number, povList)
+        povString.append("-" + QString::number(number));
+
+    openedElement.setAttribute("pov", povString);
+    qDebug() << "povString : " << povString;
+    hub->addToSaveQueue();
+
+
+
+    this->dataChanged(clickedProxyIndex.parent(),clickedProxyIndex);
+
+
+    invalidateFilter();
+}
+
+void AttendSheetTreeProxyModel::setClickedIndex(QModelIndex proxyIndex)
+{
+    nothingWasClicked = false;
+
+    clickedProxyIndex = proxyIndex;
+    clickedSourceIndex = this->mapToSource(proxyIndex);
+}
+

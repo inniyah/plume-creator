@@ -811,7 +811,22 @@ void MainWindow::setDisplayMode(QString mode)
 
 void MainWindow::openExternalProject(QFile *externalFile)
 {
-    isExternalProjectOpeningBool = true;  //need to avoid the opening of the project manager at startup
+
+    if(!externalFile->exists()){
+        int ret = QMessageBox::warning(this, tr("Plume Creator"),
+                                       tr("Your are maybe using Windows."
+                                          "The file path may contain special characters.\n"
+                                          "Please rename the folders and file without these characters :\n"
+                                          "é,è,à,ï,ç et cetera... \n"
+                                          "Then, try opening it again !"),
+                                       QMessageBox::Ok,
+                                       QMessageBox::Ok);
+
+        return;
+    }
+
+
+    isExternalProjectOpeningBool = true;  //needed to avoid the opening of the project manager at startup
     hub->startProject(externalFile->fileName());
 }
 //---------------------------------------------------------------------------
@@ -1033,10 +1048,8 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
         connect(noteStack, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
         connect(synStack, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
 
-        QSettings settings;
-        int textWidthValue = settings.value("Settings/TextArea/textWidth", tab->width()/2 ).toInt();
 
-        tab->changeWidthSlot(textWidthValue);
+        QTimer::singleShot(0, tab, SLOT(changeWidthSlot()));
 
 
         // For wordcount :
@@ -1045,6 +1058,7 @@ void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextD
 
         // For word count target :
         connect(tab, SIGNAL(countDeltaUpdatedSignal(int)), wordGoalBar, SLOT(changeProgressBy(int)) );
+
 
 
         //    temporary config

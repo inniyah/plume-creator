@@ -77,8 +77,15 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QToolButton" name="povButton">
+           <property name="toolTip">
+            <string>Set the point of view</string>
+           </property>
            <property name="text">
-            <string>PoV</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../pics.qrc">
+             <normaloff>:/pics/eye_pencil.png</normaloff>:/pics/eye_pencil.png</iconset>
            </property>
           </widget>
          </item>

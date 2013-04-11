@@ -149,7 +149,7 @@ Qt::Alignment TextStyles::blockAlignmentTrueNameAt(int index)
     else if(align == 3)
         return Qt::AlignJustify;
 
-
+return Qt::AlignLeft;
 }
 
 void TextStyles::changeDocStyles(QTextDocument *doc, QString mode)

@@ -201,6 +201,10 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
     hub->addToSaveQueue();
 
+    emit activateItemSignal(index);
+
+
+
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -253,6 +257,9 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 
     hub->addToSaveQueue();
 
+    emit activateItemSignal(this->mapToSource(index));
+
+
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -261,11 +268,10 @@ void AttendManagerTreeProxyModel::remove(QModelIndex index)
 {
     QModelIndex sourceIndex = this->mapToSource(index);
 
-
     AttendTreeItem *sourceItem = static_cast<AttendTreeItem*>(sourceIndex.internalPointer());
-int number = sourceItem->idNumber();
 
     QDomElement element = domElementForNumber.value(sourceItem->idNumber());
+int number = sourceItem->idNumber();
 
     if(sourceItem->isGroup()){
 
@@ -394,4 +400,15 @@ void AttendManagerTreeProxyModel::removeAttendNumberFromSheets(int itemNumber)
 
 
 
+}
+
+
+
+
+void AttendManagerTreeProxyModel::setNameSlot(QModelIndex index, QString newName)
+{
+    // only display from the nameEdit in the manager, the saving is already done
+
+
+    emit dataChanged(index, index);
 }

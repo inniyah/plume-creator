@@ -30,7 +30,8 @@ void AttendManager::postConstructor()
 
     connect(managerProxyModel, SIGNAL(resetDomDocSignal()), abstractModel, SLOT(resetAbsModel()));
     connect(managerProxyModel, SIGNAL(setNameSignal(QString)), this, SLOT(setNameSlot(QString)));
-
+    connect(managerProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(expandAll()));
+    connect(managerProxyModel, SIGNAL(activateItemSignal(QModelIndex)), this, SLOT(setItemActivated(QModelIndex)));
     ui->textEdit->setHub(hub);
 
 
@@ -48,8 +49,6 @@ void AttendManager::postConstructor()
     connect(ui->managerTreeView, SIGNAL(clicked(QModelIndex)), this, SLOT(editItemTitle(QModelIndex)));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(launchAttendSettings()));
     connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
-
-
     resetDomElementForNumber();
 
     this->applySettings();
@@ -80,8 +79,9 @@ void AttendManager::setItemActivated(QModelIndex index)
 {
     ui->optionsFrame->setEnabled(true);
 
+    AttendTreeItem *sourceItem = static_cast<AttendTreeItem*>(managerProxyModel->mapToSource(index).internalPointer());
 
-    int number = managerProxyModel->mapToSource(index).data(Qt::UserRole).toInt();
+    int number = sourceItem->idNumber();
     if (number == 0)
         return;
     this->disconnectAll();
@@ -203,6 +203,7 @@ void AttendManager::applySettings()
 void AttendManager::connectAll()
 {
     connect(ui->nameEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()), Qt::UniqueConnection);
+    connect(ui->nameEdit, SIGNAL(editingFinished()), this, SLOT(nameEditingFinished()), Qt::UniqueConnection);
     connect(ui->quickDetailsEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()), Qt::UniqueConnection);
     connect(ui->aliasesEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()), Qt::UniqueConnection);
     connect(ui->comboBox_1, SIGNAL(currentIndexChanged(int)), this, SLOT(saveToElement()), Qt::UniqueConnection);
@@ -220,6 +221,7 @@ void AttendManager::connectAll()
 void AttendManager::disconnectAll()
 {
     disconnect(ui->nameEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()));
+    disconnect(ui->nameEdit, SIGNAL(editingFinished()), this, SLOT(nameEditingFinished()));
     disconnect(ui->quickDetailsEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()));
     disconnect(ui->aliasesEdit, SIGNAL(editingFinished()), this, SLOT(saveToElement()));
     disconnect(ui->comboBox_1, SIGNAL(currentIndexChanged(int)), this, SLOT(saveToElement()));
@@ -319,4 +321,15 @@ void AttendManager::on_removeAction_triggered()
     managerProxyModel->remove(ui->managerTreeView->currentIndex());
     ui->managerTreeView->expandAll();
 
+}
+
+void AttendManager::expandAll()
+{
+    ui->managerTreeView->expandAll();
+}
+
+void AttendManager::nameEditingFinished()
+{
+    abstractModel->resetAbsModel();
+   managerProxyModel->setNameSlot(ui->managerTreeView->currentIndex(), ui->nameEdit->text());
 }

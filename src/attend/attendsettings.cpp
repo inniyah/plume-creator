@@ -7,7 +7,11 @@ AttendSettings::AttendSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    QList<QPushButton *> buttonList = this->findChildren<QPushButton *>();
+    foreach(QPushButton *pb, buttonList) {
+        pb->setDefault( false );
+        pb->setAutoDefault( false );
+    }
 
 }
 
@@ -84,7 +88,7 @@ void AttendSettings::itemActivatedSlot_2(QListWidgetItem *item)
 void AttendSettings::itemActivatedSlot_3(QListWidgetItem *item)
 {
     itemActivated_3 = item;
-    itemActivated_2->setFlags(Qt::ItemIsEditable	| itemActivated_2->flags());
+    itemActivated_3->setFlags(Qt::ItemIsEditable	| itemActivated_3->flags());
 }
 
 //-------------------------------------------------------------------------------------------

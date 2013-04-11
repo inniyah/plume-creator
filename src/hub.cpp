@@ -305,6 +305,8 @@ void Hub::setCurrentSheetNumber(int sheetNumber)
 
 void Hub::startProject(QString file)
 {
+file = file.toUtf8();
+
     //check if it's the right file :
 
     QFileInfo fileInfo(file);
@@ -365,8 +367,8 @@ void Hub::startProject(QString file)
 
     if(zipBool == false){ // means its version is < 0.3
         updater.checkAttendanceFile(file);
-        updater.checkTreeFile(file);
         updater.checkInfoFile(file);
+        updater.checkTreeFile(file);
 
         QFileInfo info(file);
         QDir directory = info.dir();

@@ -18,10 +18,12 @@ public:
     void addObject(QModelIndex index);
     void addGroup(QModelIndex index);
     void remove(QModelIndex index);
+    void setNameSlot(QModelIndex index, QString name);
 
 signals:
     void resetDomDocSignal();
     void setNameSignal(QString value);
+    void activateItemSignal(QModelIndex index);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}

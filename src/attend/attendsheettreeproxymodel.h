@@ -17,6 +17,7 @@ public:
     QStringList mimeTypes () const;
       bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
       Qt::ItemFlags flags(const QModelIndex &index) const;
+      QVariant data(const QModelIndex &index, int role) const;
 
       protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
@@ -28,13 +29,18 @@ public slots:
     void currentSheetModified(int sheetNumber);
     void removeSheetObjects(QList<int> objectsList);
     void addSheetObjects(QList<int> objectsList);
+    void setPointOfView();
+    void setClickedIndex(QModelIndex proxyIndex);
 
 private:
     Hub *hub;
     QList<int> attendList;
+    QList<int> povList;
     QHash<int, QDomElement> domElementForNumber;
     QDomElement openedElement;
-
+    QModelIndex clickedSourceIndex;
+    QModelIndex clickedProxyIndex;
+    bool nothingWasClicked;
 };
 
 #endif // ATTENDSHEETTREEPROXYMODEL_H
