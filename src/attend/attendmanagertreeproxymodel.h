@@ -24,6 +24,7 @@ signals:
     void resetDomDocSignal();
     void setNameSignal(QString value);
     void activateItemSignal(QModelIndex index);
+    void resetDomElementForNumberSignal();
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}

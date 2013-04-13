@@ -353,12 +353,14 @@ int main(int argc, char *argv[])
     if(argc > 1){
 
         QString argument = argv[argc - 1];
-//        argument = QDir::fromNativeSeparators(argument);
+        argument = QDir::fromNativeSeparators(argument);
 //        argument = ;
+        qDebug() << "argument : " << argument;
         QFile file(argument); //pick the last argument
-                if(file.exists() && file.isReadable() && file.isWritable()){
-        mw.openExternalProject(&file);
-                }
+//                if(file.exists() && file.isReadable() && file.isWritable()){
+                    qDebug() << "OPENING";
+                    mw.openExternalProject(&file);
+//                }
     }
 
     splash.finish(&mw);

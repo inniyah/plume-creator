@@ -23,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
+
+    systemTray = new QSystemTrayIcon(0);
+    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
+
     this->setMinimumSize(800, 400);
     setWindowTitle("Plume Creator");
 
@@ -1528,6 +1532,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
         writeSettings();
         hub->closeCurrentProject();
         event->accept();
+
+        systemTray->show();
+        systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
 
         break;
 

@@ -40,6 +40,9 @@ public slots:
     void resetDomDoc();
 
 private:
+    static QString createToolTipText(AttendTreeItem *treeItem);
+    QString boxListValueAt(QStringList boxList, int index);
+
     Hub *hub;
     AttendTreeItem *rootItem;
 

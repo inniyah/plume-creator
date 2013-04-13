@@ -212,6 +212,7 @@ private:
  bool isExternalProjectOpeningBool;
 
     WordGoalProgressBar *wordGoalBar;
+    QSystemTrayIcon *systemTray;
 };
 
 #endif // MAINWINDOW_H

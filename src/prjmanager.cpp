@@ -419,8 +419,7 @@ QString proj;
     else// compatibility for old system :
         proj = table->item(currentRow, 2)->data(0).toString() + "/" + table->item(currentRow, 0)->data(0).toString() + ".plume";
 
-    //    QFile *file = new QFile(proj);
-//    emit openProjectSignal(file);
+proj = QDir::fromNativeSeparators(proj);
 
     hub->startProject(proj);
     emit openProjectNumberSignal(prjActivated);

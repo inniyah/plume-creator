@@ -307,7 +307,7 @@ void Hub::startProject(QString file)
 {
 file = file.toUtf8();
 
-    //check if it's the right file :
+//check if it's the right file :
 
     QFileInfo fileInfo(file);
     if(!fileInfo.fileName().contains(".plume") && !fileInfo.fileName().contains(".plume_backup")){

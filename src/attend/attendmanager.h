@@ -33,6 +33,7 @@ private slots:
     void textAlreadyChangedSlot(bool textChanged){textAlreadyChanged = textChanged;}
     void editItemTitle(QModelIndex index);
     void setNameSlot(QString value);
+    void resetDomElementForNumber();
 
     void on_addObjectAction_triggered();
 
@@ -44,9 +45,9 @@ private slots:
     void nameEditingFinished();
 
 private:
-    void resetDomElementForNumber();
     void connectAll();
     void disconnectAll();
+    void saveToAttendTreeItem();
 
     Ui::AttendManager *ui;
     Hub *hub;
@@ -57,6 +58,8 @@ private:
     bool textAlreadyChanged;
     bool oneClickCheckpoint, twoClicksCheckpoint, threeClicksCheckpoint;
     QModelIndex oldIndex;
+
+    AttendTreeItem *attendTreeItemActivated;
 };
 
 #endif // ATTENDMANAGER_H

@@ -32,15 +32,15 @@ void AttendSettings::postConstructor()
     ui->spinBox_1_labelEdit->setText(root.attribute("spinBox_1_label", tr("Age :")));
 
 
-    QStringList box1List = root.attribute("box_1", "None").split("--", QString::SkipEmptyParts);
+    QStringList box1List = root.attribute("box_1", tr("None")).split("--", QString::SkipEmptyParts);
     foreach(const QString &string, box1List)
         new QListWidgetItem(string, ui->listWidget_1st);
 
-    QStringList box2List = root.attribute("box_2", "None").split("--", QString::SkipEmptyParts);
+    QStringList box2List = root.attribute("box_2", tr("None")).split("--", QString::SkipEmptyParts);
     foreach(const QString &string, box2List)
         new QListWidgetItem(string, ui->listWidget_2nd);
 
-    QStringList box3List = root.attribute("box_3", "None").split("--", QString::SkipEmptyParts);
+    QStringList box3List = root.attribute("box_3", tr("None")).split("--", QString::SkipEmptyParts);
     foreach(const QString &string, box3List)
         new QListWidgetItem(string, ui->listWidget_3rd);
 

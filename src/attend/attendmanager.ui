@@ -78,6 +78,9 @@
        <property name="indentation">
         <number>40</number>
        </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
       </widget>
      </item>
     </layout>

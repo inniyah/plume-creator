@@ -7,6 +7,7 @@ v 0.59
 	- The projects are now one single file
 	- added .plume_backup for worst cases
 	- major change of Plume inner workings
+	- added notification tray message when exiting
 	- Qt5 ready, waiting for packages in Linux distribs
 	
 	

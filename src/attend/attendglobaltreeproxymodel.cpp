@@ -34,7 +34,7 @@ QMimeData *AttendGlobalTreeProxyModel::mimeData(const QModelIndexList &indexes) 
         else
             encodedData.append("-" + index.data(Qt::UserRole).toString());
     }
-    mimeData->setData("application/x-plumecreatorattendnumberdata", encodedData);
+    mimeData->setData("application/x-plumecreator-attendnumberdata-fromglobaltree", encodedData);
     return mimeData;
 }
 //-------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ QMimeData *AttendGlobalTreeProxyModel::mimeData(const QModelIndexList &indexes) 
 QStringList AttendGlobalTreeProxyModel::mimeTypes () const
 {
     QStringList list;
-    list << "application/x-plumecreatorattendnumberdata";
+    list << "application/x-plumecreator-attendnumberdata-fromsheettree";
     return list;
 }
 
@@ -52,11 +52,11 @@ bool AttendGlobalTreeProxyModel::dropMimeData ( const QMimeData * data, Qt::Drop
 {
 
 
-    if (data->hasFormat("application/x-plumecreatorattendnumberdata"))
+    if (data->hasFormat("application/x-plumecreator-attendnumberdata-fromsheettree"))
     {
-        qDebug() << "to global : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreatorattendnumberdata"));
+        qDebug() << "to global : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromsheettree"));
 
-        QString numbersString = QString::fromUtf8(data->data("application/x-plumecreatorattendnumberdata"));
+        QString numbersString = QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromsheettree"));
         QStringList list = numbersString.split("-", QString::SkipEmptyParts);
         QList<int> objectsList;
         foreach(const QString &string, list)

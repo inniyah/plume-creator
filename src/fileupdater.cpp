@@ -54,7 +54,7 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
         // check if the .attend file is here (old system) :
         filters.clear();
         filters << "*.attend";
-QStringList list = dir.entryList(filters, QDir::Files);
+        QStringList list = dir.entryList(filters, QDir::Files);
         if(dir.entryList(filters, QDir::Files).isEmpty()){
 
             QString projectName = dir.dirName();
@@ -111,9 +111,9 @@ QStringList list = dir.entryList(filters, QDir::Files);
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-                qDebug() << "File path:" << device->fileName();
-                qDebug() << "File readable:" << device->isReadable();
-                qDebug() << "File open:" << device->isOpen();
+        qDebug() << "File path:" << device->fileName();
+        qDebug() << "File readable:" << device->isReadable();
+        qDebug() << "File open:" << device->isOpen();
 
 
         return false;
@@ -272,11 +272,11 @@ void FileUpdater::updateAttendanceFile()
         QDomNodeList groupList = attendDomDocument.elementsByTagName("group");
         for(int i = 0; i < groupList.count(); ++i){
             QDomElement element = groupList.at(i).toElement();
-                    element.setAttribute("number",  groupNumber );
+            element.setAttribute("number",  groupNumber );
 
             // create docs :
 
-                    element.setAttribute("attendPath", "/attend/A" + QString::number(groupNumber) + ".html");
+            element.setAttribute("attendPath", "/attend/A" + QString::number(groupNumber) + ".html");
 
             QFile *attendDocFile = new QFile(devicePath + element.attribute("attendPath"));
 
@@ -336,7 +336,7 @@ bool FileUpdater::checkTreeFile(QString projectFileName)
     QDir dir(devicePath);
 
 
-    // check if the "attend" directory is here :
+    // check if the "text" directory is here :
 
     filters.clear();
     filters << "text";
@@ -418,9 +418,9 @@ bool FileUpdater::checkTreeFile(QString projectFileName)
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-                qDebug() << "File path:" << device->fileName();
-                qDebug() << "File readable:" << device->isReadable();
-                qDebug() << "File open:" << device->isOpen();
+        qDebug() << "File path:" << device->fileName();
+        qDebug() << "File readable:" << device->isReadable();
+        qDebug() << "File open:" << device->isOpen();
 
 
         return false;

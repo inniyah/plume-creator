@@ -11,6 +11,9 @@ class AttendSheetTreeProxyModel : public QSortFilterProxyModel
 public:
     explicit AttendSheetTreeProxyModel(QObject *parent = 0);
 
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
+
       // drag drop :
     Qt::DropActions  supportedDropActions () const;
     QMimeData *mimeData(const QModelIndexList &indexes) const;
@@ -41,6 +44,7 @@ private:
     QModelIndex clickedSourceIndex;
     QModelIndex clickedProxyIndex;
     bool nothingWasClicked;
+    QString sheetName;
 };
 
 #endif // ATTENDSHEETTREEPROXYMODEL_H

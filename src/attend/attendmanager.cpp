@@ -29,6 +29,7 @@ void AttendManager::postConstructor()
 
 
     connect(managerProxyModel, SIGNAL(resetDomDocSignal()), abstractModel, SLOT(resetAbsModel()));
+    connect(managerProxyModel, SIGNAL(resetDomElementForNumberSignal()), this, SLOT(resetDomElementForNumber()));
     connect(managerProxyModel, SIGNAL(setNameSignal(QString)), this, SLOT(setNameSlot(QString)));
     connect(managerProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(expandAll()));
     connect(managerProxyModel, SIGNAL(activateItemSignal(QModelIndex)), this, SLOT(setItemActivated(QModelIndex)));
@@ -46,6 +47,7 @@ void AttendManager::postConstructor()
     ui->removeButton->addAction(ui->removeAction);
 
     connect(ui->managerTreeView, SIGNAL(activated(QModelIndex)), this, SLOT(setItemActivated(QModelIndex)));
+    connect(ui->managerTreeView, SIGNAL(clicked(QModelIndex)), this, SLOT(setItemActivated(QModelIndex)));
     connect(ui->managerTreeView, SIGNAL(clicked(QModelIndex)), this, SLOT(editItemTitle(QModelIndex)));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(launchAttendSettings()));
     connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
@@ -54,13 +56,13 @@ void AttendManager::postConstructor()
     this->applySettings();
     this->connectAll();
 
-ui->optionsFrame->setEnabled(false);
+    ui->optionsFrame->setEnabled(false);
 
 
-// open First :
+    // open First :
 
-//QHash<int, QDomElement>::iterator i = domElementForNumber.begin();
-//  openedElement = i.value();
+    //QHash<int, QDomElement>::iterator i = domElementForNumber.begin();
+    //  openedElement = i.value();
 
 }
 
@@ -80,6 +82,8 @@ void AttendManager::setItemActivated(QModelIndex index)
     ui->optionsFrame->setEnabled(true);
 
     AttendTreeItem *sourceItem = static_cast<AttendTreeItem*>(managerProxyModel->mapToSource(index).internalPointer());
+
+    attendTreeItemActivated = sourceItem;
 
     int number = sourceItem->idNumber();
     if (number == 0)
@@ -180,7 +184,6 @@ void AttendManager::applySettings()
     ui->comboBox_1->addItems(box1List);
     ui->comboBox_1->setCurrentIndex(currentIndex_1);
 
-
     QStringList box2List = root.attribute("box_2", "None").split("--", QString::SkipEmptyParts);
     ui->comboBox_2->addItems(box2List);
     ui->comboBox_2->setCurrentIndex(currentIndex_2);
@@ -190,6 +193,7 @@ void AttendManager::applySettings()
     QStringList box3List = root.attribute("box_3", "None").split("--", QString::SkipEmptyParts);
     ui->comboBox_3->addItems(box3List);
     ui->comboBox_3->setCurrentIndex(currentIndex_3);
+
 
 
     ui->spinBox_1_label->setText(root.attribute("spinBox_1_label", tr("Age :")));
@@ -250,6 +254,7 @@ void AttendManager::saveToElement()
     openedElement.setAttribute("spinBox_1", ui->spinBox_1->value());
 
 
+    saveToAttendTreeItem();
 
     hub->addToSaveQueue();
 
@@ -257,6 +262,29 @@ void AttendManager::saveToElement()
 
 }
 
+//-----------------------------------------------------
+
+void AttendManager::saveToAttendTreeItem()
+{
+    AttendTreeItem *treeItem = attendTreeItemActivated;
+
+    treeItem->setName(ui->nameEdit->text());
+
+    treeItem->setAliases(ui->aliasesEdit->text());
+    treeItem->setQuickDetails(ui->quickDetailsEdit->text());
+
+    treeItem->setBox_1Value(ui->comboBox_1->currentText());
+    treeItem->setBox_2Value(ui->comboBox_2->currentText());
+    treeItem->setBox_3Value(ui->comboBox_3->currentText());
+
+    treeItem->setSpinbox_1Value(ui->spinBox_1->value());
+
+
+
+
+}
+
+//-----------------------------------------------------
 
 void AttendManager::saveText()
 {
@@ -330,6 +358,7 @@ void AttendManager::expandAll()
 
 void AttendManager::nameEditingFinished()
 {
+//    qDebug() << "name editing finished";
     abstractModel->resetAbsModel();
-   managerProxyModel->setNameSlot(ui->managerTreeView->currentIndex(), ui->nameEdit->text());
+    managerProxyModel->setNameSlot(ui->managerTreeView->currentIndex(), ui->nameEdit->text());
 }

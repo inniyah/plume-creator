@@ -93,3 +93,94 @@ AttendTreeItem::~AttendTreeItem()
  {
      m_isFoldedBool = foldedBool;
  }
+
+
+ //---------------------------------------------------------------
+
+
+ QString AttendTreeItem::name() const
+ {
+     return m_name;
+ }
+ void AttendTreeItem::setName(QString name)
+ {
+    m_name =  name;
+ }
+
+ QString AttendTreeItem::aliases() const
+ {
+     return m_aliases;
+ }
+ void AttendTreeItem::setAliases(QString aliases)
+ {
+    m_aliases = aliases;
+ }
+
+ QString AttendTreeItem::quickDetails() const
+ {
+     return m_quickDetails;
+ }
+ void AttendTreeItem::setQuickDetails(QString details)
+ {
+    m_quickDetails = details;
+ }
+
+ QString AttendTreeItem::box_1Value() const
+ {
+     return m_box_1Value;
+ }
+
+
+ void AttendTreeItem::setBox_1Value(QString value)
+ {
+     m_box_1Value = value;
+ }
+
+
+ QString AttendTreeItem::box_2Value() const
+ {
+     return m_box_2Value;
+ }
+
+
+ void AttendTreeItem::setBox_2Value(QString value)
+ {
+     m_box_2Value = value;
+ }
+
+
+ QString AttendTreeItem::box_3Value() const
+ {
+     return m_box_3Value;
+ }
+
+
+ void AttendTreeItem::setBox_3Value(QString value)
+ {
+     m_box_3Value = value;
+ }
+
+
+ QString AttendTreeItem::spinBox_1_label() const
+ {
+     return m_spinBox_1_label;
+ }
+
+
+ void AttendTreeItem::setSpinbox_1_label(QString text)
+ {
+     m_spinBox_1_label = text;
+ }
+
+
+ int AttendTreeItem::spinBox_1Value() const
+ {
+     return m_spinBox_1Value;
+ }
+
+
+ void AttendTreeItem::setSpinbox_1Value(int value)
+ {
+     m_spinBox_1Value = value;
+ }
+

@@ -43,8 +43,9 @@ void AttendBase::startAttendance()
     connect(ui->povButton, SIGNAL(clicked()), sheetProxyModel, SLOT(setPointOfView()), Qt::UniqueConnection);
     connect(ui->sheetTreeView, SIGNAL(clicked(QModelIndex)), sheetProxyModel, SLOT(setClickedIndex(QModelIndex)), Qt::UniqueConnection);
 
-    connect(sheetProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(expandAll()));
-    connect(globalProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(expandAll()));
+    connect(ui->sheetTreeView, SIGNAL(viewportEntered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+    connect(ui->globalTreeView, SIGNAL(viewportEntered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+
 }
 
 void AttendBase::launchAttendManager()

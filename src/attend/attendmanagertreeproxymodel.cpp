@@ -194,14 +194,14 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
 
     emit resetDomDocSignal();
-
-    emit dataChanged(index, index);
+    emit resetDomElementForNumberSignal();
+//    emit dataChanged(index, index);
 
     invalidateFilter();
 
     hub->addToSaveQueue();
 
-    emit activateItemSignal(index);
+    // emit activateItemSignal(index);
 
 
 
@@ -250,14 +250,13 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 
 
     emit resetDomDocSignal();
-
-    emit dataChanged(index, index);
+    emit resetDomElementForNumberSignal();
+//    emit dataChanged(index, index);
 
     invalidateFilter();
 
     hub->addToSaveQueue();
 
-    emit activateItemSignal(this->mapToSource(index));
 
 
 }
@@ -314,8 +313,8 @@ int number = sourceItem->idNumber();
 
 
     emit resetDomDocSignal();
-
-    emit dataChanged(index, index);
+    emit resetDomElementForNumberSignal();
+//    emit dataChanged(index, index);
 
     invalidateFilter();
 

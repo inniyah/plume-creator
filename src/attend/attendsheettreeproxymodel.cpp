@@ -6,6 +6,28 @@ AttendSheetTreeProxyModel::AttendSheetTreeProxyModel(QObject *parent) :
 
 }
 
+
+QVariant AttendSheetTreeProxyModel::headerData(int section, Qt::Orientation orientation,
+                                         int role) const
+{
+    if (role != Qt::DisplayRole)
+        return QVariant();
+
+
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole && section != -1){
+
+        return sheetName;
+    }
+
+    else
+        return QString(tr("Sheet"));
+}
+
+
+
+//--------------------------------------------------------------------------------------------------
+
+
 bool AttendSheetTreeProxyModel::filterAcceptsRow(int sourceRow,
                                                  const QModelIndex &sourceParent) const
 {
@@ -92,6 +114,11 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
     QStringList povStringList = povString.split("-", QString::SkipEmptyParts);
     foreach(const QString &str, povStringList)
         povList.append(str.toInt());
+
+
+    //set Header title :
+    sheetName = openedElement.attribute("name", tr("Sheet"));
+this->headerDataChanged(Qt::Horizontal,1,1);
 
     invalidateFilter();
     nothingWasClicked = true;
@@ -195,7 +222,7 @@ QMimeData *AttendSheetTreeProxyModel::mimeData(const QModelIndexList &indexes) c
         else
             encodedData.append("-" + index.data(Qt::UserRole).toString());
     }
-    mimeData->setData("application/x-plumecreatorattendnumberdata", encodedData);
+    mimeData->setData("application/x-plumecreator-attendnumberdata-fromsheettree", encodedData);
     return mimeData;
 }
 //-------------------------------------------------------------------------------
@@ -203,7 +230,7 @@ QMimeData *AttendSheetTreeProxyModel::mimeData(const QModelIndexList &indexes) c
 QStringList AttendSheetTreeProxyModel::mimeTypes () const
 {
     QStringList list;
-    list << "application/x-plumecreatorattendnumberdata";
+    list << "application/x-plumecreator-attendnumberdata-fromglobaltree";
     return list;
 }
 
@@ -214,12 +241,12 @@ bool AttendSheetTreeProxyModel::dropMimeData ( const QMimeData * data, Qt::DropA
 
 
 
-    if (data->hasFormat("application/x-plumecreatorattendnumberdata"))
+    if (data->hasFormat("application/x-plumecreator-attendnumberdata-fromglobaltree"))
     {
-        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreatorattendnumberdata"));
+        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
 
 
-        QString numbersString = QString::fromUtf8(data->data("application/x-plumecreatorattendnumberdata"));
+        QString numbersString = QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
         QStringList list = numbersString.split("-", QString::SkipEmptyParts);
         QList<int> objectsList;
         foreach(const QString &string, list)

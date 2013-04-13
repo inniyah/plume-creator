@@ -79,6 +79,10 @@ QVariant AttendAbstractModel::data(const QModelIndex &index, int role) const
         AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
         return item->idNumber();
     }
+    if (role == Qt::ToolTipRole && col == 0){
+        AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
+        return AttendAbstractModel::createToolTipText(item);
+    }
     else
         return QVariant();
 }
@@ -132,7 +136,29 @@ QModelIndex AttendAbstractModel::index ( int row, int column, const QModelIndex 
 
 
 
+//--------------------------------------------------------------------------------------------------
 
+QString AttendAbstractModel::createToolTipText(AttendTreeItem *treeItem)
+{
+
+
+
+
+
+    QString toolTip(treeItem->name() + "\n" +
+                    treeItem->quickDetails() + "\n" +
+                    treeItem->aliases() + "\n" +
+                    treeItem->box_1Value() + "\n" +
+                    treeItem->box_2Value() + "\n" +
+                    treeItem->box_3Value() + "\n" +
+                    treeItem->spinBox_1_label() + " " + QString::number(treeItem->spinBox_1Value()));
+
+
+
+
+
+    return toolTip;
+}
 
 
 
@@ -170,6 +196,7 @@ void AttendAbstractModel::resetDomDoc()
     treeGroupItemList = new QList<AttendTreeItem *>;
     treeObjectItemList = new QList<AttendTreeItem *>;
 
+    root = hub->attendTreeDomDoc().documentElement().toElement();
     parseFolderElement(hub->attendTreeDomDoc().documentElement());
 
 
@@ -180,6 +207,27 @@ void AttendAbstractModel::resetDomDoc()
 
 void AttendAbstractModel::parseFolderElement(const QDomElement &element)
 {
+
+    QStringList box1List = root.attribute("box_1", tr("None")).split("--", QString::SkipEmptyParts);
+    if(box1List.isEmpty()){
+        box1List << tr("None");
+        root.setAttribute("box_1", tr("None"));
+    }
+
+    QStringList box2List = root.attribute("box_2", tr("None")).split("--", QString::SkipEmptyParts);
+    if(box2List.isEmpty()){
+        box2List << tr("None");
+        root.setAttribute("box_1", tr("None"));
+    }
+
+    QStringList box3List = root.attribute("box_3", tr("None")).split("--", QString::SkipEmptyParts);
+    if(box3List.isEmpty()){
+        box3List << tr("None");
+        root.setAttribute("box_1", tr("None"));
+    }
+
+    QString spinBox_1_label = root.attribute("spinBox_1_label", tr("Age :"));
+
 
 
     QString title = element.attribute("name");
@@ -210,6 +258,29 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setIdNumber(child.attribute("number").toInt());
             treeItem->setIsGroup(true);
 
+
+
+
+
+            treeItem->setName(child.attribute("name", ""));
+
+            treeItem->setAliases(child.attribute("aliases", ""));
+            treeItem->setQuickDetails(child.attribute("quickDetails", ""));
+
+            treeItem->setBox_1Value(boxListValueAt(box1List,child.attribute("box_1", "0").toInt()));
+            treeItem->setBox_2Value(boxListValueAt(box2List,child.attribute("box_2", "0").toInt()));
+            treeItem->setBox_3Value(boxListValueAt(box3List,child.attribute("box_3", "0").toInt()));
+
+            treeItem->setSpinbox_1_label(spinBox_1_label);
+            treeItem->setSpinbox_1Value(child.attribute("spinBox_1", "0").toInt());
+
+
+
+
+
+
+
+
             rootItem->appendChild(treeItem);
 
             treeGroupItemList->append(treeItem);
@@ -231,6 +302,27 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
             treeItem->setIsGroup(false);
+
+
+
+
+
+            treeItem->setName(child.attribute("name", ""));
+
+            treeItem->setAliases(child.attribute("aliases", ""));
+            treeItem->setQuickDetails(child.attribute("quickDetails", ""));
+
+            treeItem->setBox_1Value(boxListValueAt(box1List,child.attribute("box_1", "0").toInt()));
+            treeItem->setBox_2Value(boxListValueAt(box2List,child.attribute("box_2", "0").toInt()));
+            treeItem->setBox_3Value(boxListValueAt(box3List,child.attribute("box_3", "0").toInt()));
+
+            treeItem->setSpinbox_1_label(spinBox_1_label);
+            treeItem->setSpinbox_1Value(child.attribute("spinBox_1", "0").toInt());
+
+
+
+
+
 
             treeGroupItemList->last()->appendChild(treeItem);
 
@@ -255,4 +347,13 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
 
 //-----------------------------------------------------------------------------------------------------------
 
+QString AttendAbstractModel::boxListValueAt(QStringList boxList, int index)
+{
+    if(boxList.size() == 0)
+        boxList << tr("None");
 
+    if(index >= boxList.size() || index < 0)
+        index = 0;
+
+    return boxList.at(index);
+}
