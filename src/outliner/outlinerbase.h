@@ -56,7 +56,7 @@ void updateOutliner();
 void mtoO_setDomDoc(QDomDocument domDoc);
 
 // for textDocument :
-void mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc);
+void mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc);
 
 //for attendances :
 void mtoO_updateAttendances(QHash<int, QString> attendStringForNumber);
@@ -90,7 +90,7 @@ QString lastOpened;
 
 QDomDocument mtoO_domDoc;
 
-QHash<QTextDocument *, int> mtoO_numForDoc;
+QHash<MainTextDocument *, int> mtoO_numForDoc;
 
     QHash<QListWidgetItem *, QDomElement> attend_domElementForItem;
     QHash<int, QDomElement> attend_domElementForItemNumber;

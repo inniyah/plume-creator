@@ -313,8 +313,8 @@ bool OutlinerAbstractModel::setData(const QModelIndex &index,
 
 
 
-        QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
-        QTextDocument *synDoc = new QTextDocument;
+        QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
+        MainTextDocument *synDoc = new MainTextDocument;
         for(int i = 0; i < miniDocList.size(); ++i){
             if(miniDocList.at(i)->objectName().left(11) == "synDocClone"){
                 synDoc = miniDocList.at(i);
@@ -340,8 +340,8 @@ bool OutlinerAbstractModel::setData(const QModelIndex &index,
 
 
 
-        QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
-        QTextDocument *noteDoc = new QTextDocument;
+        QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
+        MainTextDocument *noteDoc = new MainTextDocument;
         for(int i = 0; i < miniDocList.size(); ++i){
 
             if(miniDocList.at(i)->objectName().left(12) == "noteDocClone"){
@@ -410,19 +410,19 @@ void OutlinerAbstractModel::updateMainDomDoc()
 
 }
 
-void OutlinerAbstractModel::updateMainTextDoc(QTextDocument *textDoc, int number)
+void OutlinerAbstractModel::updateMainTextDoc(MainTextDocument *textDoc, int number)
 {
 
-    QList<QTextDocument *> miniDocList = mtoO_numForDoc.keys(number);
+    QList<MainTextDocument *> miniDocList = mtoO_numForDoc.keys(number);
     for(int i = 0; i < miniDocList.size(); ++i){
 
 
         if(miniDocList.at(i)->objectName().left(7) == "noteDoc" && textDoc->objectName().left(12) == "noteDocClone"){
-            QTextDocument *doc = miniDocList.at(i);
+            MainTextDocument *doc = miniDocList.at(i);
             doc->setHtml(textDoc->toHtml()) ;
         }
         else if(miniDocList.at(i)->objectName().left(6) == "synDoc" && textDoc->objectName().left(11) == "synDocClone"){
-            QTextDocument *doc = miniDocList.at(i);
+            MainTextDocument *doc = miniDocList.at(i);
             doc->setHtml(textDoc->toHtml()) ;
 
         }
@@ -534,7 +534,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
 
             itemData.append(child.attribute("name", "error"));
 
-            QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
+            QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
             for(int i = 0; i < miniDocList.size(); ++i){
                 if(miniDocList.at(i)->objectName().left(11) == "synDocClone")
                     itemData.append(miniDocList.at(i)->toHtml());
@@ -571,7 +571,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
 
             itemData.append(child.attribute("name", "error"));
 
-            QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
+            QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
             for(int i = 0; i < miniDocList.size(); ++i){
                 if(miniDocList.at(i)->objectName().left(11) == "synDocClone")
                     itemData.append(miniDocList.at(i)->toHtml());
@@ -614,7 +614,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
 
             itemData.append(child.attribute("name", "error"));
 
-            QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
+            QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(child.attribute("number").toInt());
             for(int i = 0; i < miniDocList.size(); ++i){
                 if(miniDocList.at(i)->objectName().left(11) == "synDocClone")
                     itemData.append(miniDocList.at(i)->toHtml());
@@ -666,7 +666,7 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void OutlinerAbstractModel::mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc)
+void OutlinerAbstractModel::mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc)
 {
 
     mtoO_numForDoc = numForDoc;
@@ -684,10 +684,11 @@ void OutlinerAbstractModel::reset_mtoO_setNumForDoc()
     mtoO_numForClonedDoc.clear();
 
 
-    QHash<QTextDocument *, int>::const_iterator  i = mtoO_numForDoc.constBegin();
+    QHash<MainTextDocument *, int>::const_iterator  i = mtoO_numForDoc.constBegin();
     while (i != mtoO_numForDoc.constEnd()) {
-        QTextDocument *textDoc = i.key();
-        QTextDocument *textDocClone = textDoc->clone();
+        MainTextDocument *textDoc = i.key();
+        MainTextDocument *textDocClone = new MainTextDocument();
+        textDocClone->setHtml(textDoc->toHtml());
 
         if(textDoc->objectName().left(6) == "synDoc")
             textDocClone->setObjectName("synDocClone_" + QString::number(i.value()));

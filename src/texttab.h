@@ -35,7 +35,7 @@ class TextTab : public QWidget
 public:
     explicit TextTab(QWidget *parent = 0);
 
-    bool openText(QTextDocument *doc);
+    bool openText(MainTextDocument *doc);
     //    bool saveText(QFile *textFile, QString name);
 
     //for wordcount:
@@ -72,10 +72,10 @@ public slots:
 
     void showPrevText(bool showPrevTextBool);
 bool setShowPrevTextButton();
-void setPrevText(QTextDocument *prevDoc);
+void setPrevText(MainTextDocument *prevDoc);
 void showNextText(bool showNextTextBool);
 bool setShowNextTextButton();
-void setNextText(QTextDocument *nextDoc);
+void setNextText(MainTextDocument *nextDoc);
 
 void setTextStyles(TextStyles *styles);
 
@@ -91,9 +91,9 @@ private:
 Hub *hub;
 TextStyles *textStyles;
 
-QTextDocument *prevTextDocument;
-    QTextDocument *textDocument;
-    QTextDocument *nextTextDocument;
+MainTextDocument *prevTextDocument;
+    MainTextDocument *textDocument;
+    MainTextDocument *nextTextDocument;
 
     QString stackName;
 

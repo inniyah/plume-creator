@@ -68,7 +68,7 @@ public slots:
     void resetDomDoc();
     void parseFolderElement(const QDomElement &element);
 
-    void mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc);
+    void mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc);
     void reset_mtoO_setNumForDoc();
 
     void columnOneResizedSlot(int newSize){textZoneColumnOneWidth = newSize;}
@@ -79,7 +79,7 @@ public slots:
 private slots:
 
     void updateMainDomDoc();
-    void updateMainTextDoc(QTextDocument *textDoc, int number);
+    void updateMainTextDoc(MainTextDocument *textDoc, int number);
 
 
 private:
@@ -96,8 +96,8 @@ private:
     QStringList *titlesList;
     QStringList *leftHeadersList;
     QList<int> *numberList;
-    QHash<QTextDocument *, int> mtoO_numForDoc;
-    QHash<QTextDocument *, int> mtoO_numForClonedDoc;
+    QHash<MainTextDocument *, int> mtoO_numForDoc;
+    QHash<MainTextDocument *, int> mtoO_numForClonedDoc;
 
     QList<OutlinerTreeItem *> *treeBookItemList;
     QList<OutlinerTreeItem *> *treeChapterItemList;

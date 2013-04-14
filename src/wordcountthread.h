@@ -43,7 +43,7 @@ signals:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
-    void setDocs(QHash<QTextDocument*,QFile*> fileForDocs);
+    void setDocs(QHash<MainTextDocument*,QFile*> fileForDocs);
     void setDom(QDomDocument domDoc);
     void setCurrentNumber(int number);
 
@@ -52,7 +52,7 @@ private slots:
 
 private:
     Hub *hub;
-    QList<QTextDocument *> textDocList;
+    QList<MainTextDocument *> textDocList;
     QDomDocument domDocument;
     int currNumber;
 };

@@ -13,6 +13,7 @@
 #include "fileupdater.h"
 #include "JlCompress.h"
 #include "fileutils.h"
+#include "maintextdocument.h"
 
 class Hub : public QWidget
 {
@@ -34,10 +35,10 @@ public:
 
     QDomDocument mainTreeDomDoc();
     void setMainTreeDomDoc(QDomDocument doc);
-    QHash<QTextDocument *, QFile *> mainTree_fileForDocHash();
-    void set_mainTree_fileForDocHash(QHash<QTextDocument *, QFile *> fileForDoc);
-    QHash<QTextDocument *, int> mainTree_numForDocHash();
-    void set_mainTree_numForDocHash(QHash<QTextDocument *, int> numForDoc);
+    QHash<MainTextDocument *, QFile *> mainTree_fileForDocHash();
+    void set_mainTree_fileForDocHash(QHash<MainTextDocument *, QFile *> fileForDoc);
+    QHash<MainTextDocument *, int> mainTree_numForDocHash();
+    void set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc);
 
     QDomDocument infoTreeDomDoc();
 
@@ -92,8 +93,8 @@ private:
     QString m_projectFileName;
 
     QDomDocument m_mainTreeDomDoc;
-    QHash<QTextDocument *, QFile *> m_mainTree_fileForDocHash;
-    QHash<QTextDocument *, int> m_mainTree_numForDocHash;
+    QHash<MainTextDocument *, QFile *> m_mainTree_fileForDocHash;
+    QHash<MainTextDocument *, int> m_mainTree_numForDocHash;
 
     QDomDocument m_infoTreeDomDoc;
 
@@ -110,6 +111,8 @@ private:
     bool projectOpened;
     QString projectWorkingPath;
  bool saveDoc(QTextDocument *doc, QString mode);
+ bool saveMainDoc(MainTextDocument *doc, QString mode);
+
 void loadTextDocs(QDomNodeList list);
 void loadAttendDocs(QDomNodeList list);
 int saveStack;

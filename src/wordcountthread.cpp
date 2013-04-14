@@ -8,14 +8,14 @@ WordCountThread::WordCountThread(QObject *parent)
 }
 
 //-----------------------------------------------------------------------------------------------------------
-void WordCountThread::setDocs(QHash<QTextDocument *, QFile *> fileForDocs)
+void WordCountThread::setDocs(QHash<MainTextDocument *, QFile *> fileForDocs)
 {
-    QList<QTextDocument *> docList = fileForDocs.keys();
+    QList<MainTextDocument *> docList = fileForDocs.keys();
 
     textDocList.clear();
 
     while(!docList.isEmpty()){
-        QTextDocument *doc = docList.takeFirst();
+        MainTextDocument *doc = docList.takeFirst();
         if(doc->objectName().left(8) == "textDoc_"){
             textDocList.append(doc);
         }

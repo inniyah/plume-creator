@@ -75,7 +75,7 @@ public slots:
     void openExternalProject(QFile *externalFile);
     void closeProjectSlot();
 
-    void textSlot(QTextDocument *textDoc = 0, QTextDocument *noteDoc = 0, QTextDocument *synDoc = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
+    void textSlot(MainTextDocument *textDoc = 0, MainTextDocument *noteDoc = 0, MainTextDocument *synDoc = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
     void secondTextSlot(int number = 0, QString action = "nothing");
 
 private slots:
@@ -176,9 +176,9 @@ private:
     bool checkScreenResAtStartupBool;
 
     void setConnections();
-    QList<QTextDocument *> *textDocList;
-    QList<QTextDocument *> *noteDocList;
-    QList<QTextDocument *> *synDocList;
+    QList<MainTextDocument *> *textDocList;
+    QList<MainTextDocument *> *noteDocList;
+    QList<MainTextDocument *> *synDocList;
     QStringList *nameList;
     QList<TextTab *> *textWidgetList;
     QList<NoteZone *> *noteWidgetList;

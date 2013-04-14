@@ -45,7 +45,7 @@ this->setFocusPolicy(Qt::WheelFocus);
 //-----------------------------------------------------
 
 
-bool NoteZone::openNote(QTextDocument *noteDoc)
+bool NoteZone::openNote(MainTextDocument *noteDoc)
 {
 
     textDocument = noteDoc;
@@ -89,7 +89,7 @@ bool NoteZone::openNote(QTextDocument *noteDoc)
 //------------------------------------------------------------------------------
 
 
-bool NoteZone::openSyn(QTextDocument *synDoc)
+bool NoteZone::openSyn(MainTextDocument *synDoc)
 {
 
     textDocument = synDoc;

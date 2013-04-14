@@ -298,7 +298,7 @@ void OutlinerBase::mtoO_setDomDoc(QDomDocument domDoc)
 //------------------------------------------------------------------------------------
 // mtoO means Main to Outliner
 
-void OutlinerBase::mtoO_setNumForDoc(QHash<QTextDocument *, int> numForDoc)
+void OutlinerBase::mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc)
 {
     mtoO_numForDoc = numForDoc;
 }

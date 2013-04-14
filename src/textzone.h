@@ -35,7 +35,7 @@ public:
     explicit TextZone(QWidget *parent = 0);
     ~TextZone();
     void createContent();
-    void setDoc(QTextDocument *doc);
+    void setDoc(MainTextDocument *doc);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);

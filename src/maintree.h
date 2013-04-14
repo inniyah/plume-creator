@@ -49,7 +49,7 @@ protected:
 
 
 signals:
-    void textAndNoteSignal(QTextDocument *textDoc, QTextDocument *noteDoc, QTextDocument *synDoc,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
+    void textAndNoteSignal(MainTextDocument *textDoc, MainTextDocument *noteDoc, MainTextDocument *synDoc,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
     void textAndNoteSignal(int number, QString action);
     void nameChangedSignal(QString newName, int number);
 
@@ -62,7 +62,7 @@ signals:
     void saveOutliner();
     void domDocSignal(QDomDocument domDoc);
 
-    void setNumForDocSignal(QHash<QTextDocument *, int>);
+    void setNumForDocSignal(QHash<MainTextDocument *, int>);
     void applySynNoteFontConfigSignal();
 
     // for attendance :
@@ -72,7 +72,7 @@ signals:
     void projectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
 
     // for global wordcount :
-    void docsForProjectWordCountSignal(QHash<QTextDocument *, QFile *> fileForDocs);
+    void docsForProjectWordCountSignal(QHash<MainTextDocument *, QFile *> fileForDocs);
     void domForProjectWordCountSignal(QDomDocument domDoc);
 
 
@@ -80,9 +80,9 @@ public slots:
     void setHub(Hub *varHub){hub = varHub;}
 
     void saveCursorPos(int cursorPosition, int synCursorPosition, int noteCursorPosition, int number);
-    bool saveDoc(QTextDocument *doc);
-    QTextDocument * prevText(int num);
-    QTextDocument * nextText(int num);
+//    bool saveDoc(MainTextDocument *doc);
+    MainTextDocument * prevText(int num);
+    MainTextDocument * nextText(int num);
 
     // Outline :
     void launchOutliner();
@@ -145,7 +145,7 @@ private slots:
     void insertOutlinerItem(int newNumber, int numberOfRef);
     void outlinerClosed(){outlinerLaunched = false;}
 
-    QHash<QTextDocument *, int> setNumForDoc();
+    QHash<MainTextDocument *, int> setNumForDoc();
 
 
 private:
@@ -213,8 +213,8 @@ private:
 
 
 
-//    QHash<QTextDocument *, QFile *> fileForDoc;
-//    QHash<QTextDocument *, QFile *>::iterator u;
+//    QHash<MainTextDocument *, QFile *> fileForDoc;
+//    QHash<MainTextDocument *, QFile *>::iterator u;
 
 
     //Outline :

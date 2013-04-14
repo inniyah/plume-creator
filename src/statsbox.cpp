@@ -92,7 +92,7 @@ countWindow->show();
 WordCountThread *prjWordCountThread = new WordCountThread();
 prjWordCountThread->setHub(hub);
 
-connect(this, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), prjWordCountThread, SLOT(setDocs(QHash<QTextDocument*,QFile*>)), Qt::UniqueConnection);
+connect(this, SIGNAL(docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>)), prjWordCountThread, SLOT(setDocs(QHash<MainTextDocument*,QFile*>)), Qt::UniqueConnection);
 connect(this, SIGNAL(domForProjectWordCountSignal(QDomDocument)), prjWordCountThread, SLOT(setDom(QDomDocument)), Qt::UniqueConnection);
 connect(this, SIGNAL(setCurrentNumberSignal(int)), prjWordCountThread, SLOT(setCurrentNumber(int)), Qt::UniqueConnection);
 connect(prjWordCountThread, SIGNAL(chapterWordCountSignal(int)),this, SLOT(setChapterWordCount(int)), Qt::UniqueConnection);

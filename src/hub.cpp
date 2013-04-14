@@ -110,14 +110,14 @@ QDomDocument Hub::mainTreeDomDoc()
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 
-QHash<QTextDocument *, QFile *> Hub::mainTree_fileForDocHash()
+QHash<MainTextDocument *, QFile *> Hub::mainTree_fileForDocHash()
 {
     return m_mainTree_fileForDocHash;
 }
 
-void Hub::set_mainTree_fileForDocHash(QHash<QTextDocument *, QFile *> fileForDoc)
+void Hub::set_mainTree_fileForDocHash(QHash<MainTextDocument *, QFile *> fileForDoc)
 {
-    QHash<QTextDocument *, QFile *> m_old_fileForDoc = m_mainTree_fileForDocHash;
+    QHash<MainTextDocument *, QFile *> m_old_fileForDoc = m_mainTree_fileForDocHash;
     m_mainTree_fileForDocHash = fileForDoc;
 
     if(!refreshIsLocked)
@@ -129,14 +129,14 @@ void Hub::set_mainTree_fileForDocHash(QHash<QTextDocument *, QFile *> fileForDoc
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 
-QHash<QTextDocument *, int> Hub::mainTree_numForDocHash()
+QHash<MainTextDocument *, int> Hub::mainTree_numForDocHash()
 {
     return m_mainTree_numForDocHash;
 }
 
-void Hub::set_mainTree_numForDocHash(QHash<QTextDocument *, int> numForDoc)
+void Hub::set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc)
 {
-    QHash<QTextDocument *, int> m_old_numForDoc = m_mainTree_numForDocHash;
+    QHash<MainTextDocument *, int> m_old_numForDoc = m_mainTree_numForDocHash;
     m_mainTree_numForDocHash = numForDoc;
 
     if(!refreshIsLocked)
@@ -445,10 +445,10 @@ void Hub::closeCurrentProject()
     //clear all the docs :
 
 
-    QHash<QTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
+    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
 
     while (i != m_mainTree_fileForDocHash.end()) {
-        QTextDocument *doc = i.key();
+        MainTextDocument *doc = i.key();
         doc->setObjectName("");
 
         ++i;
@@ -728,7 +728,9 @@ void Hub::loadTextDocs(QDomNodeList list)
             textFile->setFileName(textPath);
             textFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream textFileStream( textFile );
-            QTextDocument *textDocument = new QTextDocument(this);
+            MainTextDocument *textDocument = new MainTextDocument(this);
+            textDocument->setIdNumber(number.toInt());
+            textDocument->setDocType("text");
             textDocument->setHtml(textFileStream.readAll());
             textFile->close();
             textDocument->setObjectName("textDoc_" + number);
@@ -739,7 +741,9 @@ void Hub::loadTextDocs(QDomNodeList list)
             synFile->setFileName(synPath);
             synFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream synFileStream( synFile );
-            QTextDocument *synDocument = new QTextDocument(this);
+            MainTextDocument *synDocument = new MainTextDocument(this);
+            synDocument->setIdNumber(number.toInt());
+            synDocument->setDocType("synopsis");
             synDocument->setHtml(synFileStream.readAll());
             synFile->close();
             synDocument->setObjectName("synDoc_" + number);
@@ -750,7 +754,9 @@ void Hub::loadTextDocs(QDomNodeList list)
             noteFile->setFileName(notePath);
             noteFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream noteFileStream( noteFile );
-            QTextDocument *noteDocument = new QTextDocument(this);
+            MainTextDocument *noteDocument = new MainTextDocument(this);
+            noteDocument->setIdNumber(number.toInt());
+            noteDocument->setDocType("note");
             noteDocument->setHtml(noteFileStream.readAll());
             noteFile->close();
             noteDocument->setObjectName("noteDoc_" + number);
@@ -862,9 +868,9 @@ void Hub::saveTemp()
         //TextDocs :
 
     }
-    QHash<QTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
+    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
     while (i != m_mainTree_fileForDocHash.end()) {
-        saveDoc(i.key() ,"mainTreeDocs" );
+        saveMainDoc(i.key() ,"mainTreeDocs" );
         ++i;
     }
 
@@ -934,15 +940,40 @@ void Hub::saveTemp()
 }
 //-----------------------------------------------------------------------------------------
 
+bool Hub::saveMainDoc(MainTextDocument *doc, QString mode)
+{
+    if(mode != "mainTreeDocs")
+        return false;
+
+    QTextDocument *m_doc =  doc;
+
+    QFile *file = new QFile;
+    file = m_mainTree_fileForDocHash.value(doc);
+
+    file->close();
+    QTextDocumentWriter *docWriter = new QTextDocumentWriter(file, "HTML");
+    QTextDocument *clonedDoc = m_doc->clone();
+    bool written = docWriter->write(clonedDoc);
+
+
+
+    delete docWriter;
+    delete clonedDoc;
+
+    return written;
+}
 
 bool Hub::saveDoc(QTextDocument *doc, QString mode)
 {
 
     QFile *file = new QFile;
-    if(mode == "mainTreeDocs")
-        file = m_mainTree_fileForDocHash.value(doc);
-    else if(mode == "attendTreeDocs")
-        file = m_attendTree_fileForDocHash.value(doc);
+//    if(mode == "mainTreeDocs"){
+//        qDebug() << "saveDoc error !";
+//return false;
+//    }
+//    else if(mode == "attendTreeDocs")
+//
+    file = m_attendTree_fileForDocHash.value(doc);
 
 
     file->close();

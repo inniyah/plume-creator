@@ -46,7 +46,7 @@ void TextZone::createContent()
 
 
 
-void TextZone::setDoc(QTextDocument *doc)
+void TextZone::setDoc(MainTextDocument *doc)
 {
     textDocument = doc;
     this->setDocument(doc);

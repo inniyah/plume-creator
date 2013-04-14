@@ -36,7 +36,7 @@ signals:
     void timerSignal(QString);
     void fetchDomAndDocsSignal();
     void fetchCurrentNumber();
-    void docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>);
+    void docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>);
     void domForProjectWordCountSignal(QDomDocument);
     void setCurrentNumberSignal(int);
 

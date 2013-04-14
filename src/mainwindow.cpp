@@ -309,7 +309,7 @@ void MainWindow::createTreeDock()
     mainTree = new MainTree;
     mainTree->setHub(hub);
 
-    connect(mainTree, SIGNAL(textAndNoteSignal(QTextDocument*,QTextDocument*,QTextDocument*, int, int, int, QString, int, QString)), this, SLOT(textSlot(QTextDocument*,QTextDocument*,QTextDocument*, int,int,int, QString, int, QString)));
+    connect(mainTree, SIGNAL(textAndNoteSignal(MainTextDocument*,MainTextDocument*,MainTextDocument*, int, int, int, QString, int, QString)), this, SLOT(textSlot(MainTextDocument*,MainTextDocument*,MainTextDocument*, int,int,int, QString, int, QString)));
     connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
     connect(this, SIGNAL(changeAllDocsTextStylesSignal()), mainTree, SLOT(changeAllDocsTextStyles()));
 
@@ -895,7 +895,7 @@ void MainWindow::setProjectNumberSlot(int prjNumber)
 
 
 
-void MainWindow::textSlot(QTextDocument *textDoc, QTextDocument *noteDoc, QTextDocument *synDoc, int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action)
+void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, MainTextDocument *synDoc, int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action)
 {
     if(action == "open"){
 
@@ -1143,9 +1143,9 @@ void MainWindow::secondTextSlot(int number, QString action)
 
 void MainWindow::setConnections()
 {
-    textDocList = new QList<QTextDocument *> ;
-    noteDocList = new QList<QTextDocument *> ;
-    synDocList = new QList<QTextDocument *> ;
+    textDocList = new QList<MainTextDocument *> ;
+    noteDocList = new QList<MainTextDocument *> ;
+    synDocList = new QList<MainTextDocument *> ;
     nameList = new QStringList;
     textWidgetList = new QList<TextTab *>;
     noteWidgetList = new QList<NoteZone *>;
@@ -1185,7 +1185,7 @@ void MainWindow::setConnections()
     connect(stats, SIGNAL(fetchDomAndDocsSignal()), mainTree, SLOT(giveDocsAndDomForProjectWordCount()));
     connect(stats, SIGNAL(fetchCurrentNumber()), this, SLOT(setCurrentNumber()));
     connect(this, SIGNAL(currentNumber(int)), stats, SIGNAL(setCurrentNumberSignal(int)));
-    connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<QTextDocument*,QFile*>)) );
+    connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>)) );
     connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
 
 
@@ -1251,9 +1251,6 @@ void MainWindow::tabCloseRequest(int tabNum)
 
     // Saving
 
-    bool textBool = mainTree->saveDoc(textWidgetList->at(tabNum)->document());
-    bool noteBool = mainTree->saveDoc(noteWidgetList->at(tabNum)->document());
-    bool synBool = mainTree->saveDoc(synWidgetList->at(tabNum)->document());
 
     mainTree->saveCursorPos(textWidgetList->at(tabNum)->saveCursorPos(),
                             synWidgetList->at(tabNum)->saveCursorPos(),
@@ -1301,6 +1298,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     QTimer::singleShot(500, this, SLOT(reconnectAFterTabClose()));
 
     //    connect(mainTabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)),Qt::UniqueConnection);
+    hub->addToSaveQueue();
 
 }
 
@@ -1883,7 +1881,7 @@ void MainWindow::giveStyle()
             "QDockWidget {"
             "border: 1px solid lightgray;"
             //            "titlebar-close-icon: url(close.png);"
-            //            "titlebar-normal-icon: url(undock.png);"
+            //     e       "titlebar-normal-icon: url(undock.png);"
             "margin: 3px"
             "}"
 

@@ -11,7 +11,7 @@ QT += core gui xml
 
 TEMPLATE = app
 
-VERSION = 0.58.2
+VERSION = 0.58.4
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -88,7 +88,9 @@ src/hub.cpp \
     src/attend/attendglobaltreeproxymodel.cpp \
     src/attend/attendmanager.cpp \
     src/attend/attendmanagertreeproxymodel.cpp \
-    src/attend/attendsettings.cpp
+    src/attend/attendsettings.cpp \
+    src/maintextdocument.cpp \
+    src/wordcountengine.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -136,7 +138,9 @@ src/hub.h \
     src/attend/attendglobaltreeproxymodel.h \
     src/attend/attendmanager.h \
     src/attend/attendmanagertreeproxymodel.h \
-    src/attend/attendsettings.h
+    src/attend/attendsettings.h \
+    src/maintextdocument.h \
+    src/wordcountengine.h
 
 CODECFORTR = UTF-8
 

@@ -32,12 +32,12 @@ public:
     explicit NoteZone(QWidget *parent = 0);
 
 
-    bool openNote(QTextDocument *noteDoc);
+    bool openNote(MainTextDocument *noteDoc);
     //    bool saveNote(QFile *noteFile, QString name);
     bool closeNote();
 
 
-    bool openSyn(QTextDocument *synDoc);
+    bool openSyn(MainTextDocument *synDoc);
     //    bool saveSyn(QFile *synFile, QString name);
     bool closeSyn();
 

@@ -8,9 +8,9 @@
 TextTab::TextTab(QWidget *parent) :
     QWidget(parent)
 {
-    prevTextDocument = new QTextDocument(this);
-    textDocument = new QTextDocument(this);
-    nextTextDocument = new QTextDocument(this);
+    prevTextDocument = new MainTextDocument(this);
+    textDocument = new MainTextDocument(this);
+    nextTextDocument = new MainTextDocument(this);
 
     prevTextZone = new TextZone(this);
     prevTextZone->setHub(hub);
@@ -103,7 +103,7 @@ void TextTab::setTextStyles(TextStyles *styles)
 
 //---------------------------------------------------------------------------------------
 
-bool TextTab::openText(QTextDocument *doc)
+bool TextTab::openText(MainTextDocument *doc)
 {
 
     prevTextZone->setTextStyles(textStyles);
@@ -225,7 +225,7 @@ void TextTab::updateWordCounts()
 void TextTab::setWordCounts()
 {
     tabWordCount = new WordCount(textDocument, this);
-    tabWordCount->setHub(hub);
+//    tabWordCount->setHub(hub);
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
     connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
     connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
@@ -392,7 +392,7 @@ bool TextTab::setShowPrevTextButton()
 }
 
 //-------------------------------------------------------------------------------
-void  TextTab::setPrevText(QTextDocument *prevDoc)
+void  TextTab::setPrevText(MainTextDocument *prevDoc)
 {
     if(prevDoc == 0){
         prevTextZone->setHidden(true);
@@ -426,7 +426,7 @@ bool TextTab::setShowNextTextButton()
 }
 
 //-------------------------------------------------------------------------------
-void  TextTab::setNextText(QTextDocument *nextDoc)
+void  TextTab::setNextText(MainTextDocument *nextDoc)
 {
     if(nextDoc == 0){
         nextTextZone->setHidden(true);

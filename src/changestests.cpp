@@ -42,3 +42,24 @@ bool ChangesTests::test(QHash<QTextDocument *,int> oldHash, QHash<QTextDocument 
 }
 
 //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+bool ChangesTests::test(QHash<MainTextDocument *, QFile *> oldHash, QHash<MainTextDocument *, QFile *> newHash)
+{
+    if(oldHash != newHash)
+        return  false;
+    else
+        return  true;
+}
+
+//--------------------------------------------------------------------------------
+
+bool ChangesTests::test(QHash<MainTextDocument *,int> oldHash, QHash<MainTextDocument *, int> newHash)
+{
+    if(oldHash != newHash)
+        return  false;
+    else
+        return  true;
+}
+
+//--------------------------------------------------------------------------------

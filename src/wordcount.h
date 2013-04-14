@@ -43,7 +43,7 @@ signals:
     void countDeltaSignal(int countDelta);
 
 public slots:
-    void setHub(Hub *varHub){hub = varHub;}
+//    void setHub(Hub *varHub){hub = varHub;}
 void calculateCounts();
 
 private slots:
@@ -55,7 +55,7 @@ private slots:
     void updateBlockCount(int blockCount);
 
 private:
-    Hub *hub;
+//    Hub *hub;
 
 
     QTextDocument *document;
