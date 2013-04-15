@@ -43,7 +43,7 @@ class FullscreenEditor : public QWidget
 public:
     explicit FullscreenEditor(QWidget *parent = 0);
     ~FullscreenEditor();
-    void createContent(QTextDocument *doc = 0, int cursorPos = 0);
+    void createContent(MainTextDocument *doc = 0, int cursorPos = 0);
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -97,16 +97,17 @@ private slots:
     void changeTextStyleSlot(int styleIndex);
 
     void restoreDoc();
+    void wordCountChangedSlot(QString type, int id, int count);
 
 private:
     Hub *hub;
     Ui::FullscreenEditor *ui;
-MainTextDocument *clonedDoc;
+    MainTextDocument *clonedDoc;
 
     TextStyles *textStyles;
     EditMenu *editWidget;
     int sliderCurrentValue;
-QTextDocument *originalDoc;
+    MainTextDocument *originalDoc;
 
 
     QPushButton *backColorButton,
@@ -132,7 +133,7 @@ QTextDocument *originalDoc;
     textColorString,
     addOnColorString;
 
-
+    int baseWordCount;
 };
 
 #endif // FULLSCREENEDITOR_H

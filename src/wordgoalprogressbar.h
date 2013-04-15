@@ -36,7 +36,7 @@ public:
     explicit WordGoalProgressBar(QWidget *parent = 0);
     ~WordGoalProgressBar();
     void postConstructor();
-
+    void init();
 
 
 protected:

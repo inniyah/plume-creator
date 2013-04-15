@@ -35,9 +35,7 @@ void WordGoalProgressBar::postConstructor()
     connect(hub, SIGNAL(wordGoalSignal(int)), this, SLOT(setGoal(int)));
     connect(hub, SIGNAL(wordGoalIsActivatedSignal(bool)), this, SLOT(setWordGoalActivated(bool)));
 
-    this->setBase(0);
-    this->setGoal(1000);
-    this->setValue(0);
+
 
 
 }
@@ -52,8 +50,11 @@ void WordGoalProgressBar::setGoalDialog()
     bool ok;
     int i = QInputDialog::getInt(this, tr("Set Session Target"),
                                  tr("Word count target :"), 1000, 0, 999999, 1, &ok);
-    if (ok)
+    if (ok){
+        hub->setWordGoalActivated(true);
         hub->setWordGoal(i);
+
+    }
 }
 
 
@@ -139,8 +140,18 @@ void WordGoalProgressBar::setWordGoalActivated(bool wordGoalActivated)
 
 void WordGoalProgressBar::reset()
 {
+    ui->progressBar->setValue(0);
     hub->setBaseWordCount(hub->projectWordCount());
     hub->setAchievedWordGoal(0);
+}
+void  WordGoalProgressBar::init()
+{
+    hub->setBaseWordCount(hub->baseWordCount()+1);
+    hub->setBaseWordCount(hub->baseWordCount()-1);
+    hub->setWordGoal(hub->wordGoal()+1);
+    hub->setWordGoal(hub->wordGoal()-1);
+    hub->setAchievedWordGoal(hub->achievedWordGoal()+1);
+    hub->setAchievedWordGoal(hub->achievedWordGoal()-1);
 }
 
 

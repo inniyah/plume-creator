@@ -6,6 +6,7 @@ FullscreenEditor::FullscreenEditor(QWidget *parent) :
     ui(new Ui::FullscreenEditor)
 {
     ui->setupUi(this);
+
     setWindowModality(Qt::ApplicationModal);
 
 
@@ -20,8 +21,12 @@ FullscreenEditor::~FullscreenEditor()
 }
 //------------------------------------------------------------------------------------
 
-void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
+void FullscreenEditor::createContent(MainTextDocument *doc, int cursorPos)
 {
+    ui->progressBar->setHub(hub);
+    ui->progressBar->postConstructor();
+    ui->progressBar->init();
+
 
     ui->fullTextEdit->setHub(hub);
     connect(hub, SIGNAL(savingSignal()), this, SLOT(restoreDoc()));
@@ -30,6 +35,8 @@ void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     originalDoc = doc;
+    // for wordcont goal :
+    baseWordCount = originalDoc->wordCount();
     //    QTextDocument *clonedDoc = doc->clone();
 
     clonedDoc = new MainTextDocument();
@@ -109,6 +116,11 @@ void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
 
     ui->timerBuddyLabel->hide();
     ui->timerLabel->hide();
+
+
+    //for wordcount goal :
+
+    connect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(wordCountChangedSlot(QString,int,int)));
 
 }
 
@@ -519,6 +531,18 @@ void FullscreenEditor::restoreDoc()
 
 
 
+
+}
+
+//-------------------------------------------------------------------
+
+void FullscreenEditor::wordCountChangedSlot(QString type, int id, int count)
+{
+int delta = count - baseWordCount;
+
+    ui->progressBar->changeProgressBy(delta);
+
+    baseWordCount = count;
 
 }
 

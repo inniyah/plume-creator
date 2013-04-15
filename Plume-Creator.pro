@@ -11,7 +11,7 @@ QT += core gui xml
 
 TEMPLATE = app
 
-VERSION = 0.58.5
+VERSION = 0.58.6
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin

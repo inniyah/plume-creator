@@ -1698,9 +1698,11 @@ void MainWindow::editFullscreen()
     QString synName = "synDoc_" + QString::number(number);
             MainTextDocument *syn = hub->findChild<MainTextDocument *>(synName);
 
-    QString noteName = "noteDoc_" + QString::number(number);
-    MainTextDocument *note = hub->findChild<MainTextDocument *>(noteName);
+            QString noteName = "noteDoc_" + QString::number(number);
+            MainTextDocument *note = hub->findChild<MainTextDocument *>(noteName);
 
+            QString textName = "textDoc_" + QString::number(number);
+            MainTextDocument *text = hub->findChild<MainTextDocument *>(textName);
 
 
     //    if(this->findChild<QWidget *>(noteName) == 0)
@@ -1717,7 +1719,7 @@ void MainWindow::editFullscreen()
     fullEditor = new FullscreenEditor(0);
     fullEditor->setHub(hub);
     fullEditor->setTextStyles(textStyles);
-    fullEditor->createContent(tab->document(), tab->saveCursorPos());
+    fullEditor->createContent(text, tab->saveCursorPos());
 
     fullEditor->setSyn(syn, synStack->textCursor().position());
     fullEditor->setNote(note, noteStack->textCursor().position());
@@ -2077,12 +2079,12 @@ void MainWindow::giveStyle()
 void MainWindow::updateProjectWCLabel(int count)
 {
 
-    projectWCLabel->setText(tr("Prj: ") + QString::number(count));
+    projectWCLabel->setText(tr("Prj: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
 void MainWindow::updateBookWCLabel(int count)
 {
-    bookWCLabel->setText(tr("B: ") + QString::number(count));
+    bookWCLabel->setText(tr("B: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
 void MainWindow::updateChapterWCLabel(int count)
@@ -2091,12 +2093,12 @@ void MainWindow::updateChapterWCLabel(int count)
         chapterWCLabel->hide();
     else {
         chapterWCLabel->show();
-        chapterWCLabel->setText(tr("Ch: ") + QString::number(count));
+        chapterWCLabel->setText(tr("Ch: ") + Utils::spaceInNumber(QString::number(count)));
     }
 }
 void MainWindow::updateCurrentSheetWCLabel(int count)
 {
 
-        currentWCLabel->setText(tr("Words: ") + QString::number(count));
+        currentWCLabel->setText(tr("Words: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
