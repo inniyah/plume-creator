@@ -3,7 +3,7 @@
 #include <QFileInfo>
 #include <QFileInfoList>
 
-#include "fileutils.h"
+#include "utils.h"
 
 /*!
    Delete a directory along with all of its contents.
@@ -11,7 +11,7 @@
    \param dirName Path of directory to remove.
    \return true on success; false on error.
 */
-bool FileUtils::removeDir(const QString &dirName)
+bool Utils::removeDir(const QString &dirName)
 {
     bool result = true;
     QDir dir(dirName);

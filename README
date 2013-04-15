@@ -4,10 +4,13 @@ v 0.59
 	- New Attendance Manager and dock.
 		- Point of View
 		- customizable roles
+	- New real time word count
+	- New progress bar
 	- The projects are now one single file
 	- added .plume_backup for worst cases
 	- major change of Plume inner workings
 	- added notification tray message when exiting
+	- text is saved while in fullscreen mode
 	- Qt5 ready, waiting for packages in Linux distribs
 	
 	

@@ -12,8 +12,9 @@
 #include "changestests.h"
 #include "fileupdater.h"
 #include "JlCompress.h"
-#include "fileutils.h"
+#include "utils.h"
 #include "maintextdocument.h"
+#include "wordcountenginethread.h"
 
 class Hub : public QWidget
 {
@@ -26,12 +27,12 @@ public:
     void unlockRefresh();
     bool isRefreshLocked();
 
-    QString projectName();
+    QString projectName() const;
     void setProjectName(QString projectName);
 
-    QString projectFileName();
+    QString projectFileName() const;
     void setProjectFileName(QString projectFileName);
-    QString projectWorkPath();
+    QString projectWorkPath() const;
 
     QDomDocument mainTreeDomDoc();
     void setMainTreeDomDoc(QDomDocument doc);
@@ -49,13 +50,29 @@ public:
     void set_attendTree_numForDocHash(QHash<QTextDocument *, int> numForDoc);
 
 
-    int currentSheetNumber();
+    int currentSheetNumber() const;
     void setCurrentSheetNumber(int sheetNumber);
+
+    // wordCount goal :
+    int baseWordCount() const;
+    void setBaseWordCount(int base);
+    int wordGoal() const;
+    void setWordGoal(int goal);
+    int achievedWordGoal() const;
+    void setAchievedWordGoal(int achievedCount);
+    bool isWordGoalActivated() const;
+    void setWordGoalActivated(bool wordGoalIsActivated);
+
+    int projectWordCount() const{return wcThread->projectWordCount();}
 
     // files managment :
     void startProject(QString file);
     void closeCurrentProject();
     void loadProject();
+
+    void connectAllSheetsToWordCountThread();
+
+    void showStatusBarMessage(QString string = "", int time = 3000);
 
 protected:
     void timerEvent(QTimerEvent *event);
@@ -76,6 +93,22 @@ signals:
     void currentSheetNumberChanged(int currentSheetNumber);
 
     void textAlreadyChangedSignal(bool textChanged);
+    void showStatusBarMessageSignal(QString string, int time);
+
+    void savingSignal();
+
+//    wordCount :
+    void projectWordCount(int count);
+    void bookWordCount(int count);
+    void chapterWordCount(int count);
+    void sceneWordCount(int count);
+    void currentSheetWordCount(int count);
+
+    // wordCount goal :
+    void baseWordCountSignal(int count);
+    void wordGoalSignal(int count);
+    void achievedWordGoalSignal(int count);
+    void wordGoalIsActivatedSignal(bool wordGoalIsActivated);
 
 public slots:
     void addToSaveQueue();
@@ -85,6 +118,10 @@ private slots:
     void unlockFiles();
     void lockFiles();
     bool loadTemp();
+
+    void calculatWordCountGoalDelta(int projectCount);
+
+    void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
 
 private:
     bool refreshIsLocked;
@@ -103,6 +140,8 @@ private:
     QHash<QTextDocument *, int> m_attendTree_numForDocHash;
 
     int m_currentSheetNumber;
+int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
+bool m_isWordGoalActivated;
 
 // file managment :
     void saveTemp();
@@ -118,6 +157,11 @@ void loadAttendDocs(QDomNodeList list);
 int saveStack;
 QList<int> timerIdList;
 void stopSaveTimer();
+
+
+// wordcount :
+ WordCountEngineThread *wcThread;
+
 };
 
 #endif // HUB_H

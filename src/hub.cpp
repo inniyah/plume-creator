@@ -2,7 +2,7 @@
 
 Hub::Hub(QWidget *parent) :
     QWidget(parent), refreshIsLocked(false), projectOpened(false),
-    saveStack(0), m_currentSheetNumber(-1)
+    saveStack(0), m_currentSheetNumber(-1), m_wordGoal(1000), m_achievedWordGoal(0), m_baseWordCount(0)
 {
 }
 //--------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ bool Hub::isRefreshLocked()
 
 
 
-QString Hub::projectFileName()
+QString Hub::projectFileName() const
 {
     return m_projectFileName;
 }
@@ -58,7 +58,7 @@ void Hub::setProjectFileName(QString projectFileName)
 //--------------------------------------------------------------------------------
 
 
-QString Hub::projectWorkPath()
+QString Hub::projectWorkPath() const
 {
     return projectWorkingPath;
 }
@@ -67,7 +67,7 @@ QString Hub::projectWorkPath()
 //--------------------------------------------------------------------------------
 
 
-QString Hub::projectName()
+QString Hub::projectName() const
 {
     return m_projectName;
 }
@@ -237,7 +237,7 @@ QDomDocument Hub::infoTreeDomDoc()
 //--------------------------------------------------------------------------------
 
 
-int Hub::currentSheetNumber()
+int Hub::currentSheetNumber() const
 {
     return m_currentSheetNumber;
 }
@@ -255,14 +255,67 @@ void Hub::setCurrentSheetNumber(int sheetNumber)
 
 }
 
+//--------------------------------------------------------------------------------
+
+int Hub::baseWordCount() const
+{
+    return m_baseWordCount;
+}
+void Hub::setBaseWordCount(int base)
+{
+    m_baseWordCount = base;
+    emit baseWordCountSignal(base);
+}
+//--------------------------------------------------------------------------------
+
+int Hub::wordGoal() const
+{
+    return m_wordGoal;
+}
+void Hub::setWordGoal(int goal)
+{
+    m_wordGoal = goal;
+    emit wordGoalSignal(goal);
+}
+//--------------------------------------------------------------------------------
+int Hub::achievedWordGoal() const
+{
+    return m_achievedWordGoal;
+}
+void Hub::setAchievedWordGoal(int achievedCount)
+{
 
 
+    if(achievedCount > m_wordGoal)
+        this->setWordGoal(m_wordGoal + (achievedCount - m_wordGoal));
+    if(achievedCount < 0 )
+        m_achievedWordGoal = 0;
 
+    m_achievedWordGoal = achievedCount;
+    emit achievedWordGoalSignal(achievedCount);
+}
 
+//--------------------------------------------------------------------------------
 
+bool Hub::isWordGoalActivated() const
+{
+    return m_isWordGoalActivated;
+}
+void Hub::setWordGoalActivated(bool wordGoalIsActivated)
+{
+    m_isWordGoalActivated = wordGoalIsActivated;
+    emit wordGoalIsActivatedSignal(wordGoalIsActivated);
+}
 
+//--------------------------------------------------------------------------------
 
+void Hub::calculatWordCountGoalDelta(int projectCount)
+{
 
+    if(projectCount - m_baseWordCount < 0)
+        m_baseWordCount = projectCount;
+    this->setAchievedWordGoal(projectCount - m_baseWordCount);
+}
 
 
 
@@ -305,9 +358,9 @@ void Hub::setCurrentSheetNumber(int sheetNumber)
 
 void Hub::startProject(QString file)
 {
-file = file.toUtf8();
+    file = file.toUtf8();
 
-//check if it's the right file :
+    //check if it's the right file :
 
     QFileInfo fileInfo(file);
     if(!fileInfo.fileName().contains(".plume") && !fileInfo.fileName().contains(".plume_backup")){
@@ -412,16 +465,44 @@ file = file.toUtf8();
     this->unlockFiles();
     this->setProjectFileName(file);
 
+
+
+
     loadProject();
+
+    // wordCount :
+
+    wcThread = new WordCountEngineThread(this);    // wordCount thread
+    wcThread->set_mainTree_numForDocHash(this->mainTree_numForDocHash());
+    wcThread->set_mainTree_DomDoc(this->mainTreeDomDoc());
+    connect(this, SIGNAL(currentSheetNumberChanged(int)), wcThread, SLOT(changeCurrentSheetNumber(int)));
+    connect(wcThread, SIGNAL(currentSheetWordCount(int)), this,  SIGNAL(currentSheetWordCount(int)));
+    connect(wcThread, SIGNAL(projectWordCount(int)), this,  SIGNAL(projectWordCount(int)));
+    connect(wcThread, SIGNAL(bookWordCount(int)), this,  SIGNAL(bookWordCount(int)));
+    connect(wcThread, SIGNAL(chapterWordCount(int)), this,  SIGNAL(chapterWordCount(int)));
+    connect(wcThread, SIGNAL(sceneWordCount(int)), this,  SIGNAL(sceneWordCount(int)));
+
+
+
+
+    connectAllSheetsToWordCountThread();
+
+
+
+
 
     QFile *prjFile = new QFile(file);
     emit openProjectSignal(prjFile);
 
     projectOpened = true;
 
+    // wordCount goal :
 
-
-
+    this->setBaseWordCount(wcThread->projectWordCount());
+    this->setAchievedWordGoal(0);
+    this->setWordGoal(1000);
+    this->setWordGoalActivated(false);
+    connect(wcThread, SIGNAL(projectWordCount(int)), this, SLOT(calculatWordCountGoalDelta(int)));
 }
 
 //--------------------------------------------------------------------------------------
@@ -436,7 +517,7 @@ void Hub::closeCurrentProject()
 
 
 
-    bool result = FileUtils::removeDir(projectWorkingPath);
+    bool result = Utils::removeDir(projectWorkingPath);
     //    qDebug() << "result : "<< projectWorkingPath;
     //    qDebug() << "result : "<< result;
 
@@ -763,8 +844,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             m_mainTree_fileForDocHash.insert(noteDocument, noteFile);
             m_mainTree_numForDocHash.insert(noteDocument, number.toInt());
 
-
-
+            // wordCount :
             //            qDebug() << "doc opened : "<< element.attribute("number");
 
             //            QFile *file = fileForDoc.value(noteDocument);
@@ -838,11 +918,15 @@ void Hub::saveProject(QString mode)
     if(mode == "wait")
         zipper->wait(30000);
 
+    //    this->showStatusBarMessage(tr("Project saved"));
 }
 //--------------------------------------------------------------------------------------
 
 void Hub::saveTemp()
 {
+
+    emit savingSignal();
+
     // ------------------ Tree :
 
     qDebug() << "save temporary files";
@@ -967,12 +1051,12 @@ bool Hub::saveDoc(QTextDocument *doc, QString mode)
 {
 
     QFile *file = new QFile;
-//    if(mode == "mainTreeDocs"){
-//        qDebug() << "saveDoc error !";
-//return false;
-//    }
-//    else if(mode == "attendTreeDocs")
-//
+    //    if(mode == "mainTreeDocs"){
+    //        qDebug() << "saveDoc error !";
+    //return false;
+    //    }
+    //    else if(mode == "attendTreeDocs")
+    //
     file = m_attendTree_fileForDocHash.value(doc);
 
 
@@ -1034,3 +1118,64 @@ void Hub::timerEvent(QTimerEvent *event)
     stopSaveTimer();
 
 }
+
+
+
+void Hub::showStatusBarMessage(QString string, int time)
+{
+    emit showStatusBarMessageSignal(string, time);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Hub::connectAllSheetsToWordCountThread()
+{
+    wcThread->set_mainTree_numForDocHash(m_mainTree_numForDocHash);
+
+    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
+    while (i != m_mainTree_fileForDocHash.end()) {
+        MainTextDocument *doc = i.key();
+        if(doc->docType() == "text")
+            connect(doc, SIGNAL(wordCountChanged(QString,int,int)), wcThread, SLOT(start()), Qt::UniqueConnection);
+        ++i;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

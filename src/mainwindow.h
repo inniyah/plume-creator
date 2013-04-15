@@ -117,13 +117,20 @@ private slots:
     int setCurrentNumber();
 
     //wordcount :
-    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
+//    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
+
+    void updateProjectWCLabel(int count);
+    void updateBookWCLabel(int count);
+    void updateChapterWCLabel(int count);
+    void updateCurrentSheetWCLabel(int count);
+
+
 
     //updater :
     void launchSlimUpdater(QString mode = "auto");
     void closeSlimUpdater();
 
-    void giveStyle();
+  void giveStyle();
 private:
     Ui::MainWindow *ui;
 
@@ -213,6 +220,13 @@ private:
 
     WordGoalProgressBar *wordGoalBar;
     QSystemTrayIcon *systemTray;
+
+
+    //wordcount :
+    QLabel *projectWCLabel;
+    QLabel *bookWCLabel;
+    QLabel *chapterWCLabel;
+    QLabel *currentWCLabel;
 };
 
 #endif // MAINWINDOW_H

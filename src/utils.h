@@ -1,12 +1,12 @@
-#ifndef FILEUTILS_H
-#define FILEUTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <QString>
 
-class FileUtils
+class Utils
 {
 public:
     static bool removeDir(const QString &dirName);
 };
 
-#endif // FILEUTILS_H
+#endif // UTILS_H

@@ -58,7 +58,7 @@ void WordCountEngine::update()
 
         m_wordCount = wordCountWithoutBlock + wordsList.size();
 
-        qDebug() <<  "intelligent wordcount";
+//        qDebug() <<  "intelligent wordcount";
 
 
     }

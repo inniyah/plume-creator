@@ -29,7 +29,6 @@
 #include "hub.h"
 #include "textstyles.h"
 #include "editmenu.h"
-#include "wordcount.h"
 #include "wordgoalprogressbar.h"
 
 
@@ -56,21 +55,19 @@ signals:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
-    void setWordCount(int num);
     void setTimer(QString);
     void applyConfig();
-    void setSyn(QTextDocument *synDocument, int cursorPos);
-    void setNote(QTextDocument *noteDocument, int cursorPos);
+    void setSyn(MainTextDocument *synDocument, int cursorPos);
+    void setNote(MainTextDocument *noteDocument, int cursorPos);
     void setTextStyles(TextStyles *styles){textStyles = styles;}
     void resetFullscreenTextWidthSlot();
-    void setProgressBarValue(int value);
-    void setProgressBarGoal(int goal);
 
 private slots:
 
     void createNotesMenu();
     void createOptionMenu();
 
+    void setWordCount(QString type, int id, int count);
 
     void callColorDialog();
     void setBaseStyleSheet();
@@ -99,15 +96,18 @@ private slots:
     void cursorPositionChangedSlot();
     void changeTextStyleSlot(int styleIndex);
 
+    void restoreDoc();
+
 private:
     Hub *hub;
     Ui::FullscreenEditor *ui;
+MainTextDocument *clonedDoc;
 
     TextStyles *textStyles;
     EditMenu *editWidget;
     int sliderCurrentValue;
 QTextDocument *originalDoc;
-WordCount *fullscreenWordCount;
+
 
     QPushButton *backColorButton,
     *textBackColorButton,

@@ -11,7 +11,7 @@ QT += core gui xml
 
 TEMPLATE = app
 
-VERSION = 0.58.4
+VERSION = 0.58.5
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -54,9 +54,7 @@ src/notezone.cpp \
 src/texttab.cpp \
 src/textzone.cpp \
 src/timer.cpp \
-src/wordcount.cpp \
 src/exporter.cpp \
-src/wordcountthread.cpp \
 src/orientationbutton.cpp \
 src/menubar.cpp \
 #src/outliner/outline.cpp \
@@ -80,7 +78,6 @@ src/fileupdater.cpp \
 src/changestests.cpp \
 src/zipper.cpp \
 src/hub.cpp \
-    src/fileutils.cpp \
     src/attend/attendbase.cpp \
     src/attend/attendabstractmodel.cpp \
     src/attend/attendtreeitem.cpp \
@@ -90,7 +87,9 @@ src/hub.cpp \
     src/attend/attendmanagertreeproxymodel.cpp \
     src/attend/attendsettings.cpp \
     src/maintextdocument.cpp \
-    src/wordcountengine.cpp
+    src/wordcountengine.cpp \
+    src/wordcountenginethread.cpp \
+    src/utils.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -104,9 +103,7 @@ src/notezone.h \
 src/texttab.h \
 src/textzone.h \
 src/timer.h \
-src/wordcount.h \
 src/exporter.h \
-src/wordcountthread.h \
 src/orientationbutton.h \
 src/menubar.h \
 #src/outliner/outline.h \
@@ -130,7 +127,6 @@ src/fileupdater.h \
 src/zipper.h \
 src/changestests.h \
 src/hub.h \
-    src/fileutils.h \
     src/attend/attendbase.h \
     src/attend/attendabstractmodel.h \
     src/attend/attendtreeitem.h \
@@ -140,7 +136,9 @@ src/hub.h \
     src/attend/attendmanagertreeproxymodel.h \
     src/attend/attendsettings.h \
     src/maintextdocument.h \
-    src/wordcountengine.h
+    src/wordcountengine.h \
+    src/wordcountenginethread.h \
+    src/utils.h
 
 CODECFORTR = UTF-8
 

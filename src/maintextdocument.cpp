@@ -36,7 +36,7 @@ void MainTextDocument::setDocType(QString type)
 
 void MainTextDocument::wordCountChangedSlot(int count)
 {
-    qDebug() << "wordCountChanged : " << this->docType();
-    qDebug() << "wordCountChanged : " << QString::number(count);
+//    qDebug() << "wordCountChanged : " << this->docType();
+//    qDebug() << "wordCountChanged : " << QString::number(count);
     emit wordCountChanged(this->docType(), this->idNumber(), count);
 }

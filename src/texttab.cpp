@@ -1,7 +1,6 @@
 #include <QtGui>
 
 #include "texttab.h"
-#include "wordcount.h"
 //
 
 
@@ -126,8 +125,7 @@ bool TextTab::openText(MainTextDocument *doc)
 
 
 
-    //for wordcount :
-this->setWordCounts();
+
 
     connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
     connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -174,64 +172,7 @@ QTextDocument* TextTab::document()
 {
     return textDocument;
 }
-//-------------------------------------------------------------------------------
-void TextTab::wordCountUpdated(int wordCount)
-{
-//        QString debug;
-//        qDebug() << "wordCount : " << debug.setNum(wordCount,10);
 
-
-    emit wordCountSignal(wordCount);
-
-
-
-    //    if(wordCount == 0){
-    //        QSettings settings;
-    //        settings.beginGroup( "Settings" );
-    //        int textHeight = settings.value("TextArea/textHeight", 12).toInt();
-    //        QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
-    //        settings.endGroup();
-
-    //        QFont font;
-    //        font.setFamily(fontFamily);
-    //        changeTextFontSlot(font);
-    //        changeTextHeightSlot(textHeight);
-    //    }
-}
-
-//void TextTab::charCountUpdated(int charCount)
-//{
-////    QString debug;
-////    qDebug() << "charCount : " << debug.setNum(charCount,10);
-//}
-//-------------------------------------------------------------------------------
-void TextTab::blockCountUpdated(int blockCount)
-{
-    //    QString debug;
-    //    qDebug() << "blockCount : " << debug.setNum(blockCount,10);
-
-
-    emit blockCountSignal(blockCount);
-
-}
-//-------------------------------------------------------------------------------
-void TextTab::updateWordCounts()
-{
-    tabWordCount->calculateCounts();
-    tabWordCount->updateAll();
-
-}
-//-------------------------------------------------------------------------------
-void TextTab::setWordCounts()
-{
-    tabWordCount = new WordCount(textDocument, this);
-//    tabWordCount->setHub(hub);
-    //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
-    connect(tabWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(wordCountUpdated(int)));
-    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
-    connect(tabWordCount, SIGNAL(countDeltaSignal(int)), this, SIGNAL(countDeltaUpdatedSignal(int)));
-    updateWordCounts();
-}
 //-------------------------------------------------------------------------------
 
 void TextTab::changeWidthSlot(int width)

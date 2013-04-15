@@ -25,7 +25,6 @@
 
 #include "hub.h"
 #include "textzone.h"
-#include "wordcount.h"
 #include "textstyles.h"
 //
 
@@ -43,13 +42,11 @@ public:
 
 signals:
 
-    void wordCountSignal(int wordCount);
-    void blockCountSignal(int blockCount);
-    void countDeltaUpdatedSignal(int countDelta);
+
     void charFormatChangedSignal(QTextCharFormat format);
-void setStyleSelectionSignal(int styleIndex);
-void textChangedSignal();
-void manageStylesSignal();
+    void setStyleSelectionSignal(int styleIndex);
+    void textChangedSignal();
+    void manageStylesSignal();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -61,9 +58,7 @@ public slots:
     void changeTextFontSlot(QFont font);
     void changeTextHeightSlot(int height);
     void changeTextStyleSlot(int styleIndex);
-    void updateWordCounts();
-   void setWordCounts();
-   void setTextFocus();
+    void setTextFocus();
     void setCursorPos(int pos);
     int saveCursorPos();
     void applyConfig();
@@ -71,39 +66,33 @@ public slots:
     void updateTextZone();
 
     void showPrevText(bool showPrevTextBool);
-bool setShowPrevTextButton();
-void setPrevText(MainTextDocument *prevDoc);
-void showNextText(bool showNextTextBool);
-bool setShowNextTextButton();
-void setNextText(MainTextDocument *nextDoc);
+    bool setShowPrevTextButton();
+    void setPrevText(MainTextDocument *prevDoc);
+    void showNextText(bool showNextTextBool);
+    bool setShowNextTextButton();
+    void setNextText(MainTextDocument *nextDoc);
 
-void setTextStyles(TextStyles *styles);
+    void setTextStyles(TextStyles *styles);
 
 private slots:
 
-    void wordCountUpdated(int wordCount);
-    //void charCountUpdated(int charCount);
-    void blockCountUpdated(int blockCount);
-void cursorPositionChangedSlot();
-void giveStyle();
+    void cursorPositionChangedSlot();
+    void giveStyle();
 
 private:
-Hub *hub;
-TextStyles *textStyles;
+    Hub *hub;
+    TextStyles *textStyles;
 
-MainTextDocument *prevTextDocument;
+    MainTextDocument *prevTextDocument;
     MainTextDocument *textDocument;
     MainTextDocument *nextTextDocument;
 
     QString stackName;
 
-TextZone *prevTextZone;
+    TextZone *prevTextZone;
     TextZone *textZone;
     TextZone *nextTextZone;
 
-
-
-    WordCount *tabWordCount;
 
 
 };

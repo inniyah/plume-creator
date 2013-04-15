@@ -22,8 +22,9 @@ FullTextZone::FullTextZone(QWidget *parent) :
 
 }
 
-void FullTextZone::setDoc(QTextDocument *doc)
+void FullTextZone::setDoc(MainTextDocument *doc)
 {
+
 setDocument(doc);
 textDocument = doc;
 }

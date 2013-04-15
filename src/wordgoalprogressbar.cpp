@@ -6,28 +6,38 @@
 #include <QtGui>
 
 WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent), m_isWordGoalActivated(false),
     ui(new Ui::WordGoalProgressBar)
 {
     ui->setupUi(this);
 
+}
+void WordGoalProgressBar::postConstructor()
+{
     createActions();
 
     ui->progressBar->setFormat("%v");
     ui->progressBar->setMinimum(0);
-ui->progressBar->reset();
 
 
-ui->progressBar->setStyleSheet("QProgressBar {"
-                               "border: 1px solid grey;"
-                               "border-radius: 2px;"
-                               "text-align: center;"
-                               "}"
-                               "QProgressBar::chunk {"
-                               "background-color: #05B8CC;"
-                               "width: 20px;"
-                               "}");
+    ui->progressBar->setStyleSheet("QProgressBar {"
+                                   "border: 1px solid grey;"
+                                   "border-radius: 2px;"
+                                   "text-align: center;"
+                                   "}"
+                                   "QProgressBar::chunk {"
+                                   "background-color: #05B8CC;"
+                                   "width: 20px;"
+                                   "}");
 
+    connect(hub, SIGNAL(achievedWordGoalSignal(int)), this, SLOT(setValue(int)));
+    connect(hub, SIGNAL(baseWordCountSignal(int)), this, SLOT(setBase(int)));
+    connect(hub, SIGNAL(wordGoalSignal(int)), this, SLOT(setGoal(int)));
+    connect(hub, SIGNAL(wordGoalIsActivatedSignal(bool)), this, SLOT(setWordGoalActivated(bool)));
+
+    this->setBase(0);
+    this->setGoal(1000);
+    this->setValue(0);
 
 
 }
@@ -43,7 +53,7 @@ void WordGoalProgressBar::setGoalDialog()
     int i = QInputDialog::getInt(this, tr("Set Session Target"),
                                  tr("Word count target :"), 1000, 0, 999999, 1, &ok);
     if (ok)
-        setGoal(i);
+        hub->setWordGoal(i);
 }
 
 
@@ -51,6 +61,10 @@ void WordGoalProgressBar::setGoal(int goal)
 {
     ui->progressBar->setMaximum(goal);
     ui->wordGoalLabel->setText(tr("/%1 words").arg(goal));
+    ui->wordGoalLabel->setVisible(m_isWordGoalActivated);
+
+    setColors();
+
 }
 
 int WordGoalProgressBar::goal()
@@ -60,12 +74,15 @@ int WordGoalProgressBar::goal()
 
 void WordGoalProgressBar::setBase(int base)
 {
-    ui->progressBar->setMinimum(base);
+    //    ui->progressBar->setMinimum(0);
+    setColors();
+
 }
 
 void WordGoalProgressBar::setValue(int value)
 {
     ui->progressBar->setValue(value);
+    setColors();
 }
 
 int WordGoalProgressBar::value()
@@ -81,13 +98,17 @@ void WordGoalProgressBar::changeProgressBy(int progress)
 
     ui->progressBar->setValue(ui->progressBar->value() + progress);
 
-//    qDebug() << "progressBy : " << QString::number(progress);
+    //    qDebug() << "progressBy : " << QString::number(progress);
 
+}
+
+void WordGoalProgressBar::setColors()
+{
 
     // set colors :
 
-    int max = ui->progressBar->maximum();
-    int val = ui->progressBar->value();
+    int max = hub->wordGoal();
+    int val = hub->achievedWordGoal();
 
     int percent = val*100/max;
 
@@ -103,12 +124,24 @@ void WordGoalProgressBar::changeProgressBy(int progress)
                                    "border-radius: 2px;"
                                    "text-align: center;"
                                    "}"
-                                    "QProgressBar::chunk {"
+                                   "QProgressBar::chunk {"
                                    "background-color: rgb("+ red +","+ green + ", 0);"
                                    "}");
 
 }
 
+void WordGoalProgressBar::setWordGoalActivated(bool wordGoalActivated)
+{
+    m_isWordGoalActivated = wordGoalActivated;
+
+    ui->wordGoalLabel->setVisible(wordGoalActivated);
+}
+
+void WordGoalProgressBar::reset()
+{
+    hub->setBaseWordCount(hub->projectWordCount());
+    hub->setAchievedWordGoal(0);
+}
 
 
 //--------- Context Menu :------------------------------------------------------------------
@@ -122,7 +155,7 @@ void WordGoalProgressBar::createActions()
 
     resetAct = new QAction(QIcon(":/pics/edit-undo.png"),tr("&Reset"), this);
     resetAct->setStatusTip(tr("Reset the progress to zero"));
-    connect(resetAct, SIGNAL(triggered()), ui->progressBar, SLOT(reset()));
+    connect(resetAct, SIGNAL(triggered()), this, SLOT(reset()));
 
 
 

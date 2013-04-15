@@ -43,8 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(hub, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
     connect(hub, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
     connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
+    connect(hub, SIGNAL(showStatusBarMessageSignal(QString,int)), ui->bar, SLOT(showMessage(QString,int)));
     textStyles = new TextStyles();
     textStyles->setHub(hub);
+
 
     ui->mainTabWidget->setTabsClosable(true);
     ui->mainTabWidget->setTabShape(QTabWidget::Triangular);
@@ -213,7 +215,6 @@ void MainWindow::createAttendDock()
     addDockWidget(Qt::RightDockWidgetArea, attendDock);
 
     connect(attendDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
-    connect(attendBase, SIGNAL(textChangedSignal()), this, SLOT(textChangedSlot()));
     attendDock->hide();
 }
 
@@ -508,50 +509,53 @@ void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
 void MainWindow::createStatusBar()
 {
 
-    //    showPrevSceneButton = new QToolButton(this);
-    //    showPrevSceneButton->setObjectName("showPrvSceneBt");
-    //    showPrevSceneButton->setText(tr("&Show Prev. Scene"));
-    //    showPrevSceneButton->setCheckable(true);
-    //    showPrevSceneButton->setShortcut(Qt::Key_F10);
-    //    showPrevSceneButton->setToolTip(tr("Show the end of the previous scene"));
-    //    connect(showPrevSceneButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
-
-    //    QToolButton *status_tabFullscreenButton = new QToolButton(this);
-    //    status_tabFullscreenButton->setObjectName("showFullscreenBt");
-    //    status_tabFullscreenButton->setText(tr("Fullscreen &Edit"));
-    //    status_tabFullscreenButton->setShortcut(Qt::Key_F11);
-    //    status_tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    //    connect(status_tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
-
-    //    QToolButton *status_outlinerButton = new QToolButton(this);
-    //    status_outlinerButton->setObjectName("showOutlinerBt");
-    //    status_outlinerButton->setText(tr("Outliner"));
-    //    status_outlinerButton->setShortcut(Qt::Key_F12);
-    //    status_outlinerButton->setToolTip(tr("Launch the project outliner"));
-    //    connect(status_outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
     sceneWCLabel = new QLabel();
 
     QWidget *stretcher1 = new QWidget();
     stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
-    QWidget *stretcher2 = new QWidget();
-    stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+        QWidget *stretcher2 = new QWidget();
+        stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
-    wordGoalBar = new WordGoalProgressBar();
-    wordGoalBar->setHub(hub);
+    wordGoalBar = new WordGoalProgressBar(this);
+wordGoalBar->setHub(hub);
+wordGoalBar->postConstructor();
 
-    //bar->addPermanentWidget(stretcher1);
-    ui->bar->addWidget(stretcher1,10);
-    ui->bar->addPermanentWidget(sceneWCLabel,1);
-    ui->bar->addPermanentWidget(stretcher2,10);
-    ui->bar->addPermanentWidget(stretcher2,10);
-    ui->bar->addPermanentWidget(wordGoalBar,1);
+    projectWCLabel = new QLabel();
+    bookWCLabel = new QLabel();
+    chapterWCLabel = new QLabel();
+    currentWCLabel = new QLabel();
+
+    connect(hub, SIGNAL(projectWordCount(int)), this, SLOT(updateProjectWCLabel(int)));
+    connect(hub, SIGNAL(bookWordCount(int)), this, SLOT(updateBookWCLabel(int)));
+    connect(hub, SIGNAL(chapterWordCount(int)), this, SLOT(updateChapterWCLabel(int)));
+    connect(hub, SIGNAL(currentSheetWordCount(int)), this, SLOT(updateCurrentSheetWCLabel(int)));
+
+
+    ui->bar->addWidget(projectWCLabel);
+    ui->bar->addWidget(bookWCLabel);
+    ui->bar->addWidget(chapterWCLabel);
+    ui->bar->addWidget(stretcher1, 5);
+    ui->bar->addWidget(currentWCLabel);
+
+
+    //    ui->bar->addPermanentWidget(sceneWCLabel,1);
+    //    ui->bar->addPermanentWidget(stretcher2,10);
+        ui->bar->addPermanentWidget(stretcher2,10);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
     //    bar->addPermanentWidget(status_tabFullscreenButton,2);
-    //    bar->addPermanentWidget(status_outlinerButton,2);
+        ui->bar->addPermanentWidget(wordGoalBar);
     //    bar->addPermanentWidget(stretcher2);
 
+
+
+
+
     this->setStatusBar(ui->bar);
+
+
+
+
 
 }
 
@@ -929,7 +933,6 @@ void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, 
 
         TextTab *tab = new TextTab;
         tab->setHub(hub);
-        connect(tab,SIGNAL(wordCountSignal(int)),stats,SLOT(setWordCount(int)));
 
         //set text Styles :
         tab->setTextStyles(textStyles);
@@ -1056,12 +1059,7 @@ void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, 
         QTimer::singleShot(0, tab, SLOT(changeWidthSlot()));
 
 
-        // For wordcount :
-        connect(tab,SIGNAL(wordCountSignal(int)),this,SLOT(updateSceneWC(int)));
-        tab->updateWordCounts();
 
-        // For word count target :
-        connect(tab, SIGNAL(countDeltaUpdatedSignal(int)), wordGoalBar, SLOT(changeProgressBy(int)) );
 
 
 
@@ -1180,13 +1178,6 @@ void MainWindow::setConnections()
     //    connect(attendBase, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
 
 
-    //for global wordcount :
-
-    connect(stats, SIGNAL(fetchDomAndDocsSignal()), mainTree, SLOT(giveDocsAndDomForProjectWordCount()));
-    connect(stats, SIGNAL(fetchCurrentNumber()), this, SLOT(setCurrentNumber()));
-    connect(this, SIGNAL(currentNumber(int)), stats, SIGNAL(setCurrentNumberSignal(int)));
-    connect(mainTree, SIGNAL(docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>)), stats, SIGNAL(docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>)) );
-    connect(mainTree, SIGNAL(domForProjectWordCountSignal(QDomDocument)),stats, SIGNAL(domForProjectWordCountSignal(QDomDocument)));
 
 
     // for previous and next texts :
@@ -1208,7 +1199,6 @@ void MainWindow::tabChangeSlot(int tabNum)
 
     if(!tabNumList->isEmpty()){
         preTabNum = tabNumList->last();
-        textWidgetList->at(tabNum)->updateWordCounts();
         textWidgetList->at(tabNum)->setTextFocus();
 
     }
@@ -1698,15 +1688,19 @@ void MainWindow::editFullscreen()
 
     //    qDebug() << mainTabWidget->currentWidget()->objectName();
 
+    int number = hub->currentSheetNumber();
 
     QString tabName = ui->mainTabWidget->currentWidget()->objectName();
     TextTab *tab = ui->mainTabWidget->findChild<TextTab *>(tabName);
 
-    QString synName = synLayout->currentWidget()->objectName();
-    QWidget *syn = this->findChild<QWidget *>(synName);
 
-    QString noteName = noteLayout->currentWidget()->objectName();
-    QWidget *note = this->findChild<QWidget *>(noteName);
+
+    QString synName = "synDoc_" + QString::number(number);
+            MainTextDocument *syn = hub->findChild<MainTextDocument *>(synName);
+
+    QString noteName = "noteDoc_" + QString::number(number);
+    MainTextDocument *note = hub->findChild<MainTextDocument *>(noteName);
+
 
 
     //    if(this->findChild<QWidget *>(noteName) == 0)
@@ -1714,8 +1708,8 @@ void MainWindow::editFullscreen()
 
     //    qDebug() << "noteName : " << noteName;
 
-    NoteZone *synStack = syn->findChild<NoteZone *>(synName + "-NoteZone");
-    NoteZone *noteStack = note->findChild<NoteZone *>(noteName + "-NoteZone");
+    NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(number) + "-NoteZone");
+    NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(number) + "-NoteZone");
 
 
     //    qDebug() << "synStack name : " << synStack->objectName();
@@ -1725,8 +1719,8 @@ void MainWindow::editFullscreen()
     fullEditor->setTextStyles(textStyles);
     fullEditor->createContent(tab->document(), tab->saveCursorPos());
 
-    fullEditor->setSyn(synStack->document(), synStack->textCursor().position());
-    fullEditor->setNote(noteStack->document(), noteStack->textCursor().position());
+    fullEditor->setSyn(syn, synStack->textCursor().position());
+    fullEditor->setNote(note, noteStack->textCursor().position());
 
 
     connect(fullEditor,SIGNAL(destroyed()),tab,SLOT(updateWordCounts()));
@@ -1738,10 +1732,6 @@ void MainWindow::editFullscreen()
     connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
 
 
-    //progressBar :
-
-    fullEditor->setProgressBarValue(wordGoalBar->value());
-    fullEditor->setProgressBarGoal(wordGoalBar->goal());
 
 }
 
@@ -2056,4 +2046,57 @@ void MainWindow::giveStyle()
             ;
 
     this->setStyleSheet(css+noTabCss);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------
+//--------------Word Count-----------------------------------------
+//-----------------------------------------------------------------
+
+
+
+void MainWindow::updateProjectWCLabel(int count)
+{
+
+    projectWCLabel->setText(tr("Prj: ") + QString::number(count));
+
+}
+void MainWindow::updateBookWCLabel(int count)
+{
+    bookWCLabel->setText(tr("B: ") + QString::number(count));
+
+}
+void MainWindow::updateChapterWCLabel(int count)
+{
+    if(count == -1)
+        chapterWCLabel->hide();
+    else {
+        chapterWCLabel->show();
+        chapterWCLabel->setText(tr("Ch: ") + QString::number(count));
+    }
+}
+void MainWindow::updateCurrentSheetWCLabel(int count)
+{
+
+        currentWCLabel->setText(tr("Words: ") + QString::number(count));
+
 }

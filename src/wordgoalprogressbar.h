@@ -35,28 +35,36 @@ class WordGoalProgressBar : public QWidget
 public:
     explicit WordGoalProgressBar(QWidget *parent = 0);
     ~WordGoalProgressBar();
-    
-    void setGoal(int goal);
-    int goal();
-    void setBase(int base);
-    void setValue(int value);
-    int value();
+    void postConstructor();
+
+
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
+
+signals:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
     void changeProgressBy(int progress);
 
 private slots:
+    void setGoal(int goal);
+    int goal();
+    void setBase(int base);
+    void setValue(int value);
+    int value();
     void setGoalDialog();
-void createActions();
+    void createActions();
+    void setWordGoalActivated(bool wordGoalActivated);
+    void reset();
 
 private:
-Hub *hub;
+    void setColors();
+    Hub *hub;
     Ui::WordGoalProgressBar *ui;
-QAction *resetAct, *setGoalAct;
+    QAction *resetAct, *setGoalAct;
+    bool m_isWordGoalActivated;
 
 };
 

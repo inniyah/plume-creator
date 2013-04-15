@@ -8,34 +8,36 @@ FullscreenEditor::FullscreenEditor(QWidget *parent) :
     ui->setupUi(this);
     setWindowModality(Qt::ApplicationModal);
 
-    ui->fullTextEdit->setHub(hub);
 
 }
 
 FullscreenEditor::~FullscreenEditor()
 {
 
+    this->restoreDoc();
 
-    settings.setValue( "FullTextArea/areaWidth", sliderCurrentValue);
-    settings.setValue( "FullTextArea/zoom", textStyles->zoomModifier());
-
-    if(textStyles->zoomModifier() != 0){
-        textStyles->changeDocStyles(ui->fullTextEdit->document(), "removeZoom");
-        originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
-    }
-    else if(textStyles->zoomModifier() == 0){
-        originalDoc->setHtml(ui->fullTextEdit->document()->toHtml());
-}
     delete ui;
 }
 //------------------------------------------------------------------------------------
 
 void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
 {
+
+    ui->fullTextEdit->setHub(hub);
+    connect(hub, SIGNAL(savingSignal()), this, SLOT(restoreDoc()));
+
+
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     originalDoc = doc;
-    QTextDocument *clonedDoc = doc->clone();
+    //    QTextDocument *clonedDoc = doc->clone();
+
+    clonedDoc = new MainTextDocument();
+
+    // for wordcount :
+    connect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(setWordCount(QString,int,int)));
+
+    clonedDoc->setHtml(doc->toHtml());
 
     textStyles->setZoomModifier(settings.value( "FullTextArea/zoom", 0).toInt());
     textStyles->changeDocStyles(clonedDoc, "applyZoom");
@@ -81,14 +83,17 @@ void FullscreenEditor::createContent(QTextDocument *doc, int cursorPos)
     for(int i = 0; i < cursorPos ; i++)
         ui->fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
-    //for wordcount :
-    fullscreenWordCount = new WordCount(clonedDoc, this);
-    fullscreenWordCount->setHub(hub);
+    //for autosave :
+
+    connect(clonedDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
+
+
+    //    fullscreenWordCount = new WordCount(clonedDoc, this);
+
     //connect(tabWordCount, SIGNAL(charCountSignal(int)), this, SLOT(charCountUpdated(int)));
-    connect(fullscreenWordCount, SIGNAL(wordCountSignal(int)), this, SLOT(setWordCount(int)));
-    connect(fullscreenWordCount, SIGNAL(countDeltaSignal(int)), ui->progressBar, SLOT(changeProgressBy(int)));
-//    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
-    fullscreenWordCount->updateAll();
+    //    connect(fullscreenWordCount, SIGNAL(countDeltaSignal(int)), ui->progressBar, SLOT(changeProgressBy(int)));
+    //    connect(tabWordCount, SIGNAL(blockCountSignal(int)), this, SLOT(blockCountUpdated(int)));
+    //    fullscreenWordCount->updateAll();
 
 
 
@@ -113,10 +118,10 @@ void FullscreenEditor::createNotesMenu()
     QMenu *notesMenu = new QMenu();
 
 
-//    QAction *synAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Synopsis"),this);
-//    synAct->setShortcut(Qt::Key_F2);
-//    synAct->setToolTip(tr("Show the synopsis"));
-//    connect(synAct, SIGNAL(triggered()),this,SLOT(showSyn()));
+    //    QAction *synAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Synopsis"),this);
+    //    synAct->setShortcut(Qt::Key_F2);
+    //    synAct->setToolTip(tr("Show the synopsis"));
+    //    connect(synAct, SIGNAL(triggered()),this,SLOT(showSyn()));
 
     QAction *notesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Note"),this);
     notesAct->setShortcut(Qt::Key_F10);
@@ -125,7 +130,7 @@ void FullscreenEditor::createNotesMenu()
     connect(notesAct, SIGNAL(triggered()),this,SLOT(showSyn()));
 
 
-//    notesMenu->addAction(synAct);
+    //    notesMenu->addAction(synAct);
     notesMenu->addAction(notesAct);
     ui->notesButton->setMenu(notesMenu);
 }
@@ -171,7 +176,7 @@ void FullscreenEditor::createOptionMenu()
     connect(manageStylesAct, SIGNAL(triggered()), this, SIGNAL(manageStylesSignal()));
 
     QAction *setColorsAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Colors"),this);
-//    setColorsAct->setShortcut(Qt::Key_F12);
+    //    setColorsAct->setShortcut(Qt::Key_F12);
     setColorsAct->setToolTip(tr("Set the colors"));
     connect(setColorsAct, SIGNAL(triggered()), this, SLOT(callColorDialog()));
 
@@ -186,10 +191,9 @@ void FullscreenEditor::createOptionMenu()
 //------------------------------------------------------------------------------------
 
 
-void FullscreenEditor::setWordCount(int num)
+void FullscreenEditor::setWordCount(QString type, int id, int count)
 {
-    QString text;
-    ui->wordCountLabel->setText(text.setNum(num,10));
+    ui->wordCountLabel->setText(QString::number(count));
 }
 //----------------------------------------------------------------------------------------
 void FullscreenEditor::setTimer(QString text)
@@ -295,7 +299,7 @@ void FullscreenEditor::callColorDialog()
 }
 //----------------------------------------------------------------------------------------
 
-void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
+void FullscreenEditor::setSyn(MainTextDocument *doc, int cursorPos)
 {
     synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
 
@@ -322,7 +326,7 @@ void FullscreenEditor::setSyn(QTextDocument *doc, int cursorPos)
 }
 //----------------------------------------------------------------------------------------
 
-void FullscreenEditor::setNote(QTextDocument *doc, int cursorPos)
+void FullscreenEditor::setNote(MainTextDocument *doc, int cursorPos)
 {
 
 
@@ -428,16 +432,6 @@ void FullscreenEditor::setZoom()
 
 
 }
-//-------------------------------------------------------------------------------
-void FullscreenEditor::setProgressBarValue(int value)
-{
-    ui->progressBar->setValue(value);
-}
-//-------------------------------------------------------------------------------
-void FullscreenEditor::setProgressBarGoal(int goal)
-{
-    ui->progressBar->setGoal(goal);
-}
 
 //-------------------------------------------------------------------------------
 void FullscreenEditor::cursorPositionChangedSlot()
@@ -451,7 +445,7 @@ void FullscreenEditor::cursorPositionChangedSlot()
     }
 
     int currentStyleIndex = textStyles->compareStylesWithText(tCursor.charFormat(), tCursor.blockFormat(), "zoom");
-//    qDebug() << "currentStyleIndex : " << QString::number(currentStyleIndex);
+    //    qDebug() << "currentStyleIndex : " << QString::number(currentStyleIndex);
     editWidget->setStyleSelectionSlot(currentStyleIndex);
 
 }
@@ -460,7 +454,7 @@ void FullscreenEditor::cursorPositionChangedSlot()
 //-------------------------------------------------------------------------------
 void FullscreenEditor::changeTextStyleSlot(int styleIndex)
 {
-//    qDebug() << "changeTextStyleSlot";
+    //    qDebug() << "changeTextStyleSlot";
 
     QTextBlockFormat blockFormat;
     blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));
@@ -505,6 +499,26 @@ void FullscreenEditor::changeTextStyleSlot(int styleIndex)
     tCursor.mergeBlockFormat(blockFormat);
     tCursor.mergeCharFormat(charFormat);
     ui->fullTextEdit->mergeCurrentCharFormat(charFormat);
+
+}
+
+
+//-------------------------------------------------------------------
+
+void FullscreenEditor::restoreDoc()
+{
+
+    settings.setValue( "FullTextArea/areaWidth", sliderCurrentValue);
+    settings.setValue( "FullTextArea/zoom", textStyles->zoomModifier());
+
+    QTextDocument *doc = ui->fullTextEdit->document()->clone();
+    if(textStyles->zoomModifier() != 0){
+        textStyles->changeDocStyles(doc, "removeZoom");
+    }
+        originalDoc->setHtml(doc->toHtml());
+
+
+
 
 }
 

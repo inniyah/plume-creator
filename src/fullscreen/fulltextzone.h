@@ -36,7 +36,7 @@ class FullTextZone : public QTextEdit
     Q_OBJECT
 public:
     explicit FullTextZone(QWidget *parent = 0);
-    void setDoc(QTextDocument *doc);
+    void setDoc(MainTextDocument *doc);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);

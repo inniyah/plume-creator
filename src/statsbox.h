@@ -34,27 +34,16 @@ public:
 
 signals:
     void timerSignal(QString);
-    void fetchDomAndDocsSignal();
-    void fetchCurrentNumber();
-    void docsForProjectWordCountSignal(QHash<MainTextDocument*,QFile*>);
-    void domForProjectWordCountSignal(QDomDocument);
-    void setCurrentNumberSignal(int);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
-    void setWordCount(int num);
+
 
 private slots:
-    void displayProjectWordCount();
-    void setChapterWordCount(int count);
-    void setBookWordCount(int count);
-    void setProjectWordCount(int count);
 
 private:
     Hub *hub;
-    QPushButton *projectWordCountButton;
-    QLabel *wordCountLabel;
-    QLabel *currentProjectCountLabel, *currentBookCountLabel, *currentChapterCountLabel;
+
 
 };
 
