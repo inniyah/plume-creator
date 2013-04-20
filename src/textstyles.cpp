@@ -584,6 +584,6 @@ QString TextStyles::boolToString(bool value)
 
 void TextStyles::writeDomDoc()
 {
-    qDebug() << hub->infoTreeDomDoc().toString();
+//    qDebug() << hub->infoTreeDomDoc().toString();
     hub->addToSaveQueue();
 }

@@ -20,6 +20,7 @@ FullTextZone::FullTextZone(QWidget *parent) :
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    textDocument = new MainTextDocument;
 }
 
 void FullTextZone::setDoc(MainTextDocument *doc)

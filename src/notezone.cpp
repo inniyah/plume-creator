@@ -83,6 +83,7 @@ bool NoteZone::openNote(MainTextDocument *noteDoc)
 
     connect(noteDoc,SIGNAL(documentLayoutChanged()),this,SLOT(applyNoteConfig()), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(cursorPositionChanged(int)), noteDoc, SLOT(setCursorPos(int)));
     return true;
 }
 
@@ -119,6 +120,8 @@ bool NoteZone::openSyn(MainTextDocument *synDoc)
     textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width());
 
     connect(synDoc,SIGNAL(documentLayoutChanged()),this,SLOT(applySynConfig()), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(cursorPositionChanged(int)), synDoc, SLOT(setCursorPos(int)));
 
     return true;
 }
@@ -727,6 +730,9 @@ void NoteZone::cursorPositionChangedSlot()
     if (QApplication::mouseButtons() == Qt::NoButton) {
         centerCursor();
     }
+
+
+    emit cursorPositionChanged(this->textCursor().position());
 }
 
 

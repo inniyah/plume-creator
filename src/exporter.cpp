@@ -1,7 +1,7 @@
 #include "exporter.h"
 
 //
-Exporter::Exporter(QString mode, QFile *device, QWidget *parent) :
+Exporter::Exporter(QString mode, QWidget *parent) :
     QDialog(parent)
 {
 
@@ -142,8 +142,12 @@ Exporter::Exporter(QString mode, QFile *device, QWidget *parent) :
 
 
 
-    createTree(device);
-    targetDevice = device;
+}
+
+void Exporter::postConstructor()
+{
+    createTree();
+
 }
 
 //-----------------------------------------------------------------------------------
@@ -211,7 +215,7 @@ void Exporter::setExistingDirectory()
 
 
 
-void Exporter::createTree(QFile *device)
+void Exporter::createTree()
 {
     tree->setHeaderHidden(true);
     tree->setExpandsOnDoubleClick(false);
@@ -228,7 +232,7 @@ void Exporter::createTree(QFile *device)
 
     tree->setContextMenuPolicy(Qt::PreventContextMenu);
 
-    read(device);
+    read();
 
     connect(tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
 
@@ -236,56 +240,15 @@ void Exporter::createTree(QFile *device)
 
 //-----------------------------------------------------------------------------------
 
-bool Exporter::read(QFile *device)
+bool Exporter::read()
 {
 
-    if(device->isReadable())
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not readable."));
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
 
-    if (!domDocument.setContent(device, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("Parse error at line %1, column %2:\n%3\n")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
-
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
-
-
-        return false;
-    }
-
-
-    QFileInfo *dirInfo = new QFileInfo(*device);
-
-
+domDocument = hub->mainTreeDomDoc();
     root = domDocument.documentElement();
-    if (root.tagName() != "plume") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not a a Plume Creator project file."));
-        return false;
-    } else if (root.hasAttribute("version")
-               && root.attribute("version") != "0.2") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not an Plume Creator project file version 1.0 "
-                                    "file."));
-        return false;
-    }
-
 
 
     buildTree();
-
-
-
-    device->close();
 
 
     setEnabled(true);
@@ -498,9 +461,6 @@ QTextDocument * Exporter::buildFinalDoc()
     //    QString debug;
     //    qDebug() << "itemList" << debug.setNum(itemList->size());
 
-    QFileInfo *dirInfo = new QFileInfo(*targetDevice);
-    QString devicePath = dirInfo->path();
-
     QTextDocument *textDocument = new QTextDocument;
     QTextEdit *edit = new QTextEdit;
 
@@ -529,18 +489,13 @@ QTextDocument * Exporter::buildFinalDoc()
         if(element.tagName() != "separator"){
 
 
+            MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
+            MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
+            MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
 
-            QString textPath = element.attribute("textPath");
-            QString synPath = element.attribute("synPath");
-            QString notePath = element.attribute("notePath");
-
-            QFile *textFile = new QFile(devicePath + textPath);
-            QFile *synFile = new QFile(devicePath + synPath);
-            QFile *noteFile = new QFile(devicePath + notePath);
-
-            QTextDocumentFragment textFrag(prepareTextDoc(textFile));
-            QTextDocumentFragment synFrag(prepareSynDoc(synFile));
-            QTextDocumentFragment noteFrag(prepareNoteDoc(noteFile));
+            QTextDocumentFragment textFrag(prepareTextDoc(textDoc));
+            QTextDocumentFragment synFrag(prepareSynDoc(synDoc));
+            QTextDocumentFragment noteFrag(prepareNoteDoc(noteDoc));
 
             edit->setDocument(textDocument);
 
@@ -705,16 +660,12 @@ void Exporter::exportDoc()
 
 //---------------------------------------------------------------------------------
 
-QTextDocument *Exporter::prepareTextDoc(QFile *textFile)
+QTextDocument *Exporter::prepareTextDoc(QTextDocument *textDoc)
 {
 
 
 
-    QTextDocument *textDocument = new QTextDocument;
-
-    textFile->open(QFile::ReadOnly | QFile::Text);
-    QTextStream textFileStream( textFile );
-    textDocument->setHtml(textFileStream.readAll());
+    QTextDocument *textDocument = textDoc->clone(this);
 
 //    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:19pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
 
@@ -768,13 +719,9 @@ QTextDocument *Exporter::prepareTextDoc(QFile *textFile)
 //---------------------------------------------------------------------------------
 
 
-QTextDocument *Exporter::prepareSynDoc(QFile *synFile)
+QTextDocument *Exporter::prepareSynDoc(QTextDocument *synDoc)
 {
-    QTextDocument *textDocument = new QTextDocument;
-
-    synFile->open(QFile::ReadOnly | QFile::Text);
-    QTextStream textFileStream( synFile );
-    textDocument->setHtml(textFileStream.readAll());
+    QTextDocument *textDocument = synDoc->clone(this);
 
 
 
@@ -820,13 +767,9 @@ QTextDocument *Exporter::prepareSynDoc(QFile *synFile)
 
 //---------------------------------------------------------------------------------
 
-QTextDocument *Exporter::prepareNoteDoc(QFile *noteFile)
+QTextDocument *Exporter::prepareNoteDoc(QTextDocument *noteDoc)
 {
-    QTextDocument *textDocument = new QTextDocument;
-
-    noteFile->open(QFile::ReadOnly | QFile::Text);
-    QTextStream textFileStream( noteFile );
-    textDocument->setHtml(textFileStream.readAll());
+    QTextDocument *textDocument = noteDoc->clone(this);
 
 
 

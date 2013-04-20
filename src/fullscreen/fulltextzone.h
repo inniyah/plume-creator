@@ -90,7 +90,7 @@ private slots:
 private:
 
     Hub *hub;
-    QTextDocument *textDocument;
+    MainTextDocument *textDocument;
 
     //context menu:
 

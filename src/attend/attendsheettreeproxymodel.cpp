@@ -144,11 +144,11 @@ void AttendSheetTreeProxyModel::removeSheetObjects(QList<int> objectsList)
 
     openedElement.setAttribute("attend", attendString);
 
-    qDebug() << "REMOVE :";
-    qDebug() << "openedElement : " << openedElement.tagName() << "  " << openedElement.attribute("name", "null");
-    qDebug() << "attendList.size : " << QString::number(attendList.size());
-    qDebug() << "attendString : " << attendString;
-    qDebug() << hub->mainTreeDomDoc().toString(5);
+//    qDebug() << "REMOVE :";
+//    qDebug() << "openedElement : " << openedElement.tagName() << "  " << openedElement.attribute("name", "null");
+//    qDebug() << "attendList.size : " << QString::number(attendList.size());
+//    qDebug() << "attendString : " << attendString;
+//    qDebug() << hub->mainTreeDomDoc().toString(5);
 
     hub->addToSaveQueue();
 
@@ -178,10 +178,10 @@ void AttendSheetTreeProxyModel::addSheetObjects(QList<int> objectsList)
 
     openedElement.setAttribute("attend", attendString);
 
-    qDebug() << "ADD :";
-    qDebug() << "attendList.size : " << QString::number(attendList.size());
-    qDebug() << "attendString : " << attendString;
-    qDebug() << hub->mainTreeDomDoc().toString(5);
+//    qDebug() << "ADD :";
+//    qDebug() << "attendList.size : " << QString::number(attendList.size());
+//    qDebug() << "attendString : " << attendString;
+//    qDebug() << hub->mainTreeDomDoc().toString(5);
 
     hub->addToSaveQueue();
 
@@ -243,7 +243,7 @@ bool AttendSheetTreeProxyModel::dropMimeData ( const QMimeData * data, Qt::DropA
 
     if (data->hasFormat("application/x-plumecreator-attendnumberdata-fromglobaltree"))
     {
-        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
+//        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
 
 
         QString numbersString = QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
@@ -350,7 +350,7 @@ void AttendSheetTreeProxyModel::setPointOfView()
         povString.append("-" + QString::number(number));
 
     openedElement.setAttribute("pov", povString);
-    qDebug() << "povString : " << povString;
+//    qDebug() << "povString : " << povString;
     hub->addToSaveQueue();
 
 

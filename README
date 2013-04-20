@@ -5,6 +5,11 @@ v 0.59
 		- Point of View
 		- customizable roles
 	- New real time word count
+	- Outliner :
+		- added "Point of View" column
+		- row are colored
+	- Fullscreen :
+		- added buttons "previous", "next" and "new sheet"
 	- New progress bar
 	- The projects are now one single file
 	- added .plume_backup for worst cases

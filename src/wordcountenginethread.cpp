@@ -167,7 +167,6 @@ void WordCountEngineThread::run()
     }
 
 
-    //  security :
 
 
 

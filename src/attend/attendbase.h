@@ -26,6 +26,9 @@ public:
     ~AttendBase();
     void startAttendance();
 
+signals:
+
+
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
 
@@ -37,6 +40,7 @@ private slots:
     void on_splitter_splitterMoved(int pos, int index);
 
     void expandAll();
+
 
 private:
     Ui::AttendBase *ui;

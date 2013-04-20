@@ -33,6 +33,7 @@ public:
     QString projectFileName() const;
     void setProjectFileName(QString projectFileName);
     QString projectWorkPath() const;
+    bool isProjectOpened() const;
 
     QDomDocument mainTreeDomDoc();
     void setMainTreeDomDoc(QDomDocument doc);
@@ -40,6 +41,8 @@ public:
     void set_mainTree_fileForDocHash(QHash<MainTextDocument *, QFile *> fileForDoc);
     QHash<MainTextDocument *, int> mainTree_numForDocHash();
     void set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc);
+    QHash<int, QDomElement> mainTree_domElementForNumberHash();
+    void set_mainTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
 
     QDomDocument infoTreeDomDoc();
 
@@ -48,6 +51,8 @@ public:
     void set_attendTree_fileForDocHash(QHash<QTextDocument *, QFile *> fileForDoc);
     QHash<QTextDocument *, int> attendTree_numForDocHash();
     void set_attendTree_numForDocHash(QHash<QTextDocument *, int> numForDoc);
+    QHash<int, QDomElement> attendTree_domElementForNumberHash();
+    void set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
 
 
     int currentSheetNumber() const;
@@ -83,9 +88,11 @@ signals:
 
     void mainTree_fileForDocHashChanged();
     void mainTree_numForDocHashChanged();
+    void mainTree_domElementForNumberHashChanged();
 
     void attendTree_fileForDocHashChanged();
     void attendTree_numForDocHashChanged();
+    void attendTree_domElementForNumberHashChanged();
 
     void openProjectSignal(QFile *file);
     void closeProjectSignal();
@@ -110,8 +117,11 @@ signals:
     void achievedWordGoalSignal(int count);
     void wordGoalIsActivatedSignal(bool wordGoalIsActivated);
 
+    void resetSpreadsheetOutlinerSignal();
+
 public slots:
     void addToSaveQueue();
+    void resetSpreadsheetOutliner(){emit resetSpreadsheetOutlinerSignal();}
 
 private slots:
     void saveProject(QString mode = "");
@@ -132,12 +142,14 @@ private:
     QDomDocument m_mainTreeDomDoc;
     QHash<MainTextDocument *, QFile *> m_mainTree_fileForDocHash;
     QHash<MainTextDocument *, int> m_mainTree_numForDocHash;
+    QHash<int, QDomElement> m_mainTree_domElementForNumberHash;
 
     QDomDocument m_infoTreeDomDoc;
 
     QDomDocument m_attendTreeDomDoc;
     QHash<QTextDocument *, QFile *> m_attendTree_fileForDocHash;
     QHash<QTextDocument *, int> m_attendTree_numForDocHash;
+    QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
 
     int m_currentSheetNumber;
 int m_baseWordCount , m_wordGoal, m_achievedWordGoal;

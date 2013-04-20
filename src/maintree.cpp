@@ -4,7 +4,7 @@
 #include "maintree.h"
 //
 MainTree::MainTree(QWidget *parent) :
-    QTreeWidget(parent), outlinerLaunched(false) ,otoM_UpdateLaunched(false)
+    QTreeWidget(parent), outlinerLaunched(false)
 {
     // The tree can accept drops
     setAcceptDrops( true );
@@ -252,6 +252,9 @@ QTreeWidgetItem *MainTree::createItem(const QDomElement &element,
 
     int number = element.attribute("number").toInt();
     domElementForNumber.insert(number, element);
+
+    // ankward but temporary :
+    hub->set_mainTree_domElementForNumberHash(domElementForNumber);
     return item;
 }
 
@@ -281,36 +284,10 @@ bool MainTree::openTextFile(QTreeWidgetItem *treeItem,int column)
     action = "open";
 
     QDomElement domItem = domElementForItem.value(treeItem);
-    QString textName;
-    textName = domItem.attribute("textPath");
-    QString noteName;
-    noteName = domItem.attribute("notePath");
-    QString synName;
-    synName = domItem.attribute("synPath");
-    name = domItem.attribute("name");
     int number = domItem.attribute("number").toInt();
-    int textCursorPos = domItem.attribute("textCursorPos", "0").toInt();
-    int synCursorPos = domItem.attribute("synCursorPos", "0").toInt();
-    int noteCursorPos = domItem.attribute("noteCursorPos", "0").toInt();
-    QString string;
-    MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + string.setNum(number,10));
-    MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + string.setNum(number,10));
-    MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + string.setNum(number,10));
-
-    //debug :
-
-    //    qDebug() << "textCursorPos : "<< domItem.attribute("textCursorPos", "0");
-    //                qDebug() << "synCursorPos : "<< domItem.attribute("synCursorPos", "0");
-    //                qDebug() << "noteCursorPos : "<< domItem.attribute("noteCursorPos", "0");
-    //                    qDebug() << "number : " << domItem.attribute("number");
 
 
-    //qDebug() << textDoc->toHtml();
-    //qDebug() << synDoc->toHtml();
-    //qDebug() << noteDoc->toHtml();
-
-
-    emit textAndNoteSignal(textDoc, noteDoc, synDoc, textCursorPos, synCursorPos, noteCursorPos, name, number,  action);
+    emit textAndNoteSignal(number, action);
 
 
 
@@ -480,9 +457,20 @@ void MainTree::rename(QTreeWidgetItem *item)
         m_itemEntered = item;
         emit nameChangedSignal(text, domElementForItem.value(item).attribute("number").toInt());
 
-        if(outlinerLaunched && !otoM_UpdateLaunched)
+        if(outlinerLaunched)
             updateOutliner();
     }
+}
+
+int MainTree::addItemNext(int baseNumber)
+{
+    int newNumber;
+
+    QTreeWidgetItem *baseItem = domElementForItem.key(domElementForNumber.value(baseNumber));
+
+    QTreeWidgetItem *newItem = addItemNext(baseItem);
+    newNumber = domElementForNumber.key(domElementForItem.value(newItem));
+    return newNumber;
 }
 
 QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
@@ -518,7 +506,7 @@ QTreeWidgetItem* MainTree::addItemNext(QTreeWidgetItem *item)
     //        killOutliner();
     //        launchOutliner();
     //    }
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 
     return domElementForItem.key(newElement);
@@ -569,7 +557,7 @@ QTreeWidgetItem* MainTree::addChild(QTreeWidgetItem *item)
     //        //        insertOutlinerItem(newElement.attribute("number").toInt(), element.attribute("number").toInt());
     //    }
 
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 
 
@@ -686,7 +674,7 @@ QTreeWidgetItem * MainTree::addSeparator(QTreeWidgetItem * item)
 
     buildTree();
 
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 
 
@@ -750,7 +738,7 @@ void MainTree::moveUp()
     //        killOutliner();
     //        launchOutliner();
     //    }
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
     //    disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
     //               this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
@@ -824,7 +812,7 @@ void MainTree::moveDown()
     //        killOutliner();
     //        launchOutliner();
     //    }
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 }
 
@@ -1062,7 +1050,7 @@ void MainTree::delYesItem()
         //            launchOutliner();
         //        }
 
-        if(outlinerLaunched && !otoM_UpdateLaunched)
+        if(outlinerLaunched)
             updateOutliner();
     }
         break;
@@ -1172,7 +1160,7 @@ void MainTree::autoRenameChilds()
             preNum = num;
             first = next;
 
-            //            if(outlinerLaunched && !otoM_UpdateLaunched)
+            //            if(outlinerLaunched)
             //                updateOutliner();
 
         }
@@ -1489,7 +1477,7 @@ void MainTree::splitYes()
     scenesList.clear();
 
 
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 }
 
@@ -1530,7 +1518,7 @@ void MainTree::addMulti()
     //        killOutliner();
     //        launchOutliner();
     //    }
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 }
 
@@ -1811,7 +1799,7 @@ void MainTree::buildTree()
             this, SLOT(updateDomElement(QTreeWidgetItem*,int)));
 
 
-    if(outlinerLaunched && !otoM_UpdateLaunched)
+    if(outlinerLaunched)
         updateOutliner();
 
 }
@@ -2079,7 +2067,6 @@ void MainTree::dragEnterEvent( QDragEnterEvent *event )
 void MainTree::itemCollapsedSlot(QTreeWidgetItem* item)
 {
     QDomElement element = domElementForItem.value(item);
-    //    qDebug() << "collapsed";
     element.setAttribute("folded", "yes");
 }
 
@@ -2088,7 +2075,6 @@ void MainTree::itemCollapsedSlot(QTreeWidgetItem* item)
 void MainTree::itemExpandedSlot(QTreeWidgetItem* item)
 {
     QDomElement element = domElementForItem.value(item);
-    //    qDebug() << "expanded";
     element.setAttribute("folded", "no");
 
 }
@@ -2189,12 +2175,12 @@ void MainTree::launchOutliner()
 
     //for domDocument :
     //            to Outline :
-
-    connect(this, SIGNAL(domDocSignal(QDomDocument)), outlinerBase, SLOT(mtoO_setDomDoc(QDomDocument)));
-    emit domDocSignal(domDocument.cloneNode().toDocument());
+outlinerBase->mtoO_setDomDoc(domDocument);
+    connect(this, SIGNAL(resetDomDocSignal()), outlinerBase, SLOT(updateOutliner()));
+   emit resetDomDocSignal();
 
     //                    from Outline :
-    connect(outlinerBase, SIGNAL(updateMainDomDocSignal(QDomDocument)), this,SLOT(updateMainDomDocFromOutliner(QDomDocument)));
+    connect(outlinerBase, SIGNAL(updateMainDomDocSignal()), this,SLOT(updateMainDomDocFromOutliner()));
     connect(outlinerBase, SIGNAL(otoM_actionSignal(QString,int)), this, SLOT(otoM_actionSlot(QString,int)));
     //for TextDocuments :
 
@@ -2211,7 +2197,7 @@ void MainTree::launchOutliner()
 
 
 
-
+// deprecated :
     //for attendance :
     //           to Outline :
     connect(this, SIGNAL(allAttendancesSignal(QHash<int,QString>)), outlinerBase, SLOT(mtoO_updateAttendances(QHash<int,QString>)));
@@ -2276,7 +2262,7 @@ void MainTree::updateOutliner()
         return;
     }
 
-    emit domDocSignal(domDocument.cloneNode().toDocument());
+    emit resetDomDocSignal();
     emit setNumForDocSignal(setNumForDoc());
 
     outlinerBase->updateOutliner();
@@ -2285,17 +2271,14 @@ void MainTree::updateOutliner()
 
 }
 
-void MainTree::updateMainDomDocFromOutliner(QDomDocument domDoc)
+void MainTree::updateMainDomDocFromOutliner()
 {
-    otoM_UpdateLaunched = true;
     if(!outlinerLaunched){
         return;
     }
-    domDocument = domDoc;
 
     buildTree();
 
-    otoM_UpdateLaunched = false;
 
 }
 //-----------------------------------------------------------------------------------------

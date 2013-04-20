@@ -80,7 +80,7 @@
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0" colspan="2">
+             <item row="1" column="0" colspan="2">
               <widget class="QLabel" name="wordCountBuddyLabel">
                <property name="mouseTracking">
                 <bool>true</bool>
@@ -93,7 +93,7 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
+             <item row="1" column="2">
               <widget class="QLabel" name="wordCountLabel">
                <property name="mouseTracking">
                 <bool>true</bool>
@@ -103,7 +103,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0" rowspan="2" colspan="2">
+             <item row="3" column="0" rowspan="2" colspan="2">
               <widget class="QLabel" name="timerBuddyLabel">
                <property name="mouseTracking">
                 <bool>true</bool>
@@ -116,7 +116,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="2" rowspan="2">
+             <item row="3" column="2" rowspan="2">
               <widget class="QLabel" name="timerLabel">
                <property name="mouseTracking">
                 <bool>true</bool>
@@ -126,7 +126,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2">
+             <item row="2" column="2">
               <widget class="DigitalClock" name="clockLabel">
                <property name="mouseTracking">
                 <bool>true</bool>
@@ -136,7 +136,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" colspan="2">
+             <item row="2" column="0" colspan="2">
               <widget class="QLabel" name="clockBuddyLabel">
                <property name="enabled">
                 <bool>true</bool>
@@ -152,7 +152,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0" colspan="3">
+             <item row="6" column="0" colspan="3">
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QToolButton" name="notesButton">
@@ -234,7 +234,7 @@
                </item>
               </layout>
              </item>
-             <item row="4" column="0" colspan="3">
+             <item row="5" column="0" colspan="3">
               <widget class="WordGoalProgressBar" name="progressBar" native="true">
                <property name="minimumSize">
                 <size>
@@ -243,6 +243,80 @@
                 </size>
                </property>
               </widget>
+             </item>
+             <item row="0" column="0" colspan="3">
+              <layout class="QGridLayout" name="gridLayout_3">
+               <item row="0" column="0" colspan="3">
+                <widget class="QComboBox" name="navigatorComboBox">
+                 <property name="sizeAdjustPolicy">
+                  <enum>QComboBox::AdjustToContents</enum>
+                 </property>
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QToolButton" name="prevButton">
+                 <property name="text">
+                  <string>Prev</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../pics.qrc">
+                   <normaloff>:/pics/gtk-go-previous.png</normaloff>:/pics/gtk-go-previous.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QToolButton" name="nextButton">
+                 <property name="text">
+                  <string>Next</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../pics.qrc">
+                   <normaloff>:/pics/gtk-go-next.png</normaloff>:/pics/gtk-go-next.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QToolButton" name="newButton">
+                 <property name="text">
+                  <string>New</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../pics.qrc">
+                   <normaloff>:/pics/gtk-document-new.png</normaloff>:/pics/gtk-document-new.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>

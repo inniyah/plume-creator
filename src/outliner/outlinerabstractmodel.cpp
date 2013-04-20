@@ -41,7 +41,6 @@ int OutlinerAbstractModel::rowCount(const QModelIndex &parent) const
 
 int OutlinerAbstractModel::columnCount(const QModelIndex &parent) const
 {
-
     if (parent.isValid())
         return static_cast<OutlinerTreeItem*>(parent.internalPointer())->columnCount();
     else
@@ -87,67 +86,6 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
 
 
 
-    //    if (!index.isValid())
-    //        return QVariant();
-
-    ////    if (row >= numberOfDomElements)
-    ////        return QVariant();
-
-    //    if (row >= 2)
-    //        return QVariant();
-
-    //    if (role == Qt::DisplayRole || role == Qt::EditRole){
-
-    //        if(col == 0){
-    //            if (!index.isValid())
-    //                return QVariant();
-
-    //            if (role == Qt::SizeHintRole)
-    //                return QSize(100,100);
-
-    //            if (role != Qt::DisplayRole)
-    //                return QVariant();
-
-    //            OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
-    //            qDebug() << "f";
-
-    //            return item->data(0);
-    //        }
-    //        if(col == 1){
-
-    //            QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(numberList->at(row));
-    //            for(int i = 0; i < miniDocList.size(); ++i){
-    //                if(miniDocList.at(i)->objectName().left(11) == "synDocClone")
-    //                    return miniDocList.at(i)->toHtml();
-
-    //            }
-
-
-    //        }
-    //        if(col == 2){
-
-    //            QList<QTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(numberList->at(row));
-    //            for(int i = 0; i < miniDocList.size(); ++i){
-    //                if(miniDocList.at(i)->objectName().left(12) == "noteDocClone")
-    //                    return miniDocList.at(i)->toHtml();
-    //            }
-    //        }
-    //        else
-    //            return QVariant();
-
-
-    //    }
-
-
-    //    if (role == Qt::UserRole)
-    //        return numberList->at(row);
-
-    //    else
-    //        return QVariant();
-
-
-
-
 
 
     if (!index.isValid())
@@ -163,6 +101,10 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
         return item->data(col).toString();
     }
 
+    if (role == 33 && col == 3){
+        OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
+        return item->data(col);
+    }
     //    if (role == Qt::SizeHintRole&& (col == 0))
     //        return (QSize(100,itemHeight));
 
@@ -191,7 +133,7 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
 
         if(qMax(synSize.height(), noteSize.height()) < itemHeight + 200
                 && qMax(synSize.height(), noteSize.height()) > itemHeight){
-//            qDebug() << "qMax";
+            //            qDebug() << "qMax";
             if(synSize.height() >= noteSize.height())
                 return synSize;
             else
@@ -200,14 +142,16 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
         else if((synSize.height() > itemHeight + 200 || noteSize.height() > itemHeight + 200)
                 && (synSize.height() < itemHeight + 200 || noteSize.height() < itemHeight + 200)
                 && (synSize.height() > itemHeight || noteSize.height() > itemHeight)){
-//            qDebug() << "minimum";
+            //            qDebug() << "minimum";
             if(synSize.height() >= noteSize.height())
                 return noteSize;
             else
                 return synSize;
         }
+        else if(col == 3){
+            return (QSize(50,itemHeight));
+        }
         else{
-
             return (QSize(100,itemHeight));
         }
     }
@@ -216,7 +160,10 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
         return item->idNumber();
     }
-
+    if (role == 34){
+        OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
+        return item->isExpanded();
+    }
     else
         return QVariant();
     //}
@@ -282,10 +229,10 @@ Qt::ItemFlags OutlinerAbstractModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    if (index.column() == 0 || index.column() == 1 || index.column() == 2)
+    if (index.column() == 0 || index.column() == 1 || index.column() == 2 || index.column() == 3)
         return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 
-   return QAbstractItemModel::flags(index);
+    return QAbstractItemModel::flags(index);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -372,7 +319,7 @@ void OutlinerAbstractModel::resetAbsModelColumnOne()
 {
 }
 
-  //--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 void OutlinerAbstractModel::resetAbsModelColumnTwo()
 {
 
@@ -385,9 +332,9 @@ void OutlinerAbstractModel::resetAbsModel()
     beginResetModel();
 
     QList<QVariant> rootData;
-    rootData << tr("Titles") << tr("Synopsis") << tr("Notes");
+    rootData << tr("Titles") << tr("Synopsis") << tr("Notes") << tr("PoV");
     rootItem = new OutlinerTreeItem(rootData);
-rootItem->setHub(hub);
+    rootItem->setHub(hub);
 
     numberOfDomElements = 0;
     mtoO_numForClonedDoc.clear();
@@ -547,9 +494,18 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
                     itemData.append(miniDocList.at(i)->toHtml());
             }
 
+
+            itemData.append(this->givePovList(child.attribute("pov", "0")));
+
+
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, rootItem);
             treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
+
+            if(child.attribute("spreadSheetExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true);
+            else
+                treeItem->setIsExpanded(false);
 
             rootItem->appendChild(treeItem);
 
@@ -584,9 +540,17 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
                     itemData.append(miniDocList.at(i)->toHtml());
             }
 
+            itemData.append(this->givePovList(child.attribute("pov", "0")));
+
+
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, treeBookItemList->last());
             treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
+
+            if(child.attribute("spreadSheetExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true);
+            else
+                treeItem->setIsExpanded(false);
 
             treeBookItemList->last()->appendChild(treeItem);
 
@@ -627,9 +591,17 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
                     itemData.append(miniDocList.at(i)->toHtml());
             }
 
+            itemData.append(this->givePovList(child.attribute("pov", "0")));
+
+
             OutlinerTreeItem *treeItem = new OutlinerTreeItem(itemData, treeChapterItemList->last());
             treeItem->setHub(hub);
             treeItem->setIdNumber(child.attribute("number").toInt());
+
+            if(child.attribute("spreadSheetExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true);
+            else
+                treeItem->setIsExpanded(false);
 
             treeChapterItemList->last()->appendChild(treeItem);
 
@@ -665,7 +637,32 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
 }
 
 //-----------------------------------------------------------------------------------------------------------
+QStringList OutlinerAbstractModel::givePovList(QString listOfPovNumbers)
+{
+    QList<QString> names;
 
+    QList<int> intList;
+    QStringList povStringList = listOfPovNumbers.split("-", QString::SkipEmptyParts);
+    foreach(const QString &str, povStringList)
+        intList.append(str.toInt());
+
+
+    foreach(const int &number, intList){
+        if(number != 0){
+            QString name = hub->attendTree_domElementForNumberHash().value(number).attribute("name", "error");
+
+            names << name;
+            qDebug() <<"";
+        }
+    }
+    QStringList nameList;
+    nameList.append(names);
+    return nameList;
+}
+
+
+
+//-----------------------------------------------------------------------------------------------------------
 void OutlinerAbstractModel::mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc)
 {
 
@@ -701,5 +698,6 @@ void OutlinerAbstractModel::reset_mtoO_setNumForDoc()
 
         ++i;
     }
-
 }
+//-----------------------------------------------------------------------------------------
+

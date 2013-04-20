@@ -1,14 +1,19 @@
 #include "findreplace.h"
 #include "ui_findreplace.h"
 
-FindReplace::FindReplace(QFile *device, QWidget *parent) :
+FindReplace::FindReplace(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FindReplace)
 {
     ui->setupUi(this);
 
-    createTree(device);
-    targetDevice = device;
+}
+
+void FindReplace::postConstructor()
+{
+
+
+    createTree();
 
 
 
@@ -42,7 +47,7 @@ FindReplace::~FindReplace()
 
 
 
-void FindReplace::createTree(QFile *device)
+void FindReplace::createTree()
 {
 
     folderIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
@@ -53,7 +58,7 @@ void FindReplace::createTree(QFile *device)
 
 
 
-    read(device);
+    read();
 
     connect(ui->tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
 
@@ -61,60 +66,14 @@ void FindReplace::createTree(QFile *device)
 
 //-----------------------------------------------------------------------------------
 
-bool FindReplace::read(QFile *file)
+bool FindReplace::read()
 {
-    QFile *device = new QFile(file->fileName());
 
-    if(device->isReadable())
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not readable."));
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    if (!domDocument.setContent(device, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("Parse error at line %1, column %2:\n%3\n")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
-
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
-
-
-        return false;
-    }
-
-
-    //QFileInfo *dirInfo = new QFileInfo(*device);
-
-
+    domDocument = hub->mainTreeDomDoc();
     root = domDocument.documentElement();
-    if (root.tagName() != "plume") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not a a Plume Creator project file."));
-        return false;
-    } else if (root.hasAttribute("version")
-               && root.attribute("version") != "0.2") {
-        QMessageBox::information(this, tr("Plume Creator Tree"),
-                                 tr("The file is not an Plume Creator project file version 1.0 "
-                                    "file."));
-        return false;
-    }
-
 
 
     buildTree();
-
-
-
-    device->close();
-
-
-
 
 
 

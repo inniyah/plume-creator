@@ -75,8 +75,7 @@ public slots:
     void openExternalProject(QFile *externalFile);
     void closeProjectSlot();
 
-    void textSlot(MainTextDocument *textDoc = 0, MainTextDocument *noteDoc = 0, MainTextDocument *synDoc = 0, int cursorPosition = 0, int synCursorPosition = 0, int noteCursorPosition = 0, QString name = "nothing", int number = 0, QString action = "save");
-    void secondTextSlot(int number = 0, QString action = "nothing");
+    void textSlot(int number = 0, QString action = "save");
 
 private slots:
     void tabChangeSlot(int tabNum);

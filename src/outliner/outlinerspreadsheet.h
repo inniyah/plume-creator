@@ -43,13 +43,14 @@ protected :
 
 signals:
     void otoM_actionSignal(QString action, int idNumber);
-void columnOneResizedSignal(int newSize);
-void columnTwoResizedSignal(int newSize);
+    void columnOneResizedSignal(int newSize);
+    void columnTwoResizedSignal(int newSize);
 
 public slots:
-void setHub(Hub *varHub){hub = varHub;}
+    void setHub(Hub *varHub){hub = varHub;}
     void temp_moveUp(){moveUp();}
     void temp_moveDown(){moveDown();}
+    void applySettingsFromData();
     void giveStyle();
 
 private slots:
@@ -68,15 +69,20 @@ private slots:
     void autoRenameChilds(){emit otoM_actionSignal("autoRenameChilds", enteredItemId);}
     void addMulti(){emit otoM_actionSignal("addMulti", enteredItemId);}
 
-void columnResizedSlot(int index,int oldSize,int newSize);
+    void columnResizedSlot(int index,int oldSize,int newSize);
 
+
+    void itemCollapsedSlot(QModelIndex index);
+    void itemExpandedSlot(QModelIndex index);
 
 
 
 
 
 private:
-Hub *hub;
+    QList<QModelIndex> allIndexesFromModel(QAbstractItemModel *model, const QModelIndex &parent);
+
+    Hub *hub;
     bool wasClickedOnce;
     int itemIdClickedOnce;
     int enteredItemId;

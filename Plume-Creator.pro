@@ -11,7 +11,7 @@ QT += core gui xml
 
 TEMPLATE = app
 
-VERSION = 0.58.6
+VERSION = 0.58.8
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -62,7 +62,6 @@ src/menubar.cpp \
 src/outliner/outlinerbase.cpp \
 src/outliner/outlinerspreadsheet.cpp \
 src/outliner/outlinerabstractmodel.cpp \
-src/outliner/outlineritemdelegate.cpp \
 src/outliner/outlinertreeitem.cpp \
 src/settingsdialog.cpp \
 src/editmenu.cpp \
@@ -89,7 +88,9 @@ src/hub.cpp \
     src/maintextdocument.cpp \
     src/wordcountengine.cpp \
     src/wordcountenginethread.cpp \
-    src/utils.cpp
+    src/utils.cpp \
+    src/outliner/outlineritemnotedelegate.cpp \
+    src/outliner/outlineritempovdelegate.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -111,7 +112,6 @@ src/menubar.h \
 src/outliner/outlinerbase.h \
 src/outliner/outlinerspreadsheet.h \
 src/outliner/outlinerabstractmodel.h \
-src/outliner/outlineritemdelegate.h \
 src/outliner/outlinertreeitem.h \
 src/settingsdialog.h \
 src/editmenu.h \
@@ -138,7 +138,9 @@ src/hub.h \
     src/maintextdocument.h \
     src/wordcountengine.h \
     src/wordcountenginethread.h \
-    src/utils.h
+    src/utils.h \
+    src/outliner/outlineritemnotedelegate.h \
+    src/outliner/outlineritempovdelegate.h
 
 CODECFORTR = UTF-8
 
@@ -163,9 +165,9 @@ src/wordgoalprogressbar.ui \
     src/attend/attendsettings.ui
 
 RESOURCES += \
-src/pics.qrc \
 translations/langs.qrc \
-readme.qrc
+readme.qrc \
+    src/pics.qrc
 
 
 macx {

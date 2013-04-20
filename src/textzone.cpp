@@ -27,7 +27,7 @@ void TextZone::createContent()
 {
     this->setAttribute(Qt::WA_KeyCompression, true);
 
-    textDocument = new QTextDocument;
+    textDocument = new MainTextDocument;
 
     createActions();
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -50,6 +50,8 @@ void TextZone::setDoc(MainTextDocument *doc)
 {
     textDocument = doc;
     this->setDocument(doc);
+
+    connect(this, SIGNAL(cursorPositionChanged(int)), doc, SLOT(setCursorPos(int)));
 }
 
 
@@ -479,6 +481,7 @@ void TextZone::cursorPositionChangedSlot()
     }
 
 
+emit cursorPositionChanged(this->textCursor().position());
 }
 
 
@@ -569,7 +572,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-        qDebug() << "insertFromMimeData Html";
+//        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -594,7 +597,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-        qDebug() << "insertFromMimeData plainText";
+//        qDebug() << "insertFromMimeData plainText";
 
     }
 

@@ -40,7 +40,7 @@ protected:
 
 signals:
     void toSpreadsheetSignal(bool spreadsheetSignal);
-    void updateMainDomDocSignal(QDomDocument otoM_domDoc);
+    void updateMainDomDocSignal();
     void applySynNoteFontConfigSignal();
 
     void otoM_actionSignal(QString action, int idNumber);

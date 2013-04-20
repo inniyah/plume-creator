@@ -19,6 +19,7 @@ public:
     void setIdNumber(int number);
     QString docType() const;
     void setDocType(QString type);
+    int cursorPos() const;
 
     int wordCount(){return wordCountEngine->wordCount();}
 
@@ -26,13 +27,14 @@ signals:
     void wordCountChanged(QString type, int id, int count);
 
 public slots:
+    void setCursorPos(int pos);
 
 private slots:
     void wordCountChangedSlot(int count);
 
 private:
     WordCountEngine *wordCountEngine;
-    int itemId;
+    int itemId, m_cursorPos;
     QString m_docType;
 };
 

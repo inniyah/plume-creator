@@ -111,9 +111,9 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-        qDebug() << "File path:" << device->fileName();
-        qDebug() << "File readable:" << device->isReadable();
-        qDebug() << "File open:" << device->isOpen();
+//        qDebug() << "File path:" << device->fileName();
+//        qDebug() << "File readable:" << device->isReadable();
+//        qDebug() << "File open:" << device->isOpen();
 
 
         return false;
@@ -418,9 +418,9 @@ bool FileUpdater::checkTreeFile(QString projectFileName)
                                  .arg(errorColumn)
                                  .arg(errorStr));
 
-        qDebug() << "File path:" << device->fileName();
-        qDebug() << "File readable:" << device->isReadable();
-        qDebug() << "File open:" << device->isOpen();
+//        qDebug() << "File path:" << device->fileName();
+//        qDebug() << "File readable:" << device->isReadable();
+//        qDebug() << "File open:" << device->isOpen();
 
 
         return false;
@@ -637,7 +637,7 @@ void FileUpdater::updateInfoFile()
         infoDomDocument = newDomDocument;
         oldVersion = "0.3";
 
-        qDebug() << infoDomDocument.toByteArray(3);
+//        qDebug() << infoDomDocument.toByteArray(3);
     }
     if(oldVersion == "0.3"){
 

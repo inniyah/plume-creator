@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/translations">
         <file>plume-creator_de_DE.qm</file>
         <file>plume-creator_fr_FR.qm</file>
         <file>plume-creator_it_IT.qm</file>

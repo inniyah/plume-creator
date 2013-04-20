@@ -49,7 +49,6 @@ protected:
 
 
 signals:
-    void textAndNoteSignal(MainTextDocument *textDoc, MainTextDocument *noteDoc, MainTextDocument *synDoc,int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action);
     void textAndNoteSignal(int number, QString action);
     void nameChangedSignal(QString newName, int number);
 
@@ -60,7 +59,7 @@ signals:
 
     void showOutlinerSignal();
     void saveOutliner();
-    void domDocSignal(QDomDocument domDoc);
+    void resetDomDocSignal();
 
     void setNumForDocSignal(QHash<MainTextDocument *, int>);
     void applySynNoteFontConfigSignal();
@@ -102,6 +101,9 @@ public slots:
     void changeAllDocsTextStyles();
     void setTextStyles(TextStyles *styles){textStyles = styles;}
 
+   // for "new" button in fullscreen :
+    int addItemNext(int baseNumber);
+
 private slots:
     void updateDomElement(QTreeWidgetItem *item, int column);
 
@@ -133,7 +135,7 @@ private slots:
     //outliner :
 
     void otoM_actionSlot(QString action,int idNumber);
-    void  updateMainDomDocFromOutliner(QDomDocument domDoc);
+    void  updateMainDomDocFromOutliner();
 
     void buildOutliner();
     void  killOutliner();
@@ -187,8 +189,6 @@ private:
     QString devicePath;
 //    QFile *deviceFile;
 
-    QString name;
-
     bool prjIsJustOpened;
     bool treeOpened;
 
@@ -222,7 +222,6 @@ private:
 //    Outline *outliner;
     int widgetTargetedNumber;
     QTreeWidgetItem *itemTargetedForOutliner;
-    int otoM_UpdateLaunched;
 
     //NEW Outliner :
 

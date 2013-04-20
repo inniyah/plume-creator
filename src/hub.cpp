@@ -49,8 +49,9 @@ void Hub::setProjectFileName(QString projectFileName)
         if(ChangesTests::test(m_old_projectFileName, m_projectFileName) == false)
             emit projectFileNameChanged();
 
-    QFileInfo info(projectFileName);
-    projectWorkingPath = info.absolutePath() + "/." + projectFileName.split("/").last().remove(".plume");
+    //    QFileInfo info(projectFileName);
+    //    projectWorkingPath = info.absolutePath() + "/." + projectFileName.split("/").last().remove(".plume");
+    projectWorkingPath = QDir::tempPath() + "/Plume/" + projectFileName.split("/").last().remove(".plume");
 
 
 }
@@ -84,6 +85,12 @@ void Hub::setProjectName(QString projectName)
     if(!refreshIsLocked)
         if(ChangesTests::test(m_old_projectName, m_projectName) == false)
             emit projectNameChanged();
+}
+//--------------------------------------------------------------------------------
+
+bool Hub::isProjectOpened() const
+{
+    return projectOpened;
 }
 
 //--------------------------------------------------------------------------------
@@ -144,7 +151,23 @@ void Hub::set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc)
             emit mainTree_numForDocHashChanged();
 }
 
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 
+QHash<int, QDomElement> Hub::mainTree_domElementForNumberHash()
+{
+    return m_mainTree_domElementForNumberHash;
+}
+
+void Hub::set_mainTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber)
+{
+    QHash<int, QDomElement> m_old_domElementForNumberHash = m_mainTree_domElementForNumberHash;
+    m_mainTree_domElementForNumberHash = domElementForNumber;
+
+    if(!refreshIsLocked)
+        if(ChangesTests::test(m_old_domElementForNumberHash, m_mainTree_domElementForNumberHash) == false)
+            emit mainTree_domElementForNumberHashChanged();
+}
 
 
 
@@ -172,7 +195,7 @@ QDomDocument Hub::attendTreeDomDoc()
 
 QHash<QTextDocument *, QFile *> Hub::attendTree_fileForDocHash()
 {
-    qDebug() << "m_attendTree_fileForDocHash : " << m_attendTree_fileForDocHash.size();
+//    qDebug() << "m_attendTree_fileForDocHash : " << m_attendTree_fileForDocHash.size();
     return m_attendTree_fileForDocHash;
 }
 
@@ -204,6 +227,25 @@ void Hub::set_attendTree_numForDocHash(QHash<QTextDocument *, int> numForDoc)
         if(ChangesTests::test(m_old_numForDoc, m_attendTree_numForDocHash) == false)
             emit attendTree_numForDocHashChanged();
 }
+
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+QHash<int, QDomElement> Hub::attendTree_domElementForNumberHash()
+{
+    return m_attendTree_domElementForNumberHash;
+}
+
+void Hub::set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber)
+{
+    QHash<int, QDomElement> m_old_domElementForNumberHash = m_attendTree_domElementForNumberHash;
+    m_attendTree_domElementForNumberHash = domElementForNumber;
+
+    if(!refreshIsLocked)
+        if(ChangesTests::test(m_old_domElementForNumberHash, m_attendTree_domElementForNumberHash) == false)
+            emit attendTree_domElementForNumberHashChanged();
+}
+
 
 
 
@@ -358,7 +400,8 @@ void Hub::calculatWordCountGoalDelta(int projectCount)
 
 void Hub::startProject(QString file)
 {
-    file = file.toUtf8();
+
+//    qDebug() << "startProject : " << file;
 
     //check if it's the right file :
 
@@ -577,7 +620,7 @@ void Hub::loadProject()
 {
     Zipper *zipper = new Zipper();
 
-    zipper->setJob("extract", this->projectFileName());
+    zipper->setJob("extract", this->projectFileName(), projectWorkPath());
     //    connect(zipper, SIGNAL(finished()), this, SLOT(loadTemp()));
     zipper->start();
     zipper->wait(30000);
@@ -596,7 +639,7 @@ bool Hub::loadTemp()
     updater.checkInfoFile(projectWorkingPath + "/tree");
 
 
-    qDebug() << "loading temporary files";
+//    qDebug() << "loading temporary files";
 
     // ----------------------------   tree :
 
@@ -788,7 +831,6 @@ void Hub::loadTextDocs(QDomNodeList list)
     //    progressWidget->show();
 
 
-
     QDomElement element;
     QString textPath;
     QString synPath;
@@ -812,6 +854,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             MainTextDocument *textDocument = new MainTextDocument(this);
             textDocument->setIdNumber(number.toInt());
             textDocument->setDocType("text");
+            textDocument->setCursorPos(element.attribute("textPos", "0").toInt());
             textDocument->setHtml(textFileStream.readAll());
             textFile->close();
             textDocument->setObjectName("textDoc_" + number);
@@ -825,6 +868,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             MainTextDocument *synDocument = new MainTextDocument(this);
             synDocument->setIdNumber(number.toInt());
             synDocument->setDocType("synopsis");
+            synDocument->setCursorPos(element.attribute("synPos", "0").toInt());
             synDocument->setHtml(synFileStream.readAll());
             synFile->close();
             synDocument->setObjectName("synDoc_" + number);
@@ -838,6 +882,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             MainTextDocument *noteDocument = new MainTextDocument(this);
             noteDocument->setIdNumber(number.toInt());
             noteDocument->setDocType("note");
+            noteDocument->setCursorPos(element.attribute("notePos", "0").toInt());
             noteDocument->setHtml(noteFileStream.readAll());
             noteFile->close();
             noteDocument->setObjectName("noteDoc_" + number);
@@ -896,7 +941,7 @@ void Hub::saveProject(QString mode)
 {
 
 
-    qDebug() << "saveProject";
+//    qDebug() << "saveProject";
 
 
     //    qDebug() << "Hub::areFileLocked() : "<< this->areFilesLocked();
@@ -909,7 +954,7 @@ void Hub::saveProject(QString mode)
     this->saveTemp();
 
     Zipper *zipper = new Zipper();
-    zipper->setJob("compress", this->projectFileName());
+    zipper->setJob("compress", this->projectFileName(), projectWorkPath());
     connect(zipper, SIGNAL(zipFinished()), this, SLOT(unlockFiles()));
 
 
@@ -929,9 +974,13 @@ void Hub::saveTemp()
 
     // ------------------ Tree :
 
-    qDebug() << "save temporary files";
+//    qDebug() << "save temporary files";
 
-
+    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
+    while (i != m_mainTree_fileForDocHash.end()) {
+        saveMainDoc(i.key() ,"mainTreeDocs" );
+        ++i;
+    }
 
     QFile *treeFile= new QFile(projectWorkingPath + "/tree");
     treeFile->waitForBytesWritten(500);
@@ -952,11 +1001,7 @@ void Hub::saveTemp()
         //TextDocs :
 
     }
-    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
-    while (i != m_mainTree_fileForDocHash.end()) {
-        saveMainDoc(i.key() ,"mainTreeDocs" );
-        ++i;
-    }
+
 
 
     //--------------- Info :
@@ -989,6 +1034,15 @@ void Hub::saveTemp()
 
     //--------------------- Attend :
 
+    QHash<QTextDocument *, QFile *>::iterator j =     m_attendTree_fileForDocHash.begin();
+
+    while (j != m_attendTree_fileForDocHash.end()) {
+        this->saveDoc(j.key(),"attendTreeDocs");
+
+        ++j;
+    }
+
+
     QFile *attFile= new QFile(projectWorkingPath + "/attendance");
 
 
@@ -1010,13 +1064,7 @@ void Hub::saveTemp()
         //        qDebug() << "save attendDomDocument()";
     }
 
-    QHash<QTextDocument *, QFile *>::iterator j =     m_attendTree_fileForDocHash.begin();
 
-    while (j != m_attendTree_fileForDocHash.end()) {
-        this->saveDoc(j.key(),"attendTreeDocs");
-
-        ++j;
-    }
 
 
 
@@ -1039,6 +1087,13 @@ bool Hub::saveMainDoc(MainTextDocument *doc, QString mode)
     QTextDocument *clonedDoc = m_doc->clone();
     bool written = docWriter->write(clonedDoc);
 
+    QDomElement element = m_mainTree_domElementForNumberHash.value(doc->idNumber());
+    if(doc->docType() == "text")
+        element.setAttribute("textPos", doc->cursorPos());
+    else if(doc->docType() == "synopsis")
+        element.setAttribute("synPos", doc->cursorPos());
+    else if(doc->docType() == "note")
+        element.setAttribute("notePos", doc->cursorPos());
 
 
     delete docWriter;

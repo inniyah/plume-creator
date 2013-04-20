@@ -273,7 +273,7 @@ void TextTab::setCursorPos(int pos)
     textZone->ensureCursorVisible();
 }
 //-------------------------------------------------------------------------------
-int TextTab::saveCursorPos()
+int TextTab::cursorPos()
 {
     QTextCursor cursor = textZone->textCursor();
     return cursor.position();

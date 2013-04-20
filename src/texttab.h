@@ -60,7 +60,7 @@ public slots:
     void changeTextStyleSlot(int styleIndex);
     void setTextFocus();
     void setCursorPos(int pos);
-    int saveCursorPos();
+    int cursorPos();
     void applyConfig();
     QTextCharFormat tabFontChangedSlot();
     void updateTextZone();

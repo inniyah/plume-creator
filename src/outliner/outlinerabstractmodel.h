@@ -81,8 +81,9 @@ private slots:
     void updateMainDomDoc();
     void updateMainTextDoc(MainTextDocument *textDoc, int number);
 
-
 private:
+    QStringList givePovList(QString listOfPovNumbers);
+
     Hub *hub;
     OutlinerTreeItem *rootItem;
     int itemHeight;
@@ -101,6 +102,7 @@ private:
 
     QList<OutlinerTreeItem *> *treeBookItemList;
     QList<OutlinerTreeItem *> *treeChapterItemList;
+
 };
 
 #endif // OUTLINERABSTRACTMODEL_H

@@ -1,7 +1,7 @@
 #include "maintextdocument.h"
 
 MainTextDocument::MainTextDocument(QObject *parent) :
-    QTextDocument(parent)
+    QTextDocument(parent), m_cursorPos(0)
 {
 
     wordCountEngine = new WordCountEngine(this, this);
@@ -32,6 +32,19 @@ void MainTextDocument::setDocType(QString type)
 {
     m_docType = type;
 }
+
+//-------------------------------------------------------------
+
+int MainTextDocument::cursorPos() const
+{
+    return m_cursorPos;
+}
+
+void MainTextDocument::setCursorPos(int pos)
+{
+    m_cursorPos = pos;
+}
+
 //-------------------------------------------------------------
 
 void MainTextDocument::wordCountChangedSlot(int count)

@@ -1,6 +1,7 @@
 #include "outliner/outlinerbase.h"
 #include "outliner/outlinerabstractmodel.h"
-#include "outliner/outlineritemdelegate.h"
+#include "outliner/outlineritemnotedelegate.h"
+#include "outliner/outlineritempovdelegate.h"
 
 #include <QtGui>
 
@@ -188,14 +189,15 @@ void OutlinerBase::shiftToSpreadsheet()
 
     spreadsheet->setWordWrap(true);
 
-    OutlinerItemDelegate *delegate = new OutlinerItemDelegate;
-    delegate->setHub(hub);
-
+    OutlinerItemNoteDelegate *noteDelegate = new OutlinerItemNoteDelegate;
+    noteDelegate->setHub(hub);
     //spreadsheet->setItemDelegateForColumn(0, delegate); //tree
-    spreadsheet->setItemDelegateForColumn(1, delegate); //syn
-    spreadsheet->setItemDelegateForColumn(2, delegate); //notes
+    spreadsheet->setItemDelegateForColumn(1, noteDelegate); //syn
+    spreadsheet->setItemDelegateForColumn(2, noteDelegate); //notes
 
-
+    OutlinerItemPoVDelegate *povDelegate = new OutlinerItemPoVDelegate;
+    povDelegate->setHub(hub);
+    spreadsheet->setItemDelegateForColumn(3, povDelegate); // Point of View
 
 
 
@@ -209,19 +211,20 @@ void OutlinerBase::shiftToSpreadsheet()
 
     connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(columnOneResizedSlot(int)));
     connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(columnTwoResizedSlot(int)));
-    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(resetAbsModelColumnOne()));
-    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(resetAbsModelColumnTwo()));
+//    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(resetAbsModelColumnOne()));
+//    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(resetAbsModelColumnTwo()));
 
 
     QTimer::singleShot(0, this, SLOT(applySpreadsheetConfig()));
     spreadsheet->reset();
-    spreadsheet->expandAll();
+    this->updateOutliner();
 
-    connect(absModel, SIGNAL(updateMainDomDocSignal(QDomDocument)), this, SIGNAL(updateMainDomDocSignal(QDomDocument)));
+
+    connect(hub, SIGNAL(resetSpreadsheetOutlinerSignal()), this, SLOT(updateOutliner()));
     connect(shrinkSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(shrinkRow()));
-    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(expandAll()));
+    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()));
     connect(expandSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(expandRow()));
-    connect(expandSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(expandAll()));
+    connect(expandSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()));
     connect(moveUpAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveUp()));
     connect(moveDownAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveDown()));
     connect(absModel, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()));
@@ -240,9 +243,9 @@ void OutlinerBase::updateOutliner()
     absModel->mtoO_setNumForDoc(mtoO_numForDoc);
 
     absModel->resetAbsModel();
-    spreadsheet->expandAll();
+//    spreadsheet->expandAll();
 
-
+spreadsheet->applySettingsFromData();
     }
 }
 
@@ -317,6 +320,8 @@ void OutlinerBase::mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc)
 
 void OutlinerBase::mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_)
 {
+    // deprecated :
+
     attend_domElementForItem = domElementForItem_;
     attend_domElementForItemNumber = domElementForItemNumber_;
 
@@ -334,6 +339,8 @@ void OutlinerBase::mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomEl
 
 void OutlinerBase::mtoO_updateAttendances(QHash<int, QString> attendStringForNumber)
 {
+    //deprecated :
+
     QString string;
 
 
@@ -376,7 +383,7 @@ void OutlinerBase::mtoO_updateAttendances(QHash<int, QString> attendStringForNum
 QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QString sorting)
 {
 
-
+// deprecated :
 
 
 
@@ -583,7 +590,6 @@ QList<QListWidgetItem *> *OutlinerBase::openSheetAttendList(int number ,QString 
     return itemList;
 
 }
-//--------------------------------------------------------------------------------------
 
 
 

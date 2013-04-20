@@ -30,7 +30,7 @@
 #include "textstyles.h"
 #include "editmenu.h"
 #include "wordgoalprogressbar.h"
-
+#include "fulltextzone.h"
 
 namespace Ui {
 class FullscreenEditor;
@@ -43,7 +43,8 @@ class FullscreenEditor : public QWidget
 public:
     explicit FullscreenEditor(QWidget *parent = 0);
     ~FullscreenEditor();
-    void createContent(MainTextDocument *doc = 0, int cursorPos = 0);
+    void postConstructor();
+    void openBySheetNumber(int number);
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -52,14 +53,13 @@ protected:
 signals:
     void closeSignal();
     void manageStylesSignal();
+    void newSheetSignal(int number);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
     void setTimer(QString);
     void applyConfig();
-    void setSyn(MainTextDocument *synDocument, int cursorPos);
-    void setNote(MainTextDocument *noteDocument, int cursorPos);
-    void setTextStyles(TextStyles *styles){textStyles = styles;}
+  void setTextStyles(TextStyles *styles){textStyles = styles;}
     void resetFullscreenTextWidthSlot();
 
 private slots:
@@ -99,15 +99,30 @@ private slots:
     void restoreDoc();
     void wordCountChangedSlot(QString type, int id, int count);
 
+    void on_newButton_clicked();
+
+    void on_nextButton_clicked();
+
+    void on_prevButton_clicked();
+
+    void on_navigatorComboBox_currentIndexChanged(const QString name);
+
 private:
+    void setText(MainTextDocument *doc);
+    void setSyn(MainTextDocument *synDocument);
+    void setNote(MainTextDocument *noteDocument);
+    void setTextCursorPos(int pos);
+    void setSynCursorPos(int pos);
+    void setNoteCursorPos(int pos);
+    void resetNavigatorTree();
     Hub *hub;
     Ui::FullscreenEditor *ui;
-    MainTextDocument *clonedDoc;
+    MainTextDocument *clonedDoc, *clonedSynDoc, *clonedNoteDoc;
 
     TextStyles *textStyles;
     EditMenu *editWidget;
     int sliderCurrentValue;
-    MainTextDocument *originalDoc;
+    MainTextDocument *originalDoc, *originalSynDoc, *originalNoteDoc;
 
 
     QPushButton *backColorButton,
@@ -121,8 +136,8 @@ private:
     int noteCursorPos;
     //QTextDocument *synDoc;
     //QTextDocument *noteDoc;
-    QWidget *synWidget;
-    QWidget *noteWidget;
+FullTextZone *fullSynEdit, *fullNoteEdit;
+QWidget *synWidget,*noteWidget;
 
     QTimer *mouseTimer;
 
@@ -134,6 +149,16 @@ private:
     addOnColorString;
 
     int baseWordCount;
+
+
+
+    // navigator :
+    QString treeString;
+    QHash<int, QDomElement> domElementForNumber;
+    QHash<int, QString> nameForNumber;
+    int numberOfCurrentFullscreenSheet;
+
+
 };
 
 #endif // FULLSCREENEDITOR_H

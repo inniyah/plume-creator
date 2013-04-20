@@ -35,7 +35,8 @@ class Exporter : public QDialog
 {
     Q_OBJECT
 public:
-    explicit Exporter(QString mode = "export", QFile *device = 0, QWidget *parent = 0);
+    explicit Exporter(QString mode = "export", QWidget *parent = 0);
+    void postConstructor();
 
 protected:
     void accept();
@@ -50,8 +51,8 @@ private slots:
     void seePreview();
     void closePreview(){previewDialog->close();}
     //tree :
-    void createTree(QFile *device);
-    bool read(QFile *device);
+    void createTree();
+    bool read();
     void closeTree();
     void buildTree();
     void itemClickedSlot(QTreeWidgetItem* item, int column);
@@ -97,9 +98,9 @@ private:
     // accept :
     QTextDocument * buildFinalDoc();
     void exportDoc();
-    QTextDocument* prepareTextDoc(QFile *textFile);
-    QTextDocument* prepareSynDoc(QFile *synFile);
-    QTextDocument* prepareNoteDoc(QFile *noteFile);
+    QTextDocument* prepareTextDoc(QTextDocument *textDoc);
+    QTextDocument* prepareSynDoc(QTextDocument *synDoc);
+    QTextDocument* prepareNoteDoc(QTextDocument *noteDoc);
     QString format;
 
 };

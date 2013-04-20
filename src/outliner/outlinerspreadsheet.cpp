@@ -68,14 +68,19 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
 
 
     OutlinerSpreadsheetHeader *hHeader = new OutlinerSpreadsheetHeader(Qt::Horizontal);
-hHeader->setHub(hub);
-   this->setHeader(hHeader);
+    hHeader->setHub(hub);
+    this->setHeader(hHeader);
 
 
 
     connect(hHeader, SIGNAL(sectionResized(int,int,int)), this, SLOT(columnResizedSlot(int,int,int)));
 
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
+
+
+    connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)), Qt::UniqueConnection);
+    connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)), Qt::UniqueConnection);
+
 
 
     giveStyle();
@@ -97,13 +102,14 @@ void OutlinerSpreadsheet::columnResizedSlot(int index, int oldSize, int newSize)
 {
     if(index == 1){
         emit columnOneResizedSignal(newSize - 30);
-        this->expandAll();
+        //        this->expandAll();
 
     }
     if(index == 2){
         emit columnTwoResizedSignal(newSize - 30);
-        this->expandAll();
+        //        this->expandAll();
     }
+
 }
 
 //----------------------------------------------------------------------------------
@@ -121,7 +127,7 @@ void OutlinerSpreadsheet::itemClicked(QModelIndex index)
             wasClickedOnce = true;
         itemIdClickedOnce = itemId;
     }
-    else if (index.column() == 1 || index.column() == 2)
+    else if (index.column() == 1 || index.column() == 2|| index.column() == 3)
         this->edit(index);
 }
 
@@ -149,7 +155,7 @@ void OutlinerSpreadsheet::wheelEvent(QWheelEvent* event)
 
 
 
-    if(indexColumn == 1 | indexColumn == 2){
+    if(indexColumn == 1 || indexColumn == 2 || indexColumn == 3){
         //           this->setFocusProxy(this->indexWidget(index));
         this->setCurrentIndex(index);
         this->edit(index);
@@ -241,25 +247,106 @@ void OutlinerSpreadsheet::prepareContextMenu()
 void OutlinerSpreadsheet::itemEntered(QModelIndex index)
 {
     enteredItemId = this->model()->data(index,Qt::UserRole ).toInt();
-//    qDebug() << "itemEntered";
+    //    qDebug() << "itemEntered";
 }
+
+
 
 //--------------------------------------------------------------------------------
 
 void OutlinerSpreadsheet::giveStyle()
 {
-
     this->setAlternatingRowColors(true);
     QString css = "QTreeView {"
-            "alternate-background-color: rgba(100,100,100,10);"
-            "selection-background-color: rgba(100,100,100,20);"
+            "alternate-background-color: rgba(100,100,100,20);"
+            "selection-background-color: rgba(100,100,100,30);"
             "selection-color: black;"
             "}"
             " QTreeView::item {"
-            "border-top: 1px solid rgba(100,100,100,40);"
-            "border-bottom: 1px solid rgba(100,100,100,40);"
+//            "border-top: 1px solid rgba(100,100,100,40);"
+//            "border-bottom: 1px solid rgba(100,100,100,40);"
             "}"
             ;
 
     this->setStyleSheet(css);
+}
+//--------------------------------------------------------------------------------
+void OutlinerSpreadsheet::applySettingsFromData()
+{
+    disconnect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)));
+    disconnect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)));
+
+
+    QList<QModelIndex> indexList = this->allIndexesFromModel(this->model(), QModelIndex());
+
+    foreach(const QModelIndex &index, indexList)
+        this->setExpanded(index, index.data(34).toBool());
+
+    connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)), Qt::UniqueConnection);
+    connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)), Qt::UniqueConnection);
+}
+//--------------------------------------------------------------------------------
+
+void OutlinerSpreadsheet::itemCollapsedSlot(QModelIndex index)
+{
+
+
+    //    QModelIndex baseIndex = this->model()->index(index.row(),index.column(), index.parent());
+    //    OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(baseIndex.internalPointer());
+
+    int itemId = index.data(Qt::UserRole).toInt();
+
+    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+    element.setAttribute("spreadSheetExpanded", "no");
+
+    //    item->setIsExpanded(false);
+
+    //    emit dataChanged(baseIndex,baseIndex);
+
+    hub->addToSaveQueue();
+}
+
+//--------------------------------------------------------------------------------
+
+void OutlinerSpreadsheet::itemExpandedSlot(QModelIndex index)
+{
+
+
+    //    QModelIndex baseIndex = this->model()->index(index.row(),index.column(), index.parent());
+    //    OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(baseIndex.internalPointer());
+
+    int itemId = index.data(Qt::UserRole).toInt();
+
+    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+    element.setAttribute("spreadSheetExpanded", "yes");
+
+
+    //    item->setIsExpanded(true);
+
+    //    emit dataChanged(baseIndex,baseIndex);
+
+    hub->addToSaveQueue();
+
+}
+//-----------------------------------------------------------------------------------------
+
+
+QList<QModelIndex> OutlinerSpreadsheet::allIndexesFromModel(QAbstractItemModel *model, const QModelIndex &parent)
+{
+    QList<QModelIndex> indexList;
+
+
+    int rowCount = model->rowCount(parent);
+
+    for(int i = 0; i < rowCount; ++i)
+    {
+        QModelIndex index = model->index(i, 0, parent);
+
+        if(index.isValid())
+        {
+            indexList << index;
+            indexList << allIndexesFromModel(model, index);
+        }
+    }
+    return indexList;
 }

@@ -201,7 +201,7 @@ void MainWindow::createMenuBar()
 void MainWindow::createAttendDock()
 {
     attendDock = new QDockWidget;
-    attendDock->setObjectName(tr("Attendance"));
+    attendDock->setWindowTitle(tr("Attendance"));
     attendDock->setObjectName("attendDock");
     attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
@@ -310,8 +310,7 @@ void MainWindow::createTreeDock()
     mainTree = new MainTree;
     mainTree->setHub(hub);
 
-    connect(mainTree, SIGNAL(textAndNoteSignal(MainTextDocument*,MainTextDocument*,MainTextDocument*, int, int, int, QString, int, QString)), this, SLOT(textSlot(MainTextDocument*,MainTextDocument*,MainTextDocument*, int,int,int, QString, int, QString)));
-    connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(secondTextSlot(int, QString)));
+    connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(textSlot(int, QString)));
     connect(this, SIGNAL(changeAllDocsTextStylesSignal()), mainTree, SLOT(changeAllDocsTextStyles()));
 
     treeDock->setWidget(mainTree);
@@ -514,17 +513,21 @@ void MainWindow::createStatusBar()
 
     QWidget *stretcher1 = new QWidget();
     stretcher1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
-        QWidget *stretcher2 = new QWidget();
-        stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
+    QWidget *stretcher2 = new QWidget();
+    stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     wordGoalBar = new WordGoalProgressBar(this);
-wordGoalBar->setHub(hub);
-wordGoalBar->postConstructor();
+    wordGoalBar->setHub(hub);
+    wordGoalBar->postConstructor();
 
     projectWCLabel = new QLabel();
+    projectWCLabel->setToolTip(tr("Project word count"));
     bookWCLabel = new QLabel();
+    bookWCLabel->setToolTip(tr("Book word count"));
     chapterWCLabel = new QLabel();
+    chapterWCLabel->setToolTip(tr("Chapter word count"));
     currentWCLabel = new QLabel();
+    currentWCLabel->setToolTip(tr("Current sheet word count"));
 
     connect(hub, SIGNAL(projectWordCount(int)), this, SLOT(updateProjectWCLabel(int)));
     connect(hub, SIGNAL(bookWordCount(int)), this, SLOT(updateBookWCLabel(int)));
@@ -541,10 +544,10 @@ wordGoalBar->postConstructor();
 
     //    ui->bar->addPermanentWidget(sceneWCLabel,1);
     //    ui->bar->addPermanentWidget(stretcher2,10);
-        ui->bar->addPermanentWidget(stretcher2,10);
+    ui->bar->addPermanentWidget(stretcher2,10);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
     //    bar->addPermanentWidget(status_tabFullscreenButton,2);
-        ui->bar->addPermanentWidget(wordGoalBar);
+    ui->bar->addPermanentWidget(wordGoalBar);
     //    bar->addPermanentWidget(stretcher2);
 
 
@@ -578,7 +581,7 @@ void MainWindow::createDocksToolBar()
 
 
 
-    docksToolBar = new QToolBar(tr("Dock Buttons"), this);
+    docksToolBar = new QToolBar(tr("Side buttons"), this);
     docksToolBar->setObjectName("docksToolBar");
     docksToolBar->setOrientation(Qt::Vertical);
     docksToolBar->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
@@ -820,19 +823,20 @@ void MainWindow::setDisplayMode(QString mode)
 void MainWindow::openExternalProject(QFile *externalFile)
 {
 
-    if(!externalFile->exists()){
-        int ret = QMessageBox::warning(this, tr("Plume Creator"),
-                                       tr("Your are maybe using Windows."
-                                          "The file path may contain special characters.\n"
-                                          "Please rename the folders and file without these characters :\n"
-                                          "é,è,à,ï,ç et cetera... \n"
-                                          "Then, try opening it again !"),
-                                       QMessageBox::Ok,
-                                       QMessageBox::Ok);
+//    qDebug() << "openExternalProject : " << externalFile->fileName();
 
-        return;
-    }
+    //    if(!externalFile->exists()){
+    //        int ret = QMessageBox::warning(this, tr("Plume Creator"),
+    //                                       tr("Your are maybe using Windows."
+    //                                          "The file path may contain special characters.\n"
+    //                                          "Please rename the folders and file without these characters :\n"
+    //                                          "é,è,à,ï,ç et cetera... \n"
+    //                                          "Then, try opening it again !"),
+    //                                       QMessageBox::Ok,
+    //                                       QMessageBox::Ok);
 
+    //        return;
+    //    }
 
     isExternalProjectOpeningBool = true;  //needed to avoid the opening of the project manager at startup
     hub->startProject(externalFile->fileName());
@@ -899,10 +903,15 @@ void MainWindow::setProjectNumberSlot(int prjNumber)
 
 
 
-void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, MainTextDocument *synDoc, int textCursorPosition, int synCursorPosition, int noteCursorPosition, QString name, int number, QString action)
+void MainWindow::textSlot(int number, QString action)
 {
     if(action == "open"){
 
+        MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + QString::number(number));
+        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
+        MainTextDocument *synDoc =  hub->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
+
+        QString name = hub->mainTree_domElementForNumberHash().value(number).attribute("name");
 
         // verify if tree item not already opened, and if yes focus on it :
 
@@ -1032,9 +1041,9 @@ void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, 
         tab->setTextFocus();
 
         //set cursor position :
-        tab->setCursorPos(textCursorPosition);
-        synStack->setCursorPos(synCursorPosition);
-        noteStack->setCursorPos(noteCursorPosition);
+        tab->setCursorPos(textDoc->cursorPos());
+        synStack->setCursorPos(synDoc->cursorPos());
+        noteStack->setCursorPos(noteDoc->cursorPos());
 
         //        QString debug;
         //        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
@@ -1073,7 +1082,7 @@ void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, 
         if(oneTabOnly){
             int i = 0 ;
             while( numList->size() > 1 ){
-                secondTextSlot(numList->at(0), "close");
+                this->textSlot(numList->at(0), "close");
                 ++i;
             }
         }
@@ -1081,28 +1090,14 @@ void MainWindow::textSlot(MainTextDocument *textDoc, MainTextDocument *noteDoc, 
 
 
     }
-
-
-}
-
-
-//---------------------------------------------------------------------------
-void MainWindow::secondTextSlot(int number, QString action)
-{
-    if(action == "close"){
+    else if(action == "close"){
 
         if(!numList->contains(number))
             return;
 
 
-        //        disconnect(mainTabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
-
         QString string;
         TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + string.setNum(number,10));
-        //        QWidget *noteWidget = noteLayout->findChild<QWidget *>("note_" + string.setNum(number,10));
-        //        QWidget *synWidget = synLayout->findChild<QWidget *>("syn_" + string.setNum(number,10));
-        //        //        qDebug() << "objectname value : " << string.setNum(number,10);
-
 
         //disconnect edit menu to tab
         disconnect(menu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
@@ -1115,29 +1110,16 @@ void MainWindow::secondTextSlot(int number, QString action)
         int tabNum = ui->mainTabWidget->indexOf(tab);
         tabCloseRequest(tabNum);
 
-        //mainTabWidget->removeTab();
-
-        //        noteLayout->removeWidget(noteWidget);
-        //        synLayout->removeWidget(synWidget);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //        connect(mainTabWidget, SIGNAL(currentChanged(int)), this,SLOT(tabChangeSlot(int)));
 
     }
+    else
+        return;
+
 }
+
+
+//---------------------------------------------------------------------------
+
 
 void MainWindow::setConnections()
 {
@@ -1242,7 +1224,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     // Saving
 
 
-    mainTree->saveCursorPos(textWidgetList->at(tabNum)->saveCursorPos(),
+    mainTree->saveCursorPos(textWidgetList->at(tabNum)->cursorPos(),
                             synWidgetList->at(tabNum)->saveCursorPos(),
                             noteWidgetList->at(tabNum)->saveCursorPos(),
                             numList->at(tabNum));
@@ -1314,7 +1296,7 @@ void MainWindow::closeAllDocsSlot()
         //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(i)->document());
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
-        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(),
+        mainTree->saveCursorPos(textWidgetList->at(i)->cursorPos(),
                                 synWidgetList->at(i)->saveCursorPos(),
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
@@ -1379,7 +1361,7 @@ void MainWindow::saveAllDocsSlot()
         //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(i)->document());
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
-        mainTree->saveCursorPos(textWidgetList->at(i)->saveCursorPos(),
+        mainTree->saveCursorPos(textWidgetList->at(i)->cursorPos(),
                                 synWidgetList->at(i)->saveCursorPos(),
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
@@ -1523,7 +1505,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
         systemTray->show();
         systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
-
+systemTray->hide();
         break;
 
     case QMessageBox::Cancel:
@@ -1622,7 +1604,7 @@ void MainWindow::applyConfig()
     if(oneTabOnly){
         int i = 0 ;
         while( numList->size() > 1 ){
-            secondTextSlot(numList->at(0), "close");
+            this->textSlot(numList->at(0), "close");
             ++i;
         }
     }
@@ -1686,53 +1668,19 @@ void MainWindow::editFullscreen()
         return;
 
 
-    //    qDebug() << mainTabWidget->currentWidget()->objectName();
 
-    int number = hub->currentSheetNumber();
-
-    QString tabName = ui->mainTabWidget->currentWidget()->objectName();
-    TextTab *tab = ui->mainTabWidget->findChild<TextTab *>(tabName);
-
-
-
-    QString synName = "synDoc_" + QString::number(number);
-            MainTextDocument *syn = hub->findChild<MainTextDocument *>(synName);
-
-            QString noteName = "noteDoc_" + QString::number(number);
-            MainTextDocument *note = hub->findChild<MainTextDocument *>(noteName);
-
-            QString textName = "textDoc_" + QString::number(number);
-            MainTextDocument *text = hub->findChild<MainTextDocument *>(textName);
-
-
-    //    if(this->findChild<QWidget *>(noteName) == 0)
-    //        qDebug() << "note == 0";
-
-    //    qDebug() << "noteName : " << noteName;
-
-    NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(number) + "-NoteZone");
-    NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(number) + "-NoteZone");
-
-
-    //    qDebug() << "synStack name : " << synStack->objectName();
 
     fullEditor = new FullscreenEditor(0);
     fullEditor->setHub(hub);
     fullEditor->setTextStyles(textStyles);
-    fullEditor->createContent(text, tab->saveCursorPos());
-
-    fullEditor->setSyn(syn, synStack->textCursor().position());
-    fullEditor->setNote(note, noteStack->textCursor().position());
+    fullEditor->postConstructor();
+    fullEditor->openBySheetNumber(hub->currentSheetNumber());
 
 
-    connect(fullEditor,SIGNAL(destroyed()),tab,SLOT(updateWordCounts()));
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
-    connect(fullEditor, SIGNAL(closeSignal()),tab, SLOT(updateTextZone()));
-    connect(fullEditor, SIGNAL(closeSignal()),synStack, SLOT(updateTextZone()));
-    connect(fullEditor, SIGNAL(closeSignal()),noteStack, SLOT(updateTextZone()));
     connect(fullEditor, SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
     connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
-
+    connect(fullEditor, SIGNAL(newSheetSignal(int)), mainTree, SLOT(addItemNext(int)));
 
 
 }
@@ -2043,8 +1991,12 @@ void MainWindow::giveStyle()
 
             //            "QToolBar#docksToolBar::separator {"
             //            "}"
-
-
+            "QToolTip{"
+//            "opacity: 250;"
+            "border-style: outset;" //needed else tooltip is not modified
+            "background: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0.42, stop:0 rgba(85, 170, 255, 255), stop:1 rgba(255, 255, 255, 255));"
+            "color: black;"
+            "}"
             ;
 
     this->setStyleSheet(css+noTabCss);
@@ -2079,12 +2031,12 @@ void MainWindow::giveStyle()
 void MainWindow::updateProjectWCLabel(int count)
 {
 
-    projectWCLabel->setText(tr("Prj: ") + Utils::spaceInNumber(QString::number(count)));
+    projectWCLabel->setText(tr("Project: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
 void MainWindow::updateBookWCLabel(int count)
 {
-    bookWCLabel->setText(tr("B: ") + Utils::spaceInNumber(QString::number(count)));
+    bookWCLabel->setText(tr("Book: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
 void MainWindow::updateChapterWCLabel(int count)
@@ -2093,12 +2045,12 @@ void MainWindow::updateChapterWCLabel(int count)
         chapterWCLabel->hide();
     else {
         chapterWCLabel->show();
-        chapterWCLabel->setText(tr("Ch: ") + Utils::spaceInNumber(QString::number(count)));
+        chapterWCLabel->setText(tr("Chapter: ") + Utils::spaceInNumber(QString::number(count)));
     }
 }
 void MainWindow::updateCurrentSheetWCLabel(int count)
 {
 
-        currentWCLabel->setText(tr("Words: ") + Utils::spaceInNumber(QString::number(count)));
+    currentWCLabel->setText(tr("Words: ") + Utils::spaceInNumber(QString::number(count)));
 
 }

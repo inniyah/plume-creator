@@ -197,11 +197,7 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
                                 &errorColumn)) {
       QString warnString =  "Plume Creator Version : Parse error at line %1, column %2:\n%3\n";
     qWarning() << warnString.arg(errorLine).arg(errorColumn).arg(errorStr);
-    qWarning() << "QNetworkReply *reply :  "<< domDocument.toString();
-
-        //        qDebug() << "File path:" << device->fileName();
-        //        qDebug() << "File readable:" << device->isReadable();
-        //        qDebug() << "File open:" << device->isOpen();
+    qWarning() << "QNetworkReply reply :  "<< domDocument.toString();
 
 
         return;

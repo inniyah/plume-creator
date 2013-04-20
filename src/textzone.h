@@ -42,6 +42,7 @@ signals:
     void setStyleSelectionSignal(int styleIndex);
     void styleSelectedSignal(int styleIndex);
     void manageStylesSignal();
+    void cursorPositionChanged(int pos);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -72,11 +73,11 @@ private slots:
     void paste();
     void bold(bool boldBool);
     void italic(bool italBool);
-//    void leftAlign(bool leftBool);
-//    void rightAlign(bool rightBool);
-//    void justify(bool justBool);
-//    void center(bool centBool);
-void createEditWidget();
+    //    void leftAlign(bool leftBool);
+    //    void rightAlign(bool rightBool);
+    //    void justify(bool justBool);
+    //    void center(bool centBool);
+    void createEditWidget();
 
     void charFormat(QTextCharFormat cFormat);
 
@@ -88,7 +89,7 @@ void createEditWidget();
 private:
     Hub *hub;
 
-    QTextDocument *textDocument;
+    MainTextDocument *textDocument;
 
     //context menu:
 
@@ -102,11 +103,11 @@ private:
     QAction *boldAct;
     QAction *italicAct;
     QAction *manageStylesAct;
-//    QAction *leftAlignAct;
-//    QAction *rightAlignAct;
-//    QAction *justifyAct;
-//    QAction *centerAct;
-EditMenu *editWidget;
+    //    QAction *leftAlignAct;
+    //    QAction *rightAlignAct;
+    //    QAction *justifyAct;
+    //    QAction *centerAct;
+    EditMenu *editWidget;
 
     QMenu *alignmentGroup;
     QMenu *stylesGroup;

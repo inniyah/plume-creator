@@ -18,6 +18,7 @@ public:
     static bool test(QHash<QTextDocument *, int> oldHash, QHash<QTextDocument *, int> newHash);
     static bool test(QHash<MainTextDocument *, QFile *> oldHash, QHash<MainTextDocument *, QFile *> newHash);
     static bool test(QHash<MainTextDocument *, int> oldHash, QHash<MainTextDocument *, int> newHash);
+    static bool test(QHash<int, QDomElement> oldHash, QHash<int, QDomElement> newHash);
 signals:
     
 public slots:

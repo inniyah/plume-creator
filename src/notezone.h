@@ -52,6 +52,7 @@ signals:
     void connectUpdateTextsSignal();
     void disconnectUpdateTextsSignal();
     void  noteFocusOutSignal();
+    void cursorPositionChanged(int pos);
 
 protected:
 

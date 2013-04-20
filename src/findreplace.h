@@ -36,7 +36,8 @@ class FindReplace : public QDialog
     Q_OBJECT
     
 public:
-    explicit FindReplace(QFile *device = 0, QWidget *parent = 0);
+    explicit FindReplace(QWidget *parent = 0);
+    void postConstructor();
     ~FindReplace();
     
 signals:
@@ -46,8 +47,8 @@ public slots:
 
 private slots:
     //tree :
-    void createTree(QFile *device);
-    bool read(QFile *file);
+    void createTree();
+    bool read();
     void closeTree();
     void buildTree();
     void itemClickedSlot(QTreeWidgetItem* item, int column);

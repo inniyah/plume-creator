@@ -17,8 +17,8 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef OUTLINERITEMDELEGATE_H
-#define OUTLINERITEMDELEGATE_H
+#ifndef OUTLINERITEMNOTEDELEGATE_H
+#define OUTLINERITEMNOTEDELEGATE_H
 
 #include <QStyledItemDelegate>
 #include <QtGui>
@@ -26,11 +26,11 @@
 #include "hub.h"
 #include "notezone.h"
 
-class OutlinerItemDelegate : public QStyledItemDelegate
+class OutlinerItemNoteDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit OutlinerItemDelegate(QObject *parent = 0);
+    explicit OutlinerItemNoteDelegate(QObject *parent = 0);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem & option , const QModelIndex & index ) const;
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
@@ -62,6 +62,7 @@ private :
     NoteZone *note;
     NoteZone *syn;
     bool editorLaunched;
+    QString noteZoneCss;
 };
 
-#endif // OUTLINERITEMDELEGATE_H
+#endif // OUTLINERITEMNOTEDELEGATE_H

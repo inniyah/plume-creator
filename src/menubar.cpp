@@ -6,10 +6,9 @@
 #include "findreplace.h"
 //
 MenuBar::MenuBar(QWidget *parent) :
-    QFrame(parent), extFile(0), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
+    QFrame(parent), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
 {
 
-    file = 0;
     giveStyle();
 
 
@@ -20,12 +19,12 @@ MenuBar::MenuBar(QWidget *parent) :
 
 void MenuBar::createContent()
 {
-createActions(); // if buttons with menus
-createButtons();
+    createActions(); // if buttons with menus
+    createButtons();
 
 
-readSettings();
-setMenusEnabled(false);
+    readSettings();
+    setMenusEnabled(false);
 }
 //---------------------------------------------------------------------------
 
@@ -101,7 +100,7 @@ void MenuBar::projectManager()
     projManager->setHub(hub);
     connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
     connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
-//    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+    //    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
     connect(projManager, SIGNAL(openProjectNumberSignal(int)),this, SIGNAL(openProjectNumberSignal(int)));
     projManager->projectAlreadyOpened(projectAlreadyOpened);
 
@@ -146,11 +145,11 @@ void MenuBar::displayConfig(int tabIndex)
 
 void MenuBar::closeProject()
 {
-//    if(projectAlreadyOpened == false)
-//        return;
+    //    if(projectAlreadyOpened == false)
+    //        return;
 
-//    if(file == 0)
-//        return;
+    //    if(file == 0)
+    //        return;
 
     QMessageBox msgBox(this);
     msgBox.setText(tr("Do you want to close the current project ?"));
@@ -184,13 +183,12 @@ void MenuBar::closeProject()
 
 void MenuBar::exporter()
 {
-    if(file == 0)
-        return;
 
     emit saveProjectSignal();
 
-    Exporter *exporterDialog = new Exporter(QString("export"), file, this);
+    Exporter *exporterDialog = new Exporter(QString("export"), this);
     exporterDialog->setHub(hub);
+    exporterDialog->postConstructor();
     exporterDialog->exec();
 
 }
@@ -200,13 +198,12 @@ void MenuBar::exporter()
 
 void MenuBar::print()
 {
-
-    if(file == 0)
+    if(!hub->isProjectOpened())
         return;
 
     emit saveProjectSignal();
 
-    Exporter *exporterDialog = new Exporter(QString("print"), file, this);
+    Exporter *exporterDialog = new Exporter(QString("print"), this);
     exporterDialog->setHub(hub);
     exporterDialog->exec();
 
@@ -218,13 +215,14 @@ void MenuBar::print()
 
 void MenuBar::findAndReplace()
 {
-    if(file == 0)
+    if(!hub->isProjectOpened())
         return;
 
     emit saveProjectSignal();
 
-    FindReplace *findReplaceDialog = new FindReplace(file, this);
+    FindReplace *findReplaceDialog = new FindReplace(this);
     findReplaceDialog->setHub(hub);
+    findReplaceDialog->postConstructor();
     findReplaceDialog->exec();
 
 }
@@ -233,7 +231,7 @@ void MenuBar::findAndReplace()
 
 void MenuBar::manageStyles()
 {
-this->displayConfig(2);
+    this->displayConfig(2);
 
 
 }
@@ -423,9 +421,9 @@ void MenuBar::createActions()
     findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
     connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
 
-//    createEditWidget();
-//    QWidgetAction *editWidgetAct = new QWidgetAction(this);
-//    editWidgetAct->setDefaultWidget(editWidget);
+    //    createEditWidget();
+    //    QWidgetAction *editWidgetAct = new QWidgetAction(this);
+    //    editWidgetAct->setDefaultWidget(editWidget);
 
     manageStylesAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Manage &Styles"),this);
     manageStylesAct->setShortcut(Qt::Key_F7);
@@ -435,7 +433,7 @@ void MenuBar::createActions()
     editGroup = new QMenu(tr("&Edit"),this);
     editGroup->addAction(findReplaceAct);
     editGroup->addSeparator();
-//    editGroup->addAction(editWidgetAct);
+    //    editGroup->addAction(editWidgetAct);
     editGroup->addAction(manageStylesAct);
 
     showTreeDockAct = new QAction(QIcon(":/pics/view-list-tree.png"),tr("&Project"),this);
@@ -520,12 +518,12 @@ void MenuBar::createEditWidget()
 
     editWidget = new EditMenu;
     editWidget->setHub(hub);
-  editWidget->setTextStyles(textStyles);
-  editWidget->createContent();
+    editWidget->setTextStyles(textStyles);
+    editWidget->createContent();
 
-QStringList widgetToHideList;
-widgetToHideList << "zoomBox" << "textWidthBox";
-  editWidget->hideWidgetsByName(widgetToHideList);
+    QStringList widgetToHideList;
+    widgetToHideList << "zoomBox" << "textWidthBox";
+    editWidget->hideWidgetsByName(widgetToHideList);
 
     //editWidget->setFrameStyle(QFrame::Panel);
     //editWidget->setLineWidth(2);
@@ -552,8 +550,8 @@ void MenuBar::setMenusEnabled(bool enabledBool)
 {
     editGroup->setEnabled(enabledBool);
     displayConfigAct->setEnabled(enabledBool);
-printAct->setEnabled(enabledBool);
-        exportAct->setEnabled(enabledBool);
+    printAct->setEnabled(enabledBool);
+    exportAct->setEnabled(enabledBool);
 }
 
 
@@ -738,10 +736,7 @@ void MenuBar::openProjectManagerSlot()
     projectManager();
 
     // for the drag drop open in OSX :
-    if(extFile !=0)
-        openExternalProject(externalPrjFile);
 
-    extFile = 0;
 
 
 }
@@ -753,410 +748,12 @@ void MenuBar::openNewProjectSlot()
     newProject();
 
 
-        projectManager();
+    projectManager();
 
 
 
 }
-//---------------------------------------------------------------------------
 
-void MenuBar::openProjectSlot(QFile *device)
-{
-//    qDebug() << "openProjectSlot : " << device->fileName();
-    closeProject();
-
-    file = new QFile(device->fileName());
-
-
-    emit openProjectSignal(device);
-
-    if(projManager->isVisible()){
-        projManager->close();
-    }
-
-    projectAlreadyOpened = true;
-
-}
-
-
-//---------------------------------------------------------------------------
-
-void MenuBar::setExternalProject(QFile *externalFile)
-{
-
-    QFileInfo *externalFileInfo = new QFileInfo(externalFile->fileName());
-    QString extFileName = externalFileInfo->fileName();
-    QString extFilePath = externalFileInfo->path();
-
-
-    // verify the .plume extension :
-
-    QString ext = extFileName.mid(extFileName.indexOf(".") + 1);
-    if(ext != "plume"){
-        QMessageBox::warning(this, tr("Plume Creator Warning"),
-                             tr("The file you are trying to open\n"
-                                " isn't a Plume project.\n"
-                                "\n\n"
-                                "Please open a .plume file."));
-        extFile = 0;
-        return;
-    }
-
-    externalPrjFile = externalFile;
-
-    //verify if the project isn't already in the manager :
-
-
-
-    QSettings settings;
-
-    int size = settings.value("Manager/projects/size", 0).toInt();
-    settings.beginReadArray("Manager/projects");
-
-    QStringList valueList;
-
-    for(int i=0; i < size; ++i){
-        settings.setArrayIndex(i);
-        valueList.append(QDir::fromNativeSeparators(settings.value("workPath").toString()));
-    }
-
-    settings.endArray();
-
-
-
-
-
-    //    QFile *logFile = new QFile;
-    //    logFile->setFileName(QDir::toNativeSeparators(extFilePath + "/plume.log"));
-    //    logFile->waitForBytesWritten(500);
-    //    logFile->close();
-    //    logFile->open(QFile::ReadWrite | QFile::Text | QFile::Append);
-    //    if(logFile->isWritable())
-    //    {
-    //        QTextStream logStream(logFile);
-
-    //            logStream << QDateTime::currentDateTime().toString() << " :  extFilePath : " << extFilePath;
-    //            logStream << "\n";
-    //            logStream << QDateTime::currentDateTime().toString() << " :  valueList.first() : " << valueList.first();
-    //            logStream << "\n";
-
-    //    }
-    //    logFile->close();
-
-
-
-// open directly the clicked file :
-
-    if(valueList.contains(QDir::fromNativeSeparators(extFilePath))){
-        //        QMessageBox::warning(this, tr("Plume Creator Warning"),
-        //                             tr("The file you are trying to open\n"
-        //                                " is already in the Plume project manager.\n"));
-        openProjectSlot(externalFile);
-
-        int prjNumber = valueList.indexOf(QDir::fromNativeSeparators(extFilePath));
-//        qDebug() << "prjNumber  : "<< QString::number(prjNumber);
-        emit openProjectNumberSignal(prjNumber);
-
-        extFile = 0;
-        return;
-    }
-
-
-
-    //find the .prjinfo, else create it :
-
-    QStringList filters;
-    QDir dir(extFilePath);
-    filters.clear();
-    filters << "*.prjinfo";
-
-
-
-    if(dir.entryList(filters).isEmpty()){
-        filters.clear();
-        filters << "*.plume";
-
-        QFile plumeFile(dir.entryList(filters).first());
-        QString projectName = plumeFile.fileName().split("/").last().remove(".plume");
-
-
-
-        // create an empty file :
-
-        QFile file(extFilePath + "/" + projectName + ".prjinfo");
-        file.waitForBytesWritten(500);
-        file.close();
-        file.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate);
-
-
-        QDomDocument domDoc("plume-information");
-
-        QDomElement root = domDoc.createElement("root");
-        root.setTagName("plume-information");
-        root.setAttribute("projectName", projectName);
-        root.setAttribute("version","0.2");
-        domDoc.appendChild(root);
-
-        QDomElement prjInfoElem = domDoc.createElement("prj");
-        prjInfoElem.setAttribute("name", projectName);
-        prjInfoElem.setAttribute("path", extFilePath.left(extFilePath.size() - projectName.size() - 1 ));
-        prjInfoElem.setAttribute("workPath", extFilePath);
-        prjInfoElem.setAttribute("lastModified", QDateTime::currentDateTime().toString());
-        prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString());
-        root.appendChild(prjInfoElem);
-
-        if(file.isWritable()){
-        file.flush();
-
-        const int IndentSize = 4;
-
-        QTextStream out(&file);
-        out.flush();
-        domDoc.save(out, IndentSize);
-}
-        file.close();
-    }
-
-    //modify the path attributes in case the project was moved:
-
-    filters.clear();
-    filters << "*.prjinfo";
-
-    QFile plumeFile(extFilePath + "/" + dir.entryList(filters).first());
-    QString projectName = plumeFile.fileName().split("/").last().remove(".prjinfo");
-
-//    QString string;
-//    qDebug() << "dirCount : "  << string.setNum(dir.entryList(filters).count()) << " = " << dir.entryList(filters).first();
-//    qDebug() << "plumeFile : " << plumeFile.fileName();
-//    QFileInfo *dirInfo = new QFileInfo(plumeFile);
-//    QString devicePath = dirInfo->absolutePath();
-//    qDebug() << "File path:" << devicePath;
-
-    plumeFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    //    QString f(plumeFile.readAll());
-    //    qDebug() << "f : "<< f;
-
-
-    QDomDocument domDocument;
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-
-    if (!domDocument.setContent(&plumeFile, true, &errorStr, &errorLine,
-                                &errorColumn)) {
-        QMessageBox::information(this, tr("Plume Creator Prj XML"),
-                                 tr("Parse error at line %1, column %2:\n%3\n")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
-
-
-        return;
-    }
-
-
-
-
-    QDomElement root = domDocument.documentElement();
-    if (root.tagName() != "plume-information") {
-        QMessageBox::information(this, tr("Plume Creator Prj Tree"),
-                                 tr("The file is not a Plume Creator information file."));
-        return;
-    } else if (root.hasAttribute("version")
-               && root.attribute("version") != "0.2") {
-        QMessageBox::information(this, tr("Plume Creator Prj Tree"),
-                                 tr("The file is not an Plume Creator information file version 0.2 "
-                                    "file."));
-        return;
-    }
-
-
-    QDomElement prjInfoElem = root.firstChildElement("prj");
-
-
-
-    //    if(extFilePath != prjInfoElem.attribute("workPath")){
-
-
-
-
-    prjInfoElem.setAttribute("path", extFilePath.left(extFilePath.size() - projectName.size() - 1 ));
-    prjInfoElem.setAttribute("workPath", extFilePath);
-
-    plumeFile.close();
-    plumeFile.open(QIODevice::ReadWrite | QIODevice::Text |QIODevice::Truncate	);
-
-    plumeFile.flush();
-
-    const int IndentSize = 4;
-
-
-    QTextStream out(&plumeFile);
-    out.flush();
-    domDocument.save(out, IndentSize);
-
-
-
-    //    }
-
-
-
-    plumeFile.close();
-
-
-    filters.clear();
-    filters << "*.prjinfo";
-
-
-    QFile *prjinfoFile = new QFile(extFilePath + "/" + dir.entryList(filters).first());
-
-    extFile = prjinfoFile;
-
-
-
-    openProjectManagerSlot();
-
-
-}
-
-//---------------------------------------------------------------------------
-bool MenuBar::openExternalProject(QFile *externalPrjFile)
-{
-
-
-    int ret = QMessageBox::question(this, tr("Open Project"),
-                                    tr("<p>You are opening a Plume project.</p>\n"
-                                       "<br>"
-                                       "<p>Do you want to add this project to the manager list ?</p>"),
-                                    QMessageBox::Yes | QMessageBox::No,
-                                    QMessageBox::Yes);
-
-    switch (ret) {
-    case QMessageBox::Yes:
-    {
-
-
-        QFile file(externalPrjFile->fileName());
-
-        QFileInfo *externalFileInfo = new QFileInfo(file.fileName());
-//        QString extFileName = externalFileInfo->fileName();
-        QString extFilePath = externalFileInfo->path();
-        QDir dir(extFilePath);
-        QStringList filters;
-
-        filters.clear();
-        filters << "*.prjinfo";
-
-
-        QFile infoFile(extFilePath + "/" + dir.entryList(filters).first());
-
-        QFileInfo *dirInfo = new QFileInfo(infoFile);
-        QString devicePath = dirInfo->path();
-        qDebug() << "File path:" << devicePath;
-        qDebug() << "File name :" << infoFile.fileName();
-
-
-        infoFile.open(QIODevice::ReadWrite | QIODevice::Text);
-
-
-        QDomDocument domDocument;
-        QString errorStr;
-        int errorLine;
-        int errorColumn;
-
-        if (!domDocument.setContent(&infoFile, true, &errorStr, &errorLine,
-                                    &errorColumn)) {
-            QMessageBox::information(this, tr("Plume Creator XML"),
-                                     tr("Parse error at line %1, column %2:\n%3\n")
-                                     .arg(errorLine)
-                                     .arg(errorColumn)
-                                     .arg(errorStr));
-
-
-            return false;
-        }
-
-
-
-
-        QDomElement root = domDocument.documentElement();
-        if (root.tagName() != "plume-information") {
-            QMessageBox::information(this, tr("Plume Creator Information Tree"),
-                                     tr("The file is not a Plume Creator information file."));
-            return false;
-        } else if (root.hasAttribute("version")
-                   && root.attribute("version") != "0.2") {
-            QMessageBox::information(this, tr("Plume Creator Information Tree"),
-                                     tr("The file is not an Plume Creator information file version 0.2 "
-                                        "file."));
-            return false;
-        }
-
-
-        QDomElement prjInfoElem = root.firstChildElement("prj");
-
-        QString projectName = prjInfoElem.attribute("name", tr("error"));
-        QString projectDirectory = prjInfoElem.attribute("path", tr("error"));
-        QString workingPath = prjInfoElem.attribute("workPath", tr("error"));
-        QString lastModified = prjInfoElem.attribute("lastModified", QDateTime::currentDateTime().toString());
-        QString creationDate = prjInfoElem.attribute("creationDate", QDateTime::currentDateTime().toString());
-
-        root.appendChild(prjInfoElem);
-
-
-
-        infoFile.close();
-file.close();
-
-
-        //Saving to .conf the new project :
-
-        QSettings settings;
-
-        int size = settings.value("Manager/projects/size", 0).toInt();
-
-
-        settings.beginWriteArray("Manager/projects");
-
-        settings.setArrayIndex(size);
-        settings.setValue("name", projectName);
-        settings.setValue("path", projectDirectory);
-        settings.setValue("workPath", workingPath);
-        settings.setValue("lastModified", lastModified);
-        settings.setValue("creationDate", creationDate);
-
-        settings.endArray();
-
-
-
-
-
-
-        extFile = 0;
-
-        //open or update the project manager :
-        openProjectManagerSlot();
-        return true;
-    }
-        break;
-    case QMessageBox::No:
-    {
-        openProjectSlot(externalPrjFile);
-        return false;
-    }
-        break;
-    default:
-        // should never be reached
-        break;
-
-
-    }
-
-
-return true;
-}
 
 
 //---------------------------------------------------------------------------
@@ -1192,7 +789,7 @@ void MenuBar::giveStyle()
 
 void MenuBar::applyConfig()
 {
-//    editWidget->applyConfig();
+    //    editWidget->applyConfig();
 
     emit applyConfigSignal();
 }

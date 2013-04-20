@@ -1,19 +1,24 @@
-#include "outliner/outlineritemdelegate.h"
+#include "outliner/outlineritemnotedelegate.h"
 
 #include <QtGui>
 
-OutlinerItemDelegate::OutlinerItemDelegate(QObject *parent) :
+OutlinerItemNoteDelegate::OutlinerItemNoteDelegate(QObject *parent) :
     QStyledItemDelegate(parent),editorLaunched(false)
 {
+    noteZoneCss = "NoteZone{"
+            "border-style: none;"
+            "background-color: rgba(100,100,100,0)"
+            "}"
+            ;
 }
-//const qreal OutlinerItemDelegate::THUMB_HEIGHT = 50.0;
-//const qreal OutlinerItemDelegate::THUMB_WIDTH = 50.0;
-//const qreal OutlinerItemDelegate::PADDING = 10.0;
-//const qreal OutlinerItemDelegate::ITEM_HEIGHT = THUMB_HEIGHT+20;
-//const qreal OutlinerItemDelegate::ITEM_WIDTH = THUMB_WIDTH+20;
+//const qreal OutlinerItemNoteDelegate::THUMB_HEIGHT = 50.0;
+//const qreal OutlinerItemNoteDelegate::THUMB_WIDTH = 50.0;
+//const qreal OutlinerItemNoteDelegate::PADDING = 10.0;
+//const qreal OutlinerItemNoteDelegate::ITEM_HEIGHT = THUMB_HEIGHT+20;
+//const qreal OutlinerItemNoteDelegate::ITEM_WIDTH = THUMB_WIDTH+20;
 
 
-//OutlinerItemDelegate::OutlinerItemDelegate(QObject* parent)
+//OutlinerItemNoteDelegate::OutlinerItemNoteDelegate(QObject* parent)
 //    : QStyledItemDelegate(parent), downloadInfo(true) {
 //    boldFont.setBold(true);
 //    smallerBoldFont = FontUtils::smallBold();
@@ -28,7 +33,7 @@ OutlinerItemDelegate::OutlinerItemDelegate(QObject *parent) :
 
 
 
-QWidget *OutlinerItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem & option , const QModelIndex & index ) const
+QWidget *OutlinerItemNoteDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem & option , const QModelIndex & index ) const
 {
     //  QTextEdit *editor = new QTextEdit(parent);
     ////  editor->setGeometry(QRect(40, 30, 401, 31));
@@ -43,24 +48,25 @@ QWidget *OutlinerItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
     //  editor->setText("This is text test!!1");
 
     //  return editor;
-    //    if(index.column() == 1 || index.column() == 2){
+    //        if(index.column() == 1 || index.column() == 2){
 
 
     NoteZone *note = new NoteZone(parent);
-  note->setHub(hub);  //     te->setFixedHeight(maxHeight+maxHeight/8);
+    note->setHub(hub);  //     te->setFixedHeight(maxHeight+maxHeight/8);
     note->document()->setDocumentMargin(0);
     note->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //        qDebug()<< "createEditor";
+    note->setStyleSheet(noteZoneCss);
 
     return(note);
-    //    }
+    //       }
     //    else
     //        return QStyledItemDelegate::createEditor(parent,option,index);
 
 }
 
 
-void OutlinerItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void OutlinerItemNoteDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     //    if(index.column() == 1 || index.column() == 2){
 
@@ -77,7 +83,7 @@ void OutlinerItemDelegate::setEditorData(QWidget *editor, const QModelIndex &ind
     //    else QStyledItemDelegate::setEditorData(editor,index);
 }
 
-void OutlinerItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void OutlinerItemNoteDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     //    if(index.column() == 1 || index.column() == 2){
 
@@ -116,7 +122,7 @@ void OutlinerItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
     //    else QStyledItemDelegate::setModelData(editor,model,index);
 }
 
-void OutlinerItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & index) const
+void OutlinerItemNoteDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & index) const
 {
     //    if(index.column() == 1 || index.column() == 2){
     editor->setGeometry(option.rect);
@@ -125,10 +131,10 @@ void OutlinerItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpt
 
 
 
-//OutlinerItemDelegate::~OutlinerItemDelegate() { }
+//OutlinerItemNoteDelegate::~OutlinerItemNoteDelegate() { }
 
-QSize OutlinerItemDelegate::sizeHint( const QStyleOptionViewItem& option,
-                                      const QModelIndex& index ) const
+QSize OutlinerItemNoteDelegate::sizeHint( const QStyleOptionViewItem& option,
+                                          const QModelIndex& index ) const
 {
 
 
@@ -154,65 +160,32 @@ QSize OutlinerItemDelegate::sizeHint( const QStyleOptionViewItem& option,
     // to include their size to the returned value)
 
 
-//    QTextDocument doc;
-//    doc.setDefaultFont(option.font);
-//    doc.setHtml(index.data(33).toString());
-//    doc.setDocumentMargin(1);
-//    QTextCursor cursor(&doc);
-//    cursor.setPosition(0);
-//    cursor.select(QTextCursor::BlockUnderCursor);
-//    doc.setHtml(cursor.selection().toHtml());
-//    if(doc.size().toSize().height() < 200)
-//    return doc.size().toSize();
-//else
+    //    QTextDocument doc;
+    //    doc.setDefaultFont(option.font);
+    //    doc.setHtml(index.data(33).toString());
+    //    doc.setDocumentMargin(1);
+    //    QTextCursor cursor(&doc);
+    //    cursor.setPosition(0);
+    //    cursor.select(QTextCursor::BlockUnderCursor);
+    //    doc.setHtml(cursor.selection().toHtml());
+    //    if(doc.size().toSize().height() < 200)
+    //    return doc.size().toSize();
+    //else
     return QStyledItemDelegate::sizeHint(option,index);
 
 
 }
 
-void OutlinerItemDelegate::paint( QPainter* painter,
-                                  const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void OutlinerItemNoteDelegate::paint( QPainter* painter,
+                                      const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
 
 
 
-    //    //    int itemType = index.data(ItemTypeRole).toInt();
-    //    //    if (itemType == ItemTypeVideo) {
-    //    //        QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
-    //    //        paintBody( painter, option, index );
-    //    //   }
-    //    if(index.column() == 1){
-
-    //        qDebug() << "paint 1";
-    //        QVariant value = index.data(Qt::DisplayRole);
-    //        if (value.isValid() && !value.isNull())
-    //        {
-    //            qDebug() << "paint valid a";
-
-
-    //            QTextDocument document;
-    //            document.setDocumentMargin(2);
-    //            document.setHtml(value.toString());
-    //            painter->translate(option.rect.topLeft());
-    //            document.drawContents(painter);
-    //            painter->translate(-option.rect.topLeft());
-
-    //qDebug() << "paint valid b";
-    //            //            QApplication::style()->drawControl(QStyle::CE_ProgressBar,
-    //            //                                               &progressBarOption, painter);
-    //        }
-    //        qDebug() << "paint valid 2";
-
-    //    }
-    //    else
-    //        QStyledItemDelegate::paint( painter, option, index );
-
-    //    if(index.column() == 1 || index.column() == 2){
-
     QStyleOptionViewItemV4 options = option;
     initStyleOption(&options, index);
 
-    //    QString s = index.model()->data(index, Qt::DisplayRole).toString();
+
     NoteZone te;
     QTextDocument *textDoc = new QTextDocument;
     textDoc->setHtml(index.model()->data(index, 33).toString());
@@ -220,61 +193,22 @@ void OutlinerItemDelegate::paint( QPainter* painter,
     te.openOutlinerDoc(textDoc);
 
 
+    te.setStyleSheet(noteZoneCss);
 
 
 
     painter->save();
 
-    //        textDoc->drawContents(painter,option.rect);
     options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
-    //              QRect clip(0, 0, options.rect.width()/*+iconSize.width()*/, options.rect.height());
-    //                     painter->setClipRect(clip);
     te.setGeometry(option.rect);
     painter->translate(option.rect.x(), option.rect.y());
     te.render(painter);
     painter->restore();
-    //    }
-    //    else QStyledItemDelegate::paint( painter, option, index );
-
-
-
-
-
-
-
-
-    //    QStyleOptionViewItemV4 options = option;
-    //       initStyleOption(&options, index);
-
-    //       painter->save();
-
-    //       QTextDocument doc;
-    //       doc.setHtml(options.text);
-
-    //       options.text = "";
-    //       options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
-
-    //       // shift text right to make icon visible
-    ////       QSize iconSize = options.icon.actualSize(options.rect.size());
-    //       painter->translate(options.rect.left()/*+iconSize.width()*/, options.rect.top());
-    //       QRect clip(0, 0, options.rect.width()/*+iconSize.width()*/, options.rect.height());
-
-    //       //doc.drawContents(painter, clip);
-
-    //       painter->setClipRect(clip);
-    //       QAbstractTextDocumentLayout::PaintContext ctx;
-    //       // set text color to red for selected item
-    //       if (option.state & QStyle::State_Selected)
-    //           ctx.palette.setColor(QPalette::Text, QColor("red"));
-    //       ctx.clip = clip;
-    //       doc.documentLayout()->draw(painter, ctx);
-
-    //       painter->restore();
 
 
 }
 
-//void OutlinerItemDelegate::paintBody( QPainter* painter,
+//void OutlinerItemNoteDelegate::paintBody( QPainter* painter,
 //                                    const QStyleOptionViewItem& option,
 //                                    const QModelIndex& index ) const {
 
@@ -318,11 +252,11 @@ void OutlinerItemDelegate::paint( QPainter* painter,
 //--------------------------------------------------------------------------------------------------
 
 
-bool OutlinerItemDelegate::editorEvent ( QEvent * event, QAbstractItemModel * model,
-                                         const QStyleOptionViewItem & option, const QModelIndex & index )
+bool OutlinerItemNoteDelegate::editorEvent ( QEvent * event, QAbstractItemModel * model,
+                                             const QStyleOptionViewItem & option, const QModelIndex & index )
 {
 
-     return QStyledItemDelegate::editorEvent(event, model,option,index);
+    return QStyledItemDelegate::editorEvent(event, model,option,index);
 
 }
 
@@ -330,11 +264,11 @@ bool OutlinerItemDelegate::editorEvent ( QEvent * event, QAbstractItemModel * mo
 
 //--------------------------------------------------------------------------------------------------
 
-bool OutlinerItemDelegate::eventFilter ( QObject * editor, QEvent * event )
+bool OutlinerItemNoteDelegate::eventFilter ( QObject * editor, QEvent * event )
 {
 
 
-    NoteZone * textEdit = static_cast<NoteZone*>(editor);
+//    NoteZone * textEdit = static_cast<NoteZone*>(editor);
 
 
     if(event->type() == QEvent::MouseButtonRelease)

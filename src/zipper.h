@@ -10,7 +10,7 @@ class Zipper : public QThread
     Q_OBJECT
 public:
     explicit Zipper(QObject *parent = 0);
-    void setJob(QString job, QString fileName);
+    void setJob(QString job, QString fileName, QString workPath);
 
 
 protected:
@@ -28,7 +28,7 @@ private:
     void extract(QString zipFileName);
     void compress(QString zipFileName);
     QString currentJob;
-    QString fileName_;
+    QString m_fileName, m_workPath;
 
 };
 

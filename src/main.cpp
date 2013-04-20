@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     // UTF-8 codec
 
 #if QT_VERSION < 0x050000
-//    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8")); // delete for QT5
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8")); // delete for QT5
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8")); // delete for QT5
 #endif
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
@@ -276,16 +276,16 @@ int main(int argc, char *argv[])
 
 
     QString translatorFileName = QLatin1String("qt_");
-    QString plumeTranslatorFileName = QLatin1String(":/langs/plume-creator_");
+    QString plumeTranslatorFileName = QLatin1String(":/translations/plume-creator_");
 
 
 
     if (settings.value("MainWindow/firstStart", true).toBool() || settings.value("MainWindow/lang", "none").toString() == "none" ){
 
         QStringList langs;
-        langs << "Français" << "English" << "Italiano";
+        langs << "Français" << "English" << "Italiano" << "Deutsch";
         QStringList langCodes;
-        langCodes << "fr_FR" << "en_US" << "it_IT";
+        langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE";
 
 
         bool ok;
@@ -351,14 +351,19 @@ int main(int argc, char *argv[])
     QApplication::instance()->installEventFilter(&mw);
 
     if(argc > 1){
+        QTextCodec *codec = QTextCodec::codecForUtfText(argv[argc - 1]);
+    QString argument = argv[argc - 1];
+#ifdef Q_OS_WIN32
+        argument = codec->toUnicode(argv[argc - 1]);
+#endif
+//        qDebug() << "codec : " << codec->name();
 
-        QString argument = argv[argc - 1];
         argument = QDir::fromNativeSeparators(argument);
 //        argument = ;
-        qDebug() << "argument : " << argument;
+//        qDebug() << "argument : " << argument;
         QFile file(argument); //pick the last argument
 //                if(file.exists() && file.isReadable() && file.isWritable()){
-                    qDebug() << "OPENING";
+//                    qDebug() << "OPENING";
                     mw.openExternalProject(&file);
 //                }
     }

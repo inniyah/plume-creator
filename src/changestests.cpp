@@ -63,3 +63,10 @@ bool ChangesTests::test(QHash<MainTextDocument *,int> oldHash, QHash<MainTextDoc
 }
 
 //--------------------------------------------------------------------------------
+bool  ChangesTests::test(QHash<int, QDomElement> oldHash, QHash<int, QDomElement> newHash)
+{
+    if(oldHash != newHash)
+        return  false;
+    else
+        return  true;
+}

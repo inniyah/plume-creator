@@ -43,6 +43,8 @@ public:
     OutlinerTreeItem *parent();
     int idNumber() const;
     void setIdNumber(int number);
+    bool isExpanded() const;
+    void setIsExpanded(bool isExpandedBool);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
@@ -53,6 +55,8 @@ private:
     QList<QVariant> itemData;
     OutlinerTreeItem *parentItem;
     int itemId;
+    QStringList m_povList;
+    bool m_isExpanded;
 
 };
 

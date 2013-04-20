@@ -99,9 +99,6 @@ public slots:
 
     void openProjectManagerSlot();
     void openNewProjectSlot();
-    void openProjectSlot(QFile *device);
-void setExternalProject(QFile *externalFile);
-bool openExternalProject(QFile *externalPrjFile);
 QMenuBar *createMenuBar();
 
 
@@ -194,9 +191,7 @@ TextStyles *textStyles;
 
 
     PrjManager *projManager;
-    QFile *file;
-QFile *externalPrjFile;
-    QFile *extFile;
+
 };
 
 #endif // MENUBAR_H

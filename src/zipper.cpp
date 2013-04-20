@@ -6,10 +6,11 @@ Zipper::Zipper(QObject *parent) :
 {
 }
 
-void Zipper::setJob(QString job, QString fileName)
+void Zipper::setJob(QString job, QString fileName, QString workPath)
 {
     currentJob = job;
-    fileName_ = fileName;
+    m_fileName = fileName;
+    m_workPath = workPath;
 
 }
 void Zipper::compress(QString zipFileName)
@@ -30,8 +31,9 @@ void Zipper::compress(QString zipFileName)
     if(isLockingSuccessfull == true){
 
         QString projectName = zipFileName.split("/").last().remove(".plume");
-    QFileInfo fileInfo(zipFileName);
-    JlCompress::compressDir(zipFileName, fileInfo.dir().path()  + "/." + projectName);
+//    QFileInfo fileInfo(zipFileName);
+//    JlCompress::compressDir(zipFileName, fileInfo.dir().path()  + "/." + projectName);
+    JlCompress::compressDir(zipFileName, m_workPath);
 
     }
     else
@@ -60,13 +62,12 @@ void Zipper::extract(QString zipFileName)
 
 //    qDebug() << zipFileName;
 
-    QFileInfo fileInfo(zipFileName) ;
 
 //    qDebug() <<  "fileInfo.dir().path() : "<< fileInfo.dir().path();
 
-    QString projectName = zipFileName.split("/").last().remove(".plume");
+
     QStringList list;
-    list =  JlCompress::extractDir(zipFileName, fileInfo.dir().path()  + "/." + projectName);
+    list =  JlCompress::extractDir(zipFileName, m_workPath);
 
 //    qDebug() << "path : " + fileInfo.dir().path()  + "/essai" ;
 //    for(int i = 0; i < list.size(); ++i){
@@ -98,12 +99,12 @@ void Zipper::run()
     if(isLockingSuccessfull == true){
 
         if(currentJob == "compress"){
-            qDebug() << "compressing...";
-            this->compress(fileName_);
+//            qDebug() << "compressing...";
+            this->compress(m_fileName);
         }
        else  if(currentJob == "extract"){
-            qDebug() << "extracting...";
-            this->extract(fileName_);
+//            qDebug() << "extracting...";
+            this->extract(m_fileName);
         }
     }
     else
