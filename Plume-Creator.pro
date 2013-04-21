@@ -11,7 +11,7 @@ QT += core gui xml
 
 TEMPLATE = app
 
-VERSION = 0.58.8
+VERSION = 0.59
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -90,7 +90,9 @@ src/hub.cpp \
     src/wordcountenginethread.cpp \
     src/utils.cpp \
     src/outliner/outlineritemnotedelegate.cpp \
-    src/outliner/outlineritempovdelegate.cpp
+    src/outliner/outlineritempovdelegate.cpp \
+    src/slimfindreplace.cpp \
+    src/texthighlighter.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -140,7 +142,9 @@ src/hub.h \
     src/wordcountenginethread.h \
     src/utils.h \
     src/outliner/outlineritemnotedelegate.h \
-    src/outliner/outlineritempovdelegate.h
+    src/outliner/outlineritempovdelegate.h \
+    src/slimfindreplace.h \
+    src/texthighlighter.h
 
 CODECFORTR = UTF-8
 
@@ -162,7 +166,8 @@ src/mainwindow.ui \
 src/wordgoalprogressbar.ui \
     src/attend/attendbase.ui \
     src/attend/attendmanager.ui \
-    src/attend/attendsettings.ui
+    src/attend/attendsettings.ui \
+    src/slimfindreplace.ui
 
 RESOURCES += \
 translations/langs.qrc \

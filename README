@@ -11,11 +11,12 @@ v 0.59
 	- Fullscreen :
 		- added buttons "previous", "next" and "new sheet"
 	- New progress bar
+	- New Find & Replace in right-click menu
 	- The projects are now one single file
-	- added .plume_backup for worst cases
-	- major change of Plume inner workings
-	- added notification tray message when exiting
-	- text is saved while in fullscreen mode
+	- Added .plume_backup for worst cases
+	- Major change of Plume inner workings
+	- Added notification tray message when exiting
+	- Text is saved while in fullscreen mode
 	- Qt5 ready, waiting for packages in Linux distribs
 	
 	

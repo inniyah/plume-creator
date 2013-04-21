@@ -33,7 +33,10 @@ public slots:
     void setHub(Hub *varHub){hub = varHub;}
 
 private slots:
-    void launchAttendManager();
+    AttendManager* launchAttendManager();
+    void openDetailsOf_fromGlobal(QModelIndex index = QModelIndex());
+    void openDetailsOf_fromSheet(QModelIndex index = QModelIndex());
+
     void setManagerLaunched(){isManagerLaunched = false;}
     void on_collapseButton_clicked();
 
@@ -43,10 +46,12 @@ private slots:
 
 
 private:
-    Ui::AttendBase *ui;
+   Ui::AttendBase *ui;
     Hub *hub;
 
     AttendAbstractModel *absModel;
+    AttendGlobalTreeProxyModel *globalProxyModel;
+    AttendSheetTreeProxyModel *sheetProxyModel;
     bool isManagerLaunched;
 };
 

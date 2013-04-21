@@ -100,12 +100,10 @@ private slots:
     void wordCountChangedSlot(QString type, int id, int count);
 
     void on_newButton_clicked();
-
     void on_nextButton_clicked();
-
     void on_prevButton_clicked();
+    void on_navigatorComboBox_currentIndexChanged(const int index);
 
-    void on_navigatorComboBox_currentIndexChanged(const QString name);
 
 private:
     void setText(MainTextDocument *doc);
@@ -156,6 +154,7 @@ QWidget *synWidget,*noteWidget;
     QString treeString;
     QHash<int, QDomElement> domElementForNumber;
     QHash<int, QString> nameForNumber;
+    QHash<int, int> indexForNumber;
     int numberOfCurrentFullscreenSheet;
 
 

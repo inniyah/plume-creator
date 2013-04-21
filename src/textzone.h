@@ -36,6 +36,7 @@ public:
     ~TextZone();
     void createContent();
     void setDoc(MainTextDocument *doc);
+    void addActions(QList<QAction*> actions);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
@@ -121,6 +122,7 @@ private:
 
     bool preventDoubleSpaceOption;
 
+    QList<QAction*> m_actions;
 };
 
 #endif // TEXTZONE_H

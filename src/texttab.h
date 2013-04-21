@@ -26,6 +26,7 @@
 #include "hub.h"
 #include "textzone.h"
 #include "textstyles.h"
+#include "slimfindreplace.h"
 //
 
 class TextTab : public QWidget
@@ -38,7 +39,7 @@ public:
     //    bool saveText(QFile *textFile, QString name);
 
     //for wordcount:
-    QTextDocument* document();
+    MainTextDocument* document();
 
 signals:
 
@@ -75,13 +76,15 @@ public slots:
     void setTextStyles(TextStyles *styles);
 
 private slots:
-
+    void launchSlimFindReplace();
     void cursorPositionChangedSlot();
     void giveStyle();
 
 private:
+    void addSlimFindReplaceAction();
     Hub *hub;
     TextStyles *textStyles;
+QVBoxLayout *textZoneVLayout;
 
     MainTextDocument *prevTextDocument;
     MainTextDocument *textDocument;

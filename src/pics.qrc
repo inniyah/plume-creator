@@ -9,6 +9,9 @@
         <file>pics/applications-system.png</file>
         <file>pics/archive-insert.png</file>
         <file>pics/arrow-down.png</file>
+        <file>pics/arrow-left.png</file>
+        <file>pics/arrow-right.png</file>
+        <file>pics/arrow-right-replace.png</file>
         <file>pics/arrow-up.png</file>
         <file>pics/bookmarks-organize.png</file>
         <file>pics/configure.png</file>
@@ -60,6 +63,7 @@
         <file>pics/preferences-system-90.png</file>
         <file>pics/removeItem.png</file>
         <file>pics/table.png</file>
+        <file>pics/temp.png</file>
         <file>pics/tools-wizard.png</file>
         <file>pics/view-fullscreen.png</file>
         <file>pics/view-fullscreen-90.png</file>

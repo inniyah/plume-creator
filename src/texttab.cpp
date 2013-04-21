@@ -24,12 +24,17 @@ TextTab::TextTab(QWidget *parent) :
     textZone->setHub(hub);
     textZone->toHtml();
 
+    QWidget *textZoneWidget = new QWidget;
+    textZoneVLayout = new QVBoxLayout;
+    textZoneVLayout->setSpacing(0);
+    textZoneVLayout->addWidget(textZone);
+    textZoneWidget->setLayout(textZoneVLayout);
+
     QHBoxLayout *layout = new QHBoxLayout;
-    //QVBoxLayout *vLayout = new QVBoxLayout;
     QSplitter *splitter = new QSplitter;
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(prevTextZone);
-    splitter->addWidget(textZone);
+    splitter->addWidget(textZoneWidget);
     splitter->addWidget(nextTextZone);
 
 
@@ -125,7 +130,7 @@ bool TextTab::openText(MainTextDocument *doc)
 
 
 
-
+    this->addSlimFindReplaceAction();
 
     connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
     connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -137,6 +142,8 @@ bool TextTab::openText(MainTextDocument *doc)
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
     //    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
+
+
 
     applyConfig();
 
@@ -168,7 +175,7 @@ bool TextTab::openText(MainTextDocument *doc)
 
 
 //-------------------------------------------------------------------------------
-QTextDocument* TextTab::document()
+MainTextDocument* TextTab::document()
 {
     return textDocument;
 }
@@ -387,8 +394,36 @@ void  TextTab::setNextText(MainTextDocument *nextDoc)
 
 
 //-------------------------------------------------------------------------------
+void  TextTab::addSlimFindReplaceAction()
+{
+    QList<QAction*> actions;
 
 
+
+    QAction *findAct = new QAction(QIcon(":/pics/edit-find-replace.png"),tr("Find && replace"), this);
+    findAct->setShortcuts(QKeySequence::Find);
+    findAct->setStatusTip(tr("Find text"));
+    connect(findAct, SIGNAL(triggered()), this, SLOT(launchSlimFindReplace()));
+
+    actions.append(findAct);
+
+    textZone->addActions(actions);
+
+}
+//-------------------------------------------------------------------------------
+
+void  TextTab::launchSlimFindReplace()
+{
+    SlimFindReplace *findReplace = new SlimFindReplace(this);
+    findReplace->setHub(hub);
+    findReplace->setDocument(textDocument);
+    findReplace->setTextEdit(textZone);
+
+    textZoneVLayout->insertWidget(-1, findReplace);
+
+}
+
+//-------------------------------------------------------------------------------
 void TextTab::applyConfig()
 {
     textZone->applyConfig();

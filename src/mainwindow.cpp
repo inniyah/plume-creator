@@ -493,11 +493,11 @@ void MainWindow::createNoteDock()
 
 void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
 {
-    if(noteDockArea == Qt::LeftDockWidgetArea | noteDockArea == Qt::RightDockWidgetArea){
+    if(noteDockArea == Qt::LeftDockWidgetArea || noteDockArea == Qt::RightDockWidgetArea){
         noteDockLayout->setDirection(QBoxLayout::TopToBottom);
         noteSplitter->setOrientation(Qt::Vertical);
     }
-    else if(noteDockArea == Qt::TopDockWidgetArea | noteDockArea == Qt::BottomDockWidgetArea){
+    else if(noteDockArea == Qt::TopDockWidgetArea || noteDockArea == Qt::BottomDockWidgetArea){
         noteDockLayout->setDirection(QBoxLayout::LeftToRight);
         noteSplitter->setOrientation(Qt::Horizontal);
     }
@@ -544,7 +544,7 @@ void MainWindow::createStatusBar()
 
     //    ui->bar->addPermanentWidget(sceneWCLabel,1);
     //    ui->bar->addPermanentWidget(stretcher2,10);
-    ui->bar->addPermanentWidget(stretcher2,10);
+    ui->bar->addWidget(stretcher2,10);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
     //    bar->addPermanentWidget(status_tabFullscreenButton,2);
     ui->bar->addPermanentWidget(wordGoalBar);
@@ -1505,7 +1505,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
         systemTray->show();
         systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
-systemTray->hide();
+
         break;
 
     case QMessageBox::Cancel:

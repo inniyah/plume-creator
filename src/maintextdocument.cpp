@@ -7,6 +7,7 @@ MainTextDocument::MainTextDocument(QObject *parent) :
     wordCountEngine = new WordCountEngine(this, this);
     connect(wordCountEngine,SIGNAL(wordCountChanged(int)), this, SLOT(wordCountChangedSlot(int)));
 
+    highlighter = new TextHighlighter(this);
 }
 
 //-------------------------------------------------------------
@@ -52,4 +53,9 @@ void MainTextDocument::wordCountChangedSlot(int count)
 //    qDebug() << "wordCountChanged : " << this->docType();
 //    qDebug() << "wordCountChanged : " << QString::number(count);
     emit wordCountChanged(this->docType(), this->idNumber(), count);
+}
+
+TextHighlighter* MainTextDocument::textHighlighter()
+{
+    return highlighter;
 }

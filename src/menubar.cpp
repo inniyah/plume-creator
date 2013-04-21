@@ -418,7 +418,7 @@ void MenuBar::createActions()
 
     findReplaceAct = new QAction(QIcon(":/pics/edit-find-replace.png"),tr("&Find && Replace"),this);
     // aboutAct->setShortcut(QKeySequence::Quit);
-    findReplaceAct->setToolTip(tr("Find & Replace Dialog"));
+    findReplaceAct->setToolTip(tr("Find && Replace Dialog"));
     connect(findReplaceAct, SIGNAL(triggered()), this, SLOT(findAndReplace()));
 
     //    createEditWidget();

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SlimFindReplace</class>
+ <widget class="QWidget" name="SlimFindReplace">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>649</width>
+    <height>46</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QLineEdit" name="findLineEdit">
+     <property name="placeholderText">
+      <string>Find :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="previousButton">
+     <property name="toolTip">
+      <string>Find previous</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="pics.qrc">
+       <normaloff>:/pics/arrow-left.png</normaloff>:/pics/arrow-left.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="nextButton">
+     <property name="toolTip">
+      <string>Find next</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="pics.qrc">
+       <normaloff>:/pics/arrow-right.png</normaloff>:/pics/arrow-right.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="caseSensitiveCheckBox">
+     <property name="toolTip">
+      <string>Case sensitivity</string>
+     </property>
+     <property name="text">
+      <string>Case</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="replaceAndNextButton">
+     <property name="toolTip">
+      <string>Replace &amp; Find next</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="pics.qrc">
+       <normaloff>:/pics/arrow-right-replace.png</normaloff>:/pics/arrow-right-replace.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="replaceLineEdit">
+     <property name="placeholderText">
+      <string>Replace with :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="closeButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pics.qrc">
+       <normaloff>:/pics/window-close-32x32.png</normaloff>:/pics/window-close-32x32.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string extracomment="Close"/>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="pics.qrc"/>
+ </resources>
+ <connections/>
+</ui>

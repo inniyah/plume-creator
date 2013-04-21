@@ -168,6 +168,12 @@ void TextZone::createActions()
 
 }
 
+void TextZone::addActions(QList<QAction*> actions)
+{
+    m_actions = actions;
+}
+
+
 //------------------------------------------------------------------
 
 void TextZone::undo()
@@ -296,6 +302,8 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
     menu.addSeparator();
     menu.addAction(undoAct);
     menu.addAction(redoAct);
+    menu.addSeparator();
+    menu.addActions(m_actions);
 
     menu.exec(event->globalPos());
 }

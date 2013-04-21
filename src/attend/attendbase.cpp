@@ -24,12 +24,12 @@ void AttendBase::startAttendance()
 
     absModel->resetAbsModel();
 
-    AttendGlobalTreeProxyModel *globalProxyModel = new AttendGlobalTreeProxyModel;
+    globalProxyModel = new AttendGlobalTreeProxyModel;
     globalProxyModel->setHub(hub);
     globalProxyModel->setSourceModel(absModel);
     ui->globalTreeView->setModel(globalProxyModel );
 
-    AttendSheetTreeProxyModel *sheetProxyModel = new AttendSheetTreeProxyModel;
+    sheetProxyModel = new AttendSheetTreeProxyModel;
     sheetProxyModel->setHub(hub);
     sheetProxyModel->setSourceModel(absModel);
     ui->sheetTreeView->setModel(sheetProxyModel );
@@ -47,12 +47,15 @@ void AttendBase::startAttendance()
     connect(ui->sheetTreeView, SIGNAL(viewportEntered()), this, SLOT(expandAll()), Qt::UniqueConnection);
     connect(ui->globalTreeView, SIGNAL(viewportEntered()), this, SLOT(expandAll()), Qt::UniqueConnection);
 
+
+    connect(ui->sheetTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openDetailsOf_fromSheet(QModelIndex)));
+    connect(ui->globalTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openDetailsOf_fromGlobal(QModelIndex)));
 }
 
-void AttendBase::launchAttendManager()
+AttendManager* AttendBase::launchAttendManager()
 {
-    if(isManagerLaunched)
-        return;
+    if(isManagerLaunched )
+        return 0;
 
     AttendManager *manager = new AttendManager(this, absModel);
     manager->setHub(hub);
@@ -63,8 +66,25 @@ void AttendBase::launchAttendManager()
     isManagerLaunched = true;
 
     expandAll();
+
+
+    return manager;
+
 }
 
+void AttendBase::openDetailsOf_fromGlobal(QModelIndex index)
+{
+    launchAttendManager()->openDetailsOf(globalProxyModel->mapToSource(index));
+
+
+
+}
+void AttendBase::openDetailsOf_fromSheet(QModelIndex index)
+{
+    launchAttendManager()->openDetailsOf(sheetProxyModel->mapToSource(index));
+
+
+}
 
 void AttendBase::on_collapseButton_clicked()
 {

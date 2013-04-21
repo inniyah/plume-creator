@@ -77,6 +77,16 @@ AttendManager::~AttendManager()
     delete ui;
 }
 
+void AttendManager::openDetailsOf(QModelIndex sourceObject)
+{
+    QModelIndex object = managerProxyModel->mapFromSource(sourceObject);
+ui->managerTreeView->setCurrentIndex(object);
+this->setItemActivated(object);
+}
+
+
+
+
 void AttendManager::setItemActivated(QModelIndex index)
 {
     ui->optionsFrame->setEnabled(true);

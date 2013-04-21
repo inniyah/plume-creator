@@ -19,6 +19,7 @@ public:
     explicit AttendManager(QWidget *parent, AttendAbstractModel *absModel);
     ~AttendManager();
     void postConstructor();
+    void openDetailsOf(QModelIndex object);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}

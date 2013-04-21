@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "wordcountengine.h"
+#include "texthighlighter.h"
 
 class MainTextDocument : public QTextDocument
 {
@@ -22,6 +23,7 @@ public:
     int cursorPos() const;
 
     int wordCount(){return wordCountEngine->wordCount();}
+    TextHighlighter* textHighlighter();
 
 signals:
     void wordCountChanged(QString type, int id, int count);
@@ -34,8 +36,10 @@ private slots:
 
 private:
     WordCountEngine *wordCountEngine;
+    TextHighlighter *highlighter;
     int itemId, m_cursorPos;
     QString m_docType;
+
 };
 
 #endif // MAINTEXTDOCUMENT_H
