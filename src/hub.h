@@ -134,7 +134,8 @@ private slots:
     void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
 
 private:
-    bool refreshIsLocked;
+   void addProjectToPrjManager(QString fileName, QString _name, QDateTime creationDate);
+   bool refreshIsLocked;
 
     QString m_projectName;
     QString m_projectFileName;
@@ -170,6 +171,7 @@ int saveStack;
 QList<int> timerIdList;
 void stopSaveTimer();
 
+int settingNumber;
 
 // wordcount :
  WordCountEngineThread *wcThread;

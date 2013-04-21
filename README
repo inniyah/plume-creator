@@ -1,5 +1,14 @@
 PLUME CREATOR
 
+v 0.59.1
+	- Attendance :
+		- indentation in views shorted
+	- Outliner :
+		- force a reset for this version
+		- add a button to force a reset manually
+	- Project manager :
+		- fix : add again project in the list when opening an unknown project
+
 v 0.59
 	- New Attendance Manager and dock.
 		- Point of View

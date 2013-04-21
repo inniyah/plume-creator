@@ -510,8 +510,10 @@ void Hub::startProject(QString file)
 
 
 
-
     loadProject();
+
+    this->addProjectToPrjManager(this->projectFileName(), this->projectName(), QDateTime::currentDateTime());
+// QDateTime::currentDateTime() is temporary;
 
     // wordCount :
 
@@ -586,6 +588,14 @@ void Hub::closeCurrentProject()
 
         ++j;
     }
+
+
+    QSettings settings;
+    settings.beginWriteArray("Manager/projects");
+    settings.setArrayIndex(settingNumber);
+    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+    settings.endArray();
+
 
 
     m_mainTree_fileForDocHash.clear();
@@ -735,9 +745,11 @@ bool Hub::loadTemp()
 
     m_infoTreeDomDoc = infoDomDoc;
 
+
     infoFile->close();
 
 
+    this->setProjectName(infoDomDoc.documentElement().firstChildElement("prj").toElement().attribute("name", "error"));
 
 
 
@@ -1209,6 +1221,67 @@ void Hub::connectAllSheetsToWordCountThread()
 }
 
 
+
+
+
+void Hub::addProjectToPrjManager(QString fileName, QString _name, QDateTime creationDate)
+{
+QString name = fileName.split("/").last().remove(".plume");
+
+    QSettings settings;
+
+    settings.beginGroup("Manager/projects");
+
+    QStringList groups = settings.childGroups();
+    int size = groups.size();
+    settings.setValue("size", size);
+    settings.endGroup();
+
+    // check if the project already exist :
+    QString iName;
+    QString iPath;
+QDir iDir;
+    QDir dir;
+    QFileInfo info(fileName);
+        //    projectWorkingPath = info.absolutePath()
+    for(int i = 0 ; i < size; ++i){
+    settings.beginReadArray("Manager/projects");
+    settings.setArrayIndex(i);
+    iName = settings.value("name").toString();
+    iPath = settings.value("path").toString();
+    settings.endArray();
+iDir.setPath(iPath);
+dir.setPath(info.absolutePath());
+    if(iName == name && iDir == dir){
+        settingNumber = i;
+        return;
+    }
+
+    }
+
+
+
+
+
+
+
+    // add project
+
+
+    settingNumber = size;
+
+    settings.beginWriteArray("Manager/projects");
+
+    settings.setArrayIndex(size);
+    settings.setValue("name", name);
+    settings.setValue("path", info.absolutePath());
+    settings.setValue("workPath", "OBSOLETE");
+    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+    settings.setValue("creationDate", creationDate.toString(Qt::ISODate));
+
+    settings.endArray();
+
+}
 
 
 

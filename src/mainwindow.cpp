@@ -878,11 +878,6 @@ void MainWindow::closeProjectSlot()
 
     //    attendList->accept(); //to close the manager;
 
-    QSettings settings;
-    settings.beginWriteArray("Manager/projects");
-    settings.setArrayIndex(settingNumber);
-    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
-    settings.endArray();
 
     hub->closeCurrentProject();
     //    attendList->closeAll();

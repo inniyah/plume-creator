@@ -543,8 +543,8 @@ bool FileUpdater::checkInfoFile(QString projectFileName)
             prjInfoElem.setAttribute("name", projectName);
             prjInfoElem.setAttribute("path", dir.path().left(dir.path().size() - projectName.size() - 1 ));
             prjInfoElem.setAttribute("workPath", dir.path());
-            prjInfoElem.setAttribute("lastModified", QDateTime::currentDateTime().toString());
-            prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString());
+            prjInfoElem.setAttribute("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+            prjInfoElem.setAttribute("creationDate", QDateTime::currentDateTime().toString(Qt::ISODate));
             root.appendChild(prjInfoElem);
 
             if(file.isWritable()){

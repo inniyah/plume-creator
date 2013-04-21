@@ -7,7 +7,7 @@
 
 
 OutlinerBase::OutlinerBase(QWidget *parent) :
-    QWidget(parent), spreadsheetMode(false)
+    QWidget(parent), spreadsheetMode(false), isResetOn(false)
 {
 
     setMinimumSize(500, 300);
@@ -54,6 +54,10 @@ OutlinerBase::OutlinerBase(QWidget *parent) :
     moveDownAct = new QAction(QIcon(":/pics/go-down-32x32.png"),"", this);
     moveDownAct->setToolTip(tr("Move down"));
 
+    resetAct = new QAction(QIcon(":/pics/view-refresh-32x32.png"),"", this);
+    resetAct->setToolTip(tr("Reset the view"));
+    connect(resetAct, SIGNAL(triggered()), this, SLOT(resetSpreadsheetState()));
+
     commonToolBar->addAction(shiftToSpreadsheetAct);
     commonToolBar->addSeparator();
     commonToolBar->addAction(quitAct);
@@ -62,6 +66,7 @@ OutlinerBase::OutlinerBase(QWidget *parent) :
     commonToolBar->addAction(shrinkSpreadsheetAct);
 commonToolBar->addAction(moveUpAct);
 commonToolBar->addAction(moveDownAct);
+commonToolBar->addAction(resetAct);
 
 
 
@@ -133,6 +138,9 @@ void OutlinerBase::applySpreadsheetConfig()
     //    spreadsheet->horizontalHeader()->restoreState(settings.value( "spreadsheetState",0 ).toByteArray());
     spreadsheet->header()->restoreState(settings.value( "spreadsheetState",0 ).toByteArray());
     //    spreadsheet->verticalHeader()->setDefaultSectionSize(settings.value( "spreadsheetVertSize",40 ).toInt());
+
+
+
     settings.endGroup();
 
 
@@ -154,6 +162,8 @@ void OutlinerBase::showOutliner()
 void OutlinerBase::closeEvent(QCloseEvent *event)
 {
     saveConfig();
+
+
     this->hide();
     //propagate here
 
@@ -167,6 +177,7 @@ void OutlinerBase::closeEvent(QCloseEvent *event)
 
 void OutlinerBase::shiftToSpreadsheet()
 {
+
     shiftToSpreadsheetAct->setDisabled(true);
     spreadsheetMode = true;
     lastOpened = "spreadsheet";
@@ -209,8 +220,8 @@ void OutlinerBase::shiftToSpreadsheet()
 
     zoneLayout->addWidget(spreadsheet);
 
-    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(columnOneResizedSlot(int)));
-    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(columnTwoResizedSlot(int)));
+    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(columnOneResizedSlot(int)), Qt::UniqueConnection);
+    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(columnTwoResizedSlot(int)), Qt::UniqueConnection);
 //    connect(spreadsheet, SIGNAL(columnOneResizedSignal(int)), absModel, SLOT(resetAbsModelColumnOne()));
 //    connect(spreadsheet, SIGNAL(columnTwoResizedSignal(int)), absModel, SLOT(resetAbsModelColumnTwo()));
 
@@ -220,15 +231,27 @@ void OutlinerBase::shiftToSpreadsheet()
     this->updateOutliner();
 
 
-    connect(hub, SIGNAL(resetSpreadsheetOutlinerSignal()), this, SLOT(updateOutliner()));
-    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(shrinkRow()));
-    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()));
-    connect(expandSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(expandRow()));
-    connect(expandSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()));
-    connect(moveUpAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveUp()));
-    connect(moveDownAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveDown()));
-    connect(absModel, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()));
-    connect(spreadsheet, SIGNAL(otoM_actionSignal(QString,int)), this, SIGNAL(otoM_actionSignal(QString,int)));
+    connect(hub, SIGNAL(resetSpreadsheetOutlinerSignal()), this, SLOT(updateOutliner()), Qt::UniqueConnection);
+    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(shrinkRow()), Qt::UniqueConnection);
+    connect(shrinkSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+    connect(expandSpreadsheetAct, SIGNAL(triggered()), absModel, SLOT(expandRow()), Qt::UniqueConnection);
+    connect(expandSpreadsheetAct, SIGNAL(triggered()), spreadsheet, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+    connect(moveUpAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveUp()), Qt::UniqueConnection);
+    connect(moveDownAct, SIGNAL(triggered()), spreadsheet, SLOT(temp_moveDown()), Qt::UniqueConnection);
+    connect(absModel, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()), Qt::UniqueConnection);
+    connect(spreadsheet, SIGNAL(otoM_actionSignal(QString,int)), this, SIGNAL(otoM_actionSignal(QString,int)), Qt::UniqueConnection);
+
+
+
+    QSettings settings;
+    settings.beginGroup( "Outline" );
+
+    if(settings.value( "forceReset_1", true ).toBool() == true){
+        settings.setValue("forceReset_1", false);
+        resetSpreadsheetState();
+    }
+settings.endGroup();
+
 }
 
 //------------------------------------------------------------------------------------
@@ -250,6 +273,25 @@ spreadsheet->applySettingsFromData();
 }
 
 //------------------------------------------------------------------------------------
+
+void OutlinerBase::resetSpreadsheetState()
+{
+    QSettings settings;
+settings.beginGroup( "Outline" );
+settings.setValue( "spreadsheetState", 0);
+settings.endGroup();
+
+zoneLayout->removeWidget(spreadsheet);
+QHBoxLayout *box = new QHBoxLayout;
+box->addWidget(spreadsheet);
+delete box;
+
+this->shiftToSpreadsheet();
+
+}
+
+    //------------------------------------------------------------------------------------
+
 
 void OutlinerBase::moveViewTo(int hBarValue, int vBarValue)
 {

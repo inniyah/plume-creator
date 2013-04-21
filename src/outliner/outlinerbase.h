@@ -67,6 +67,7 @@ void mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElem
 private slots:
     void shiftToSpreadsheet();
     void applySpreadsheetConfig();
+    void resetSpreadsheetState();
 
 void moveViewTo(int hBarValue, int vBarValue);
 
@@ -81,7 +82,7 @@ private:
     Hub *hub;
     QVBoxLayout *zoneLayout;
     bool spreadsheetMode;
-QAction *shiftToSpreadsheetAct, *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct;
+QAction *shiftToSpreadsheetAct, *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct, *resetAct;
 
 OutlinerAbstractModel *absModel;
 OutlinerSpreadsheet *spreadsheet;
@@ -96,7 +97,7 @@ QHash<MainTextDocument *, int> mtoO_numForDoc;
     QHash<int, QDomElement> attend_domElementForItemNumber;
 
     QString newAttendName;
-
+bool isResetOn;
 };
 
 #endif // OUTLINERBASE_H

@@ -60,7 +60,7 @@
           <enum>QAbstractItemView::SelectItems</enum>
          </property>
          <property name="indentation">
-          <number>40</number>
+          <number>10</number>
          </property>
          <property name="sortingEnabled">
           <bool>false</bool>
@@ -158,7 +158,7 @@
           <enum>QAbstractItemView::SelectItems</enum>
          </property>
          <property name="indentation">
-          <number>40</number>
+          <number>10</number>
          </property>
          <property name="uniformRowHeights">
           <bool>false</bool>
