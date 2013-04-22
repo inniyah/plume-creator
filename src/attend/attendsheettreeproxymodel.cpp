@@ -317,6 +317,7 @@ QVariant AttendSheetTreeProxyModel::data(const QModelIndex &index, int role) con
     else
         return QSortFilterProxyModel::data(index,role);
 
+    return QSortFilterProxyModel::data(index,role);
 }
 
 void AttendSheetTreeProxyModel::setPointOfView()

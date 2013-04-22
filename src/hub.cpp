@@ -400,6 +400,23 @@ void Hub::calculatWordCountGoalDelta(int projectCount)
 
 void Hub::startProject(QString file)
 {
+    QFile checkFile(file);
+    if(!checkFile.exists()){
+        int ret = QMessageBox::warning(0, tr("Plume creator"),
+                                       tr("The document ")+ file + tr(" you are trying to open doesn't exist !\n"),
+                                       QMessageBox::Ok,
+                                       QMessageBox::Ok);
+        if(ret == QMessageBox::Ok)
+            return;
+    }
+    if(!file.contains(".plume")){
+        int ret = QMessageBox::warning(0, tr("Plume creator"),
+                                       tr("The document ")+ file + tr(" you are trying to open isn't a *.plume or .plume_backup file !\n"),
+                                       QMessageBox::Ok,
+                                       QMessageBox::Ok);
+        if(ret == QMessageBox::Ok)
+            return;
+    }
 
 //    qDebug() << "startProject : " << file;
 

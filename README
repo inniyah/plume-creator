@@ -1,5 +1,9 @@
 PLUME CREATOR
 
+v 0.59.2
+	- Attendance :
+		- fix : Plume crash when droping characters in the top box list.
+	
 v 0.59.1
 	- Attendance :
 		- indentation in views shorted
