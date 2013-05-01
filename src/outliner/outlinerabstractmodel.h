@@ -57,9 +57,9 @@ public slots:
     void setHub(Hub *varHub){hub = varHub;}
 
     // set the size hint :
-    void shrinkRow(){itemHeight += 20; reset();}
-    void expandRow(){if(itemHeight > 40)itemHeight -= 20; reset();}
-    void setRowHeight(int height){itemHeight = height; reset();}
+    void shrinkRow(){itemHeight += 20; beginResetModel(); endResetModel();}
+    void expandRow(){if(itemHeight > 40)itemHeight -= 20; beginResetModel(); endResetModel();}
+    void setRowHeight(int height){itemHeight = height; beginResetModel(); endResetModel();}
 
     void resetAbsModel();
 

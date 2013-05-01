@@ -1,3 +1,22 @@
+/***************************************************************************
+ *   Copyright (C) 2012 by Cyril Jacquet                                   *
+ *   terreville@gmail.com                                                 *
+ *                                                                         *
+ *  This file is part of Plume Creator.                                    *
+ *                                                                         *
+ *  Plume Creator is free software: you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  Plume Creator is distributed in the hope that it will be useful,       *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
+ ***************************************************************************/
 #ifndef HUB_H
 #define HUB_H
 
@@ -6,7 +25,10 @@
 #include <QHash>
 #include <QFile>
 #include <QTextDocument>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 #include "zipper.h"
 #include "changestests.h"
@@ -54,8 +76,10 @@ public:
     QHash<int, QDomElement> attendTree_domElementForNumberHash();
     void set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
 
+int currentProjectSettingArrayNumber() const;
+void setCurrentProjectSettingArrayNumber(int projectNumber);
 
-    int currentSheetNumber() const;
+int currentSheetNumber() const;
     void setCurrentSheetNumber(int sheetNumber);
 
     // wordCount goal :
@@ -71,7 +95,6 @@ public:
     int projectWordCount() const{return wcThread->projectWordCount();}
 
     // files managment :
-    void startProject(QString file);
     void closeCurrentProject();
     void loadProject();
 
@@ -102,6 +125,8 @@ signals:
     void textAlreadyChangedSignal(bool textChanged);
     void showStatusBarMessageSignal(QString string, int time);
 
+    void projectOpenedSignal(bool opened);
+
     void savingSignal();
 
 //    wordCount :
@@ -116,10 +141,12 @@ signals:
     void wordGoalSignal(int count);
     void achievedWordGoalSignal(int count);
     void wordGoalIsActivatedSignal(bool wordGoalIsActivated);
+    void setProgressBarValues(int base,int achieved,int goal);
 
     void resetSpreadsheetOutlinerSignal();
 
 public slots:
+    bool startProject(QString file);
     void addToSaveQueue();
     void resetSpreadsheetOutliner(){emit resetSpreadsheetOutlinerSignal();}
 
@@ -134,7 +161,6 @@ private slots:
     void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
 
 private:
-   void addProjectToPrjManager(QString fileName, QString _name, QDateTime creationDate);
    bool refreshIsLocked;
 
     QString m_projectName;
@@ -152,7 +178,7 @@ private:
     QHash<QTextDocument *, int> m_attendTree_numForDocHash;
     QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
 
-    int m_currentSheetNumber;
+    int m_currentSheetNumber, m_currentProjectSettingArrayNumber;
 int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
 bool m_isWordGoalActivated;
 

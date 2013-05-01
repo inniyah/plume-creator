@@ -20,7 +20,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 #include "hub.h"
 #include "menubar.h"
@@ -72,7 +75,7 @@ public slots:
 
 
     void openProjectSlot(QFile *projectFile);
-    void openExternalProject(QFile *externalFile);
+    void openExternalProject(QString externalFile);
     void closeProjectSlot();
 
     void textSlot(int number = 0, QString action = "save");
@@ -163,7 +166,6 @@ private:
     QBoxLayout *noteDockLayout;
     QSplitter *noteSplitter;
 
-    SlimUpdater *updater;
 
     QToolBar *docksToolBar;
     OrientationButton *menuDockButton;
@@ -202,7 +204,6 @@ private:
     int settingNumber;
     bool menuBarOnTop;
     void autosaveTimer();
-    bool noProjectOpened;
     int autosaveTime;
     QTimer *timer;
     QString displayMode;

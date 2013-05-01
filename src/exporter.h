@@ -20,16 +20,22 @@
 #ifndef EXPORTER_H
 #define EXPORTER_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QDomDocument>
 #include <QPrinter>
-// for Qt5
-//#include <QtPrintSupport/QPrinter>
-//#include <QtPrintSupport/QPrintDialog>
-//#include <QtPrintSupport/QPrintPreviewDialog>
-//
+#if QT_VERSION >= 0x050000
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrintPreviewDialog>
+#endif
 
 #include "hub.h"
+namespace Ui {
+class Exporter;
+}
 
 class Exporter : public QDialog
 {
@@ -37,6 +43,7 @@ class Exporter : public QDialog
 public:
     explicit Exporter(QString mode = "export", QWidget *parent = 0);
     void postConstructor();
+    ~Exporter();
 
 protected:
     void accept();
@@ -57,25 +64,26 @@ private slots:
     void buildTree();
     void itemClickedSlot(QTreeWidgetItem* item, int column);
 
-
+    void exportInCSV();
+    void exportInPDF();
 
 
     void print();
     void previewPrint(QPrinter *printer);
 
+    void on_fileTypeComboBox_currentIndexChanged(int index);
+
 private:
+    void applyConfig();
+    void saveConfig();
+
     Hub *hub;
+    Ui::Exporter *ui;
 
 
     QString dialogMode;
 
-    QLineEdit *directoryLabelLineEdit;
-    QLineEdit *projectNameLabelLineEdit;
-    QDialogButtonBox *buttonBox;
-    QTreeWidget *tree;
-    QCheckBox *textCheckBox,*synCheckBox,*noteCheckBox, *sceneTitleCheckBox;
-    QComboBox *fileTypeCombo;
-    QFile *targetDevice;
+
     QDialog *previewDialog;
 
     //tree :

@@ -6,12 +6,13 @@
 #-------------------------------------------------
 QT += core gui xml
 
-#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 #to compile with QT5, replace <QtGui> with <QtWidgets>
+
 
 TEMPLATE = app
 
-VERSION = 0.59.1
+VERSION = 0.60.4
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -92,7 +93,8 @@ src/hub.cpp \
     src/outliner/outlineritemnotedelegate.cpp \
     src/outliner/outlineritempovdelegate.cpp \
     src/slimfindreplace.cpp \
-    src/texthighlighter.cpp
+    src/texthighlighter.cpp \
+    src/startcenter.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -144,7 +146,8 @@ src/hub.h \
     src/outliner/outlineritemnotedelegate.h \
     src/outliner/outlineritempovdelegate.h \
     src/slimfindreplace.h \
-    src/texthighlighter.h
+    src/texthighlighter.h \
+    src/startcenter.h
 
 CODECFORTR = UTF-8
 
@@ -167,7 +170,9 @@ src/wordgoalprogressbar.ui \
     src/attend/attendbase.ui \
     src/attend/attendmanager.ui \
     src/attend/attendsettings.ui \
-    src/slimfindreplace.ui
+    src/slimfindreplace.ui \
+    src/exporter.ui \
+    src/startcenter.ui
 
 RESOURCES += \
 translations/langs.qrc \

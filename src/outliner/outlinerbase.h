@@ -20,7 +20,10 @@
 #ifndef OUTLINERBASE_H
 #define OUTLINERBASE_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QWidget>
 #include <QDomDocument>
 
@@ -72,9 +75,9 @@ private slots:
 void moveViewTo(int hBarValue, int vBarValue);
 
     //for attendance :
-    QList<QListWidgetItem *> *sortAttendItems(QList<int> *attend, QString sorting = "nothing");
+    QList<QListWidgetItem *> sortAttendItems(QList<int> attend, QString sorting = "nothing");
     QListWidgetItem *attendSeparator(QString separatorName);
-    QList<QListWidgetItem *> *openSheetAttendList(int number ,QString attendString);
+    QList<QListWidgetItem *> openSheetAttendList(int number ,QString attendString);
 
 
 

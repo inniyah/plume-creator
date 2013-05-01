@@ -20,10 +20,16 @@
 #ifndef NEWPROJECTWIZARD_H
 #define NEWPROJECTWIZARD_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QWizard>
 #include <QtXml>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 //
 #include "hub.h"
 
@@ -45,6 +51,8 @@ public:
 
     void accept();
 
+signals:
+    void openProjectSignal(QString fileName);
 
 private:
     QString *projetNameFinish;

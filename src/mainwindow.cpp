@@ -1,5 +1,8 @@
 #include <QSettings>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QRect>
 
 
@@ -16,7 +19,7 @@
 //
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), noProjectOpened(true),noTabCss(""),textAlreadyChanged(false)
+    : QMainWindow(parent),noTabCss(""),textAlreadyChanged(false)
     ,ui(new Ui::MainWindow),  isExternalProjectOpeningBool(false)
 
 {
@@ -64,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     createDocksToolBar();
     createStatusBar();
 
-
+menu->setMenusEnabled(false);
 
     setConnections();
 
@@ -75,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     applyConfig();
 
 
+    readDocksSettings();
     giveStyle();
 
 
@@ -154,13 +158,15 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::postConstructor()
 {
     if(isExternalProjectOpeningBool == false){
-        menu->openManager();
+        menu->openStartCenter();
     }
     isExternalProjectOpeningBool = false;
 
     if (checkUpdateAtStartupBool){
         launchSlimUpdater("auto");
     }
+
+
 }
 
 MainWindow::~MainWindow()
@@ -200,7 +206,7 @@ void MainWindow::createMenuBar()
 
 void MainWindow::createAttendDock()
 {
-    attendDock = new QDockWidget;
+    attendDock = new QDockWidget(this);
     attendDock->setWindowTitle(tr("Attendance"));
     attendDock->setObjectName("attendDock");
     attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
@@ -299,7 +305,7 @@ void MainWindow::createMenuDock()
 void MainWindow::createTreeDock()
 {
 
-    treeDock = new QDockWidget;
+    treeDock = new QDockWidget(this);
 
     treeDock->setObjectName("projectDock");
     treeDock->setWindowTitle(tr("Project"));
@@ -328,7 +334,7 @@ void MainWindow::createTreeDock()
 void MainWindow::createToolDock()
 {
 
-    toolDock = new QDockWidget;
+    toolDock = new QDockWidget(this);
 
     toolDock->setObjectName("toolDock");
     toolDock->setWindowTitle(tr("Tools"));
@@ -379,7 +385,7 @@ void MainWindow::createToolDock()
 void MainWindow::createNoteDock()
 {
 
-    noteDock = new QDockWidget;
+    noteDock = new QDockWidget(this);
 
     noteDock->setObjectName("noteDock");
     noteDock->setWindowTitle(tr("Notes"));
@@ -447,6 +453,8 @@ void MainWindow::createNoteDock()
 
     noteBox->setLayout(noteLayout);
 
+    QWidget *noteDockLayoutWidget = new QWidget();
+
     noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     noteDockLayout->setMargin(0);
     noteDockLayout->setSpacing(0);
@@ -454,7 +462,8 @@ void MainWindow::createNoteDock()
     noteDockLayout->addWidget(synopsisBox);
     //    layout->addWidget(midFrame);
     noteDockLayout->addWidget(noteBox);
-    noteSplitter->setLayout(noteDockLayout);
+    noteDockLayoutWidget->setLayout(noteDockLayout);
+noteSplitter->addWidget(noteDockLayoutWidget);
 
     noteDock->setWidget(noteSplitter);
 
@@ -587,6 +596,7 @@ void MainWindow::createDocksToolBar()
     docksToolBar->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
     docksToolBar->setMovable(true);
     docksToolBar->setFloatable(false);
+
 
     treeDockButton = new OrientationButton(QIcon(":/pics/view-list-tree-90.png"),tr("Project"));
     treeDockButton->setObjectName("showTreeBt");
@@ -820,7 +830,7 @@ void MainWindow::setDisplayMode(QString mode)
 
 //---------------------------------------------------------------------------
 
-void MainWindow::openExternalProject(QFile *externalFile)
+void MainWindow::openExternalProject(QString externalFile)
 {
 
 //    qDebug() << "openExternalProject : " << externalFile->fileName();
@@ -830,7 +840,7 @@ void MainWindow::openExternalProject(QFile *externalFile)
     //                                       tr("Your are maybe using Windows."
     //                                          "The file path may contain special characters.\n"
     //                                          "Please rename the folders and file without these characters :\n"
-    //                                          "é,è,à,ï,ç et cetera... \n"
+    //                                          "Ã©,Ã¨,Ã ,Ã¯,Ã§ et cetera... \n"
     //                                          "Then, try opening it again !"),
     //                                       QMessageBox::Ok,
     //                                       QMessageBox::Ok);
@@ -839,14 +849,13 @@ void MainWindow::openExternalProject(QFile *externalFile)
     //    }
 
     isExternalProjectOpeningBool = true;  //needed to avoid the opening of the project manager at startup
-    hub->startProject(externalFile->fileName());
+    hub->startProject(externalFile);
 }
 //---------------------------------------------------------------------------
 
 void MainWindow::openProjectSlot(QFile *projectFile)
 {
 
-    readDocksSettings();
     closeAllDocsSlot();
 
     menu->setMenusEnabled(true);
@@ -861,7 +870,7 @@ void MainWindow::openProjectSlot(QFile *projectFile)
 
 void MainWindow::closeProjectSlot()
 {
-    if(noProjectOpened == true)
+    if(!hub->isProjectOpened())
         return;
 
     menu->setMenusEnabled(false);
@@ -874,12 +883,11 @@ void MainWindow::closeProjectSlot()
     closeAllDocsSlot();
 
     mainTree->closeTree();
-    noProjectOpened = true;
 
     //    attendList->accept(); //to close the manager;
 
 
-    hub->closeCurrentProject();
+//    hub->closeCurrentProject();
     //    attendList->closeAll();
     //    timer->stop();
 }
@@ -1026,11 +1034,9 @@ void MainWindow::textSlot(int number, QString action)
         connect(mainTree, SIGNAL(applySynNoteFontConfigSignal()), synStack, SLOT(applySynFontConfig()));
 
         //launch autosaving :
-        if(noProjectOpened)
+        if(!hub->isProjectOpened())
             autosaveTimer();
 
-        //other :
-        noProjectOpened = false;
 
         //focus on text :
         tab->setTextFocus();
@@ -1362,9 +1368,9 @@ void MainWindow::saveAllDocsSlot()
                                 numList->at(i));
 
         //        qDebug() << "tabSaveRequest name :" << nameList->at(i);
-        //        qDebug() << "tabSaveRequest textName n° " << i << " ---> " << textWidgetList->at(i)->objectName() << "----- saved :" << textBool;
-        //        qDebug() << "tabSaveRequest noteName n° " << i << " ---> " << noteWidgetList->at(i)->objectName() << "----- saved :" << noteBool;
-        //        qDebug() << "tabSaveRequest synName  n° " << i << " ---> " << synWidgetList->at(i)->objectName() << "----- saved :" << synBool;
+        //        qDebug() << "tabSaveRequest textName nÂ° " << i << " ---> " << textWidgetList->at(i)->objectName() << "----- saved :" << textBool;
+        //        qDebug() << "tabSaveRequest noteName nÂ° " << i << " ---> " << noteWidgetList->at(i)->objectName() << "----- saved :" << noteBool;
+        //        qDebug() << "tabSaveRequest synName  nÂ° " << i << " ---> " << synWidgetList->at(i)->objectName() << "----- saved :" << synBool;
     }
 }
 
@@ -1477,9 +1483,10 @@ void MainWindow::writeDocksSettings()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 
-    if(noProjectOpened == true){
+    if(!hub->isProjectOpened()){
         writeSettings();
         event->accept();
+        return;
     }
 
 
@@ -1593,7 +1600,7 @@ void MainWindow::applyConfig()
     //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
     settings.endGroup();
 
-    if(!noProjectOpened)
+    if(hub->isProjectOpened())
         configTimer();
 
     if(oneTabOnly){
@@ -1779,8 +1786,9 @@ int MainWindow::setCurrentNumber()
 void MainWindow::launchSlimUpdater(QString mode)
 {
 
-    updater = new SlimUpdater;
+    SlimUpdater *updater = new SlimUpdater;
     updater->setHub(hub);
+    connect(this, SIGNAL(applyConfigSignal()), updater, SLOT(readSettings()));
     connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
     ui->baseWidget->layout()->addWidget(updater);
     updater->setMode(mode);

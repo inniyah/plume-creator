@@ -3,7 +3,10 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include "ui_wordgoalprogressbar.h"
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
     QWidget(parent), m_isWordGoalActivated(false),
@@ -34,7 +37,7 @@ void WordGoalProgressBar::postConstructor()
     connect(hub, SIGNAL(baseWordCountSignal(int)), this, SLOT(setBase(int)));
     connect(hub, SIGNAL(wordGoalSignal(int)), this, SLOT(setGoal(int)));
     connect(hub, SIGNAL(wordGoalIsActivatedSignal(bool)), this, SLOT(setWordGoalActivated(bool)));
-
+    connect(hub, SIGNAL(setProgressBarValues(int,int,int)), this, SLOT(setValues(int,int,int)));
 
 
 
@@ -75,7 +78,7 @@ int WordGoalProgressBar::goal()
 
 void WordGoalProgressBar::setBase(int base)
 {
-    //    ui->progressBar->setMinimum(0);
+        ui->progressBar->setMinimum(base);
     setColors();
 
 }
@@ -137,6 +140,17 @@ void WordGoalProgressBar::setWordGoalActivated(bool wordGoalActivated)
 
     ui->wordGoalLabel->setVisible(wordGoalActivated);
 }
+
+void WordGoalProgressBar::setValues(int base,int achieved,int goal)
+{
+    this->setBase(base);
+    this->setValue(achieved);
+    this->setGoal(goal);
+
+    this->init();
+}
+
+
 
 void WordGoalProgressBar::reset()
 {

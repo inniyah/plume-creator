@@ -1,5 +1,19 @@
 PLUME CREATOR
 
+v 0.60
+	- New Start Center
+	- Removed Project Manager
+	- Exporter :
+		- Added export to CVS
+		- Added ### or *** as scene titles
+		- Add export in PDF
+	- Proxy settings changed
+	- Linux :
+		- fix : no mime icon and action
+	Progress bar :
+		- fix : progress bar doesn't start at 0  
+
+
 v 0.59.2
 	- Attendance :
 		- fix : Plume crash when droping characters in the top box list.

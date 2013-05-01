@@ -76,7 +76,7 @@
         <set>QAbstractItemView::EditKeyPressed</set>
        </property>
        <property name="indentation">
-        <number>40</number>
+        <number>10</number>
        </property>
        <attribute name="headerVisible">
         <bool>false</bool>

@@ -58,6 +58,7 @@ private slots:
     void createActions();
     void setWordGoalActivated(bool wordGoalActivated);
     void reset();
+    void setValues(int base,int achieved,int goal);
 
 private:
     void setColors();

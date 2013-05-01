@@ -1,9 +1,15 @@
 #include "exporter.h"
+#include "ui_exporter.h"
 
 //
 Exporter::Exporter(QString mode, QWidget *parent) :
-    QDialog(parent)
+    QDialog(parent),
+    ui(new Ui::Exporter)
 {
+    ui->setupUi(this);
+
+
+
 
     //dialog :
 
@@ -36,119 +42,62 @@ Exporter::Exporter(QString mode, QWidget *parent) :
         setWindowTitle(tr("Print Dialog"));
 
 
-    setMinimumSize(600,300);
 
-
-    QLabel *label = new QLabel(tr("Please complete the fields below: "));
-    label->setWordWrap(true);
-
-    QLabel *projectNameLabel = new QLabel(tr("File name :"));
-    projectNameLabelLineEdit = new QLineEdit;
-    projectNameLabelLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\x002A\?\x0022<>|]+"), projectNameLabelLineEdit));
+    ui->fileNameLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\x002A\?\x0022<>|]+"), ui->fileNameLineEdit));
 
     //    directoryLabel = new QLabel(tr("Path : "));
-    directoryLabelLineEdit = new QLineEdit;
-    directoryLabelLineEdit->setText(QDir::toNativeSeparators(QDir::homePath()));
 
-    QPushButton *directoryButton = new QPushButton(tr("Select path"));
-    directoryButton->setMaximumWidth(100);
 
-    connect(directoryButton, SIGNAL(clicked()), this, SLOT(setExistingDirectory()));
-
-    fileTypeCombo = new QComboBox;
-    QStringList list;
-    list << tr(".html") << tr(".odt") << tr(".txt");
-    fileTypeCombo->insertItems(0, list);
+    connect(ui->pathButton, SIGNAL(clicked()), this, SLOT(setExistingDirectory()));
 
 
     if(dialogMode == "print")
     {
-        label->hide();
-        projectNameLabel->hide();
-        projectNameLabelLineEdit->hide();
-        directoryLabelLineEdit->hide();
-        fileTypeCombo->hide();
-        directoryButton->hide();
+        ui->fileNameLabel->hide();
+        ui->fileNameLineEdit->hide();
+        ui->pathButton->hide();
+        ui->pathLineEdit->hide();
+        ui->fileTypeLabel->hide();
+        ui->fileTypeComboBox->hide();
     }
 
 
 
 
-    QGroupBox *checkGroupBox = new QGroupBox(tr("Options :"), this);
-    QGridLayout *checkLayout = new QGridLayout;
-    textCheckBox = new QCheckBox(tr("Insert story"), this);
-    synCheckBox = new QCheckBox(tr("Insert synopses"), this);
-    noteCheckBox = new QCheckBox(tr("Insert notes"), this);
-    sceneTitleCheckBox = new QCheckBox(tr("Insert scene titles"), this);
-
-    textCheckBox->setChecked(true);
-    synCheckBox->setChecked(true);
-    noteCheckBox->setChecked(true);
-    sceneTitleCheckBox->setChecked(true);
-
-    checkLayout->addWidget(textCheckBox, 1,0);
-    checkLayout->addWidget(synCheckBox, 2,0);
-    checkLayout->addWidget(noteCheckBox, 3,0);
-    checkLayout->addWidget(sceneTitleCheckBox, 4,0);
-    checkGroupBox->setLayout(checkLayout);
-
-
-
-
-    QWidget *stretcher = new QWidget;
-    stretcher->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    QPushButton *previewButton = new QPushButton(tr("Preview"), this);
-
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label, 0, 0, 1, 2);
-    //    layout->addWidget(directoryLabel, 1, 0);
-    layout->addWidget(projectNameLabel, 1, 0);
-    layout->addWidget(projectNameLabelLineEdit, 1, 1);
-    layout->addWidget(directoryButton, 2, 0);
-    layout->addWidget(directoryLabelLineEdit, 2, 1);
-    layout->addWidget(fileTypeCombo, 3,1);
-    layout->addWidget(checkGroupBox,4,0,1,2);
-    layout->addWidget(stretcher,5,0,1,2);
-    layout->addWidget(previewButton,6,0,1,2, Qt::AlignCenter);
-    tree = new QTreeWidget;
-    tree->setFixedWidth(width()/3);
-
-    QHBoxLayout *treeLayout = new QHBoxLayout;
-    treeLayout->addWidget(tree);
-    treeLayout->addLayout(layout);
-
-
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                     | QDialogButtonBox::Cancel);
-
 
     if(dialogMode == "print")
     {
-        buttonBox = new QDialogButtonBox(this);
-        buttonBox->addButton(QDialogButtonBox::Cancel);
-        buttonBox->addButton(tr("Print"), QDialogButtonBox::AcceptRole);
+        ui->buttonBox = new QDialogButtonBox(this);
+        ui->buttonBox->addButton(QDialogButtonBox::Cancel);
+        ui->buttonBox->addButton(tr("Print"), QDialogButtonBox::AcceptRole);
     }
 
-    connect(previewButton, SIGNAL(clicked()), this, SLOT(seePreview()));
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(treeLayout);
-    mainLayout->addWidget(buttonBox);
-    setLayout(mainLayout);
+    connect(ui->previewPushButton, SIGNAL(clicked()), this, SLOT(seePreview()));
 
 
 
 }
+
+
 
 void Exporter::postConstructor()
 {
+
     createTree();
 
+    applyConfig();
+
 }
+
+Exporter::~Exporter()
+{
+    delete ui;
+
+
+}
+
+
+
 
 //-----------------------------------------------------------------------------------
 
@@ -156,21 +105,29 @@ void Exporter::accept()
 {
     if(dialogMode == "export")
     {
-        if(directoryLabelLineEdit->text() == "" || projectNameLabelLineEdit->text() == "" ){
+        if(ui->pathLineEdit->text() == "" || ui->fileNameLineEdit->text() == "" ){
             QMessageBox::information(this, tr("Project Exporter"), tr("The destination fields must be completed !"), QMessageBox::Ok);
             return;
         }
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        exportDoc();
+
+        if(ui->fileTypeComboBox->currentIndex() == 3){
+            format = "csv";
+            this->exportInCSV();
+        }
+        if(ui->fileTypeComboBox->currentIndex() == 4){
+            format = "pdf";
+            this->exportInPDF();
+        }
+        else
+            exportDoc();
         QApplication::restoreOverrideCursor();
 
 
 
-        QDialog::accept();
     }
-
-    if(dialogMode == "print")
+    else if(dialogMode == "print")
     {
 
 
@@ -180,11 +137,11 @@ void Exporter::accept()
 
 
 
-        QDialog::accept();
     }
 
+    this->saveConfig();
 
-
+    QDialog::accept();
 
 
 
@@ -195,10 +152,10 @@ void Exporter::setExistingDirectory()
 {
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select a directory"),
-                                                          directoryLabelLineEdit->text(),
+                                                          ui->pathLineEdit->text(),
                                                           options);
     if (!directory.isEmpty())
-        directoryLabelLineEdit->setText(directory);
+        ui->pathLineEdit->setText(directory);
 }
 
 
@@ -217,10 +174,10 @@ void Exporter::setExistingDirectory()
 
 void Exporter::createTree()
 {
-    tree->setHeaderHidden(true);
-    tree->setExpandsOnDoubleClick(false);
-    tree->setAutoExpandDelay(1000);
-    tree->setAnimated(true);
+    ui->tree->setHeaderHidden(true);
+    ui->tree->setExpandsOnDoubleClick(false);
+    ui->tree->setAutoExpandDelay(1000);
+    ui->tree->setAnimated(true);
 
     folderIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
                          QIcon::Normal, QIcon::Off);
@@ -230,11 +187,11 @@ void Exporter::createTree()
 
 
 
-    tree->setContextMenuPolicy(Qt::PreventContextMenu);
+    ui->tree->setContextMenuPolicy(Qt::PreventContextMenu);
 
     read();
 
-    connect(tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
+    connect(ui->tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
 
 }
 
@@ -244,7 +201,7 @@ bool Exporter::read()
 {
 
 
-domDocument = hub->mainTreeDomDoc();
+    domDocument = hub->mainTreeDomDoc();
     root = domDocument.documentElement();
 
 
@@ -266,7 +223,7 @@ domDocument = hub->mainTreeDomDoc();
 void Exporter::closeTree()
 {
 
-    tree->clear();
+    ui->tree->clear();
 
 
 }
@@ -284,7 +241,7 @@ void Exporter::parseFolderElement(const QDomElement &element,
     if (title.isEmpty())
         title = QObject::tr("XML problem : parseFolderElement(const QDomElement &element, QTreeWidgetItem *parentItem)");
 
-    tree->setItemExpanded(item, true);
+    ui->tree->setItemExpanded(item, true);
     item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsTristate | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
     item->setIcon(0, folderIcon);
     item->setText(0, title);
@@ -339,7 +296,7 @@ QTreeWidgetItem *Exporter::createItem(const QDomElement &element,
     if (parentItem) {
         item = new QTreeWidgetItem(parentItem);
     } else {
-        item = new QTreeWidgetItem(tree);
+        item = new QTreeWidgetItem(ui->tree);
     }
     domElementForItem.insert(item, element);
 
@@ -357,7 +314,7 @@ void Exporter::buildTree()
 
 
 
-    tree->clear();
+    ui->tree->clear();
 
 
     QDomElement child = root.firstChildElement("book");
@@ -433,7 +390,7 @@ QTextDocument * Exporter::buildFinalDoc()
 {
     //search for checked QTreeWidgetItems :
 
-    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(tree, QTreeWidgetItemIterator::Checked);
+    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(ui->tree, QTreeWidgetItemIterator::Checked);
     QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
 
 
@@ -524,16 +481,33 @@ QTextDocument * Exporter::buildFinalDoc()
 
             }
 
-            if(element.tagName() == "scene" && sceneTitleCheckBox->isChecked()){
+            if(element.tagName() == "scene" && ui->setSceneTitlesComboBox->currentIndex() != 0){
+                QString sceneTitle;
+                switch (ui->setSceneTitlesComboBox->currentIndex()){
+                case 1:
+                    sceneTitle = element.attribute("name", "");
+                    break;
+                case 2:
+                    sceneTitle = "###";
+                    break;
+                case 3:
+                    sceneTitle = "***";
+                    break;
+                default:
+                    sceneTitle = element.attribute("name", "");
+                    break;
+
+                }
+
                 edit->append("<br>");
-                edit->append("<h3>" + element.attribute("name", "") + "</h3>");
+                edit->append("<h3>" + sceneTitle + "</h3>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
 
             }
 
-            if(synCheckBox->isChecked() && !synFrag.isEmpty()){
+            if(ui->synopsisCheckBox->isChecked() && !synFrag.isEmpty()){
                 edit->append("<br>");
                 edit->append("<h4>" + tr("Synopsis") + "</h4>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
@@ -544,7 +518,7 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->insertFragment(synFrag);
             }
 
-            if(noteCheckBox->isChecked() && !noteFrag.isEmpty()){
+            if(ui->notesCheckBox->isChecked() && !noteFrag.isEmpty()){
                 edit->append("<br>");
                 edit->append("<h4>" + tr("Note") + "</h4>");
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
@@ -555,8 +529,8 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->insertFragment(noteFrag);
             }
 
-            if(textCheckBox->isChecked()){
-                if((synCheckBox->isChecked() || noteCheckBox->isChecked()) && !textFrag.isEmpty()){
+            if(ui->storyCheckBox->isChecked()){
+                if((ui->synopsisCheckBox->isChecked() || ui->notesCheckBox->isChecked()) && !textFrag.isEmpty()){
                     tCursor->insertBlock();
                     tCursor->insertHtml("<h4>" + tr("Story") + "</h4>");
                     tCursor->mergeBlockFormat(blockFormatCenter);
@@ -613,18 +587,19 @@ void Exporter::exportDoc()
 
     QTextDocument *document = buildFinalDoc();
 
-    if(fileTypeCombo->currentIndex() == 0)
+    if(ui->fileTypeComboBox->currentIndex() == 0)
         format = "html";
-    if(fileTypeCombo->currentIndex() == 1)
+    if(ui->fileTypeComboBox->currentIndex() == 1)
         format = "odt";
-    if(fileTypeCombo->currentIndex() == 2){
+    if(ui->fileTypeComboBox->currentIndex() == 2){
         format = "txt";
         QMessageBox::information(this, tr("Project Exporter"), tr("You have selected the .txt format. There is no formatting !"), QMessageBox::Ok);
+
     }
 
     QTextDocumentWriter writer;
     QByteArray array;
-    QString fileName(directoryLabelLineEdit->text() + "/" + projectNameLabelLineEdit->text() + "." + format);
+    QString fileName(ui->pathLineEdit->text() + "/" + ui->fileNameLineEdit->text() + "." + format);
     writer.setFormat(array.append(format));
     writer.setFileName(fileName);
     writer.setCodec(QTextCodec::codecForName("UTF-8"));
@@ -632,21 +607,21 @@ void Exporter::exportDoc()
 
     if(format=="html"){
 
-                QFile *textFile = new QFile;
-                textFile->setFileName(fileName);
-                bool opened = textFile->open(QFile::ReadWrite | QFile::Text);
-//                qDebug() << opened ;
-                QTextStream textFileStream( textFile );
-                QString textString(textFileStream.readAll());
-                QRegExp regExpCss("<style type=\x0022text/css\x0022>.*</style>");
-                regExpCss.setMinimal(true);
-                textString = textString.replace( regExpCss, "<style type=\x0022text/css\x0022>p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}</style>");
-//                qDebug() << textString;
-                QByteArray array;
-                array.append(textString);
-                textFile->write(array);
+        QFile *textFile = new QFile;
+        textFile->setFileName(fileName);
+        bool opened = textFile->open(QFile::ReadWrite | QFile::Text| QFile::Truncate);
+        //                qDebug() << opened ;
+        QTextStream textFileStream( textFile );
+        QString textString(textFileStream.readAll());
+        QRegExp regExpCss("<style type=\x0022text/css\x0022>.*</style>");
+        regExpCss.setMinimal(true);
+        textString = textString.replace( regExpCss, "<style type=\x0022text/css\x0022>p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}</style>");
+        //                qDebug() << textString;
+        QByteArray array;
+        array.append(textString);
+        textFile->write(array);
 
-                textFile->close();
+        textFile->close();
 
     }
 
@@ -667,7 +642,7 @@ QTextDocument *Exporter::prepareTextDoc(QTextDocument *textDoc)
 
     QTextDocument *textDocument = textDoc->clone(this);
 
-//    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:19pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
+    //    textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:19pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
 
     //cut blank spaces at the begining and end :
 
@@ -833,7 +808,7 @@ void Exporter::seePreview()
 
 
         QTextBrowser *browser = new QTextBrowser;
-        if(fileTypeCombo->currentIndex() == 2){ // if format is txt (plaintext)
+        if(ui->fileTypeComboBox->currentIndex() == 2){ // if format is txt (plaintext)
             browser->setPlainText(document->toPlainText());
         }
         else{
@@ -903,4 +878,267 @@ void Exporter::print()
 
 
 
+}
+void Exporter::exportInPDF()
+{
+
+    QTextDocument *document = buildFinalDoc();
+
+
+    QString fileName(ui->pathLineEdit->text() + "/" + ui->fileNameLineEdit->text() + "." + format);
+    if (!fileName.isEmpty()) {
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName.append(".pdf");
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(fileName);
+        printer.setDocName(ui->fileNameLineEdit->text());
+        printer.setPageMargins(10,10,10,10,QPrinter::Millimeter);
+        document->print(&printer);
+
+    }
+
+
+}
+
+
+
+void Exporter::exportInCSV()
+{
+
+    QList<QStringList> bigList;
+
+    QHash<int, QDomElement> m_attendTree_domElementForNumberHash = hub->attendTree_domElementForNumberHash();
+
+
+    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(ui->tree, QTreeWidgetItemIterator::Checked);
+    QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
+
+
+    while(iterator->operator *() != 0){
+        itemList->append(iterator->operator *());
+        iterator->operator ++();
+
+    }
+
+    // set up the progress bar :
+    QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    QHBoxLayout *progressLayout = new QHBoxLayout(progressWidget);
+    QProgressBar *progressBar = new QProgressBar(progressWidget);
+    int progressValue = 0;
+
+    progressLayout->addWidget(progressBar);
+    progressWidget->setLayout(progressLayout);
+
+    progressBar->setMaximum(itemList->size());
+    progressBar->setValue(progressValue);
+    progressWidget->show();
+
+
+    QStringList headers;
+    if(ui->titleCheckBox_2->isChecked())
+        headers << "\x0022" << tr("Title") << "\x0022"<<";";
+    if(ui->typeOfSheetCheckBox_2->isChecked())
+        headers << "\x0022" <<tr("Type")<< "\x0022"<<";";
+    if(ui->synopsisCheckBox_2->isChecked())
+        headers << "\x0022" <<tr("Synopsis")<< "\x0022"<<";";
+    if(ui->notesCheckBox_2->isChecked())
+        headers << "\x0022" <<tr("Notes")<< "\x0022"<<";";
+    if(ui->wordCountCheckBox_2->isChecked())
+        headers << "\x0022" <<tr("Word count")<< "\x0022"<<";";
+    if(ui->pointOfViewCheckBox_2->isChecked())
+        headers << "\x0022" <<tr("Point of view")<< "\x0022" <<";";
+
+    headers << "\n";
+
+    bigList.append(headers);
+
+    while(!itemList->isEmpty()){
+        QStringList line;
+        QString title, type, syn, note, wordCount, pov;
+
+        QDomElement element = domElementForItem.value(itemList->takeFirst());
+        title = element.attribute("name", "error");
+        if(element.tagName() == "book")
+            type = tr("book");
+        else if(element.tagName() == "chapter")
+            type = tr("chapter");
+        else if(element.tagName() == "scene")
+            type = tr("scene");
+        else if(element.tagName() == "separator")
+            type = tr("scene break");
+
+
+        if(element.tagName() == "separator"){
+            progressValue += 1;
+            progressBar->setValue(progressValue);
+            bigList.append(line);
+            continue;
+        }
+
+
+        MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
+        MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
+        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
+        syn = synDoc->toPlainText();
+        note = noteDoc->toPlainText();
+
+        wordCount = QString::number(textDoc->wordCount());
+
+
+        QString numbersString = element.attribute("pov", "0");
+        QStringList list = numbersString.split("-", QString::SkipEmptyParts);
+        QList<int> objectsList;
+        foreach(const QString &string, list)
+            objectsList.append(string.toInt());
+
+        objectsList.removeOne(0);
+
+        foreach(const int &number, objectsList)
+            pov += m_attendTree_domElementForNumberHash.value(number).attribute("name", "error") + ", ";
+        pov.chop(2);
+
+
+
+        title.replace("\x0022", "\x0022\x0022");
+        syn.replace("\x0022", "\x0022\x0022");
+        note.replace("\x0022", "\x0022\x0022");
+        pov.replace("\x0022", "\x0022\x0022");
+
+
+
+        if(ui->titleCheckBox_2->isChecked())
+            line << "\x0022" <<title<< "\x0022" << ";";
+        if(ui->typeOfSheetCheckBox_2->isChecked())
+            line << "\x0022" <<type<< "\x0022" << ";";
+        if(ui->synopsisCheckBox_2->isChecked())
+            line << "\x0022" <<syn<< "\x0022" << ";";
+        if(ui->notesCheckBox_2->isChecked())
+            line << "\x0022" <<note<< "\x0022" << ";";
+        if(ui->wordCountCheckBox_2->isChecked())
+            line <<wordCount << ";";
+        if(ui->pointOfViewCheckBox_2->isChecked())
+            line << "\x0022" <<pov<< "\x0022" << ";";
+
+
+        line << "\n";
+
+        bigList.append(line);
+
+
+
+        progressValue += 1;
+        progressBar->setValue(progressValue);
+
+
+    }
+
+
+    QString finalString;
+
+
+    foreach(const QStringList &line, bigList)
+        foreach(const QString &cell, line)
+            finalString += cell;
+
+    progressWidget->close();
+
+
+
+
+
+
+
+
+
+
+    // write file :
+
+    QFile *textFile = new QFile;
+    QString fileName(ui->pathLineEdit->text() + "/" + ui->fileNameLineEdit->text() + "." + format);
+    textFile->setFileName(fileName);
+    bool opened = textFile->open(QFile::ReadWrite | QFile::Text| QFile::Truncate);
+
+    QByteArray array;
+//    array.append(finalString);
+    textFile->write(finalString.toUtf8());
+
+    textFile->close();
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Exporter::on_fileTypeComboBox_currentIndexChanged(int index)
+{
+    if(index == 3)
+        ui->stackedWidget->setCurrentIndex(1);
+    else
+        ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void Exporter::applyConfig()
+{
+    ui->fileNameLineEdit->setText(hub->projectName());
+
+
+    QSettings settings;
+    settings.beginGroup("Exporter");
+    ui->pathLineEdit->setText(settings.value("path", QDir::toNativeSeparators(QDir::homePath())).toString());
+    ui->fileTypeComboBox->setCurrentIndex(0); // shake
+    ui->fileTypeComboBox->setCurrentIndex(1);// shake
+    ui->fileTypeComboBox->setCurrentIndex(settings.value("fileType", 0).toInt());
+    ui->storyCheckBox->setChecked(settings.value("story", true).toBool());
+    ui->synopsisCheckBox->setChecked(settings.value("syn", true).toBool());
+    ui->notesCheckBox->setChecked(settings.value("notes", true).toBool());
+    ui->setSceneTitlesComboBox->setCurrentIndex(settings.value("sceneTitles", 1).toInt());
+
+    ui->titleCheckBox_2->setChecked(settings.value("title_2", true).toBool());
+    ui->typeOfSheetCheckBox_2->setChecked(settings.value("typeOfSheet_2", true).toBool());
+    ui->synopsisCheckBox_2->setChecked(settings.value("syn_2", true).toBool());
+    ui->notesCheckBox_2->setChecked(settings.value("notes_2", true).toBool());
+    ui->wordCountCheckBox_2->setChecked(settings.value("wordCount_2", true).toBool());
+    ui->pointOfViewCheckBox_2->setChecked(settings.value("pointOfView_2", true).toBool());
+
+    settings.endGroup();
+
+}
+
+void Exporter::saveConfig()
+{
+    QSettings settings;
+    settings.beginGroup("Exporter");
+    settings.setValue("path", ui->pathLineEdit->text());
+    settings.setValue("fileType", ui->fileTypeComboBox->currentIndex());
+    settings.setValue("story",ui->storyCheckBox->isChecked());
+    settings.setValue("syn",ui->synopsisCheckBox->isChecked());
+    settings.setValue("notes",ui->notesCheckBox->isChecked());
+    settings.setValue("sceneTitles",ui->setSceneTitlesComboBox->currentIndex());
+
+    settings.setValue("title_2",ui->titleCheckBox_2->isChecked());
+    settings.setValue("typeOfSheet_2",ui->typeOfSheetCheckBox_2->isChecked());
+    settings.setValue("syn_2",ui->synopsisCheckBox_2->isChecked());
+    settings.setValue("notes_2",ui->notesCheckBox_2->isChecked());
+    settings.setValue("wordCount_2",ui->wordCountCheckBox_2->isChecked());
+    settings.setValue("pointOfView_2",ui->pointOfViewCheckBox_2->isChecked());
+
+    settings.endGroup();
 }

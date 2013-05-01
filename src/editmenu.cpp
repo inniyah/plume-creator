@@ -1,7 +1,10 @@
 #include "editmenu.h"
 #include "ui_editmenu.h"
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 EditMenu::EditMenu(QWidget *parent) :
     QWidget(parent),

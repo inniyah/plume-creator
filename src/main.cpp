@@ -11,6 +11,9 @@
 #include <QSplashScreen>
 #include <QStyleFactory>
 
+#include <QProxyStyle>
+
+#if QT_VERSION < 0x050000
 #ifdef Q_OS_WIN32
 #include <QWindowsVistaStyle>
 #include <QWindowsXPStyle>
@@ -18,6 +21,7 @@
 
 #ifdef Q_OS_MAC
 #include <QMacStyle>
+#endif
 #endif
 
 
@@ -183,8 +187,13 @@ int main(int argc, char *argv[])
     QSettings settings;
 
     QString plumeStyle = settings.value("MainWindow/style", "default").toString();
+#if QT_VERSION >= 0x050000
 
+        QApplication::setStyle(QStyleFactory::create("fusion"));
+#else
     if (plumeStyle == "plastique" ){
+
+
         QApplication::setStyle(new QPlastiqueStyle);
     }
     else if(plumeStyle == "cleanlooks" ){
@@ -271,6 +280,7 @@ int main(int argc, char *argv[])
 #endif
 
     }
+#endif
 
     // Lang menu :
 
@@ -361,10 +371,10 @@ int main(int argc, char *argv[])
         argument = QDir::fromNativeSeparators(argument);
 //        argument = ;
 //        qDebug() << "argument : " << argument;
-        QFile file(argument); //pick the last argument
+        //pick the last argument
 //                if(file.exists() && file.isReadable() && file.isWritable()){
 //                    qDebug() << "OPENING";
-                    mw.openExternalProject(&file);
+                    mw.openExternalProject(argument);
 //                }
     }
 

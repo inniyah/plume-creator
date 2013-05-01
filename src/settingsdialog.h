@@ -20,9 +20,15 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QDialog>
 #include <QSettings>
+
+
+#include <QNetworkProxy>
 
 #include "hub.h"
 #include "textstyles.h"

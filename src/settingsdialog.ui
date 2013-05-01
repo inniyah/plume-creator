@@ -24,7 +24,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="generalTab">
       <attribute name="title">
@@ -734,41 +734,41 @@
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::ExpandingFieldsGrow</enum>
             </property>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="proxyHostNameLabel">
               <property name="text">
                <string>Host name :</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QLineEdit" name="proxyHostNameLineEdit"/>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="proxyPortLabel">
               <property name="text">
                <string>Port :</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="proxyUserNameLabel">
               <property name="text">
                <string>User Name :</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="4" column="1">
              <widget class="QLineEdit" name="proxyUserNameLineEdit"/>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="proxyPasswordLabel">
               <property name="text">
                <string>Password :</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="5" column="1">
              <widget class="QLineEdit" name="proxyPasswordLineEdit">
               <property name="inputMask">
                <string notr="true"/>
@@ -781,7 +781,7 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1">
              <widget class="QDoubleSpinBox" name="proxyPortSpinBox">
               <property name="buttonSymbols">
                <enum>QAbstractSpinBox::NoButtons</enum>
@@ -803,6 +803,27 @@
             </item>
             <item row="0" column="1">
              <widget class="QCheckBox" name="proxySystemSettingsCheckBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="proxyTypeLabel">
+              <property name="text">
+               <string>Type :</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="proxyTypeComboBox">
+              <item>
+               <property name="text">
+                <string>HTTP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SOCKS 5</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -897,12 +918,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>339</x>
-     <y>242</y>
+     <x>282</x>
+     <y>251</y>
     </hint>
     <hint type="destinationlabel">
-     <x>339</x>
-     <y>217</y>
+     <x>282</x>
+     <y>228</y>
     </hint>
    </hints>
   </connection>
@@ -913,12 +934,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>174</x>
-     <y>75</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>208</x>
-     <y>98</y>
+     <x>339</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -929,12 +950,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>169</x>
-     <y>75</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>185</x>
-     <y>130</y>
+     <x>186</x>
+     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -945,12 +966,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>174</x>
-     <y>70</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>170</x>
-     <y>158</y>
+     <x>301</x>
+     <y>180</y>
     </hint>
    </hints>
   </connection>
@@ -961,12 +982,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>74</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>266</x>
-     <y>180</y>
+     <x>397</x>
+     <y>206</y>
     </hint>
    </hints>
   </connection>
@@ -977,12 +998,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>82</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>118</x>
-     <y>101</y>
+     <x>88</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -993,12 +1014,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>171</x>
-     <y>72</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>126</y>
+     <x>57</x>
+     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -1009,12 +1030,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>154</x>
-     <y>84</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>113</x>
-     <y>160</y>
+     <x>89</x>
+     <y>180</y>
     </hint>
    </hints>
   </connection>
@@ -1025,12 +1046,28 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>176</x>
-     <y>75</y>
+     <x>152</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>114</x>
-     <y>178</y>
+     <x>83</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>proxySystemSettingsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyTypeComboBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>141</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>96</y>
     </hint>
    </hints>
   </connection>

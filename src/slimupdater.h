@@ -21,12 +21,16 @@
 #ifndef SLIMUPDATER_H
 #define SLIMUPDATER_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkConfigurationManager>
 #include <QDomDocument>
+#include <QNetworkProxy>
 
 #include "hub.h"
 
@@ -66,18 +70,25 @@ private slots:
 
     void closeUpdater();
 
+    void on_verifyButton_clicked();
+
 private :
     Hub *hub;
     Ui::SlimUpdater *ui;
 
     bool proxyEnabled;
     bool proxySystemEnabled;
+    QNetworkProxy::ProxyType proxyType;
     QString proxyHostName;
     int proxyPort;
     QString proxyUserName;
     QString proxyPassword;
 
+    QString text;
 
+QTimer *timer;
+int timerNumber;
+bool oneTime;
 
     QNetworkAccessManager *manager;
     QString currentAppVersion;

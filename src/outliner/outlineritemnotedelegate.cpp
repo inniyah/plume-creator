@@ -1,6 +1,9 @@
 #include "outliner/outlineritemnotedelegate.h"
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 OutlinerItemNoteDelegate::OutlinerItemNoteDelegate(QObject *parent) :
     QStyledItemDelegate(parent),editorLaunched(false)

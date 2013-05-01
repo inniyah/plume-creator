@@ -684,15 +684,19 @@ void NoteZone::keyPressEvent(QKeyEvent *event)
     else if(event->matches(QKeySequence::Bold))
             bold(!boldAct->isChecked());
 
+#if QT_VERSION >= 0x050000
+        else if(event->modifiers() == Qt::ControlModifier && event->key() == QVariant(QKeySequence(tr("L", "align left"))).toInt())    //: L for Left
+                leftAlign(true);
+        else if(event->modifiers() == Qt::ControlModifier && event->key() == QVariant(QKeySequence(tr("R", "align right"))).toInt()) //: R for Right
+                rightAlign(true);
+#else
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("L")))    //: L for Left
             leftAlign(true);
     else if(event->modifiers() == (Qt::ControlModifier|Qt::ShiftModifier) && event->key() == QKeySequence(tr("R"))) //: R for Right
             rightAlign(true);
-        // for Qt 5 :
-//    else if(event->modifiers() == Qt::ControlModifier && event->key() == QVariant(QKeySequence(tr("L", "align left"))).toInt())    //: L for Left
-//            leftAlign(true);
-//    else if(event->modifiers() == Qt::ControlModifier && event->key() == QVariant(QKeySequence(tr("R", "align right"))).toInt()) //: R for Right
-//            rightAlign(true);
+#endif
+
+
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E)
             center(true);
     else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)

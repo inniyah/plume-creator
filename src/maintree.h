@@ -22,7 +22,10 @@
 
 #include <QWidget>
 #include <QtXml>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QDomDocument>
 
 #include <outliner/outlinerbase.h>

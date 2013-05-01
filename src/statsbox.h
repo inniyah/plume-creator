@@ -20,8 +20,14 @@
 #ifndef STATSBOX_H
 #define STATSBOX_H
 
-#include <QtGui>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QDomDocument>
 //
 #include "hub.h"

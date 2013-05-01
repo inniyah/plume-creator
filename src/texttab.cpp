@@ -1,4 +1,7 @@
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 #include "texttab.h"
 //
@@ -126,6 +129,7 @@ bool TextTab::openText(MainTextDocument *doc)
 
     textDocument = doc;
     textZone->setDoc(textDocument);
+    QApplication::processEvents();
     textZone->document()->adjustSize();
 
 

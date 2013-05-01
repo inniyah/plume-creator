@@ -1,3 +1,6 @@
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif
 #include <QtGui>
 
 #include "outlinerspreadsheetheader.h"
@@ -10,11 +13,18 @@ OutlinerSpreadsheetHeader::OutlinerSpreadsheetHeader(Qt::Orientation orientation
 
     this->setMinimumSectionSize(40);
     this->setDefaultSectionSize(50);
+
+    this->setStretchLastSection(true);
+
+#if QT_VERSION >= 0x050000
+    this->setSectionResizeMode(QHeaderView::Interactive);
+    this->setSectionsMovable(true);
+    this->setSectionsClickable(true);
+        #else
+    this->setResizeMode(QHeaderView::Interactive);
     this->setMovable(true);
     this->setClickable(true);
-    this->setStretchLastSection(true);
-    this->setResizeMode(QHeaderView::Interactive);
-
+#endif
 
 }
 
@@ -26,7 +36,7 @@ void OutlinerSpreadsheetHeader::contextMenuEvent(QContextMenuEvent *event)
     QString clickedSectionData = this->model()->headerData(clickedSectionIndex, Qt::Horizontal).toString();
 
     OutlinerSpreadsheetHeaderSection *clickedSection = new OutlinerSpreadsheetHeaderSection();
- clickedSection->setHub(hub);
+    clickedSection->setHub(hub);
     clickedSection->setId(clickedSectionIndex);
 
     QAction *clickedSectionAction = new QAction(tr("Hide ") + clickedSectionData + tr(""), this);
@@ -98,6 +108,6 @@ void OutlinerSpreadsheetHeader::hideOrShowSectionSlot(int logicIndex, bool showS
 
     if(visibleCount < 4 && this->viewport()->width() > 600){
         for(int i = 0 ; i < visibleCount; i++)
-        this->resizeSection(logicalIndex(i), this->viewport()->width() /4);
+            this->resizeSection(logicalIndex(i), this->viewport()->width() /4);
     }
 }

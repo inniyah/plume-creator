@@ -1,4 +1,7 @@
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QDir>
 
 
@@ -155,7 +158,7 @@ void NewProjectWizard::accept()
 
     settings.endArray();
 
-
+    emit openProjectSignal(workingPath + "/" + projectNameFinish +".plume");
     QDialog::accept();
 
 

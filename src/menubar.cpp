@@ -30,10 +30,10 @@ void MenuBar::createContent()
 
 void MenuBar::newProject()
 {
-    NewProjectWizard projectWizard(this);
-    projectWizard.exec();
+    NewProjectWizard *projectWizard = new NewProjectWizard(this);
+    connect(projectWizard, SIGNAL(openProjectSignal(QString)), hub, SLOT(startProject(QString)));
+    projectWizard->exec();
 
-    projectManager();
 
 }
 
@@ -93,22 +93,16 @@ void MenuBar::newProject()
 
 //---------------------------------------------------------------------------
 
-void MenuBar::projectManager()
+
+void MenuBar::startCenter()
 {
+    StartCenter *center = new StartCenter(this);
+    center->setHub(hub);
+    center->postConstructor();
+    connect(center,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
 
-    projManager = new PrjManager(this);
-    projManager->setHub(hub);
-    connect(projManager,SIGNAL(openPrjManagerSignal()), this, SLOT(openProjectManagerSlot()));
-    connect(projManager,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
-    //    connect(projManager, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
-    connect(projManager, SIGNAL(openProjectNumberSignal(int)),this, SIGNAL(openProjectNumberSignal(int)));
-    projManager->projectAlreadyOpened(projectAlreadyOpened);
-
-
-    projManager->setModal(true);
-    projManager->exec();
-
-
+    center->setModal(true);
+    center->exec();
 }
 
 //---------------------------------------------------------------------------
@@ -372,10 +366,11 @@ void MenuBar::createActions()
     newProjectAct->setToolTip(tr("Create a new project"));
     connect(newProjectAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    projectManagerAct = new QAction(QIcon(":/pics/go-home.png"),tr("Project &Manager"), this);
+    startCenterAct = new QAction(QIcon(":/pics/go-home.png"),tr("Start &Center"), this);
     // projectManagerAct->setShortcut(QKeySequence::New);
-    projectManagerAct->setToolTip(tr("Create and manage your projects"));
-    connect(projectManagerAct, SIGNAL(triggered()), this, SLOT(projectManager()));
+    startCenterAct->setToolTip(tr("Create and manage your projects"));
+    connect(startCenterAct, SIGNAL(triggered()), this, SLOT(startCenter()));
+
 
     displayConfigAct = new QAction(QIcon(":/pics/configure.png"),tr("&Configure"), this);
     //    displayConfigAct->setShortcut(QKeySequence::Print);
@@ -404,7 +399,7 @@ void MenuBar::createActions()
 
 
     projectGroup = new QMenu(tr("&Project"),this);
-    projectGroup->addAction(projectManagerAct);
+    projectGroup->addAction(startCenterAct);
     projectGroup->addSeparator();
     projectGroup->addAction(newProjectAct);
     projectGroup->addSeparator();
@@ -549,7 +544,6 @@ void MenuBar::createEditWidget()
 void MenuBar::setMenusEnabled(bool enabledBool)
 {
     editGroup->setEnabled(enabledBool);
-    displayConfigAct->setEnabled(enabledBool);
     printAct->setEnabled(enabledBool);
     exportAct->setEnabled(enabledBool);
 }
@@ -726,29 +720,11 @@ void MenuBar::writeSettings()
 
 //---------------------------------------------------------------------------
 
-void MenuBar::openProjectManagerSlot()
-{
-
-    if(projManager->isVisible()){
-        projManager->close();
-    }
-
-    projectManager();
-
-    // for the drag drop open in OSX :
-
-
-
-}
-//---------------------------------------------------------------------------
-
 void MenuBar::openNewProjectSlot()
 {
 
     newProject();
 
-
-    projectManager();
 
 
 

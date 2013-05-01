@@ -2,8 +2,11 @@
 
 Hub::Hub(QWidget *parent) :
     QWidget(parent), refreshIsLocked(false), projectOpened(false),
-    saveStack(0), m_currentSheetNumber(-1), m_wordGoal(1000), m_achievedWordGoal(0), m_baseWordCount(0)
+    saveStack(0), m_currentSheetNumber(-1), m_wordGoal(1000), m_achievedWordGoal(0), m_baseWordCount(0),
+    m_currentProjectSettingArrayNumber(9999)
 {
+    wcThread = new WordCountEngineThread(this);    // wordCount thread
+
 }
 //--------------------------------------------------------------------------------
 
@@ -90,6 +93,7 @@ void Hub::setProjectName(QString projectName)
 
 bool Hub::isProjectOpened() const
 {
+
     return projectOpened;
 }
 
@@ -195,7 +199,7 @@ QDomDocument Hub::attendTreeDomDoc()
 
 QHash<QTextDocument *, QFile *> Hub::attendTree_fileForDocHash()
 {
-//    qDebug() << "m_attendTree_fileForDocHash : " << m_attendTree_fileForDocHash.size();
+    //    qDebug() << "m_attendTree_fileForDocHash : " << m_attendTree_fileForDocHash.size();
     return m_attendTree_fileForDocHash;
 }
 
@@ -298,6 +302,26 @@ void Hub::setCurrentSheetNumber(int sheetNumber)
 }
 
 //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+
+int Hub::currentProjectSettingArrayNumber() const
+{
+    return m_currentProjectSettingArrayNumber;
+}
+
+
+void Hub::setCurrentProjectSettingArrayNumber(int projectNumber)
+{
+    m_currentProjectSettingArrayNumber = projectNumber ;
+
+}
+
+
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 
 int Hub::baseWordCount() const
 {
@@ -306,7 +330,7 @@ int Hub::baseWordCount() const
 void Hub::setBaseWordCount(int base)
 {
     m_baseWordCount = base;
-    emit baseWordCountSignal(base);
+    //    emit baseWordCountSignal(base);
 }
 //--------------------------------------------------------------------------------
 
@@ -398,7 +422,7 @@ void Hub::calculatWordCountGoalDelta(int projectCount)
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 
-void Hub::startProject(QString file)
+bool Hub::startProject(QString file)
 {
     QFile checkFile(file);
     if(!checkFile.exists()){
@@ -407,7 +431,7 @@ void Hub::startProject(QString file)
                                        QMessageBox::Ok,
                                        QMessageBox::Ok);
         if(ret == QMessageBox::Ok)
-            return;
+            return false;
     }
     if(!file.contains(".plume")){
         int ret = QMessageBox::warning(0, tr("Plume creator"),
@@ -415,10 +439,10 @@ void Hub::startProject(QString file)
                                        QMessageBox::Ok,
                                        QMessageBox::Ok);
         if(ret == QMessageBox::Ok)
-            return;
+            return false;
     }
 
-//    qDebug() << "startProject : " << file;
+    //    qDebug() << "startProject : " << file;
 
     //check if it's the right file :
 
@@ -429,7 +453,7 @@ void Hub::startProject(QString file)
                                        QMessageBox::Ok,
                                        QMessageBox::Ok);
         if(ret == QMessageBox::Ok)
-            return;
+            return false;
     }
 
 
@@ -445,7 +469,7 @@ void Hub::startProject(QString file)
                                        QMessageBox::Ok | QMessageBox::Cancel,
                                        QMessageBox::Cancel);
         if(ret == QMessageBox::Cancel)
-            return;
+            return false;
         else
         {
             //remove the .plume if it exists
@@ -471,54 +495,11 @@ void Hub::startProject(QString file)
 
 
 
+    if(Utils::isProjectFromOldSystem(file))
+        file = Utils::updateProjectIfOldSystem(file);
 
 
-
-
-    FileUpdater updater;
-    bool zipBool = updater.isZip(file);
-
-    if(zipBool == false){ // means its version is < 0.3
-        updater.checkAttendanceFile(file);
-        updater.checkInfoFile(file);
-        updater.checkTreeFile(file);
-
-        QFileInfo info(file);
-        QDir directory = info.dir();
-        directory.cdUp();
-        JlCompress::compressDir(directory.absolutePath() + "/" + info.fileName(), info.absolutePath());
-
-        file = directory.absolutePath() + "/" + info.fileName();
-
-
-        //           update the project manager if project is in the manager :
-
-        QSettings settings;
-        int size = settings.value("Manager/projects/size").toInt();
-
-        settings.beginWriteArray("Manager/projects");
-
-        for (int i = 0; i < size; ++i) {
-            settings.setArrayIndex(i);
-
-            //            qDebug() << settings.value("name").toString();
-            //            qDebug() << info.fileName().remove(".plume");
-            //                        qDebug() << settings.value("path").toString();
-            //                        qDebug() << directory.absolutePath();
-
-            if(settings.value("name").toString() == info.fileName().remove(".plume")
-                    && QDir::fromNativeSeparators(settings.value("path").toString()) == directory.absolutePath()){
-
-                settings.setValue("workPath",  "OBSOLETE");
-            }
-        }
-        settings.endArray();
-
-        directory.setPath(directory.absolutePath());
-        directory.rename(directory.absolutePath() + "/" + info.fileName().remove(".plume") +"/",
-                         directory.absolutePath() + "/obsolete_" +  info.fileName().remove(".plume")+"/");
-
-    }
+    this->setCurrentProjectSettingArrayNumber(Utils::adaptSettingArrayToProject(file));
 
 
 
@@ -529,8 +510,8 @@ void Hub::startProject(QString file)
 
     loadProject();
 
-    this->addProjectToPrjManager(this->projectFileName(), this->projectName(), QDateTime::currentDateTime());
-// QDateTime::currentDateTime() is temporary;
+    //    this->addProjectToPrjManager(this->projectFileName(), this->projectName(), QDateTime::currentDateTime());
+    // QDateTime::currentDateTime() is temporary;
 
     // wordCount :
 
@@ -555,6 +536,7 @@ void Hub::startProject(QString file)
 
     QFile *prjFile = new QFile(file);
     emit openProjectSignal(prjFile);
+    emit projectOpenedSignal(true);
 
     projectOpened = true;
 
@@ -563,17 +545,23 @@ void Hub::startProject(QString file)
     this->setBaseWordCount(wcThread->projectWordCount());
     this->setAchievedWordGoal(0);
     this->setWordGoal(1000);
+    emit setProgressBarValues(0, 0, 1000);
     this->setWordGoalActivated(false);
     connect(wcThread, SIGNAL(projectWordCount(int)), this, SLOT(calculatWordCountGoalDelta(int)));
+
+    return true;
 }
 
 //--------------------------------------------------------------------------------------
 
 void Hub::closeCurrentProject()
 {
-    //temporary :
+// for GUI :
     emit closeProjectSignal();
     //
+
+    Utils::modifyProjectModifiedDateInSettingsArray(this->currentProjectSettingArrayNumber(),QDateTime::currentDateTime().toString(Qt::ISODate) );
+
     this->stopSaveTimer();
     this->saveProject("wait");
 
@@ -593,9 +581,18 @@ void Hub::closeCurrentProject()
     while (i != m_mainTree_fileForDocHash.end()) {
         MainTextDocument *doc = i.key();
         doc->setObjectName("");
-
+        if(doc->docType() == "text")
+            disconnect(doc, SIGNAL(wordCountChanged(QString,int,int)), wcThread, SLOT(start()));
         ++i;
     }
+    disconnect(this, SIGNAL(currentSheetNumberChanged(int)), wcThread, SLOT(changeCurrentSheetNumber(int)));
+    disconnect(wcThread, SIGNAL(currentSheetWordCount(int)), this,  SIGNAL(currentSheetWordCount(int)));
+    disconnect(wcThread, SIGNAL(projectWordCount(int)), this,  SIGNAL(projectWordCount(int)));
+    disconnect(wcThread, SIGNAL(bookWordCount(int)), this,  SIGNAL(bookWordCount(int)));
+    disconnect(wcThread, SIGNAL(chapterWordCount(int)), this,  SIGNAL(chapterWordCount(int)));
+    disconnect(wcThread, SIGNAL(sceneWordCount(int)), this,  SIGNAL(sceneWordCount(int)));
+
+
 
     QHash<QTextDocument *, QFile *>::iterator j = m_attendTree_fileForDocHash.begin();
 
@@ -605,13 +602,6 @@ void Hub::closeCurrentProject()
 
         ++j;
     }
-
-
-    QSettings settings;
-    settings.beginWriteArray("Manager/projects");
-    settings.setArrayIndex(settingNumber);
-    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
-    settings.endArray();
 
 
 
@@ -632,9 +622,11 @@ void Hub::closeCurrentProject()
     m_attendTree_numForDocHash.clear();
 
     m_currentSheetNumber = -1;
+    m_currentProjectSettingArrayNumber = 9999;
 
 
     projectOpened = false;
+    emit projectOpenedSignal(false);
 
 
 
@@ -666,7 +658,7 @@ bool Hub::loadTemp()
     updater.checkInfoFile(projectWorkingPath + "/tree");
 
 
-//    qDebug() << "loading temporary files";
+    //    qDebug() << "loading temporary files";
 
     // ----------------------------   tree :
 
@@ -970,7 +962,7 @@ void Hub::saveProject(QString mode)
 {
 
 
-//    qDebug() << "saveProject";
+    //    qDebug() << "saveProject";
 
 
     //    qDebug() << "Hub::areFileLocked() : "<< this->areFilesLocked();
@@ -982,15 +974,22 @@ void Hub::saveProject(QString mode)
 
     this->saveTemp();
 
+
+
     Zipper *zipper = new Zipper();
     zipper->setJob("compress", this->projectFileName(), projectWorkPath());
     connect(zipper, SIGNAL(zipFinished()), this, SLOT(unlockFiles()));
 
 
-    zipper->start();
 
-    if(mode == "wait")
+    if(mode == "wait"){
+
+        zipper->start(QThread::HighestPriority);
         zipper->wait(30000);
+    }
+    else
+        zipper->start(QThread::LowestPriority);
+
 
     //    this->showStatusBarMessage(tr("Project saved"));
 }
@@ -1003,7 +1002,7 @@ void Hub::saveTemp()
 
     // ------------------ Tree :
 
-//    qDebug() << "save temporary files";
+    //    qDebug() << "save temporary files";
 
     QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
     while (i != m_mainTree_fileForDocHash.end()) {
@@ -1174,14 +1173,20 @@ bool Hub::areFilesLocked()
 
 void Hub::addToSaveQueue()
 {
+    if(filesLocked){
+        saveStack += 1; // add more time before the next saving...
+    }
+
     saveStack += 1;
 
     if(saveStack == 1)
         timerIdList.append(this->startTimer(2000));
     else if(saveStack > 1){  // reset if more than one save demand
-        for(int i = 0; i < timerIdList.size(); ++i)
+        for(int i = 0; i < timerIdList.size(); ++i){
             this->killTimer(timerIdList.at(i));
-        timerIdList.append(this->startTimer(2000));
+        }
+        timerIdList.clear();
+        timerIdList.append(this->startTimer(4000));
     }
 
 
@@ -1191,11 +1196,15 @@ void Hub::stopSaveTimer()
 {
     saveStack = 0;
 
-    for(int i = 0; i < timerIdList.size(); ++i)
+    for(int i = 0; i < timerIdList.size(); ++i){
         this->killTimer(timerIdList.at(i));
+    }
+    timerIdList.clear();
 }
 void Hub::timerEvent(QTimerEvent *event)
 {
+    timerIdList.removeAll(event->timerId());
+
     qDebug() << " -------- time to save !";
     this->saveProject();
     emit textAlreadyChangedSignal(false);
@@ -1241,64 +1250,6 @@ void Hub::connectAllSheetsToWordCountThread()
 
 
 
-void Hub::addProjectToPrjManager(QString fileName, QString _name, QDateTime creationDate)
-{
-QString name = fileName.split("/").last().remove(".plume");
-
-    QSettings settings;
-
-    settings.beginGroup("Manager/projects");
-
-    QStringList groups = settings.childGroups();
-    int size = groups.size();
-    settings.setValue("size", size);
-    settings.endGroup();
-
-    // check if the project already exist :
-    QString iName;
-    QString iPath;
-QDir iDir;
-    QDir dir;
-    QFileInfo info(fileName);
-        //    projectWorkingPath = info.absolutePath()
-    for(int i = 0 ; i < size; ++i){
-    settings.beginReadArray("Manager/projects");
-    settings.setArrayIndex(i);
-    iName = settings.value("name").toString();
-    iPath = settings.value("path").toString();
-    settings.endArray();
-iDir.setPath(iPath);
-dir.setPath(info.absolutePath());
-    if(iName == name && iDir == dir){
-        settingNumber = i;
-        return;
-    }
-
-    }
-
-
-
-
-
-
-
-    // add project
-
-
-    settingNumber = size;
-
-    settings.beginWriteArray("Manager/projects");
-
-    settings.setArrayIndex(size);
-    settings.setValue("name", name);
-    settings.setValue("path", info.absolutePath());
-    settings.setValue("workPath", "OBSOLETE");
-    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
-    settings.setValue("creationDate", creationDate.toString(Qt::ISODate));
-
-    settings.endArray();
-
-}
 
 
 

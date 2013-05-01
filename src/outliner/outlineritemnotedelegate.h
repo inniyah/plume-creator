@@ -21,7 +21,10 @@
 #define OUTLINERITEMNOTEDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 #include "hub.h"
 #include "notezone.h"

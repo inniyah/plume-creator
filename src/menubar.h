@@ -20,7 +20,10 @@
 #ifndef MENUBAR_H
 #define MENUBAR_H
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 #include <QWidget>
 #include <QFrame>
 
@@ -28,6 +31,7 @@
 #include "prjmanager.h"
 #include "settingsdialog.h"
 #include "editmenu.h"
+#include "startcenter.h"
 
 //
 class MenuBar : public QFrame
@@ -37,9 +41,9 @@ public:
     explicit MenuBar(QWidget *parent = 0);
 void createContent();
 
-    void openManager()
+    void openStartCenter()
     {
-        projectManager();
+        startCenter();
     }
 
 
@@ -97,7 +101,6 @@ void showFullscreenSignal();
 public slots:
 
 
-    void openProjectManagerSlot();
     void openNewProjectSlot();
 QMenuBar *createMenuBar();
 
@@ -122,7 +125,7 @@ void setMenusEnabled(bool enabledBool);
 private slots:
 
     void newProject();
-    void projectManager();
+    void startCenter();
     //   void open();
     void displayConfig(int tabIndex = 0);
     void exporter();
@@ -146,7 +149,6 @@ QString currentVersion;
 bool projectAlreadyOpened;
 
     QToolButton *newProjectButton,
-    *projectManagerButton,
     //   *openButton,
     *displayConfigButton,
     *closeProjectButton,
@@ -159,7 +161,7 @@ bool projectAlreadyOpened;
     *updaterButton;
 
     QAction *newProjectAct,
-    *projectManagerAct,
+    *startCenterAct,
     //   *openAct,
     *displayConfigAct,
     *closeProjectAct,
@@ -190,7 +192,6 @@ TextStyles *textStyles;
 
 
 
-    PrjManager *projManager;
 
 };
 

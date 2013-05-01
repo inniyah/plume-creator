@@ -3,7 +3,10 @@
 #include "outliner/outlineritemnotedelegate.h"
 #include "outliner/outlineritempovdelegate.h"
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 
 OutlinerBase::OutlinerBase(QWidget *parent) :
@@ -422,14 +425,14 @@ void OutlinerBase::mtoO_updateAttendances(QHash<int, QString> attendStringForNum
 
 //--------------------------------------------------------------------------------------
 
-QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QString sorting)
+QList<QListWidgetItem *> OutlinerBase::sortAttendItems(QList<int> attend, QString sorting)
 {
 
 // deprecated :
 
 
 
-    QList<QListWidgetItem *> *list = new QList<QListWidgetItem *>;
+    QList<QListWidgetItem *> list;
     QList<QListWidgetItem *> charList;
     QList<QListWidgetItem *> charList_level_zero;
     QList<QListWidgetItem *> charList_level_one;
@@ -460,13 +463,13 @@ QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QStr
 
     //    }
 
-    for (int i = 0; i < attend->size(); ++i) {
+    for (int i = 0; i < attend.size(); ++i) {
     }
 
     QMap<QString, QDomElement> map;
 
-    for (int i = 0; i < attend->size(); ++i){
-        QDomElement element = attend_domElementForItemNumber.value(attend->at(i));
+    for (int i = 0; i < attend.size(); ++i){
+        QDomElement element = attend_domElementForItemNumber.value(attend.at(i));
         if(element.tagName() == "char"){
             map.insert(element.attribute("lastName", newAttendName) + " " + element.attribute("firstName", ""),element);
         }
@@ -549,20 +552,20 @@ QList<QListWidgetItem *> *OutlinerBase::sortAttendItems(QList<int> *attend, QStr
     //    list->append(itemList);
     //    list->append(placeList);
     if(charList_level_zero.size() + charList_level_one.size() + charList_level_two.size() != 0)
-        list->append(attendSeparator(tr("Characters")));
-    list->append(charList_level_zero);
-    list->append(charList_level_one);
-    list->append(charList_level_two);
+        list.append(attendSeparator(tr("Characters")));
+    list.append(charList_level_zero);
+    list.append(charList_level_one);
+    list.append(charList_level_two);
     if(itemList_level_zero.size() + itemList_level_one.size() + itemList_level_two.size() != 0)
-        list->append(attendSeparator(tr("Items")));
-    list->append(itemList_level_zero);
-    list->append(itemList_level_one);
-    list->append(itemList_level_two);
+        list.append(attendSeparator(tr("Items")));
+    list.append(itemList_level_zero);
+    list.append(itemList_level_one);
+    list.append(itemList_level_two);
     if(placeList_level_zero.size() + placeList_level_one.size() + placeList_level_two.size() != 0)
-        list->append(attendSeparator(tr("Places")));
-    list->append(placeList_level_zero);
-    list->append(placeList_level_one);
-    list->append(placeList_level_two);
+        list.append(attendSeparator(tr("Places")));
+    list.append(placeList_level_zero);
+    list.append(placeList_level_one);
+    list.append(placeList_level_two);
 
 
     //    QString string;
@@ -602,7 +605,7 @@ QListWidgetItem *OutlinerBase::attendSeparator(QString separatorName)
 
 
 
-QList<QListWidgetItem *> *OutlinerBase::openSheetAttendList(int number ,QString attendString)
+QList<QListWidgetItem *> OutlinerBase::openSheetAttendList(int number ,QString attendString)
 {
 
     //    qDebug() << "attendString : " << attendString;
@@ -612,20 +615,20 @@ QList<QListWidgetItem *> *OutlinerBase::openSheetAttendList(int number ,QString 
     QStringList thisAttendStringList = attendString.split("-", QString::SkipEmptyParts);
 
 
-    QList<int> *attendIntList = new QList<int>;
+    QList<int> attendIntList;
 
     while(!thisAttendStringList.isEmpty()){
-        attendIntList->append(thisAttendStringList.takeFirst().toInt());
+        attendIntList.append(thisAttendStringList.takeFirst().toInt());
     }
 
-    if(attendIntList->contains(0))
-        attendIntList->removeAt(attendIntList->indexOf(0));
+    if(attendIntList.contains(0))
+        attendIntList.removeAt(attendIntList.indexOf(0));
 
 
     //    QString string;
     //    qDebug() << "openSheetAttendList attendIntList->size() : " << string.setNum(attendIntList->size());
 
-    QList<QListWidgetItem *> *itemList = sortAttendItems(attendIntList);
+    QList<QListWidgetItem *> itemList = sortAttendItems(attendIntList);
 
     //    qDebug() << "openSheetAttendList itemList->size() : " << string.setNum(itemList->size());
 

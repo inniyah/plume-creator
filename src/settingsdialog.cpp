@@ -1,7 +1,10 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-#include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif 
+#include <QtGui>   
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -27,7 +30,12 @@ void SettingsDialog::createContent()
 {
     createGeneralTab();
     createTextTab();
-    createStyleTab();
+
+    ui->stylesTab->setEnabled(false);
+    if(hub->isProjectOpened()){
+        createStyleTab();
+        ui->stylesTab->setEnabled(true);
+    }
 
     readSettings();
 }
@@ -51,26 +59,26 @@ void SettingsDialog::createGeneralTab()
 
 
     styles <<  tr("System default") << tr("Plastique (KDE)") << tr("Cleanlooks");
- #ifdef Q_OS_LINUX
-     styles << tr("Gtk (Gnome/XFCE)");
- #endif
- #ifdef Q_OS_WIN32
-     styles  << tr("Windows Vista") << tr("Windows XP");
- #endif
- #ifdef Q_OS_MAC
-     styles << tr("Macintosh (OSX)");
- #endif
-     styleCodes << "default" << "plastique" << "cleanlooks";
- #ifdef Q_OS_LINUX
-     styleCodes << "gtk";
- #endif
- #ifdef Q_OS_WIN32
-     styleCodes << "vista" << "xp";
- #endif
- #ifdef Q_OS_MAC
-     styleCodes << "osx";
- #endif
-     ui->styleComboBox->addItems(styles);
+#ifdef Q_OS_LINUX
+    styles << tr("Gtk (Gnome/XFCE)");
+#endif
+#ifdef Q_OS_WIN32
+    styles  << tr("Windows Vista") << tr("Windows XP");
+#endif
+#ifdef Q_OS_MAC
+    styles << tr("Macintosh (OSX)");
+#endif
+    styleCodes << "default" << "plastique" << "cleanlooks";
+#ifdef Q_OS_LINUX
+    styleCodes << "gtk";
+#endif
+#ifdef Q_OS_WIN32
+    styleCodes << "vista" << "xp";
+#endif
+#ifdef Q_OS_MAC
+    styleCodes << "osx";
+#endif
+    ui->styleComboBox->addItems(styles);
 
 
 
@@ -330,7 +338,7 @@ void SettingsDialog::readSettings()
 #ifdef Q_OS_WIN32
     ui->isPortableToBeCreated->setChecked(settings.value("isPortable", false).toBool());
     previousIsPortable = settings.value("isPortable", false).toBool();
- #endif
+#endif
     settings.endGroup();
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
@@ -398,15 +406,24 @@ void SettingsDialog::readSettings()
     // style tab :
 
 
+    if(hub->isProjectOpened()){
 
-    ui->styleListWidget->addItems(textStyles->namesList());
-    ui->styleListWidget->setCurrentRow(0);
-
+        ui->styleListWidget->addItems(textStyles->namesList());
+        ui->styleListWidget->setCurrentRow(0);
+    }
     // proxy tab :
 
     settings.beginGroup("Updater");
     ui->proxyBox->setChecked(settings.value("Proxy/proxyEnabled", false).toBool());
     ui->proxySystemSettingsCheckBox->setChecked(settings.value("Proxy/proxySystemEnabled", true).toBool());
+
+    QString type = settings.value("Proxy/proxyType", "http").toString();
+    if(type == "http")
+        ui->proxyTypeComboBox->setCurrentIndex(0);
+    else if(type == "socks5")
+        ui->proxyTypeComboBox->setCurrentIndex(1);
+    else
+        ui->proxyTypeComboBox->setCurrentIndex(0);
     ui->proxyHostNameLineEdit->setText(settings.value("Proxy/proxyHostName", "").toString());
     ui->proxyPortSpinBox->setValue(settings.value("Proxy/proxyPort", 1080).toInt());
     ui->proxyUserNameLineEdit->setText(settings.value("Proxy/proxyUserName", "").toString());
@@ -484,25 +501,39 @@ void SettingsDialog::accept()
 
     // style tab :
 
+    if(hub->isProjectOpened()){
+        textStyles->saveStyles();
+        if(styleInfoModified){
+            emit changeAllDocsTextStylesSignal();
+        }
+    }
+    // proxy tab :
 
-    textStyles->saveStyles();
- if(styleInfoModified){
-     emit changeAllDocsTextStylesSignal();
- }
+    settings.beginGroup("Updater");
+    settings.setValue("Proxy/proxyEnabled", ui->proxyBox->isChecked());
+    settings.setValue("Proxy/proxySystemEnabled", ui->proxySystemSettingsCheckBox->isChecked());
 
- // proxy tab :
-
- settings.beginGroup("Updater");
- settings.setValue("Proxy/proxyEnabled", ui->proxyBox->isChecked());
- settings.setValue("Proxy/proxySystemEnabled", ui->proxySystemSettingsCheckBox->isChecked());
- settings.setValue("Proxy/proxyHostName", ui->proxyHostNameLineEdit->text());
- settings.setValue("Proxy/proxyPort", ui->proxyPortSpinBox->value());
- settings.setValue("Proxy/proxyUserName", ui->proxyUserNameLineEdit->text());
- settings.setValue("Proxy/proxyPassword", ui->proxyPasswordLineEdit->text());
- settings.endGroup();
+    if(ui->proxyTypeComboBox->currentIndex() == 0)
+        settings.setValue("Proxy/proxyType", "http");
+    if(ui->proxyTypeComboBox->currentIndex() == 1)
+        settings.setValue("Proxy/proxyType", "socks5");
+    settings.setValue("Proxy/proxyHostName", ui->proxyHostNameLineEdit->text());
+    settings.setValue("Proxy/proxyPort", ui->proxyPortSpinBox->value());
+    settings.setValue("Proxy/proxyUserName", ui->proxyUserNameLineEdit->text());
+    settings.setValue("Proxy/proxyPassword", ui->proxyPasswordLineEdit->text());
+    settings.endGroup();
 
 
 
+    if(ui->proxyBox->isChecked() && !ui->proxySystemSettingsCheckBox->isChecked()){
+        QNetworkProxy proxy;
+        proxy.setType(QNetworkProxy::Socks5Proxy);
+        proxy.setHostName(ui->proxyHostNameLineEdit->text());
+        proxy.setPort(ui->proxyPortSpinBox->value());
+        proxy.setUser(ui->proxyUserNameLineEdit->text());
+        proxy.setPassword(ui->proxyPasswordLineEdit->text());
+        QNetworkProxy::setApplicationProxy(proxy);
+    }
 
 
 
