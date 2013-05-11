@@ -124,6 +124,7 @@ void MenuBar::displayConfig(int tabIndex)
 
     settingsDialog->setCurrentTab(tabIndex);
 
+settingsDialog->setModal(true);
     settingsDialog->exec();
     emit resetFullscreenTextWidthSignal();
     //    //    Config config;

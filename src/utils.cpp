@@ -270,7 +270,7 @@ bool Utils::isProjectExistingInSettingArray(QString fileName)
 
         if(workPath == "OBSOLETE"){ //new version
             arrayFile.setFileName(path + "/" + name + ".plume");
-            qDebug() << arrayFile.fileName() + "   " + file.fileName();
+//            qDebug() << arrayFile.fileName() + "   " + file.fileName();
             if(file.fileName() == arrayFile.fileName())
                 return true;
 

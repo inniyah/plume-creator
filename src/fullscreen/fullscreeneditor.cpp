@@ -175,6 +175,10 @@ void FullscreenEditor::createOptionMenu()
     editWidget->setTextStyles(textStyles);
     editWidget->createContent();
 
+    QStringList widgetToHideList;
+    widgetToHideList << "fontComboBox" << "fontSizeSpinBox";
+    editWidget->hideWidgetsByName(widgetToHideList);
+
     connect(editWidget, SIGNAL(zoomInSignal()), this, SLOT(zoomIn()));
     connect(editWidget, SIGNAL(zoomOutSignal()), this, SLOT(zoomOut()));
 

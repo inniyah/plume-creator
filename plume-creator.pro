@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TEMPLATE = app
 
-VERSION = 0.60.4
+VERSION = 0.60.5
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -172,7 +172,8 @@ src/wordgoalprogressbar.ui \
     src/attend/attendsettings.ui \
     src/slimfindreplace.ui \
     src/exporter.ui \
-    src/startcenter.ui
+    src/startcenter.ui \
+    src/texttab.ui
 
 RESOURCES += \
 translations/langs.qrc \

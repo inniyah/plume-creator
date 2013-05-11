@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocusPolicy(Qt::WheelFocus);
 
     //temporary config
-    setStyleSheet("* {background-color: pink; color: black;}");
+//    setStyleSheet("* {background-color: pink; color: black;}");
 
     //     netbook mode 10':
     //        setFixedSize(900, 550);
@@ -911,8 +911,8 @@ void MainWindow::textSlot(int number, QString action)
     if(action == "open"){
 
         MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + QString::number(number));
-        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
-        MainTextDocument *synDoc =  hub->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
+        MainTextDocument *synDoc =  hub->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
+        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
 
         QString name = hub->mainTree_domElementForNumberHash().value(number).attribute("name");
 
@@ -943,7 +943,7 @@ void MainWindow::textSlot(int number, QString action)
 
         // open and mem in :
 
-        TextTab *tab = new TextTab;
+        TextTab *tab = new TextTab(this);
         tab->setHub(hub);
 
         //set text Styles :
@@ -1087,7 +1087,6 @@ void MainWindow::textSlot(int number, QString action)
                 ++i;
             }
         }
-
 
 
     }
@@ -1535,6 +1534,15 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 }
 
 //----------------------------------------------------------------------------------------
+void MainWindow::paintEvent(QPaintEvent *)
+ {
+     QStyleOption opt;
+     opt.init(this);
+     QPainter p(this);
+     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+ }
+
+//----------------------------------------------------------------------------------------
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) //for MAc o
 {
@@ -1594,7 +1602,7 @@ void MainWindow::applyConfig()
     settings.beginGroup( "Settings" );
     autosaveTime = settings.value("autosaveTime", 20000).toInt();
     oneTabOnly = settings.value("oneTabOnly", false).toBool();
-    bool noTabBool = settings.value("TextArea/noTab", false).toBool();
+    noTabBool = settings.value("TextArea/noTab", false).toBool();
     settings.endGroup();
     settings.beginGroup( "MainWindow" );
     //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
@@ -1610,17 +1618,19 @@ void MainWindow::applyConfig()
             ++i;
         }
     }
+    noTabCss  = "QTabWidget::tab-bar#mainTabWidget {"
+            "height: 0px;"
+            "}"
+            "QTabWidget::pane#mainTabWidget {"
+            "padding-top : -20px"
 
-    if(noTabBool){
-        noTabCss  = "QTabWidget::tab-bar#mainTabWidget {"
-                "height: 0px;"
-                "}"
-                "QTabWidget::pane#mainTabWidget {"
-                "padding-top : -20px"
                 "}";
-    }
-    else
+
+    if(!noTabBool){
+        QString css = this->styleSheet();
+        this->setStyleSheet(css.replace(noTabCss, ""));
         noTabCss = "";
+    }
 
     giveStyle();
     //    if(menuBarOnTop == true){
@@ -1994,15 +2004,10 @@ void MainWindow::giveStyle()
 
             //            "QToolBar#docksToolBar::separator {"
             //            "}"
-            "QToolTip{"
-//            "opacity: 250;"
-            "border-style: outset;" //needed else tooltip is not modified
-            "background: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0.42, stop:0 rgba(85, 170, 255, 255), stop:1 rgba(255, 255, 255, 255));"
-            "color: black;"
-            "}"
+
             ;
 
-    this->setStyleSheet(css+noTabCss);
+    this->setStyleSheet(this->styleSheet() + noTabCss);
 }
 
 

@@ -57,6 +57,7 @@ protected:
     void closeEvent(QCloseEvent* event);
     void resizeEvent(QResizeEvent* event);
     bool eventFilter(QObject *obj, QEvent *event);
+    void paintEvent(QPaintEvent *);
 
 signals:
     void closeSignal();
@@ -208,6 +209,7 @@ private:
     QTimer *timer;
     QString displayMode;
     bool oneTabOnly;
+bool noTabBool;
 
     void setEditMenuConnections();
 

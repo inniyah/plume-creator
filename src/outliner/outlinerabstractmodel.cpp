@@ -100,7 +100,7 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
         return item->data(col).toString();
     }
-
+// PoV :
     if (role == 33 && col == 3){
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
         return item->data(col);
@@ -163,6 +163,16 @@ QVariant OutlinerAbstractModel::data(const QModelIndex &index, int role) const
     if (role == 34){
         OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
         return item->isExpanded();
+    }
+    if (role == Qt::DecorationRole && col == 0){
+        OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(index.internalPointer());
+        if(item->childCount() == 0)
+            return QPixmap(":/pics/text-field.png");
+        if(item->isExpanded())
+            return QPixmap(":/pics/document-open.png");
+        else
+            return QPixmap(":/pics/folder-documents.png");
+
     }
     else
         return QVariant();
@@ -487,7 +497,6 @@ void OutlinerAbstractModel::parseFolderElement(const QDomElement &element)
                     itemData.append(miniDocList.at(i)->toHtml());
 
 
-
             }
             for(int i = 0; i < miniDocList.size(); ++i){
                 if(miniDocList.at(i)->objectName().left(12) == "noteDocClone")
@@ -689,6 +698,7 @@ void OutlinerAbstractModel::reset_mtoO_setNumForDoc()
 
         if(textDoc->objectName().left(6) == "synDoc")
             textDocClone->setObjectName("synDocClone_" + QString::number(i.value()));
+
         else if(textDoc->objectName().left(7) == "noteDoc")
             textDocClone->setObjectName("noteDocClone_" + QString::number(i.value()));
 

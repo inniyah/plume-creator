@@ -31,7 +31,9 @@
 #include "textstyles.h"
 #include "slimfindreplace.h"
 //
-
+namespace Ui {
+class TextTab;
+}
 class TextTab : public QWidget
 {
     Q_OBJECT
@@ -84,21 +86,17 @@ private slots:
     void giveStyle();
 
 private:
+    Ui::TextTab *ui;
+
     void addSlimFindReplaceAction();
     Hub *hub;
     TextStyles *textStyles;
-QVBoxLayout *textZoneVLayout;
 
     MainTextDocument *prevTextDocument;
     MainTextDocument *textDocument;
     MainTextDocument *nextTextDocument;
 
     QString stackName;
-
-    TextZone *prevTextZone;
-    TextZone *textZone;
-    TextZone *nextTextZone;
-
 
 
 };

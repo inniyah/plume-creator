@@ -4,50 +4,55 @@
 #include <QtGui>   
 
 #include "texttab.h"
+#include "ui_texttab.h"
 //
 
 
 TextTab::TextTab(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    ui(new Ui::TextTab)
 {
+    ui->setupUi(this);
+
+
     prevTextDocument = new MainTextDocument(this);
     textDocument = new MainTextDocument(this);
     nextTextDocument = new MainTextDocument(this);
 
-    prevTextZone = new TextZone(this);
-    prevTextZone->setHub(hub);
-    prevTextZone->toHtml();
+//    prevTextZone = new TextZone(this);
+//    prevTextZone->setHub(hub);
+//    prevTextZone->toHtml();
 
-    nextTextZone = new TextZone(this);
-    nextTextZone->setHub(hub);
-    nextTextZone->toHtml();
-
-
-    textZone = new TextZone(this);
-    textZone->setHub(hub);
-    textZone->toHtml();
-
-    QWidget *textZoneWidget = new QWidget;
-    textZoneVLayout = new QVBoxLayout;
-    textZoneVLayout->setSpacing(0);
-    textZoneVLayout->addWidget(textZone);
-    textZoneWidget->setLayout(textZoneVLayout);
-
-    QHBoxLayout *layout = new QHBoxLayout;
-    QSplitter *splitter = new QSplitter;
-    splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(prevTextZone);
-    splitter->addWidget(textZoneWidget);
-    splitter->addWidget(nextTextZone);
+//    nextTextZone = new TextZone(this);
+//    nextTextZone->setHub(hub);
+//    nextTextZone->toHtml();
 
 
+//    textZone = new TextZone(this);
+//    textZone->setHub(hub);
+//    textZone->toHtml();
 
-    layout->addStretch();
-    //    layout->addLayout(vLayout);
-    layout->addWidget(splitter);
-    layout->addStretch();
+//    QWidget *textZoneWidget = new QWidget;
+//    textZoneVLayout = new QVBoxLayout;
+//    textZoneVLayout->setSpacing(0);
+//    textZoneVLayout->addWidget(textZone);
+//    textZoneWidget->setLayout(textZoneVLayout);
 
-    setLayout(layout);
+//    QHBoxLayout *layout = new QHBoxLayout;
+//    QSplitter *splitter = new QSplitter;
+//    splitter->setOrientation(Qt::Vertical);
+//    splitter->addWidget(prevTextZone);
+//    splitter->addWidget(textZoneWidget);
+//    splitter->addWidget(nextTextZone);
+
+
+
+//    layout->addStretch();
+//    //    layout->addLayout(vLayout);
+//    layout->addWidget(splitter);
+//    layout->addStretch();
+
+//    setLayout(layout);
 
 
     setContextMenuPolicy(Qt::PreventContextMenu);
@@ -55,13 +60,13 @@ TextTab::TextTab(QWidget *parent) :
 
 
 
-    prevTextZone->hide();
-    nextTextZone->hide();
+    ui->prevTextZone->hide();
+    ui->nextTextZone->hide();
 
 
     QList<int> sizesList;
-    sizesList << 0 << textZone->height()  << 0;
-    splitter->setSizes(sizesList);
+    sizesList << 0 << ui->textZone->height()  << 0;
+    ui->splitter->setSizes(sizesList);
 
 
 
@@ -113,12 +118,12 @@ void TextTab::setTextStyles(TextStyles *styles)
 bool TextTab::openText(MainTextDocument *doc)
 {
 
-    prevTextZone->setTextStyles(textStyles);
-    prevTextZone->createContent();
-    nextTextZone->setTextStyles(textStyles);
-    nextTextZone->createContent();
-    textZone->setTextStyles(textStyles);
-    textZone->createContent();
+    ui->prevTextZone->setTextStyles(textStyles);
+    ui->prevTextZone->createContent();
+    ui->nextTextZone->setTextStyles(textStyles);
+    ui->nextTextZone->createContent();
+    ui->textZone->setTextStyles(textStyles);
+    ui->textZone->createContent();
 
 
 
@@ -128,20 +133,21 @@ bool TextTab::openText(MainTextDocument *doc)
     //  stackName = name;
 
     textDocument = doc;
-    textZone->setDoc(textDocument);
     QApplication::processEvents();
-    textZone->document()->adjustSize();
+    ui->textZone->setDoc(textDocument);
+    QApplication::processEvents();
+    ui->textZone->document()->adjustSize();
 
 
 
     this->addSlimFindReplaceAction();
 
-    connect(textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
-    connect(textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
-    connect(textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
-    connect(textZone,SIGNAL(styleSelectedSignal(int)), this,SLOT(changeTextStyleSlot(int)));
-    connect(this, SIGNAL(setStyleSelectionSignal(int)), textZone, SIGNAL(setStyleSelectionSignal(int)));
-    connect(textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+    connect(ui->textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+    connect(ui->textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
+    connect(ui->textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
+    connect(ui->textZone,SIGNAL(styleSelectedSignal(int)), this,SLOT(changeTextStyleSlot(int)));
+    connect(this, SIGNAL(setStyleSelectionSignal(int)), ui->textZone, SIGNAL(setStyleSelectionSignal(int)));
+    connect(ui->textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
 
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
@@ -197,22 +203,22 @@ void TextTab::changeWidthSlot(int width)
 
     int scrollBarWidth = 30;
 
-    textZone->setFixedWidth(width);
-    textZone->document()->setTextWidth(width - scrollBarWidth);
-    prevTextZone->setFixedWidth(width);
-    prevTextZone->document()->setTextWidth(width - scrollBarWidth);
-    nextTextZone->setFixedWidth(width);
-    nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+    ui->textZone->setFixedWidth(width);
+    ui->textZone->document()->setTextWidth(width - scrollBarWidth);
+    ui->prevTextZone->setFixedWidth(width);
+    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
+    ui->nextTextZone->setFixedWidth(width);
+    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
 }
 //-------------------------------------------------------------------------------
 void TextTab::changeTextFontSlot(QFont font)
 {
-    textZone->setTextFont(font);
+    ui->textZone->setTextFont(font);
 }
 //-------------------------------------------------------------------------------
 void TextTab::changeTextHeightSlot(int height)
 {
-    textZone->setTextHeight(height);
+    ui->textZone->setTextHeight(height);
 }
 
 //-------------------------------------------------------------------------------
@@ -241,16 +247,16 @@ void TextTab::changeTextStyleSlot(int styleIndex)
     //    charFormat.clearForeground();
 
 
-    QTextCursor tCursor = textZone->textCursor();
+    QTextCursor tCursor = ui->textZone->textCursor();
 
     // select all of the blocks selected :
 
-    QTextCursor tStartCursor = textZone->textCursor();
+    QTextCursor tStartCursor = ui->textZone->textCursor();
     tStartCursor.setPosition(tCursor.selectionStart());
     tStartCursor.movePosition(QTextCursor::StartOfBlock);
     int startFirstBlock = tStartCursor.position();
 
-    QTextCursor tEndCursor = textZone->textCursor();
+    QTextCursor tEndCursor = ui->textZone->textCursor();
     tEndCursor.setPosition(tCursor.selectionEnd());
     tEndCursor.movePosition(QTextCursor::EndOfBlock);
     int endLastBlock = tEndCursor.position();
@@ -262,7 +268,7 @@ void TextTab::changeTextStyleSlot(int styleIndex)
     // merge :
     tCursor.mergeBlockFormat(blockFormat);
     tCursor.mergeCharFormat(charFormat);
-    textZone->mergeCurrentCharFormat(charFormat);
+    ui->textZone->mergeCurrentCharFormat(charFormat);
 
 }
 
@@ -270,36 +276,36 @@ void TextTab::changeTextStyleSlot(int styleIndex)
 //-------------------------------------------------------------------------------
 void TextTab::setTextFocus()
 {
-    if(textZone->isVisible())
-        textZone->setFocus();
+    if(ui->textZone->isVisible())
+        ui->textZone->setFocus();
 
 }
 //-------------------------------------------------------------------------------
 void TextTab::setCursorPos(int pos)
 {
     for(int i = 0; i < pos ; i++)
-        textZone->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
+        ui->textZone->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
 
-    textZone->ensureCursorVisible();
+    ui->textZone->ensureCursorVisible();
 }
 //-------------------------------------------------------------------------------
 int TextTab::cursorPos()
 {
-    QTextCursor cursor = textZone->textCursor();
+    QTextCursor cursor = ui->textZone->textCursor();
     return cursor.position();
 
 }
 //-------------------------------------------------------------------------------
 QTextCharFormat TextTab::tabFontChangedSlot()
 {
-    return textZone->textCursor().charFormat();
+    return ui->textZone->textCursor().charFormat();
 }
 
 //-------------------------------------------------------------------------------
 void TextTab::cursorPositionChangedSlot()
 {
-    QTextCursor tCursor = textZone->textCursor();
+    QTextCursor tCursor = ui->textZone->textCursor();
 
     if((tCursor.atStart() == true
         || tCursor.position() == 1
@@ -319,8 +325,8 @@ void TextTab::cursorPositionChangedSlot()
 void TextTab::updateTextZone()
 {
 
-    textZone->document()->setTextWidth(textZone->width() - 20);
-    prevTextZone->document()->setTextWidth(prevTextZone->width() - 20);
+    ui->textZone->document()->setTextWidth(ui->textZone->width() - 20);
+    ui->prevTextZone->document()->setTextWidth(ui->prevTextZone->width() - 20);
 
     //    qDebug() << "updateTextZone";
 }
@@ -330,69 +336,69 @@ void TextTab::updateTextZone()
 
 void TextTab::showPrevText(bool showPrevTextBool)
 {
-    prevTextZone->setHidden(!showPrevTextBool);
-    prevTextZone->setMaximumHeight(textZone->height()/3);
-    textZone->setFocus();
-    textZone->ensureCursorVisible();
+    ui->prevTextZone->setHidden(!showPrevTextBool);
+    ui->prevTextZone->setMaximumHeight(ui->textZone->height()/3);
+    ui->textZone->setFocus();
+    ui->textZone->ensureCursorVisible();
 
 }
 
 //-------------------------------------------------------------------------------
 bool TextTab::setShowPrevTextButton()
 {
-    return !prevTextZone->isHidden();
+    return !ui->prevTextZone->isHidden();
 }
 
 //-------------------------------------------------------------------------------
 void  TextTab::setPrevText(MainTextDocument *prevDoc)
 {
     if(prevDoc == 0){
-        prevTextZone->setHidden(true);
+        ui->prevTextZone->setHidden(true);
         return;
     }
 
     prevTextDocument = prevDoc;
-    prevTextZone->setDoc(prevTextDocument);
-    prevTextZone->document()->adjustSize();
+    ui->prevTextZone->setDoc(prevTextDocument);
+    ui->prevTextZone->document()->adjustSize();
 
 
-    QTextCursor curs =  prevTextZone->textCursor();
+    QTextCursor curs =  ui->prevTextZone->textCursor();
     curs.movePosition(QTextCursor::End);
-    prevTextZone->setTextCursor(curs);
+    ui->prevTextZone->setTextCursor(curs);
 }
 
 //-------------------------------------------------------------------------------
 
 void TextTab::showNextText(bool showNextTextBool)
 {
-    nextTextZone->setHidden(!showNextTextBool);
-    nextTextZone->setMaximumHeight(textZone->height()/3);
-    textZone->setFocus();
-    textZone->ensureCursorVisible();
+    ui->nextTextZone->setHidden(!showNextTextBool);
+    ui->nextTextZone->setMaximumHeight(ui->textZone->height()/3);
+    ui->textZone->setFocus();
+    ui->textZone->ensureCursorVisible();
 }
 
 //-------------------------------------------------------------------------------
 bool TextTab::setShowNextTextButton()
 {
-    return !nextTextZone->isHidden();
+    return !ui->nextTextZone->isHidden();
 }
 
 //-------------------------------------------------------------------------------
 void  TextTab::setNextText(MainTextDocument *nextDoc)
 {
     if(nextDoc == 0){
-        nextTextZone->setHidden(true);
+        ui->nextTextZone->setHidden(true);
         return;
     }
 
     nextTextDocument = nextDoc;
-    nextTextZone->setDoc(nextTextDocument);
-    nextTextZone->document()->adjustSize();
+    ui->nextTextZone->setDoc(nextTextDocument);
+    ui->nextTextZone->document()->adjustSize();
 
 
-    QTextCursor curs =  nextTextZone->textCursor();
+    QTextCursor curs =  ui->nextTextZone->textCursor();
     curs.movePosition(QTextCursor::Start);
-    nextTextZone->setTextCursor(curs);
+    ui->nextTextZone->setTextCursor(curs);
 }
 
 
@@ -411,7 +417,7 @@ void  TextTab::addSlimFindReplaceAction()
 
     actions.append(findAct);
 
-    textZone->addActions(actions);
+    ui->textZone->addActions(actions);
 
 }
 //-------------------------------------------------------------------------------
@@ -421,16 +427,16 @@ void  TextTab::launchSlimFindReplace()
     SlimFindReplace *findReplace = new SlimFindReplace(this);
     findReplace->setHub(hub);
     findReplace->setDocument(textDocument);
-    findReplace->setTextEdit(textZone);
+    findReplace->setTextEdit(ui->textZone);
 
-    textZoneVLayout->insertWidget(-1, findReplace);
+    ui->gridLayout->addWidget(findReplace, -1, 0, 1, 3);
 
 }
 
 //-------------------------------------------------------------------------------
 void TextTab::applyConfig()
 {
-    textZone->applyConfig();
+    ui->textZone->applyConfig();
 
 
     QSettings settings;
@@ -447,37 +453,19 @@ void TextTab::applyConfig()
 }
 
 
-void TextTab::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
 
 //-------------------------------------------------------------------
 void TextTab::giveStyle()
 {
-    QString css = ""
-            "TextZone {    border-width: 0px;"
-            "border-style: outset;"
-            "border-radius: 0px;"
-//            "margin: 4px"
-            "}"
-            "QSplitter {"
-            "border: 0px none transparent;"
-            "spacing: 0px;"
-            "padding: 0px;"
-            "margin: 0px;"
-            "}"
-            "QSplitter::handle {"
-            "background-color: gray;"
-            "height: 1px"
-            "}"
-            ;
 
-
-
-
-    setStyleSheet(css);
 }
+//-------------------------------------------------------------------
+
+
+void TextTab::paintEvent(QPaintEvent *)
+ {
+     QStyleOption opt;
+     opt.init(this);
+     QPainter p(this);
+     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+ }

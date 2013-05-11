@@ -1,8 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>pics/addchar.png</file>
-        <file>pics/addobject.png</file>
-        <file>pics/addplace.png</file>
         <file>pics/application-epub+zip.png</file>
         <file>pics/application-exit.png</file>
         <file>pics/applications-office.png</file>
@@ -61,9 +58,7 @@
         <file>pics/plume-creator-splash.png</file>
         <file>pics/preferences-system.png</file>
         <file>pics/preferences-system-90.png</file>
-        <file>pics/removeItem.png</file>
         <file>pics/table.png</file>
-        <file>pics/temp.png</file>
         <file>pics/tools-wizard.png</file>
         <file>pics/view-fullscreen.png</file>
         <file>pics/view-fullscreen-90.png</file>
@@ -81,5 +76,7 @@
         <file>pics/zoom-out.png</file>
         <file>pics/zoom-previous.png</file>
         <file>pics/zoom-previous-90.png</file>
+        <file>pics/folder-documents.png</file>
+        <file>pics/text-field.png</file>
     </qresource>
 </RCC>

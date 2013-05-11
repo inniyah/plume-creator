@@ -493,7 +493,7 @@ bool Hub::startProject(QString file)
         this->closeCurrentProject();
 
 
-
+    Utils::removeDir(QDir::tempPath() + "/Plume");
 
     if(Utils::isProjectFromOldSystem(file))
         file = Utils::updateProjectIfOldSystem(file);
@@ -909,6 +909,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             noteDocument->setObjectName("noteDoc_" + number);
             m_mainTree_fileForDocHash.insert(noteDocument, noteFile);
             m_mainTree_numForDocHash.insert(noteDocument, number.toInt());
+
 
             // wordCount :
             //            qDebug() << "doc opened : "<< element.attribute("number");

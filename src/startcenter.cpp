@@ -107,12 +107,12 @@ void StartCenter::postConstructor()
             previousItemDate = previousItemDate.fromString(prevModDate, Qt::ISODate );
             if(modTime->operator >(previousItemDate))
                 ui->listWidget->insertItem(0, ui->listWidget->takeItem(ui->listWidget->row(item)));
-}
+        }
     }
     settings.endArray();
 
 
-
+    this->setWindowState(Qt::WindowActive);
 
 }
 
