@@ -429,7 +429,7 @@ void  TextTab::launchSlimFindReplace()
     findReplace->setDocument(textDocument);
     findReplace->setTextEdit(ui->textZone);
 
-    ui->gridLayout->addWidget(findReplace, -1, 0, 1, 3);
+    ui->gridLayout->addWidget(findReplace, 2, 0, 1 , 3);
 
 }
 
