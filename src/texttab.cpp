@@ -72,6 +72,7 @@ TextTab::TextTab(QWidget *parent) :
 
 
 
+
     //config
 
 
@@ -125,6 +126,7 @@ bool TextTab::openText(MainTextDocument *doc)
     ui->textZone->setTextStyles(textStyles);
     ui->textZone->createContent();
 
+    ui->textZone->setVerticalScrollBar(ui->verticalScrollBar);
 
 
 
@@ -152,7 +154,6 @@ bool TextTab::openText(MainTextDocument *doc)
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
     //    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
-
 
 
     applyConfig();

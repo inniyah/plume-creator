@@ -46,8 +46,10 @@ signals:
 private:
     void extract(QString zipFileName);
     void compress(QString zipFileName);
+    bool checkZip(QString zipFileName);
     QString currentJob;
     QString m_fileName, m_workPath;
+    bool oneTime;
 
 };
 

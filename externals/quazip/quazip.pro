@@ -4,42 +4,11 @@ INCLUDEPATH += .
 !win32:VERSION = 1.0.0
 
 #DEFINES += QUAZIP_BUILD
-#CONFIG(staticlib):
+#CONFIG(staticlib): 
 DEFINES += QUAZIP_STATIC
 
 # Input
-HEADERS += \
-$$PWD/crypt.h \
-$$PWD/ioapi.h \
-$$PWD/JlCompress.h \
-$$PWD/quaadler32.h \
-$$PWD/quachecksum32.h \
-$$PWD/quacrc32.h \
-$$PWD/quagzipfile.h \
-$$PWD/quaziodevice.h \
-$$PWD/quazipdir.h \
-$$PWD/quazipfile.h \
-$$PWD/quazipfileinfo.h \
-$$PWD/quazip_global.h \
-$$PWD/quazip.h \
-$$PWD/quazipnewinfo.h \
-$$PWD/unzip.h \
-$$PWD/zip.h
-
-SOURCES +=  \
-$$PWD/qioapi.cpp \
-$$PWD/JlCompress.cpp \
-$$PWD/quaadler32.cpp \
-$$PWD/quacrc32.cpp \
-$$PWD/quagzipfile.cpp \
-$$PWD/quaziodevice.cpp \
-$$PWD/quazipdir.cpp \
-$$PWD/quazipfile.cpp \
-$$PWD/quazipfileinfo.cpp \
-$$PWD/quazip.cpp \
-$$PWD/quazipnewinfo.cpp \
-$$PWD/unzip.c \
-$$PWD/zip.c
+include(quazip.pri)
 
 #unix:!symbian {
 #    headers.path=$$PREFIX/include/quazip
@@ -52,14 +21,14 @@ $$PWD/zip.c
 	
 #}
 
-#win32 {
+win32 {
 #    headers.path=$$PREFIX/include/quazip
 #    headers.files=$$HEADERS
 #    target.path=$$PREFIX/lib
 #    INSTALLS += headers target
-#    # workaround for qdatetime.h macro bug
-#    DEFINES += NOMINMAX
-#}
+    # workaround for qdatetime.h macro bug
+    DEFINES += NOMINMAX
+}
 
 
 symbian {

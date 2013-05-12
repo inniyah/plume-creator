@@ -1574,6 +1574,10 @@ void MainWindow::autosaveTimer()
 //----------------------------------------------------------------------------------------
 void MainWindow::textChangedSlot()
 {
+
+    hub->addToSaveQueue();
+
+
     if(!textAlreadyChanged){
         textAlreadyChanged = true;
 

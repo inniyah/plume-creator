@@ -22,13 +22,13 @@ background-color: transparent;
 
 QTreeView {
             border: 0px none transparent;
-	background-color: rgb(199, 210, 234);
+	background-color: /* rgb(199, 210, 234)*/ #dee4ea ;
 
 
 }
 
 QDockWidget {
-           border: 1px solid lightgray;
+           border: 1px solid gray;
             /*titlebar-close-icon: url(close.png);
             titlebar-normal-icon: url(undock.png);*/
             margin: 0px
@@ -98,7 +98,9 @@ QDockWidget {
   spacing: 0px;
             padding: 0px;
            margin: 0px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(243, 255, 180, 255), stop:1 rgba(255, 255, 255, 255));
+	background-color: #fff7d7;
+
+/*qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(243, 255, 180, 255), stop:1 rgba(255, 255, 255, 255));*/
 
             }
 
@@ -122,7 +124,8 @@ QDockWidget {
 
 
 	TextTab {/*background-color: white;*/
-background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(250, 254, 255, 255), stop:1 rgba(255, 255, 255, 255));
+/*background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(250, 254, 255, 255), stop:1 rgba(255, 255, 255, 255));*/
+background-color: #fcfcf9
 }
 
             QToolTip{
@@ -137,7 +140,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
 
 
  QMainWindow::separator {
-     background: transparent;
+     background: gray;
      width: 1px; /* when vertical */
      height: 1px; /* when horizontal */
  }

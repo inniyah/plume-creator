@@ -1204,7 +1204,8 @@ void Hub::stopSaveTimer()
 }
 void Hub::timerEvent(QTimerEvent *event)
 {
-    timerIdList.removeAll(event->timerId());
+//    timerIdList.removeAll(event->timerId());
+
 
     qDebug() << " -------- time to save !";
     this->saveProject();
