@@ -402,7 +402,7 @@ void MainWindow::createNoteDock()
     noteBox->setObjectName("noteBox");
     noteBox->setContentsMargins(0,0,0,0);
     noteSplitter = new QSplitter;
-    noteSplitter->setObjectName("notesFrame");
+    noteSplitter->setObjectName("notesSplitter");
     //    frame->setFrameStyle(QFrame::Panel | QFrame::Raised);
     //    frame->setLineWidth(2);
     //    frame->setMidLineWidth(3);
@@ -453,17 +453,19 @@ void MainWindow::createNoteDock()
 
     noteBox->setLayout(noteLayout);
 
-    QWidget *noteDockLayoutWidget = new QWidget();
+//    QWidget *noteDockLayoutWidget = new QWidget();
 
-    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    noteDockLayout->setMargin(0);
-    noteDockLayout->setSpacing(0);
-    noteDockLayout->setContentsMargins(0,0,0,0);
-    noteDockLayout->addWidget(synopsisBox);
+//    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+//    noteDockLayout->setMargin(0);
+//    noteDockLayout->setSpacing(0);
+//    noteDockLayout->setContentsMargins(0,0,0,0);
+//    noteDockLayout->addWidget(synopsisBox);
     //    layout->addWidget(midFrame);
-    noteDockLayout->addWidget(noteBox);
-    noteDockLayoutWidget->setLayout(noteDockLayout);
-    noteSplitter->addWidget(noteDockLayoutWidget);
+//    noteDockLayout->addWidget(noteBox);
+//    noteDockLayoutWidget->setLayout(noteDockLayout);
+//    noteSplitter->addWidget(noteDockLayoutWidget);
+    noteSplitter->addWidget(synopsisBox);
+    noteSplitter->addWidget(noteBox);
 
     noteDock->setWidget(noteSplitter);
 
@@ -503,11 +505,11 @@ void MainWindow::createNoteDock()
 void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
 {
     if(noteDockArea == Qt::LeftDockWidgetArea || noteDockArea == Qt::RightDockWidgetArea){
-        noteDockLayout->setDirection(QBoxLayout::TopToBottom);
+//        noteDockLayout->setDirection(QBoxLayout::TopToBottom);
         noteSplitter->setOrientation(Qt::Vertical);
     }
     else if(noteDockArea == Qt::TopDockWidgetArea || noteDockArea == Qt::BottomDockWidgetArea){
-        noteDockLayout->setDirection(QBoxLayout::LeftToRight);
+//        noteDockLayout->setDirection(QBoxLayout::LeftToRight);
         noteSplitter->setOrientation(Qt::Horizontal);
     }
 }
@@ -606,6 +608,7 @@ void MainWindow::createDocksToolBar()
     connect(treeDockButton, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
 
     treeDockAct = new QAction(QIcon(":/pics/view-list-tree.png"),tr("Project"),this);
+    treeDockAct->setToolTip(tr("Project"));
     treeDockAct->setCheckable(true);
     connect(treeDockAct, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
     //    toolBarActionsList.append(treeDockAct);
@@ -618,6 +621,7 @@ void MainWindow::createDocksToolBar()
     connect(noteDockButton, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
 
     noteDockAct = new QAction(QIcon(":/pics/im-status-message-edit.png"),tr("Notes"),this);
+    noteDockAct->setToolTip(tr("Notes"));
     noteDockAct->setCheckable(true);
     connect(noteDockAct, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
     toolBarActionsList.append(noteDockAct);
@@ -632,6 +636,7 @@ void MainWindow::createDocksToolBar()
     connect(toolDockButton, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
 
     toolDockAct = new QAction(QIcon(":/pics/preferences-system.png"),tr("Tools"),this);
+    toolDockAct->setToolTip(tr("Tools"));
     toolDockAct->setCheckable(true);
     connect(toolDockAct, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
     toolBarActionsList.append(toolDockAct);
@@ -646,6 +651,7 @@ void MainWindow::createDocksToolBar()
     connect(attendDockButton, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
 
     attendDockAct = new QAction(QIcon(":/pics/meeting-organizer.png"),tr("Mise en scène"),this);
+    attendDockAct->setToolTip(tr("Mise en scène"));
     attendDockAct->setCheckable(true);
     connect(attendDockAct, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
     toolBarActionsList.append(attendDockAct);
@@ -660,6 +666,7 @@ void MainWindow::createDocksToolBar()
     connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
     outlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("Outliner"),this);
+    outlinerAct->setToolTip(tr("Outliner"));
     outlinerAct->setCheckable(false);
     connect(outlinerAct, SIGNAL(triggered()), this, SLOT(launchOutliner()));
     toolBarActionsList.append(outlinerAct);
@@ -676,6 +683,7 @@ void MainWindow::createDocksToolBar()
 
 
     fullscreenAct = new QAction(QIcon(":/pics/view-fullscreen.png"),tr("Fullscreen"),this);
+    fullscreenAct->setToolTip(tr("Fullscreen"));
     fullscreenAct->setCheckable(false);
     connect(fullscreenAct, SIGNAL(triggered()), this, SLOT(editFullscreen()));
     toolBarActionsList.append(fullscreenAct);

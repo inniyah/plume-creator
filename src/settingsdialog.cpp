@@ -357,6 +357,7 @@ void SettingsDialog::readSettings()
     settings.endGroup();
     settings.beginGroup("MainWindow");
     ui->isToolBarInStatusBarCheckBox->setChecked(settings.value("isToolBarInStatusBar", false).toBool());
+    prevIsToolBarInStatusBar = ui->isToolBarInStatusBarCheckBox->isChecked();
     settings.endGroup();
 
     connect(ui->langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
@@ -558,7 +559,7 @@ void SettingsDialog::reject()
 
     //    general tab :
 
-    emit setDisplayModeSignal(prev_displayMode, settings.value("isToolBarInStatusBar", false).toBool());
+    emit setDisplayModeSignal(prev_displayMode, prevIsToolBarInStatusBar);
 
     // text tab :
     ui->widthSpin->setValue(previous_textWidthValue);

@@ -112,7 +112,7 @@ private:
 
     QString displayMode, prev_displayMode;
     bool previousIsPortable;
-
+bool prevIsToolBarInStatusBar;
     // text tab :
 
     int textWidthValue, previous_textWidthValue;

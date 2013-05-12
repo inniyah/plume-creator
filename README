@@ -3,6 +3,8 @@ PLUME CREATOR
 v 0.61
 	- Added colors
 	- status bar thined
+	- fix : splitter in note dock recovered
+	- main text zone : added arrows to show previous and next texts
 	- Quazip updated
 	- Outliner :
 		- fix : synopsis and note inverted

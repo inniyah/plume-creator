@@ -366,6 +366,7 @@ void  TextTab::setPrevText(MainTextDocument *prevDoc)
 {
     if(prevDoc == 0){
         ui->prevTextZone->setHidden(true);
+        ui->prevTextToolButton->setHidden(true);
         return;
     }
 
@@ -379,6 +380,47 @@ void  TextTab::setPrevText(MainTextDocument *prevDoc)
     ui->prevTextZone->setTextCursor(curs);
 }
 
+//-------------------------------------------------------------------------------
+void  TextTab::setPrevButtonState(bool state)
+{
+    if(state)
+        ui->prevTextToolButton->setArrowType(Qt::UpArrow);
+else
+        ui->prevTextToolButton->setArrowType(Qt::DownArrow);
+}
+
+//-------------------------------------------------------------------------------
+
+void TextTab::on_prevTextToolButton_clicked()
+{
+    if(ui->prevTextToolButton->arrowType() == Qt::DownArrow){
+
+
+        QList<int> sizesList;
+        sizesList << ui->textZone->height()/3 << ui->textZone->height()  << ui->nextTextZone->height();
+        ui->splitter->setSizes(sizesList);
+
+        ui->textZone->setFocus();
+        ui->textZone->ensureCursorVisible();
+
+        this->setPrevButtonState(true);
+    }
+    else{
+        QList<int> sizesList;
+        sizesList << 0 << ui->textZone->height()  << ui->nextTextZone->height() ;
+        ui->splitter->setSizes(sizesList);
+
+
+        ui->textZone->setFocus();
+        ui->textZone->ensureCursorVisible();
+        this->setPrevButtonState(false);
+
+}
+}
+
+
+
+//-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
 
 void TextTab::showNextText(bool showNextTextBool)
@@ -400,6 +442,7 @@ void  TextTab::setNextText(MainTextDocument *nextDoc)
 {
     if(nextDoc == 0){
         ui->nextTextZone->setHidden(true);
+        ui->nextTextToolButton->setHidden(true);
         return;
     }
 
@@ -412,6 +455,60 @@ void  TextTab::setNextText(MainTextDocument *nextDoc)
     curs.movePosition(QTextCursor::Start);
     ui->nextTextZone->setTextCursor(curs);
 }
+
+//-------------------------------------------------------------------------------
+void  TextTab::setNextButtonState(bool state)
+{
+    if(state)
+        ui->nextTextToolButton->setArrowType(Qt::DownArrow);
+else
+        ui->nextTextToolButton->setArrowType(Qt::UpArrow);
+}
+
+//-------------------------------------------------------------------------------
+
+void TextTab::on_nextTextToolButton_clicked()
+{
+    if(ui->nextTextToolButton->arrowType() == Qt::UpArrow){
+
+
+        QList<int> sizesList;
+        sizesList << ui->prevTextZone->height() << ui->textZone->height()  << ui->textZone->height()/3;
+        ui->splitter->setSizes(sizesList);
+
+        ui->textZone->setFocus();
+        ui->textZone->ensureCursorVisible();
+
+        this->setNextButtonState(true);
+    }
+    else{
+        QList<int> sizesList;
+        sizesList << ui->prevTextZone->height() << ui->textZone->height()  << 0;
+        ui->splitter->setSizes(sizesList);
+
+
+        ui->textZone->setFocus();
+        ui->textZone->ensureCursorVisible();
+        this->setNextButtonState(false);
+
+}
+
+}
+
+//-------------------------------------------------------------------------------
+void TextTab::on_splitter_splitterMoved(int pos, int index)
+{
+    qDebug() << "pos : "<< QString::number(pos) << "index : "<<QString::number(index) ;
+    if(index == 1 && pos != 0)
+        this->setPrevButtonState(true);
+    if(index == 1 && pos == 0)
+        this->setPrevButtonState(false);
+    if(index == 2 && pos != ui->splitter->maximumHeight())
+        this->setNextButtonState(true);
+    if(index == 2 && pos == ui->splitter->maximumHeight())
+        this->setNextButtonState(false);
+}
+
 
 
 
@@ -494,3 +591,4 @@ void TextTab::scrollBar_setRange(int min, int max)
         ui->verticalScrollBar->show();
 
 }
+

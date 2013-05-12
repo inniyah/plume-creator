@@ -86,9 +86,18 @@ private slots:
     void giveStyle();
     void scrollBar_setRange(int min, int max);
 
+
+    void on_prevTextToolButton_clicked();
+
+    void on_nextTextToolButton_clicked();
+
+    void on_splitter_splitterMoved(int pos, int index);
+
 private:
     Ui::TextTab *ui;
 
+  void  setPrevButtonState(bool state);
+    void  setNextButtonState(bool state);
     void addSlimFindReplaceAction();
     Hub *hub;
     TextStyles *textStyles;
