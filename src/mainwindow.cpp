@@ -207,7 +207,7 @@ void MainWindow::createMenuBar()
 void MainWindow::createAttendDock()
 {
     attendDock = new QDockWidget(this);
-    attendDock->setWindowTitle(tr("Attendance"));
+    attendDock->setWindowTitle(tr("Mise en scène"));
     attendDock->setObjectName("attendDock");
     attendDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 

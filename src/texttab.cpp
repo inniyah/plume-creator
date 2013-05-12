@@ -19,6 +19,18 @@ TextTab::TextTab(QWidget *parent) :
     textDocument = new MainTextDocument(this);
     nextTextDocument = new MainTextDocument(this);
 
+    QScrollBar *baseScrollBar = ui->textZone->verticalScrollBar();
+
+    connect(baseScrollBar, SIGNAL(rangeChanged(int,int)), this, SLOT(scrollBar_setRange(int, int)));
+    connect(baseScrollBar, SIGNAL(valueChanged(int)), ui->verticalScrollBar, SLOT(setValue(int)));
+    connect(ui->verticalScrollBar, SIGNAL(valueChanged(int)), baseScrollBar, SLOT(setValue(int)));
+ui->textZone->verticalScrollBar()->hide();
+//    ui->textZone->setVerticalScrollBar(vertScrollBar);
+
+
+
+
+
 //    prevTextZone = new TextZone(this);
 //    prevTextZone->setHub(hub);
 //    prevTextZone->toHtml();
@@ -126,7 +138,6 @@ bool TextTab::openText(MainTextDocument *doc)
     ui->textZone->setTextStyles(textStyles);
     ui->textZone->createContent();
 
-    ui->textZone->setVerticalScrollBar(ui->verticalScrollBar);
 
 
 
@@ -470,3 +481,16 @@ void TextTab::paintEvent(QPaintEvent *)
      QPainter p(this);
      style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
  }
+//-------------------------------------------------------------------
+
+void TextTab::scrollBar_setRange(int min, int max)
+{
+    ui->verticalScrollBar->setMinimum(min);
+    ui->verticalScrollBar->setMaximum(max);
+
+    if(min == 0 && max == 0)
+        ui->verticalScrollBar->hide();
+    else
+        ui->verticalScrollBar->show();
+
+}

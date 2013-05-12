@@ -58,8 +58,16 @@ QSplitter::handle {
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="TextZone" name="prevTextZone"/>
-     <widget class="TextZone" name="textZone"/>
+     <widget class="TextZone" name="prevTextZone">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+     </widget>
+     <widget class="TextZone" name="textZone">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+     </widget>
      <widget class="TextZone" name="nextTextZone">
       <property name="html">
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -137,6 +145,9 @@ p, li { white-space: pre-wrap; }
    </item>
    <item row="0" column="3" rowspan="3">
     <widget class="QScrollBar" name="verticalScrollBar">
+     <property name="toolTip">
+      <string>scroll</string>
+     </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

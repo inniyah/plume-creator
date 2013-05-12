@@ -84,6 +84,7 @@ private slots:
     void launchSlimFindReplace();
     void cursorPositionChangedSlot();
     void giveStyle();
+    void scrollBar_setRange(int min, int max);
 
 private:
     Ui::TextTab *ui;
