@@ -115,11 +115,16 @@ void SettingsDialog::programStyleChanged()
 void SettingsDialog::displayModeChanged(int dispModeIndex)
 {
 
-    emit setDisplayModeSignal(displayModeCodes.at(dispModeIndex));
+    emit setDisplayModeSignal(displayModeCodes.at(dispModeIndex), ui->isToolBarInStatusBarCheckBox->isChecked());
 
 }
 
 //---------------------------------------------------------------------------------
+void SettingsDialog::toolBarInToolBarChanged(bool isToolBarInStatusBar)
+{
+    emit setDisplayModeSignal(displayModeCodes.at(ui->displayModeComboBox->currentIndex()), isToolBarInStatusBar);
+}
+    //---------------------------------------------------------------------------------
 
 void SettingsDialog::portableModeChanged(bool mode)
 {
@@ -350,11 +355,14 @@ void SettingsDialog::readSettings()
     settings.beginGroup("Updater");
     ui->checkUpdateAtStartupCheckBox->setChecked(settings.value("checkAtStartup_1", true).toBool());
     settings.endGroup();
-
+    settings.beginGroup("MainWindow");
+    ui->isToolBarInStatusBarCheckBox->setChecked(settings.value("isToolBarInStatusBar", false).toBool());
+    settings.endGroup();
 
     connect(ui->langComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(langChanged()), Qt::UniqueConnection);
     connect(ui->styleComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(programStyleChanged()), Qt::UniqueConnection);
     connect(ui->displayModeComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(displayModeChanged(int)), Qt::UniqueConnection);
+    connect(ui->isToolBarInStatusBarCheckBox,SIGNAL(toggled(bool)), this, SLOT(toolBarInToolBarChanged(bool)), Qt::UniqueConnection);
     connect(ui->isPortableToBeCreated,SIGNAL(toggled(bool)),this,SLOT(portableModeChanged(bool)));
 
 
@@ -464,6 +472,9 @@ void SettingsDialog::accept()
     settings.beginGroup("Updater");
     settings.setValue("checkAtStartup_1", ui->checkUpdateAtStartupCheckBox->isChecked());
     settings.endGroup();
+    settings.beginGroup("MainWindow");
+    settings.setValue("isToolBarInStatusBar", ui->isToolBarInStatusBarCheckBox->isChecked());
+    settings.endGroup();
 
 
 
@@ -547,7 +558,7 @@ void SettingsDialog::reject()
 
     //    general tab :
 
-    emit setDisplayModeSignal(prev_displayMode);
+    emit setDisplayModeSignal(prev_displayMode, settings.value("isToolBarInStatusBar", false).toBool());
 
     // text tab :
     ui->widthSpin->setValue(previous_textWidthValue);

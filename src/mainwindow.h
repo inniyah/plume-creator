@@ -101,7 +101,7 @@ private slots:
     void writeDocksSettings();
     void applyConfig();
     void configTimer();
-    void setDisplayMode(QString mode);
+    void setDisplayMode(QString mode, bool isToolBarInStatusBar);
     void changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea);
 
     void reconnectAFterTabClose();
@@ -169,12 +169,11 @@ private:
 
 
     QToolBar *docksToolBar;
-    OrientationButton *menuDockButton;
-    OrientationButton *toolDockButton;
-    OrientationButton *treeDockButton;
-    OrientationButton *noteDockButton;
-    OrientationButton *attendDockButton;
-    OrientationButton *editDockButton;
+    OrientationButton *menuDockButton, *toolDockButton, *treeDockButton, *noteDockButton, *attendDockButton, *editDockButton;
+QAction *menuDockAct, *toolDockAct, *treeDockAct, *noteDockAct, *attendDockAct, *editDockAct,
+*fullscreenAct, *outlinerAct;
+QList<QAction *> toolBarActionsList;
+QToolBar *statusDockToolBar;
 
     QLabel *sceneWCLabel;
 

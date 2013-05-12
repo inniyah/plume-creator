@@ -76,10 +76,10 @@ public:
     QHash<int, QDomElement> attendTree_domElementForNumberHash();
     void set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
 
-int currentProjectSettingArrayNumber() const;
-void setCurrentProjectSettingArrayNumber(int projectNumber);
+    int currentProjectSettingArrayNumber() const;
+    void setCurrentProjectSettingArrayNumber(int projectNumber);
 
-int currentSheetNumber() const;
+    int currentSheetNumber() const;
     void setCurrentSheetNumber(int sheetNumber);
 
     // wordCount goal :
@@ -93,6 +93,8 @@ int currentSheetNumber() const;
     void setWordGoalActivated(bool wordGoalIsActivated);
 
     int projectWordCount() const{return wcThread->projectWordCount();}
+
+
 
     // files managment :
     void closeCurrentProject();
@@ -129,7 +131,7 @@ signals:
 
     void savingSignal();
 
-//    wordCount :
+    //    wordCount :
     void projectWordCount(int count);
     void bookWordCount(int count);
     void chapterWordCount(int count);
@@ -161,7 +163,7 @@ private slots:
     void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
 
 private:
-   bool refreshIsLocked;
+    bool refreshIsLocked;
 
     QString m_projectName;
     QString m_projectFileName;
@@ -179,28 +181,28 @@ private:
     QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
 
     int m_currentSheetNumber, m_currentProjectSettingArrayNumber;
-int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
-bool m_isWordGoalActivated;
+    int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
+    bool m_isWordGoalActivated;
 
-// file managment :
+    // file managment :
     void saveTemp();
     bool areFilesLocked();
     bool filesLocked;
     bool projectOpened;
     QString projectWorkingPath;
- bool saveDoc(QTextDocument *doc, QString mode);
- bool saveMainDoc(MainTextDocument *doc, QString mode);
+    bool saveDoc(QTextDocument *doc, QString mode);
+    bool saveMainDoc(MainTextDocument *doc, QString mode);
 
-void loadTextDocs(QDomNodeList list);
-void loadAttendDocs(QDomNodeList list);
-int saveStack;
-QList<int> timerIdList;
-void stopSaveTimer();
+    void loadTextDocs(QDomNodeList list);
+    void loadAttendDocs(QDomNodeList list);
+    int saveStack;
+    QList<int> timerIdList;
+    void stopSaveTimer();
 
-int settingNumber;
+    int settingNumber;
 
-// wordcount :
- WordCountEngineThread *wcThread;
+    // wordcount :
+    WordCountEngineThread *wcThread;
 
 };
 

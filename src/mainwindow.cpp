@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocusPolicy(Qt::WheelFocus);
 
     //temporary config
-//    setStyleSheet("* {background-color: pink; color: black;}");
+    //    setStyleSheet("* {background-color: pink; color: black;}");
 
     //     netbook mode 10':
     //        setFixedSize(900, 550);
@@ -64,10 +64,10 @@ MainWindow::MainWindow(QWidget *parent)
     createTreeDock();
     createNoteDock();
     createToolDock();
-    createDocksToolBar();
     createStatusBar();
+    createDocksToolBar();
 
-menu->setMenusEnabled(false);
+    menu->setMenusEnabled(false);
 
     setConnections();
 
@@ -130,7 +130,7 @@ menu->setMenusEnabled(false);
 
         QSettings settings;
         settings.setValue("MainWindow/displayMode", "netbook");
-        setDisplayMode("netbook");
+        setDisplayMode("netbook", false);
 
         m_firstStart_checkDisplay = false;
 
@@ -190,7 +190,7 @@ void MainWindow::createMenuBar()
 
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
-    connect(menu, SIGNAL(setDisplayModeSignal(QString)), this, SLOT(setDisplayMode(QString)));
+    connect(menu, SIGNAL(setDisplayModeSignal(QString, bool)), this, SLOT(setDisplayMode(QString, bool)));
     connect(menu, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
 
     connect(menu, SIGNAL(launchCheckUpdateSignal(QString)), this, SLOT(launchSlimUpdater(QString)));
@@ -463,7 +463,7 @@ void MainWindow::createNoteDock()
     //    layout->addWidget(midFrame);
     noteDockLayout->addWidget(noteBox);
     noteDockLayoutWidget->setLayout(noteDockLayout);
-noteSplitter->addWidget(noteDockLayoutWidget);
+    noteSplitter->addWidget(noteDockLayoutWidget);
 
     noteDock->setWidget(noteSplitter);
 
@@ -605,6 +605,10 @@ void MainWindow::createDocksToolBar()
     treeDockButton->setMirrored(true);
     connect(treeDockButton, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
 
+    treeDockAct = new QAction(QIcon(":/pics/view-list-tree.png"),tr("Project"),this);
+    treeDockAct->setCheckable(true);
+    connect(treeDockAct, SIGNAL(toggled(bool)), treeDock, SLOT(setVisible(bool)));
+    //    toolBarActionsList.append(treeDockAct);
 
     noteDockButton = new OrientationButton(QIcon(":/pics/im-status-message-edit-90.png"),tr("Notes"));
     noteDockButton->setObjectName("showNotesBt");
@@ -613,6 +617,13 @@ void MainWindow::createDocksToolBar()
     noteDockButton->setMirrored(true);
     connect(noteDockButton, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
 
+    noteDockAct = new QAction(QIcon(":/pics/im-status-message-edit.png"),tr("Notes"),this);
+    noteDockAct->setCheckable(true);
+    connect(noteDockAct, SIGNAL(toggled(bool)), noteDock, SLOT(setVisible(bool)));
+    toolBarActionsList.append(noteDockAct);
+
+
+
     toolDockButton = new OrientationButton(QIcon(":/pics/preferences-system-90.png"),tr("Tools"));
     toolDockButton->setObjectName("showToolsBt");
     toolDockButton->setOrientation(Qt::Vertical);
@@ -620,12 +631,26 @@ void MainWindow::createDocksToolBar()
     toolDockButton->setMirrored(true);
     connect(toolDockButton, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
 
-    attendDockButton = new OrientationButton(QIcon(":/pics/meeting-organizer-90.png"),tr("Attendance"));
+    toolDockAct = new QAction(QIcon(":/pics/preferences-system.png"),tr("Tools"),this);
+    toolDockAct->setCheckable(true);
+    connect(toolDockAct, SIGNAL(toggled(bool)), toolDock, SLOT(setVisible(bool)));
+    toolBarActionsList.append(toolDockAct);
+
+
+
+    attendDockButton = new OrientationButton(QIcon(":/pics/meeting-organizer-90.png"),tr("Mise en scène"));
     attendDockButton->setObjectName("showAttendBt");
     attendDockButton->setOrientation(Qt::Vertical);
     attendDockButton->setCheckable(true);
     attendDockButton->setMirrored(true);
     connect(attendDockButton, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
+
+    attendDockAct = new QAction(QIcon(":/pics/meeting-organizer.png"),tr("Mise en scène"),this);
+    attendDockAct->setCheckable(true);
+    connect(attendDockAct, SIGNAL(toggled(bool)), attendDock, SLOT(setVisible(bool)));
+    toolBarActionsList.append(attendDockAct);
+
+
 
     OrientationButton *outlinerButton = new OrientationButton(QIcon(":/pics/view-time-schedule-90.png"),tr("Outliner"));
     outlinerButton->setObjectName("outlinerBt");
@@ -634,6 +659,13 @@ void MainWindow::createDocksToolBar()
     outlinerButton->setMirrored(true);
     connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
 
+    outlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("Outliner"),this);
+    outlinerAct->setCheckable(false);
+    connect(outlinerAct, SIGNAL(triggered()), this, SLOT(launchOutliner()));
+    toolBarActionsList.append(outlinerAct);
+
+
+
     OrientationButton *fullscreenButton = new OrientationButton(QIcon(":/pics/view-fullscreen-90.png"),tr("Fullscreen"));
     fullscreenButton->setObjectName("fullscreenBt");
     fullscreenButton->setToolTip(tr("Edit this document fullscreen"));
@@ -641,6 +673,12 @@ void MainWindow::createDocksToolBar()
     fullscreenButton->setCheckable(false);
     fullscreenButton->setMirrored(true);
     connect(fullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
+
+
+    fullscreenAct = new QAction(QIcon(":/pics/view-fullscreen.png"),tr("Fullscreen"),this);
+    fullscreenAct->setCheckable(false);
+    connect(fullscreenAct, SIGNAL(triggered()), this, SLOT(editFullscreen()));
+    toolBarActionsList.append(fullscreenAct);
 
     //    showPrvScnButton = new OrientationButton(QIcon(":/pics/zoom-previous-90.png"),tr("&Show Prev. Scene"));
     //    showPrvScnButton->setObjectName("showPrvScnBt");
@@ -671,7 +709,18 @@ void MainWindow::createDocksToolBar()
     //    docksToolBar->addWidget(showNxtScnButton);
 
 
+    statusDockToolBar = new QToolBar();
+    statusDockToolBar->setObjectName("statusDockToolBar");
+    statusDockToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    statusDockToolBar->setOrientation(Qt::Horizontal);
+    statusDockToolBar->setMovable(false);
+    statusDockToolBar->setFloatable(false);
 
+    statusDockToolBar->addActions(toolBarActionsList);
+    statusDockToolBar->insertSeparator(toolBarActionsList.at(3));
+
+
+    ui->bar->addPermanentWidget(statusDockToolBar);
     //    this->addToolBar(Qt::LeftToolBarArea, docksToolBar);
 
 }
@@ -683,30 +732,44 @@ void MainWindow::checkHiddenDocks()
 
 
 
-    if(treeDock->isVisible())
+    if(treeDock->isVisible()){
         treeDockButton->setChecked(true);
-    else
+        treeDockAct->setChecked(true);
+    }
+    else{
         treeDockButton->setChecked(false);
+        treeDockAct->setChecked(false);
+    }
     //    menu->setTreeDockAct(treeDock->isVisible());
 
     if(noteDock->isVisible()){
         noteDockButton->setChecked(true);
+        noteDockAct->setChecked(true);
     }
-    else
+    else{
         noteDockButton->setChecked(false);
+        noteDockAct->setChecked(false);
+    }
     menu->setNoteDockAct(noteDock->isVisible());
 
-    if(toolDock->isVisible())
+    if(toolDock->isVisible()){
         toolDockButton->setChecked(true);
-    else
+        toolDockAct->setChecked(true);
+    }
+    else{
         toolDockButton->setChecked(false);
+        toolDockAct->setChecked(false);
+    }
     menu->setToolDockAct(toolDock->isVisible());
 
     if(attendDock->isVisible()){
         attendDockButton->setChecked(true);
+        attendDockAct->setChecked(true);
     }
-    else
+    else{
         attendDockButton->setChecked(false);
+        attendDockAct->setChecked(false);
+    }
     menu->setAttendDockAct(attendDock->isVisible());
 
 
@@ -716,7 +779,7 @@ void MainWindow::checkHiddenDocks()
 
 //---------------------------------------------------------------------------
 
-void MainWindow::setDisplayMode(QString mode)
+void MainWindow::setDisplayMode(QString mode, bool isToolBarInStatusBar)
 {
     QSettings settings;
     settings.beginGroup( "MainWindow" );
@@ -785,6 +848,15 @@ void MainWindow::setDisplayMode(QString mode)
     }
 
 
+    //  tool bar in status bar :
+
+
+
+
+ statusDockToolBar->setVisible(isToolBarInStatusBar);
+    docksToolBar->setHidden(isToolBarInStatusBar);
+
+
     displayMode = mode;
     checkHiddenDocks();
 
@@ -833,7 +905,7 @@ void MainWindow::setDisplayMode(QString mode)
 void MainWindow::openExternalProject(QString externalFile)
 {
 
-//    qDebug() << "openExternalProject : " << externalFile->fileName();
+    //    qDebug() << "openExternalProject : " << externalFile->fileName();
 
     //    if(!externalFile->exists()){
     //        int ret = QMessageBox::warning(this, tr("Plume Creator"),
@@ -887,7 +959,7 @@ void MainWindow::closeProjectSlot()
     //    attendList->accept(); //to close the manager;
 
 
-//    hub->closeCurrentProject();
+    //    hub->closeCurrentProject();
     //    attendList->closeAll();
     //    timer->stop();
 }
@@ -1429,7 +1501,8 @@ void MainWindow::readDocksSettings()
     QSettings settings;
     settings.beginGroup( "MainWindow" );
     displayMode = settings.value("displayMode", "desktop").toString();
-    this->setDisplayMode(settings.value("displayMode", "desktop").toString() );
+    this->setDisplayMode(settings.value("displayMode", "desktop").toString(),
+                         settings.value("isToolBarInStatusBar", false).toBool());
     settings.endGroup();
 
 
@@ -1535,12 +1608,12 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 //----------------------------------------------------------------------------------------
 void MainWindow::paintEvent(QPaintEvent *)
- {
-     QStyleOption opt;
-     opt.init(this);
-     QPainter p(this);
-     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
- }
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
 
 //----------------------------------------------------------------------------------------
 
@@ -1628,7 +1701,7 @@ void MainWindow::applyConfig()
             "QTabWidget::pane#mainTabWidget {"
             "padding-top : -20px"
 
-                "}";
+            "}";
 
     if(!noTabBool){
         QString css = this->styleSheet();

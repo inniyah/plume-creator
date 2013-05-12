@@ -352,6 +352,7 @@ void Hub::setAchievedWordGoal(int achievedCount)
 {
 
 
+
     if(achievedCount > m_wordGoal)
         this->setWordGoal(m_wordGoal + (achievedCount - m_wordGoal));
     if(achievedCount < 0 )
@@ -359,6 +360,7 @@ void Hub::setAchievedWordGoal(int achievedCount)
 
     m_achievedWordGoal = achievedCount;
     emit achievedWordGoalSignal(achievedCount);
+
 }
 
 //--------------------------------------------------------------------------------
@@ -377,10 +379,10 @@ void Hub::setWordGoalActivated(bool wordGoalIsActivated)
 
 void Hub::calculatWordCountGoalDelta(int projectCount)
 {
+        if(projectCount - m_baseWordCount < 0)
+            m_baseWordCount = projectCount;
+        this->setAchievedWordGoal(projectCount - m_baseWordCount);
 
-    if(projectCount - m_baseWordCount < 0)
-        m_baseWordCount = projectCount;
-    this->setAchievedWordGoal(projectCount - m_baseWordCount);
 }
 
 
@@ -556,7 +558,7 @@ bool Hub::startProject(QString file)
 
 void Hub::closeCurrentProject()
 {
-// for GUI :
+    // for GUI :
     emit closeProjectSignal();
     //
 
@@ -1204,7 +1206,7 @@ void Hub::stopSaveTimer()
 }
 void Hub::timerEvent(QTimerEvent *event)
 {
-//    timerIdList.removeAll(event->timerId());
+    //    timerIdList.removeAll(event->timerId());
 
 
     qDebug() << " -------- time to save !";

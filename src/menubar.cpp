@@ -117,7 +117,7 @@ void MenuBar::displayConfig(int tabIndex)
     settingsDialog->createContent();
 
     connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
-    connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString)), this, SIGNAL(setDisplayModeSignal(QString)));
+    connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString, bool)), this, SIGNAL(setDisplayModeSignal(QString, bool)));
     connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
     connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
 

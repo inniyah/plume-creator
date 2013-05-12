@@ -72,7 +72,7 @@ signals:
 
 
     //repeater between Dialog Settings and MainWindow
-    void setDisplayModeSignal(QString mode);
+    void setDisplayModeSignal(QString mode, bool isToolBarInStatusBar);
 void changeAllDocsTextStylesSignal();
 void resetFullscreenTextWidthSignal();
 

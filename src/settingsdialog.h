@@ -54,7 +54,7 @@ protected:
 signals:
     // general tab :
     void autosaveTimeSignal(int autosaveTime);
-    void setDisplayModeSignal(QString mode);
+    void setDisplayModeSignal(QString mode, bool isToolBarInStatusBar);
 
     // text tab :
 
@@ -80,6 +80,7 @@ private slots:
     void programStyleChanged();
     void displayModeChanged(int dispModeIndex);
     void portableModeChanged(bool mode);
+    void toolBarInToolBarChanged(bool isToolBarInStatusBar);
 
     // text tab :
     void setStyleInfos(int index);
