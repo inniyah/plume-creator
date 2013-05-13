@@ -56,7 +56,7 @@ signals:
 
 protected:
     void paintEvent(QPaintEvent *);
-
+void resizeEvent(QResizeEvent * event);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}

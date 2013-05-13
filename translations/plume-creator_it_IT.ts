@@ -254,7 +254,7 @@
     <name>AttendManager</name>
     <message>
         <location filename="../src/attend/attendmanager.ui" line="14"/>
-        <source>Attendance manager</source>
+        <source>Mise en scène Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1073,7 +1073,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="334"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="338"/>
         <source>Synopsis</source>
         <translation>Sinossi</translation>
     </message>
@@ -1096,57 +1096,57 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="187"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="191"/>
         <source>Manage &amp;Styles</source>
         <translation>Gestisci &amp;Stili</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="189"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="193"/>
         <source>Manage the styles</source>
         <translation>Gestisci gli stili</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="192"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="196"/>
         <source>Colors</source>
         <translation>Colori</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="194"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="198"/>
         <source>Set the colors</source>
         <translation>Imposta i colori</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="275"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="279"/>
         <source>FullScreen Colors :</source>
         <translation>Colori a schermo intero :</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="295"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="299"/>
         <source>&amp;Background color:</source>
         <translation>Colore di sfondo (&amp;B):</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="296"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="300"/>
         <source>Text b&amp;ackground color:</source>
         <translation>Colore di sfondo del testo (&amp;a):</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="297"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="301"/>
         <source>&amp;Text color:</source>
         <translation>Colore del &amp;Testo:</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="298"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="302"/>
         <source>&amp;Timers color:</source>
         <translation>Colore del &amp;Timer:</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="302"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="306"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="363"/>
+        <location filename="../src/fullscreen/fullscreeneditor.cpp" line="367"/>
         <source>Notes</source>
         <translation>Note</translation>
     </message>
@@ -1154,105 +1154,105 @@
 <context>
     <name>Hub</name>
     <message>
-        <location filename="../src/hub.cpp" line="429"/>
-        <location filename="../src/hub.cpp" line="437"/>
-        <location filename="../src/hub.cpp" line="451"/>
-        <location filename="../src/hub.cpp" line="462"/>
+        <location filename="../src/hub.cpp" line="431"/>
+        <location filename="../src/hub.cpp" line="439"/>
+        <location filename="../src/hub.cpp" line="453"/>
+        <location filename="../src/hub.cpp" line="464"/>
         <source>Plume creator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="430"/>
-        <location filename="../src/hub.cpp" line="438"/>
+        <location filename="../src/hub.cpp" line="432"/>
+        <location filename="../src/hub.cpp" line="440"/>
         <source>The document </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="430"/>
+        <location filename="../src/hub.cpp" line="432"/>
         <source> you are trying to open doesn&apos;t exist !
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="438"/>
+        <location filename="../src/hub.cpp" line="440"/>
         <source> you are trying to open isn&apos;t a *.plume or .plume_backup file !
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="452"/>
+        <location filename="../src/hub.cpp" line="454"/>
         <source>The document you are trying to open isn&apos;t a *.plume or *.plume_backup file !
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="463"/>
+        <location filename="../src/hub.cpp" line="465"/>
         <source>&lt;p&gt;The document you are trying to open is *.plume_backup file !&lt;/p&gt;&lt;p&gt;It&apos;s a backup created from the last save. This file must be opened in theses cases :&lt;/p&gt;&lt;blockquote&gt;- Your computer crashed when saving, corrupting your work . &lt;/blockquote&gt;&lt;blockquote&gt;- You can&apos;t load your work. &lt;/blockquote&gt;&lt;p&gt;This will replace your work.&lt;/p&gt;&lt;p&gt;Do you want to proceed ?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="679"/>
-        <location filename="../src/hub.cpp" line="692"/>
-        <location filename="../src/hub.cpp" line="697"/>
-        <location filename="../src/hub.cpp" line="733"/>
-        <location filename="../src/hub.cpp" line="746"/>
-        <location filename="../src/hub.cpp" line="751"/>
-        <location filename="../src/hub.cpp" line="780"/>
-        <location filename="../src/hub.cpp" line="797"/>
-        <location filename="../src/hub.cpp" line="802"/>
+        <location filename="../src/hub.cpp" line="678"/>
+        <location filename="../src/hub.cpp" line="691"/>
+        <location filename="../src/hub.cpp" line="696"/>
+        <location filename="../src/hub.cpp" line="732"/>
+        <location filename="../src/hub.cpp" line="745"/>
+        <location filename="../src/hub.cpp" line="750"/>
+        <location filename="../src/hub.cpp" line="779"/>
+        <location filename="../src/hub.cpp" line="796"/>
+        <location filename="../src/hub.cpp" line="801"/>
         <source>Plume Creator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="680"/>
+        <location filename="../src/hub.cpp" line="679"/>
         <source>Tree File. Parse error at line %1, column %2:
 %3
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="693"/>
+        <location filename="../src/hub.cpp" line="692"/>
         <source>The file is not a Plume Creator tree file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="698"/>
+        <location filename="../src/hub.cpp" line="697"/>
         <source>The file is not a Plume Creator tree file version </source>
         <comment>version added after that</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="734"/>
+        <location filename="../src/hub.cpp" line="733"/>
         <source>Info File. Parse error at line %1, column %2:
 %3
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="747"/>
+        <location filename="../src/hub.cpp" line="746"/>
         <source>The file is not a Plume Creator info file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="752"/>
+        <location filename="../src/hub.cpp" line="751"/>
         <source>The file is not a Plume Creator info file version </source>
         <comment>version added after that</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="781"/>
+        <location filename="../src/hub.cpp" line="780"/>
         <source>Attend File. Parse error at line %1, column %2:
 %3
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="798"/>
+        <location filename="../src/hub.cpp" line="797"/>
         <source>The file is not a Plume Creator attend file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="803"/>
+        <location filename="../src/hub.cpp" line="802"/>
         <source>The file is not a Plume Creator attend file version </source>
         <comment>version added after that</comment>
         <translation type="unfinished"></translation>
@@ -1502,20 +1502,30 @@ cancellare un libro riempito.</translation>
         <translation>&lt;center&gt;&lt;b&gt;E&apos; stato rilevato uno schermo di piccole dimensioni&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Forse stai eseguendo Plume su un netbook. Plume adatterà la sua interfaccia a questo tipo di computer.&lt;/p&gt;&lt;br&gt;&lt;p&gt;Puoi cambiare quest&apos;opzione nella finestra &apos;Configura&apos;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
-        <location filename="../src/mainwindow.cpp" line="623"/>
         <source>Attendance</source>
-        <translation>Manutenzione</translation>
+        <translation type="obsolete">Manutenzione</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="646"/>
+        <location filename="../src/mainwindow.cpp" line="653"/>
+        <location filename="../src/mainwindow.cpp" line="654"/>
+        <source>Mise en scène</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="311"/>
-        <location filename="../src/mainwindow.cpp" line="601"/>
+        <location filename="../src/mainwindow.cpp" line="603"/>
+        <location filename="../src/mainwindow.cpp" line="610"/>
+        <location filename="../src/mainwindow.cpp" line="611"/>
         <source>Project</source>
         <translation>Progetto</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="340"/>
-        <location filename="../src/mainwindow.cpp" line="616"/>
+        <location filename="../src/mainwindow.cpp" line="631"/>
+        <location filename="../src/mainwindow.cpp" line="638"/>
+        <location filename="../src/mainwindow.cpp" line="639"/>
         <source>Tools</source>
         <translation>Strumenti</translation>
     </message>
@@ -1526,97 +1536,99 @@ cancellare un libro riempito.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="391"/>
-        <location filename="../src/mainwindow.cpp" line="609"/>
+        <location filename="../src/mainwindow.cpp" line="616"/>
+        <location filename="../src/mainwindow.cpp" line="623"/>
+        <location filename="../src/mainwindow.cpp" line="624"/>
         <source>Notes</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Draft</source>
         <translation>Bozza</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>25%</source>
         <translation>25%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>50%</source>
         <translation>50%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>75%</source>
         <translation>75%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Done</source>
         <translation>Fatto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Corrected</source>
         <translation>Corretto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="477"/>
         <source>Synopsis</source>
         <translation>Sinossi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="476"/>
+        <location filename="../src/mainwindow.cpp" line="478"/>
         <source>Note</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="533"/>
+        <location filename="../src/mainwindow.cpp" line="535"/>
         <source>Project word count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="537"/>
         <source>Book word count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="537"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Chapter word count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="539"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Current sheet word count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="593"/>
+        <location filename="../src/mainwindow.cpp" line="595"/>
         <source>Side buttons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1511"/>
+        <location filename="../src/mainwindow.cpp" line="1589"/>
         <source>Your project was successfully saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2039"/>
+        <location filename="../src/mainwindow.cpp" line="2127"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2044"/>
+        <location filename="../src/mainwindow.cpp" line="2132"/>
         <source>Book: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2053"/>
+        <location filename="../src/mainwindow.cpp" line="2141"/>
         <source>Chapter: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2059"/>
+        <location filename="../src/mainwindow.cpp" line="2147"/>
         <source>Words: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1625,27 +1637,31 @@ cancellare un libro riempito.</translation>
         <translation type="obsolete">Pulsanti della Barra</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="630"/>
+        <location filename="../src/mainwindow.cpp" line="661"/>
+        <location filename="../src/mainwindow.cpp" line="668"/>
+        <location filename="../src/mainwindow.cpp" line="669"/>
         <source>Outliner</source>
         <translation>Evidenziatore</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="637"/>
+        <location filename="../src/mainwindow.cpp" line="676"/>
+        <location filename="../src/mainwindow.cpp" line="685"/>
+        <location filename="../src/mainwindow.cpp" line="686"/>
         <source>Fullscreen</source>
         <translation>Schermo Intero</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="639"/>
+        <location filename="../src/mainwindow.cpp" line="678"/>
         <source>Edit this document fullscreen</source>
         <translation>Modifica questo documento a schermo intero</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1496"/>
+        <location filename="../src/mainwindow.cpp" line="1574"/>
         <source>Do you want to quit ?</source>
         <translation>Vuoi terminare ?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1497"/>
+        <location filename="../src/mainwindow.cpp" line="1575"/>
         <source>Your changes are already saved.</source>
         <translation>I tuoi cambiamenti sono già stati salvati.</translation>
     </message>
@@ -1662,115 +1678,113 @@ cancellare un libro riempito.</translation>
 <context>
     <name>MenuBar</name>
     <message>
-        <location filename="../src/menubar.cpp" line="167"/>
+        <location filename="../src/menubar.cpp" line="150"/>
         <source>Do you want to close the current project ?</source>
         <translation>Vuoi chiudere il progetto corrente ?</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="168"/>
+        <location filename="../src/menubar.cpp" line="151"/>
         <source>Your changes are already saved.</source>
         <translation>I tuoi cambiamenti sono già stati salvati.</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="255"/>
-        <location filename="../src/menubar.cpp" line="508"/>
+        <location filename="../src/menubar.cpp" line="238"/>
+        <location filename="../src/menubar.cpp" line="485"/>
         <source>About Qt</source>
         <translation>Riguardo Qt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="268"/>
+        <location filename="../src/menubar.cpp" line="251"/>
         <source>Release Notes</source>
         <translation>Note di rilascio</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="306"/>
+        <location filename="../src/menubar.cpp" line="289"/>
         <source>About Plume Creator</source>
         <translation>Riguardo Plume Creator</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="382"/>
+        <location filename="../src/menubar.cpp" line="365"/>
         <source>&amp;New Project</source>
         <translation>&amp;Nuovo Progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="384"/>
+        <location filename="../src/menubar.cpp" line="367"/>
         <source>Create a new project</source>
         <translation>Crea un nuovo progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="387"/>
         <source>Project &amp;Manager</source>
-        <translation>Gestione Progetti (&amp;M)</translation>
+        <translation type="obsolete">Gestione Progetti (&amp;M)</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="389"/>
-        <location filename="../src/menubar.cpp" line="394"/>
+        <location filename="../src/menubar.cpp" line="372"/>
         <source>Create and manage your projects</source>
         <translation>Crea e gestisci i tuoi progetti</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="392"/>
+        <location filename="../src/menubar.cpp" line="370"/>
         <source>Start &amp;Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="398"/>
+        <location filename="../src/menubar.cpp" line="376"/>
         <source>&amp;Configure</source>
         <translation>&amp;Configura</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="400"/>
+        <location filename="../src/menubar.cpp" line="378"/>
         <source>Display the configuration</source>
         <translation>Mostra la configurazione</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="403"/>
+        <location filename="../src/menubar.cpp" line="381"/>
         <source>&amp;Export</source>
         <translation>&amp;Esporta</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="405"/>
+        <location filename="../src/menubar.cpp" line="383"/>
         <source>Export the project</source>
         <translation>Esporta il progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="408"/>
+        <location filename="../src/menubar.cpp" line="386"/>
         <source>&amp;Print</source>
         <translation>Stampa (&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="410"/>
+        <location filename="../src/menubar.cpp" line="388"/>
         <source>Print part of the project</source>
         <translation>Stampa parte del progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="413"/>
+        <location filename="../src/menubar.cpp" line="391"/>
         <source>&amp;Close project</source>
         <translation>&amp;Chiudi Progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="415"/>
+        <location filename="../src/menubar.cpp" line="393"/>
         <source>Print the document</source>
         <translation>Stampa il documento</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="418"/>
+        <location filename="../src/menubar.cpp" line="396"/>
         <source>E&amp;xit</source>
         <translation>Esci (&amp;X)</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="420"/>
+        <location filename="../src/menubar.cpp" line="398"/>
         <source>Exit the application</source>
         <translation>Esci dall&apos;applicazione</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="424"/>
-        <location filename="../src/menubar.cpp" line="458"/>
+        <location filename="../src/menubar.cpp" line="402"/>
+        <location filename="../src/menubar.cpp" line="435"/>
         <source>&amp;Project</source>
         <translation>&amp;Progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="438"/>
+        <location filename="../src/menubar.cpp" line="415"/>
         <source>&amp;Find &amp;&amp; Replace</source>
         <translation>Trova &amp;&amp; Sostituisci (&amp;F)</translation>
     </message>
@@ -1779,122 +1793,122 @@ cancellare un libro riempito.</translation>
         <translation type="obsolete">Finestra Trova &amp; Sostituisci</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="440"/>
+        <location filename="../src/menubar.cpp" line="417"/>
         <source>Find &amp;&amp; Replace Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="447"/>
+        <location filename="../src/menubar.cpp" line="424"/>
         <source>Manage &amp;Styles</source>
         <translation>Gestisci &amp;Stili</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="449"/>
+        <location filename="../src/menubar.cpp" line="426"/>
         <source>Manage the styles</source>
         <translation>Gestisci gli stili</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="452"/>
+        <location filename="../src/menubar.cpp" line="429"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edita</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="461"/>
+        <location filename="../src/menubar.cpp" line="438"/>
         <source>Show the project dock</source>
         <translation>Mostra la barra del progetto</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="464"/>
+        <location filename="../src/menubar.cpp" line="441"/>
         <source>&amp;Notes</source>
         <translation>&amp;Note</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="467"/>
+        <location filename="../src/menubar.cpp" line="444"/>
         <source>Show the note dock</source>
         <translation>Mostra la barra delle note</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="470"/>
+        <location filename="../src/menubar.cpp" line="447"/>
         <source>&amp;Attendance</source>
         <translation>Manutenzione (&amp;M)</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="473"/>
+        <location filename="../src/menubar.cpp" line="450"/>
         <source>Show the attendance dock</source>
         <translation>Mostra la barra di manutenzione</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="476"/>
+        <location filename="../src/menubar.cpp" line="453"/>
         <source>&amp;Tools</source>
         <translation>S&amp;trumenti</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="479"/>
+        <location filename="../src/menubar.cpp" line="456"/>
         <source>Show the tool dock</source>
         <translation>Mostra la barra strumenti</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="482"/>
+        <location filename="../src/menubar.cpp" line="459"/>
         <source>&amp;Outliner</source>
         <translation>Evidenziat&amp;ore</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="484"/>
+        <location filename="../src/menubar.cpp" line="461"/>
         <source>Show the outliner</source>
         <translation>Mostra l&apos;evidenziatore</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="487"/>
+        <location filename="../src/menubar.cpp" line="464"/>
         <source>&amp;Fullscreen</source>
         <translation>Schermo intero (&amp;F)</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="489"/>
+        <location filename="../src/menubar.cpp" line="466"/>
         <source>Edit fullscreen</source>
         <translation>Modifica a schermo intero</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="492"/>
+        <location filename="../src/menubar.cpp" line="469"/>
         <source>&amp;View</source>
         <translation>&amp;Visualizza</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="503"/>
+        <location filename="../src/menubar.cpp" line="480"/>
         <source>About</source>
         <translation>Riguardo</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="505"/>
+        <location filename="../src/menubar.cpp" line="482"/>
         <source>about the application</source>
         <translation>riguardo l&apos;applicazione</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="510"/>
+        <location filename="../src/menubar.cpp" line="487"/>
         <source>about Qt</source>
         <translation>riguardo Qt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="513"/>
+        <location filename="../src/menubar.cpp" line="490"/>
         <source>Release notes</source>
         <translation>Note di rilascio</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="515"/>
+        <location filename="../src/menubar.cpp" line="492"/>
         <source>Open the Readme with the release notes</source>
         <translation>Apri il Readme con le note di rilascio</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="518"/>
+        <location filename="../src/menubar.cpp" line="495"/>
         <source>Check Update</source>
         <translation>Controlla aggiornamenti</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="520"/>
+        <location filename="../src/menubar.cpp" line="497"/>
         <source>check for an update</source>
         <translation>controlla gli aggiornamenti</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="523"/>
+        <location filename="../src/menubar.cpp" line="500"/>
         <source>&amp;Help</source>
         <translation>Aiuto (&amp;H)</translation>
     </message>
@@ -2223,22 +2237,22 @@ Please open a .plume file.</source>
 <context>
     <name>OutlinerAbstractModel</name>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="335"/>
+        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Titles</source>
         <translation>Titoli</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="335"/>
+        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Synopsis</source>
         <translation>Sinossi</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="335"/>
+        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Notes</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="335"/>
+        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>PoV</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2501,7 +2515,7 @@ Please open a .plume file.</source>
     <message>
         <location filename="../src/attend/attendabstractmodel.cpp" line="236"/>
         <location filename="../src/maintree.cpp" line="199"/>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="439"/>
+        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="449"/>
         <source>No Title</source>
         <translation>Nessun Titolo</translation>
     </message>
@@ -2596,73 +2610,73 @@ Please open a .plume file.</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="42"/>
+        <location filename="../src/settingsdialog.ui" line="41"/>
         <source>Change your language :</source>
         <translation>Cambia la tua lingua :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="52"/>
+        <location filename="../src/settingsdialog.ui" line="51"/>
         <source>Change Plume style :</source>
         <translation>Cambia lo stile di Plume :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="62"/>
+        <location filename="../src/settingsdialog.ui" line="61"/>
         <source>Change your display :</source>
         <translation>Cambia il tuo display :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="72"/>
+        <location filename="../src/settingsdialog.ui" line="71"/>
         <source>Save project every :</source>
         <translation>Salva il progetto ogni :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="82"/>
+        <location filename="../src/settingsdialog.ui" line="81"/>
         <source> s</source>
         <comment>seconds</comment>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="119"/>
+        <location filename="../src/settingsdialog.ui" line="126"/>
         <source>Check update at startup</source>
         <translation>Controlla aggiornamenti all&apos;avvio</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="126"/>
+        <location filename="../src/settingsdialog.ui" line="133"/>
         <source>Prevent multiple space characters between words</source>
         <translation>Previeni spazi multipli tra le parole</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="133"/>
+        <location filename="../src/settingsdialog.ui" line="140"/>
         <source>Keep only one tab opened</source>
         <translation>Mantieni sono una tab aperta</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="140"/>
+        <location filename="../src/settingsdialog.ui" line="147"/>
         <source>Hide tabs</source>
         <translation>Nascondi tab</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="176"/>
+        <location filename="../src/settingsdialog.ui" line="163"/>
         <source>Text</source>
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="182"/>
+        <location filename="../src/settingsdialog.ui" line="169"/>
         <source>Main Text Area</source>
         <translation>Area Principale di Testo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="191"/>
+        <location filename="../src/settingsdialog.ui" line="178"/>
         <source>Text Area Width :</source>
         <translation>Larghezza dell&apos;Area di Testo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="201"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source> px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="220"/>
+        <location filename="../src/settingsdialog.ui" line="207"/>
         <source>Fullscreen Text Area</source>
         <translation>Area di Testo a Schermo Intero</translation>
     </message>
@@ -2671,188 +2685,193 @@ Please open a .plume file.</source>
         <translation type="obsolete">Casella di controllo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="236"/>
+        <location filename="../src/settingsdialog.ui" line="223"/>
         <source>Synopsis Area</source>
         <translation>Area Sinossi</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="242"/>
-        <location filename="../src/settingsdialog.ui" line="321"/>
+        <location filename="../src/settingsdialog.ui" line="229"/>
+        <location filename="../src/settingsdialog.ui" line="308"/>
         <source>Default Text Font :</source>
         <translation>Carattere di default del Testo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="226"/>
-        <location filename="../src/settingsdialog.ui" line="271"/>
-        <location filename="../src/settingsdialog.ui" line="350"/>
+        <location filename="../src/settingsdialog.ui" line="213"/>
+        <location filename="../src/settingsdialog.ui" line="258"/>
+        <location filename="../src/settingsdialog.ui" line="337"/>
         <source>Show scrollbar</source>
         <translation>Mostra barra di scorrimento</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="101"/>
+        <location filename="../src/settingsdialog.ui" line="100"/>
         <source>Portable :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="108"/>
+        <location filename="../src/settingsdialog.ui" line="107"/>
         <source>Allow the use of Plume on a USB stick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="278"/>
-        <location filename="../src/settingsdialog.ui" line="357"/>
-        <location filename="../src/settingsdialog.ui" line="536"/>
+        <location filename="../src/settingsdialog.ui" line="154"/>
+        <source>Display the tool bar in the status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="265"/>
+        <location filename="../src/settingsdialog.ui" line="344"/>
+        <location filename="../src/settingsdialog.ui" line="523"/>
         <source>Paragraph Indent :</source>
         <translation>Indentazione paragrafo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="295"/>
-        <location filename="../src/settingsdialog.ui" line="374"/>
+        <location filename="../src/settingsdialog.ui" line="282"/>
+        <location filename="../src/settingsdialog.ui" line="361"/>
         <source>Margin :</source>
         <translation>Margine :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="315"/>
+        <location filename="../src/settingsdialog.ui" line="302"/>
         <source>Note Area</source>
         <translation>Area Note</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="421"/>
+        <location filename="../src/settingsdialog.ui" line="408"/>
         <source>Styles</source>
         <translation>Stili</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="498"/>
+        <location filename="../src/settingsdialog.ui" line="485"/>
         <source>Fixed Options :</source>
         <translation>Opzioni Fisse :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="507"/>
+        <location filename="../src/settingsdialog.ui" line="494"/>
         <source>Text Font :</source>
         <translation>Carattere del Testo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="553"/>
+        <location filename="../src/settingsdialog.ui" line="540"/>
         <source>Spacing :</source>
         <translation>Spaziatura :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="570"/>
+        <location filename="../src/settingsdialog.ui" line="557"/>
         <source>Text Size :</source>
         <translation>Grandezza del Testo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="577"/>
+        <location filename="../src/settingsdialog.ui" line="564"/>
         <source>Text Alignment :</source>
         <translation>Allineamento del Testo :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="585"/>
+        <location filename="../src/settingsdialog.ui" line="572"/>
         <source>Left</source>
         <translation>Sinistra</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="590"/>
+        <location filename="../src/settingsdialog.ui" line="577"/>
         <source>Center</source>
         <translation>Centro</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="595"/>
+        <location filename="../src/settingsdialog.ui" line="582"/>
         <source>Right</source>
         <translation>Destra</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="600"/>
+        <location filename="../src/settingsdialog.ui" line="587"/>
         <source>Justified</source>
         <translation>Giustificato</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="608"/>
+        <location filename="../src/settingsdialog.ui" line="595"/>
         <source>1st Line Indent :</source>
         <translation>Indentazione 1ma Linea :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="625"/>
+        <location filename="../src/settingsdialog.ui" line="612"/>
         <source>Default Style</source>
         <translation>Stile di Default</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="638"/>
+        <location filename="../src/settingsdialog.ui" line="625"/>
         <source>Default Options :</source>
         <translation>Opzioni di Default :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="644"/>
+        <location filename="../src/settingsdialog.ui" line="631"/>
         <source>These options can be modified with the right-click menu.</source>
         <translation>Queste opzioni possono essere modificate con il menu del tasto destro.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="651"/>
+        <location filename="../src/settingsdialog.ui" line="638"/>
         <source>Italic</source>
         <translation>Corsivo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="658"/>
+        <location filename="../src/settingsdialog.ui" line="645"/>
         <source>Bold</source>
         <translation>Grassetto</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="668"/>
+        <location filename="../src/settingsdialog.ui" line="655"/>
         <source>Underline</source>
         <translation>Sottolineato</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="678"/>
+        <location filename="../src/settingsdialog.ui" line="665"/>
         <source>Strike Out</source>
         <translation>Sbarrato</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="717"/>
+        <location filename="../src/settingsdialog.ui" line="704"/>
         <source>Proxy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="723"/>
+        <location filename="../src/settingsdialog.ui" line="710"/>
         <source>Enable proxy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="740"/>
+        <location filename="../src/settingsdialog.ui" line="727"/>
         <source>Host name :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="750"/>
+        <location filename="../src/settingsdialog.ui" line="737"/>
         <source>Port :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="757"/>
+        <location filename="../src/settingsdialog.ui" line="744"/>
         <source>User Name :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="767"/>
+        <location filename="../src/settingsdialog.ui" line="754"/>
         <source>Password :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="800"/>
+        <location filename="../src/settingsdialog.ui" line="787"/>
         <source>Use system settings :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="810"/>
+        <location filename="../src/settingsdialog.ui" line="797"/>
         <source>Type :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="818"/>
+        <location filename="../src/settingsdialog.ui" line="805"/>
         <source>HTTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="823"/>
+        <location filename="../src/settingsdialog.ui" line="810"/>
         <source>SOCKS 5</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2912,42 +2931,42 @@ Please open a .plume file.</source>
         <translation>E&apos; stato selezionato uno stile differente.&lt;br&gt;Il cambiamento sarà effettivo dopo aver riavviato il programma.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="128"/>
+        <location filename="../src/settingsdialog.cpp" line="133"/>
         <source>A different portable mode has been selected.&lt;br&gt;The change will be effective after restarting the program.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="264"/>
+        <location filename="../src/settingsdialog.cpp" line="269"/>
         <source>Name new style</source>
         <translation>Dai un nome al nuovo stile</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="265"/>
+        <location filename="../src/settingsdialog.cpp" line="270"/>
         <source>Style name :</source>
         <translation>Nome dello stile :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="266"/>
+        <location filename="../src/settingsdialog.cpp" line="271"/>
         <source>New Style</source>
         <translation>Nuovo Stile</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="277"/>
+        <location filename="../src/settingsdialog.cpp" line="282"/>
         <source>Style Renaming</source>
         <translation>Rinominazione Stile</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="278"/>
+        <location filename="../src/settingsdialog.cpp" line="283"/>
         <source>Style new name :</source>
         <translation>Nuovo nome dello stile :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="292"/>
+        <location filename="../src/settingsdialog.cpp" line="297"/>
         <source>Do you want to remove this style ?</source>
         <translation>Vuoi rimuovere questo stile ?</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="293"/>
+        <location filename="../src/settingsdialog.cpp" line="298"/>
         <source>The texts written with this style will not be linked anymore.</source>
         <translation>I testi scritti con questo stile non saranno più collegati.</translation>
     </message>
@@ -3120,56 +3139,56 @@ Please open a .plume file.</source>
     <name>StartCenter</name>
     <message>
         <location filename="../src/startcenter.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Plume Creator - Start Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.ui" line="53"/>
+        <location filename="../src/startcenter.ui" line="68"/>
         <source>version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.ui" line="73"/>
+        <location filename="../src/startcenter.ui" line="88"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.ui" line="93"/>
+        <location filename="../src/startcenter.ui" line="108"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.ui" line="113"/>
+        <location filename="../src/startcenter.ui" line="128"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.ui" line="131"/>
+        <location filename="../src/startcenter.ui" line="146"/>
         <source>Recent projects :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.cpp" line="92"/>
+        <location filename="../src/startcenter.cpp" line="97"/>
         <source>Path : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.cpp" line="93"/>
+        <location filename="../src/startcenter.cpp" line="98"/>
         <source>Created : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.cpp" line="94"/>
+        <location filename="../src/startcenter.cpp" line="99"/>
         <source>Modified : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.cpp" line="116"/>
+        <location filename="../src/startcenter.cpp" line="131"/>
         <source>Open Plume Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/startcenter.cpp" line="117"/>
+        <location filename="../src/startcenter.cpp" line="132"/>
         <source>Plume Project File (*.plume);;Plume Backup Project File (*.plume_backup)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3233,13 +3252,38 @@ Please open a .plume file.</source>
 <context>
     <name>TextTab</name>
     <message>
-        <location filename="../src/texttab.cpp" line="406"/>
+        <location filename="../src/texttab.cpp" line="522"/>
         <source>Find &amp;&amp; replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/texttab.cpp" line="408"/>
+        <location filename="../src/texttab.cpp" line="524"/>
         <source>Find text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/texttab.ui" line="17"/>
+        <source>Form</source>
+        <translation type="unfinished">Modulo</translation>
+    </message>
+    <message>
+        <location filename="../src/texttab.ui" line="76"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/texttab.ui" line="114"/>
+        <source>scroll</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/texttab.ui" line="135"/>
+        <location filename="../src/texttab.ui" line="193"/>
+        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3490,12 +3534,12 @@ Please open a .plume file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/wordgoalprogressbar.ui" line="38"/>
+        <location filename="../src/wordgoalprogressbar.ui" line="44"/>
         <source>%v</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/wordgoalprogressbar.ui" line="45"/>
+        <location filename="../src/wordgoalprogressbar.ui" line="51"/>
         <source>Target word count for this session</source>
         <translation type="unfinished"></translation>
     </message>

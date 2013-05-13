@@ -216,7 +216,7 @@ void TextTab::changeWidthSlot(int width)
     int scrollBarWidth = 30;
 
     ui->textZone->setFixedWidth(width);
-    ui->textZone->document()->setTextWidth(width - scrollBarWidth);
+    ui->textZone->document()->setTextWidth(width);
     ui->prevTextZone->setFixedWidth(width);
     ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
     ui->nextTextZone->setFixedWidth(width);
@@ -580,6 +580,22 @@ void TextTab::paintEvent(QPaintEvent *)
  }
 //-------------------------------------------------------------------
 
+void TextTab::resizeEvent(QResizeEvent *event)
+{
+//    int percent = ui->textZone->width()/this->width();
+
+//    int w = event->size().width();
+
+//    ui->textZone->setFixedWidth(w*percent);
+//    ui->prevTextZone->setFixedWidth(w*percent);
+//    ui->nextTextZone->setFixedWidth(w*percent);
+
+//    ui->textZone->document()->setTextWidth(width - scrollBarWidth);
+//    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
+//    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+}
+
+//-------------------------------------------------------------------
 void TextTab::scrollBar_setRange(int min, int max)
 {
     ui->verticalScrollBar->setMinimum(min);

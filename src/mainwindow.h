@@ -148,7 +148,7 @@ private:
     void createAttendDock();
     void createDocksToolBar();
     void createStatusBar();
-
+    void setDockSizes();
 
     QWidget *widgetToHideWith;
     MenuBar *menu;

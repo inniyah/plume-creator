@@ -66,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent)
     createToolDock();
     createStatusBar();
     createDocksToolBar();
+    this->setDockSizes();
+
 
     menu->setMenusEnabled(false);
 
@@ -453,17 +455,17 @@ void MainWindow::createNoteDock()
 
     noteBox->setLayout(noteLayout);
 
-//    QWidget *noteDockLayoutWidget = new QWidget();
+    //    QWidget *noteDockLayoutWidget = new QWidget();
 
-//    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-//    noteDockLayout->setMargin(0);
-//    noteDockLayout->setSpacing(0);
-//    noteDockLayout->setContentsMargins(0,0,0,0);
-//    noteDockLayout->addWidget(synopsisBox);
+    //    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    //    noteDockLayout->setMargin(0);
+    //    noteDockLayout->setSpacing(0);
+    //    noteDockLayout->setContentsMargins(0,0,0,0);
+    //    noteDockLayout->addWidget(synopsisBox);
     //    layout->addWidget(midFrame);
-//    noteDockLayout->addWidget(noteBox);
-//    noteDockLayoutWidget->setLayout(noteDockLayout);
-//    noteSplitter->addWidget(noteDockLayoutWidget);
+    //    noteDockLayout->addWidget(noteBox);
+    //    noteDockLayoutWidget->setLayout(noteDockLayout);
+    //    noteSplitter->addWidget(noteDockLayoutWidget);
     noteSplitter->addWidget(synopsisBox);
     noteSplitter->addWidget(noteBox);
 
@@ -499,17 +501,31 @@ void MainWindow::createNoteDock()
     //    widgetToHideWith_mid->setLayout(midLayout);
 
 }
+
 //---------------------------------------------------------------------------
 
+void MainWindow::setDockSizes(){
 
+
+    treeDock->setMinimumSize(150, 150);
+    treeDock->setMaximumSize(250, 800);
+    attendDock->setMinimumSize(150, 150);
+    attendDock->setMaximumSize(250, 800);
+    noteDock->setMinimumSize(150, 150);
+//    noteDock->setMaximumSize(250, 800);
+
+}
+
+
+//---------------------------------------------------------------------------
 void MainWindow::changeOrientationOfNoteDock(Qt::DockWidgetArea noteDockArea)
 {
     if(noteDockArea == Qt::LeftDockWidgetArea || noteDockArea == Qt::RightDockWidgetArea){
-//        noteDockLayout->setDirection(QBoxLayout::TopToBottom);
+        //        noteDockLayout->setDirection(QBoxLayout::TopToBottom);
         noteSplitter->setOrientation(Qt::Vertical);
     }
     else if(noteDockArea == Qt::TopDockWidgetArea || noteDockArea == Qt::BottomDockWidgetArea){
-//        noteDockLayout->setDirection(QBoxLayout::LeftToRight);
+        //        noteDockLayout->setDirection(QBoxLayout::LeftToRight);
         noteSplitter->setOrientation(Qt::Horizontal);
     }
 }
@@ -861,7 +877,7 @@ void MainWindow::setDisplayMode(QString mode, bool isToolBarInStatusBar)
 
 
 
- statusDockToolBar->setVisible(isToolBarInStatusBar);
+    statusDockToolBar->setVisible(isToolBarInStatusBar);
     docksToolBar->setHidden(isToolBarInStatusBar);
 
 
