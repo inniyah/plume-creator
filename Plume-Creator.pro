@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TEMPLATE = app
 
-VERSION = 0.61
+VERSION = 0.61.1
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -154,7 +154,8 @@ CODECFORTR = UTF-8
 TRANSLATIONS = translations/plume-creator_fr_FR.ts \
 # translations/plume-creator_ro_RO.ts \
 translations/plume-creator_it_IT.ts \
-translations/plume-creator_de_DE.ts
+translations/plume-creator_de_DE.ts \
+translations/plume-creator_pt_BR.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
 include(./externals/quazip/quazip.pro)

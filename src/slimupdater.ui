@@ -35,6 +35,9 @@ QPushButton:default {
     border-color: navy; /* make the default button prominent */
 }</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedKingdom"/>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
    <property name="margin">
     <number>0</number>
@@ -65,8 +68,11 @@ QPushButton:default {
         <property name="wordWrap">
          <bool>true</bool>
         </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
         <property name="textInteractionFlags">
-         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+         <set>Qt::TextBrowserInteraction</set>
         </property>
        </widget>
       </item>

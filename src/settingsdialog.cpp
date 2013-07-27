@@ -53,8 +53,8 @@ void SettingsDialog::createGeneralTab()
 
 
 
-    langs << "Français" << "English" << "Italiano" << "Deutsch";
-    langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE";
+    langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)";
+    langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR";
     ui->langComboBox->addItems(langs);
 
 

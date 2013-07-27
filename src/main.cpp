@@ -293,9 +293,9 @@ int main(int argc, char *argv[])
     if (settings.value("MainWindow/firstStart", true).toBool() || settings.value("MainWindow/lang", "none").toString() == "none" ){
 
         QStringList langs;
-        langs << "Français" << "English" << "Italiano" << "Deutsch";
+        langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)";
         QStringList langCodes;
-        langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE";
+        langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR";
 
 
         bool ok;
