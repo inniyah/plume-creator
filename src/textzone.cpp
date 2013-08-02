@@ -1,6 +1,6 @@
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>
-#endif 
+#endif
 #include <QtGui>   
 
 #include "textzone.h"
@@ -28,6 +28,9 @@ TextZone::~TextZone()
 
 void TextZone::createContent()
 {
+//    sounds = new Sounds(this);
+
+
     this->setAttribute(Qt::WA_KeyCompression, true);
 
     textDocument = new MainTextDocument;
@@ -444,6 +447,9 @@ void TextZone::createEditWidget()
 
 void TextZone::keyPressEvent(QKeyEvent *event)
 {
+//    sounds->startSoundKeyAny();
+
+
     if(event->matches(QKeySequence::Italic))
         italic(!italicAct->isChecked());
     else if(event->matches(QKeySequence::Bold))

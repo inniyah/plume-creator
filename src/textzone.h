@@ -27,6 +27,9 @@
 #include "hub.h"
 #include "textstyles.h"
 #include "editmenu.h"
+
+//#include "sounds.h"
+
 //
 class TextZone : public QTextEdit
 {
@@ -123,6 +126,10 @@ private:
     bool preventDoubleSpaceOption;
 
     QList<QAction*> m_actions;
+
+
+//    Sounds *sounds;
+
 };
 
 #endif // TEXTZONE_H

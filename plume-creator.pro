@@ -6,13 +6,12 @@
 #-------------------------------------------------
 QT += core gui xml
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
-#to compile with QT5, replace <QtGui> with <QtWidgets>
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 
 TEMPLATE = app
 
-VERSION = 0.61.1
+VERSION = 0.62
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -94,7 +93,8 @@ src/hub.cpp \
     src/outliner/outlineritempovdelegate.cpp \
     src/slimfindreplace.cpp \
     src/texthighlighter.cpp \
-    src/startcenter.cpp
+    src/startcenter.cpp \
+#src/sounds.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -147,7 +147,8 @@ src/hub.h \
     src/outliner/outlineritempovdelegate.h \
     src/slimfindreplace.h \
     src/texthighlighter.h \
-    src/startcenter.h
+    src/startcenter.h \
+#src/sounds.h
 
 CODECFORTR = UTF-8
 
@@ -179,7 +180,8 @@ src/wordgoalprogressbar.ui \
 RESOURCES += \
 translations/langs.qrc \
 readme.qrc \
-    src/pics.qrc
+    src/pics.qrc \
+    src/sounds.qrc
 
 
 macx {
