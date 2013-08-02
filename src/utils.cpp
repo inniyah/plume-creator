@@ -270,7 +270,7 @@ bool Utils::isProjectExistingInSettingArray(QString fileName)
 
         if(workPath == "OBSOLETE"){ //new version
             arrayFile.setFileName(path + "/" + name + ".plume");
-//            qDebug() << arrayFile.fileName() + "   " + file.fileName();
+            //            qDebug() << arrayFile.fileName() + "   " + file.fileName();
             if(file.fileName() == arrayFile.fileName())
                 return true;
 
@@ -336,7 +336,7 @@ void Utils::sortSettingsArray()
 
 
 
-// keep only the existing projects
+    // keep only the existing projects
 
     int b = 0;
     for (int p = 0; p < projName.size(); ++p) {
@@ -360,8 +360,8 @@ void Utils::sortSettingsArray()
 
         }
         else if( ( QFile(projPathI + "/"+ projNameI + ".plume").exists() ||
-                QFile(projWorkPathI +"/"+  projNameI + ".plume").exists() )
-                &&
+                   QFile(projWorkPathI +"/"+  projNameI + ".plume").exists() )
+                 &&
                  ( newProjName.keys(projNameI).size() == 0 && newProjCreationDate.keys(projCreationDateI).size() == 0 )
                  ){ // check if ewist and avoid doubles
 
@@ -371,7 +371,7 @@ void Utils::sortSettingsArray()
             newProjWorkPath.insert(b, projWorkPathI);
             newProjLastModifiedTime.insert(b,projLastModifiedTimeI );
             newProjCreationDate.insert(b, projCreationDateI);
-       b += 1;
+            b += 1;
         }
 
 
@@ -404,10 +404,10 @@ void Utils::sortSettingsArray()
         settings.setArrayIndex(q);
 
         settings.setValue("name",newProjName.value(q));
-         settings.setValue("path",newProjPath.value(q));
-         settings.setValue("workPath",newProjWorkPath.value(q));
-         settings.setValue("lastModified",newProjLastModifiedTime.value(q));
-         settings.setValue("creationDate",newProjCreationDate.value(q));
+        settings.setValue("path",newProjPath.value(q));
+        settings.setValue("workPath",newProjWorkPath.value(q));
+        settings.setValue("lastModified",newProjLastModifiedTime.value(q));
+        settings.setValue("creationDate",newProjCreationDate.value(q));
 
 
     }
@@ -423,7 +423,7 @@ void Utils::sortSettingsArray()
     settings.beginWriteArray("Manager/projects");
     for (int r = newProjName.size(); r < grSize; ++r) {
         settings.setArrayIndex(r);
-    settings.remove("");
+        settings.remove("");
     }
     settings.endArray();
 
@@ -535,3 +535,62 @@ QString Utils::projectRealName(QString fileName)
     return realName;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------------------------
+
+QString Utils::parseHtmlText(QString htmlText)
+{
+    QTextEdit *textEdit = new QTextEdit;
+    textEdit->setHtml(htmlText);
+
+    QTextEdit *finalEdit = new QTextEdit;
+    finalEdit->setHtml(htmlText);
+    finalEdit->toPlainText();
+    finalEdit->toHtml();
+
+    QTextCursor tCursor = textEdit->textCursor();
+    tCursor.movePosition(QTextCursor::End);
+    int textSize = tCursor.position();
+    tCursor.movePosition(QTextCursor::Start);
+
+
+
+    QTextCursor finalCursor = finalEdit->textCursor();
+    finalCursor.movePosition(QTextCursor::Start);
+
+    if(textSize == 0)
+        return "";
+
+    while(tCursor.position() != textSize){
+
+
+        finalCursor.charFormat().setFontItalic(tCursor.charFormat().fontItalic());
+        if(tCursor.charFormat().fontWeight() > 50)
+            finalCursor.charFormat().setFontWeight(75);
+
+
+        tCursor.movePosition(QTextCursor::NextCharacter);
+        finalCursor.movePosition(QTextCursor::NextCharacter);
+
+
+    }
+
+    return finalEdit->toHtml();
+
+
+
+
+
+
+
+}

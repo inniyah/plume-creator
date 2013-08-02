@@ -831,30 +831,41 @@ void NoteZone::insertFromMimeData (const QMimeData *source )
 
 
 //    if(this->objectName().mid(0,3) == "syn"){
+    QTextCursor cursor = this->textCursor();
+
+    int bottMargin;
+    int textIndent;
+    int leftMargin;
+    Qt::Alignment textAlignment;
+    int textHeight;
+    QString fontFamily;
 
 
-QTextCursor yCursor = this->textCursor();
-        int bottMargin = yCursor.blockFormat().bottomMargin();
-        int textIndent = yCursor.blockFormat().textIndent();
-        int textHeight = yCursor.charFormat().fontPointSize();
-        QString fontFamily = yCursor.charFormat().fontFamily();
+        bottMargin = cursor.blockFormat().bottomMargin();
+        textIndent = cursor.blockFormat().textIndent();
+        leftMargin = cursor.blockFormat().leftMargin();
+        textAlignment = cursor.blockFormat().alignment();
+        textHeight = cursor.charFormat().fontPointSize();
+        fontFamily = cursor.charFormat().fontFamily();
+
 
 
         if(source->hasHtml()){
 
             QString sourceString = qvariant_cast<QString>(source->html());
-            sourceString.replace( QRegExp("</?(?i:script|embed|object|frameset|frame|iframe|meta|link|style|div|p|span)(.|\n)*?>"), "" );
+
 
 
 
             //htmlText
             QTextDocument *document = new QTextDocument;
-            document->setHtml(sourceString);
+            document->setHtml(Utils::parseHtmlText(sourceString));
 
             QTextBlockFormat blockFormat;
             blockFormat.setBottomMargin(bottMargin);
             blockFormat.setTextIndent(textIndent);
-            blockFormat.setBottomMargin(0);
+            blockFormat.setLeftMargin(leftMargin);
+            blockFormat.setAlignment(textAlignment);
             blockFormat.setRightMargin(0);
              QTextCharFormat charFormat;
             charFormat.setFontPointSize(textHeight);
@@ -885,7 +896,8 @@ QTextCursor yCursor = this->textCursor();
             QTextBlockFormat blockFormat;
             blockFormat.setBottomMargin(bottMargin);
             blockFormat.setTextIndent(textIndent);
-            blockFormat.setBottomMargin(0);
+            blockFormat.setLeftMargin(leftMargin);
+            blockFormat.setAlignment(textAlignment);
             blockFormat.setRightMargin(0);
             QTextCharFormat charFormat;
             charFormat.setFontPointSize(textHeight);
@@ -900,7 +912,7 @@ QTextCursor yCursor = this->textCursor();
 
             QTextCursor cursor = this->textCursor();
             cursor.insertHtml(document->toHtml("utf-8"));
-                    qDebug() << "insertFromMimeData plainText";
+            qDebug() << "insertFromMimeData plainText";
 
         }
 

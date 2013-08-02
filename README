@@ -1,6 +1,8 @@
 PLUME CREATOR
 
 v 0.62
+	- better copy / paste
+	- Bug fixed : text had an underground color when pasted from internet 
 	- Quazip updated
 	- Portuguese (Brazil) language added
 

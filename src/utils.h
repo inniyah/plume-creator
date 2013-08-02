@@ -42,7 +42,7 @@ public:
     static QString updateProjectIfOldSystem(QString file);
     static QString projectRealName(QString fileName);
 
-
+    static QString parseHtmlText(QString htmlText);
 };
 
 #endif // UTILS_H

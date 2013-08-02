@@ -547,28 +547,16 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
     if(source->hasHtml()){
         QString sourceString = qvariant_cast<QString>(source->html());
-        //        qDebug() << "                         sourceString  :  " << sourceString;
-        //        sourceString.replace( QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)"), "<div" );
-        //qDebug() << "                       regExpedIs Valid  : " << QRegExp("<?(script|embed|object|frameset|frame|iframe|meta|link|style|div|a)").isValid();
-        ////        sourceString.replace( QRegExp("/<(.|\n)*?>/g"), "" );
 
-
-
-
-        //        qDebug() << "                       regExpedString  :  " << sourceString;
-
-        ////
-        //         /<\s*\w.*?>/g
 
         //htmlText
         QTextDocument *document = new QTextDocument;
-        document->setHtml(sourceString);
+        document->setHtml(Utils::parseHtmlText(sourceString));
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
         blockFormat.setLeftMargin(leftMargin);
         blockFormat.setAlignment(textAlignment);
-        blockFormat.setBottomMargin(0);
         blockFormat.setRightMargin(0);
         QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
@@ -589,7 +577,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-//        qDebug() << "insertFromMimeData Html";
+        qDebug() << "insertFromMimeData Html";
 
     }
     else if(source->hasText()){
@@ -599,7 +587,8 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
-        blockFormat.setBottomMargin(0);
+        blockFormat.setLeftMargin(leftMargin);
+        blockFormat.setAlignment(textAlignment);
         blockFormat.setRightMargin(0);
         QTextCharFormat charFormat;
         charFormat.setFontPointSize(textHeight);
@@ -614,7 +603,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         QTextCursor cursor = this->textCursor();
         cursor.insertHtml(document->toHtml("utf-8"));
-//        qDebug() << "insertFromMimeData plainText";
+        qDebug() << "insertFromMimeData plainText";
 
     }
 
