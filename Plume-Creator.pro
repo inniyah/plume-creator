@@ -196,7 +196,7 @@ RC_FILE = resources/windows/icon.rc
 
 
 macx {
-ICONS.files = resources/images/icons/oxygen/hicolor
+ICONS.files = resources/images/icons/hicolor
 ICONS.path = Contents/Resources/icons
 QMAKE_BUNDLE_DATA += ICONS
 }
