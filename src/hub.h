@@ -30,13 +30,14 @@
 #endif 
 #include <QtGui>   
 
-#include "zipper.h"
+#include "zipper/zipper.h"
 #include "changestests.h"
 #include "fileupdater.h"
 #include "JlCompress.h"
 #include "utils.h"
 #include "maintextdocument.h"
 #include "wordcountenginethread.h"
+#include "zipper/zipchecker.h"
 
 class Hub : public QWidget
 {
@@ -99,6 +100,9 @@ public:
     // files managment :
     void closeCurrentProject();
     void loadProject();
+    void clearBin();
+    void removeFileFromZipList(QString type, int number);
+    void addFileToZipList(QString type, int number);
 
     void connectAllSheetsToWordCountThread();
 
@@ -203,6 +207,9 @@ private:
 
     // wordcount :
     WordCountEngineThread *wcThread;
+
+    //zipChecker :
+    ZipChecker *zipChecker;
 
 };
 

@@ -6,6 +6,8 @@ Hub::Hub(QWidget *parent) :
     m_currentProjectSettingArrayNumber(9999)
 {
     wcThread = new WordCountEngineThread(this);    // wordCount thread
+    zipChecker = new ZipChecker(this);
+
 
 }
 //--------------------------------------------------------------------------------
@@ -626,6 +628,7 @@ void Hub::closeCurrentProject()
     m_currentSheetNumber = -1;
     m_currentProjectSettingArrayNumber = 9999;
 
+zipChecker->clearList();
 
     projectOpened = false;
     emit projectOpenedSignal(false);
@@ -647,6 +650,7 @@ void Hub::loadProject()
     zipper->wait(30000);
     this->loadTemp();
 }
+
 //--------------------------------------------------------------------------------------
 
 bool Hub::loadTemp()
@@ -822,9 +826,9 @@ bool Hub::loadTemp()
 
 
 
-
-
-
+//    QDir dir(projectWorkingPath);
+    QStringList dirList = zipChecker->list();
+//    dirList = dir.entryList();
 
 
     QApplication::restoreOverrideCursor();
@@ -883,6 +887,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             textDocument->setObjectName("textDoc_" + number);
             m_mainTree_fileForDocHash.insert(textDocument, textFile);
             m_mainTree_numForDocHash.insert(textDocument, number.toInt());
+            zipChecker->addFile("text", number.toInt());
 
             QFile *synFile = new QFile;
             synFile->setFileName(synPath);
@@ -897,6 +902,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             synDocument->setObjectName("synDoc_" + number);
             m_mainTree_fileForDocHash.insert(synDocument, synFile);
             m_mainTree_numForDocHash.insert(synDocument, number.toInt());
+            zipChecker->addFile("syn", number.toInt());
 
             QFile *noteFile = new QFile;
             noteFile->setFileName(notePath);
@@ -911,6 +917,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             noteDocument->setObjectName("noteDoc_" + number);
             m_mainTree_fileForDocHash.insert(noteDocument, noteFile);
             m_mainTree_numForDocHash.insert(noteDocument, number.toInt());
+            zipChecker->addFile("note", number.toInt());
 
 
             // wordCount :
@@ -955,6 +962,7 @@ void Hub::loadAttendDocs(QDomNodeList list)
         textDocument->setObjectName("attendDoc_" + number);
         m_attendTree_fileForDocHash.insert(textDocument, attendFile);
         m_attendTree_numForDocHash.insert(textDocument, number.toInt());
+        zipChecker->addFile("attend", number.toInt());
 
     }
 }
@@ -980,6 +988,7 @@ void Hub::saveProject(QString mode)
 
 
     Zipper *zipper = new Zipper();
+    zipper->setFileListToCheck(zipChecker->list());
     zipper->setJob("compress", this->projectFileName(), projectWorkPath());
     connect(zipper, SIGNAL(zipFinished()), this, SLOT(unlockFiles()));
 
@@ -1253,7 +1262,26 @@ void Hub::connectAllSheetsToWordCountThread()
 
 
 
+//--------------------------------------------------------------------------------------
+void Hub::clearBin()
+{
 
+// todo before that :
+//Model/view for mainTree
+
+
+}
+
+//temporary :
+void Hub::removeFileFromZipList(QString type, int number)
+{
+    zipChecker->removeFile(type, number);
+}
+
+void Hub::addFileToZipList(QString type, int number)
+{
+    zipChecker->addFile(type, number);
+}
 
 
 

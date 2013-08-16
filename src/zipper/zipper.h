@@ -22,7 +22,7 @@
 
 #include <QObject>
 #include <QtCore>
-
+#include "zipchecker.h"
 
 class Zipper : public QThread
 {
@@ -30,7 +30,7 @@ class Zipper : public QThread
 public:
     explicit Zipper(QObject *parent = 0);
     void setJob(QString job, QString fileName, QString workPath);
-
+    void setFileListToCheck(QStringList fileList);
 
 protected:
     void run();
@@ -50,6 +50,7 @@ private:
     QString currentJob;
     QString m_fileName, m_workPath;
     bool oneTime;
+    QStringList fileListToZip;
 
 };
 

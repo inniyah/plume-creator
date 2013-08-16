@@ -341,6 +341,7 @@ void AttendManager::on_addObjectAction_triggered()
     managerProxyModel->addObject(ui->managerTreeView->currentIndex());
     ui->managerTreeView->expandAll();
 
+
 }
 
 void AttendManager::on_addGroupAction_triggered()

@@ -1103,6 +1103,11 @@ void MainTree::removeItem(QDomElement element)
     noteFile->remove();
     synFile->remove();
 
+    //temporary :
+    hub->removeFileFromZipList("text", number);
+    hub->removeFileFromZipList("note", number);
+    hub->removeFileFromZipList("syn", number);
+
     fileForDoc.remove(text);
     fileForDoc.remove(note);
     fileForDoc.remove(syn);
@@ -1742,6 +1747,10 @@ QDomElement MainTree::modifyAttributes(QDomElement originalElement,QDomElement n
     hub->set_mainTree_numForDocHash(numForDoc);
     hub->connectAllSheetsToWordCountThread();
 
+    //temporary :
+    hub->addFileToZipList("text", number);
+    hub->addFileToZipList("note", number);
+    hub->addFileToZipList("syn", number);
 
     if(level == "sibling"){
         newElement.setTagName(originalElement.tagName());

@@ -75,7 +75,7 @@ src/outliner/outlinerspreadsheetheadersection.cpp \
 src/wordgoalprogressbar.cpp \
 src/fileupdater.cpp \
 src/changestests.cpp \
-src/zipper.cpp \
+src/zipper/zipper.cpp \
 src/hub.cpp \
     src/attend/attendbase.cpp \
     src/attend/attendabstractmodel.cpp \
@@ -95,6 +95,7 @@ src/hub.cpp \
     src/texthighlighter.cpp \
     src/startcenter.cpp \
 #src/sounds.cpp
+    src/zipper/zipchecker.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -128,7 +129,7 @@ src/outliner/outlinerspreadsheetheader.h \
 src/outliner/outlinerspreadsheetheadersection.h \
 src/wordgoalprogressbar.h \
 src/fileupdater.h \
-src/zipper.h \
+src/zipper/zipper.h \
 src/changestests.h \
 src/hub.h \
     src/attend/attendbase.h \
@@ -149,6 +150,7 @@ src/hub.h \
     src/texthighlighter.h \
     src/startcenter.h \
 #src/sounds.h
+    src/zipper/zipchecker.h
 
 CODECFORTR = UTF-8
 

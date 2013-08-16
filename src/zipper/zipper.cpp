@@ -21,6 +21,14 @@ void Zipper::setJob(QString job, QString fileName, QString workPath)
     qDebug() << "path : " << m_workPath;
 
 }
+
+void Zipper::setFileListToCheck(QStringList fileList)
+{
+    fileListToZip = fileList;
+
+
+}
+
 void Zipper::compress(QString zipFileName)
 {
     //make backup :
@@ -126,12 +134,12 @@ bool Zipper::checkZip(QString zipFileName)
                  << "info"
                  << "tree";
 
-//    for (int i = 0 ; i < filesList.size(); ++i)
-//        qDebug()<< filesList.at(i);
+    //    for (int i = 0 ; i < filesList.size(); ++i)
+    //        qDebug()<< filesList.at(i);
 
     while(!rootFileList.isEmpty()){
         if(!filesList.contains(rootFileList.takeFirst()))
-        return false;
+            return false;
 
     }
 
@@ -153,6 +161,13 @@ void Zipper::run()
 
         if(currentJob == "compress"){
             //            qDebug() << "compressing...";
+            if(!ZipChecker::compareAndClean(m_workPath, fileListToZip)){
+                qWarning() << "None of the listed files found. Saving operation failed" ;
+                lock.unlock();
+                emit zipFinished();
+
+                return;
+            }
             this->compress(m_fileName);
         }
         else  if(currentJob == "extract"){
@@ -169,3 +184,5 @@ void Zipper::run()
     emit zipFinished();
 
 }
+
+

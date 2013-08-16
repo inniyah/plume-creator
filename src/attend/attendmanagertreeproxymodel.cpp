@@ -199,6 +199,9 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
     invalidateFilter();
 
+    hub->addFileToZipList("attend", number );
+
+
     hub->addToSaveQueue();
 
     // emit activateItemSignal(index);
@@ -254,6 +257,8 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 //    emit dataChanged(index, index);
 
     invalidateFilter();
+
+    hub->addFileToZipList("attend", number );
 
     hub->addToSaveQueue();
 
@@ -317,6 +322,8 @@ int number = sourceItem->idNumber();
 //    emit dataChanged(index, index);
 
     invalidateFilter();
+
+    hub->removeFileFromZipList("attend", number );
 
     hub->addToSaveQueue();
 
