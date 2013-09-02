@@ -45,6 +45,9 @@ public:
     QModelIndex index(int, int, const QModelIndex&) const;
     QModelIndex parent(const QModelIndex&) const;
 
+    void setDomDocument(QDomDocument domDocument);
+    QDomDocument getDomDocument();
+
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
 

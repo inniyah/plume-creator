@@ -115,8 +115,10 @@ border-radius: 0px
             padding: 5px;
 	background-color: qlineargradient(spread:pad, x1:0.347, y1:0.0170455, x2:1, y2:1, stop:0.386364 rgba(193, 193, 193, 255), stop:1 rgba(255, 255, 255, 255));
             }
-
-
+QToolBar#statusDockToolBar {
+            spacing: 2px;
+            padding: 0px;
+            }
 
 
 
@@ -219,13 +221,31 @@ QTabWidget::pane/*#mainTabWidget*/ { /* The tab widget frame */
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
      <widget class="QWidget" name="baseWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -236,7 +256,14 @@ QTabWidget::pane/*#mainTabWidget*/ { /* The tab widget frame */
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="bar"/>
+  <widget class="QStatusBar" name="bar">
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>26</height>
+    </size>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

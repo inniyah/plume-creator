@@ -10,21 +10,21 @@
         <translation>Namen</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="212"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="214"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="215"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="218"/>
         <location filename="../src/attend/attendabstractmodel.cpp" line="220"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="221"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="224"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="222"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="223"/>
         <location filename="../src/attend/attendabstractmodel.cpp" line="226"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="227"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="354"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="228"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="229"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="232"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="234"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="235"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="362"/>
         <source>None</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="230"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="238"/>
         <source>Age :</source>
         <translation>Alter:</translation>
     </message>
@@ -37,17 +37,17 @@
         <translation>Maske</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendbase.ui" line="84"/>
+        <location filename="../src/attend/attendbase.ui" line="87"/>
         <source>Set the point of view</source>
         <translation>Die Perspektive festlegen</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendbase.ui" line="110"/>
+        <location filename="../src/attend/attendbase.ui" line="113"/>
         <source>...</source>
         <translation>…</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendbase.ui" line="123"/>
+        <location filename="../src/attend/attendbase.ui" line="126"/>
         <source>Mng</source>
         <translation>Mng</translation>
     </message>
@@ -335,23 +335,23 @@
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="223"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="226"/>
         <source>new group</source>
         <translation>Neue Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="278"/>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="285"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="283"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="290"/>
         <source>Plume Creator Attendance</source>
         <translation>Plume Creator Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="279"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="284"/>
         <source>You can&apos;t delete a group if it&apos;s not empty./nIf you want to delete it, please delete its children first.</source>
         <translation>Sie können eine Gruppe nicht löschen, solange diese nicht leer ist./nWenn Sie sie löschen möchten, entfernen Sie bitte zuerst alle ihre Unterpunkte.</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="286"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="291"/>
         <source>Do you really  want to delete it ?/nYou will not be able to recover it afterwards.</source>
         <translation>Möchten Sie diesen Eintrag wirklich löschen?/nEine Wiederherstellung wird danach nicht möglich sein.</translation>
     </message>
@@ -427,9 +427,17 @@
     <name>AttendSheetTreeProxyModel</name>
     <message>
         <location filename="../src/attend/attendsheettreeproxymodel.cpp" line="23"/>
-        <location filename="../src/attend/attendsheettreeproxymodel.cpp" line="120"/>
+        <location filename="../src/attend/attendsheettreeproxymodel.cpp" line="149"/>
         <source>Sheet</source>
         <translation>Seite</translation>
+    </message>
+</context>
+<context>
+    <name>DockedTreeBase</name>
+    <message>
+        <location filename="../src/dockedTree/dockedtreebase.ui" line="17"/>
+        <source>Form</source>
+        <translation type="unfinished">Maske</translation>
     </message>
 </context>
 <context>
@@ -458,12 +466,12 @@
 <context>
     <name>Exporter</name>
     <message>
-        <location filename="../src/exporter.cpp" line="40"/>
+        <location filename="../src/exporter/exporter.cpp" line="40"/>
         <source>Export Dialog</source>
         <translation>Exportdialog</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="42"/>
+        <location filename="../src/exporter/exporter.cpp" line="43"/>
         <source>Print Dialog</source>
         <translation>Druckdialog</translation>
     </message>
@@ -472,7 +480,7 @@
         <translation type="obsolete">Bitte füllen Sie die folgenden Felder aus:</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="50"/>
+        <location filename="../src/exporter/exporter.ui" line="60"/>
         <source>File name :</source>
         <translation>Dateiname:</translation>
     </message>
@@ -481,120 +489,120 @@
         <translation type="obsolete">Pfad auswählen</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="20"/>
+        <location filename="../src/exporter/exporter.ui" line="20"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="60"/>
+        <location filename="../src/exporter/exporter.ui" line="70"/>
         <source>Path :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="70"/>
+        <location filename="../src/exporter/exporter.ui" line="80"/>
         <source>File type :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="84"/>
+        <location filename="../src/exporter/exporter.ui" line="94"/>
         <source>.html</source>
         <translation>.html</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="89"/>
+        <location filename="../src/exporter/exporter.ui" line="99"/>
         <source>.odt</source>
         <translation>.odt</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="94"/>
+        <location filename="../src/exporter/exporter.ui" line="104"/>
         <source>.txt</source>
         <translation>.txt</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="99"/>
+        <location filename="../src/exporter/exporter.ui" line="109"/>
         <source>.csv</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="104"/>
+        <location filename="../src/exporter/exporter.ui" line="114"/>
         <source>.pdf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="121"/>
-        <location filename="../src/exporter.ui" line="230"/>
+        <location filename="../src/exporter/exporter.ui" line="131"/>
+        <location filename="../src/exporter/exporter.ui" line="240"/>
         <source>Options :</source>
         <translation>Optionen:</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="127"/>
+        <location filename="../src/exporter/exporter.ui" line="137"/>
         <source>Insert :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="136"/>
+        <location filename="../src/exporter/exporter.ui" line="146"/>
         <source>Story :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="146"/>
-        <location filename="../src/exporter.ui" line="245"/>
+        <location filename="../src/exporter/exporter.ui" line="156"/>
+        <location filename="../src/exporter/exporter.ui" line="255"/>
         <source>Synopsis :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="156"/>
-        <location filename="../src/exporter.ui" line="255"/>
+        <location filename="../src/exporter/exporter.ui" line="166"/>
+        <location filename="../src/exporter/exporter.ui" line="265"/>
         <source>Notes :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="169"/>
+        <location filename="../src/exporter/exporter.ui" line="179"/>
         <source>Other :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="178"/>
+        <location filename="../src/exporter/exporter.ui" line="188"/>
         <source>Set scene titles : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="186"/>
+        <location filename="../src/exporter/exporter.ui" line="196"/>
         <source>Nothing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="191"/>
+        <location filename="../src/exporter/exporter.ui" line="201"/>
         <source>Titles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="236"/>
+        <location filename="../src/exporter/exporter.ui" line="246"/>
         <source>Insert columns :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="265"/>
+        <location filename="../src/exporter/exporter.ui" line="275"/>
         <source>Word count :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="275"/>
+        <location filename="../src/exporter/exporter.ui" line="285"/>
         <source>Point of view :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="285"/>
+        <location filename="../src/exporter/exporter.ui" line="295"/>
         <source>Title :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="295"/>
+        <location filename="../src/exporter/exporter.ui" line="305"/>
         <source>Type of sheet :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="308"/>
+        <location filename="../src/exporter/exporter.ui" line="318"/>
         <source>Warning : the character set is Unicode (UTF-8)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -616,28 +624,28 @@
         <translation type="obsolete">Szenennamen einfügen</translation>
     </message>
     <message>
-        <location filename="../src/exporter.ui" line="217"/>
+        <location filename="../src/exporter/exporter.ui" line="227"/>
         <source>Preview</source>
         <translation>Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="72"/>
+        <location filename="../src/exporter/exporter.cpp" line="79"/>
         <source>Print</source>
         <translation>Drucken</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="109"/>
-        <location filename="../src/exporter.cpp" line="596"/>
+        <location filename="../src/exporter/exporter.cpp" line="123"/>
+        <location filename="../src/exporter/exporter.cpp" line="476"/>
         <source>Project Exporter</source>
         <translation>Projektexport</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="109"/>
+        <location filename="../src/exporter/exporter.cpp" line="123"/>
         <source>The destination fields must be completed !</source>
         <translation>Die Zielfelder müssen ausgefüllt sein!</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="154"/>
+        <location filename="../src/exporter/exporter.cpp" line="168"/>
         <source>Select a directory</source>
         <translation>Wählen Sie einen Ordner aus</translation>
     </message>
@@ -665,83 +673,88 @@
         <translation type="obsolete">Diese Datei ist keine Plume-Creator-Projektdatei in Version 1.0.</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="512"/>
-        <location filename="../src/exporter.cpp" line="944"/>
+        <location filename="../src/exporter/exporter.cpp" line="352"/>
+        <location filename="../src/exporter/exporter.cpp" line="822"/>
         <source>Synopsis</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="523"/>
+        <location filename="../src/exporter/exporter.cpp" line="363"/>
         <source>Note</source>
         <translation>Notiz</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="535"/>
+        <location filename="../src/exporter/exporter.cpp" line="375"/>
         <source>Story</source>
         <translation>Handlung</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="596"/>
+        <location filename="../src/exporter/exporter.cpp" line="476"/>
         <source>You have selected the .txt format. There is no formatting !</source>
         <translation>Sie haben das .txt-Format ausgewählt. Die Datei wird keine Formatierung enthalten!</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="633"/>
+        <location filename="../src/exporter/exporter.cpp" line="513"/>
         <source>Project exported</source>
         <translation>Projekt wurde exportiert</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="633"/>
+        <location filename="../src/exporter/exporter.cpp" line="513"/>
         <source>This project was successfully exported !</source>
         <translation>Das Projekt wurde erfolgreich exportiert!</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="874"/>
+        <location filename="../src/exporter/exporter.cpp" line="754"/>
         <source>Print Document</source>
         <translation>Dokument drucken</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="940"/>
+        <location filename="../src/exporter/exporter.cpp" line="818"/>
         <source>Title</source>
         <translation type="unfinished">Überschrift</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="942"/>
+        <location filename="../src/exporter/exporter.cpp" line="820"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="946"/>
+        <location filename="../src/exporter/exporter.cpp" line="824"/>
         <source>Notes</source>
         <translation type="unfinished">Notizen</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="948"/>
+        <location filename="../src/exporter/exporter.cpp" line="826"/>
         <source>Word count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="950"/>
+        <location filename="../src/exporter/exporter.cpp" line="828"/>
         <source>Point of view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="963"/>
+        <location filename="../src/exporter/exporter.cpp" line="841"/>
         <source>book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="965"/>
+        <location filename="../src/exporter/exporter.cpp" line="843"/>
+        <source>act</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/exporter/exporter.cpp" line="845"/>
         <source>chapter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="967"/>
+        <location filename="../src/exporter/exporter.cpp" line="847"/>
         <source>scene</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="969"/>
+        <location filename="../src/exporter/exporter.cpp" line="849"/>
         <source>scene break</source>
         <translation type="unfinished"></translation>
     </message>
@@ -793,7 +806,7 @@
     <message>
         <location filename="../src/fileupdater.cpp" line="109"/>
         <location filename="../src/fileupdater.cpp" line="416"/>
-        <location filename="../src/fileupdater.cpp" line="586"/>
+        <location filename="../src/fileupdater.cpp" line="623"/>
         <source>Parse error at line %1, column %2:
 %3
 </source>
@@ -836,17 +849,17 @@
         <translation>Diese Datei ist kein Plume-Creater-Tree-Datei.</translation>
     </message>
     <message>
-        <location filename="../src/fileupdater.cpp" line="585"/>
+        <location filename="../src/fileupdater.cpp" line="622"/>
         <source>Plume Creator Info File</source>
         <translation>Plume-Creator-Info-Datei</translation>
     </message>
     <message>
-        <location filename="../src/fileupdater.cpp" line="604"/>
+        <location filename="../src/fileupdater.cpp" line="641"/>
         <source>Plume Creator Info</source>
         <translation>Plume-Creator-Info</translation>
     </message>
     <message>
-        <location filename="../src/fileupdater.cpp" line="605"/>
+        <location filename="../src/fileupdater.cpp" line="642"/>
         <source>The file is not a a Plume Creator info file.</source>
         <translation>Diese Datei ist keine Plume-Creater-Info-Datei.</translation>
     </message>
@@ -944,9 +957,8 @@
         <translation>Notizen prüfen</translation>
     </message>
     <message>
-        <location filename="../src/findreplace.cpp" line="22"/>
         <source>The Find &amp; Replace feature isn&apos;t implemented !&lt;br&gt;For now, it&apos;s only a mock-up GUI. Please wait for a future release !</source>
-        <translation>Die Suchen/Ersetzen-Funktion ist noch nicht implementiert!&lt;br&gt;Bisher ist es nur ein GUI-Modell. Bitte gedulden Sie sich bis zum Erscheinen einer späteren Version!</translation>
+        <translation type="obsolete">Die Suchen/Ersetzen-Funktion ist noch nicht implementiert!&lt;br&gt;Bisher ist es nur ein GUI-Modell. Bitte gedulden Sie sich bis zum Erscheinen einer späteren Version!</translation>
     </message>
     <message>
         <source>Plume Creator Tree</source>
@@ -1164,57 +1176,57 @@
 <context>
     <name>Hub</name>
     <message>
-        <location filename="../src/hub.cpp" line="431"/>
-        <location filename="../src/hub.cpp" line="439"/>
-        <location filename="../src/hub.cpp" line="453"/>
-        <location filename="../src/hub.cpp" line="464"/>
+        <location filename="../src/hub.cpp" line="444"/>
+        <location filename="../src/hub.cpp" line="452"/>
+        <location filename="../src/hub.cpp" line="466"/>
+        <location filename="../src/hub.cpp" line="477"/>
         <source>Plume creator</source>
         <translation>Plume Creator</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="432"/>
-        <location filename="../src/hub.cpp" line="440"/>
+        <location filename="../src/hub.cpp" line="445"/>
+        <location filename="../src/hub.cpp" line="453"/>
         <source>The document </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="432"/>
+        <location filename="../src/hub.cpp" line="445"/>
         <source> you are trying to open doesn&apos;t exist !
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="440"/>
+        <location filename="../src/hub.cpp" line="453"/>
         <source> you are trying to open isn&apos;t a *.plume or .plume_backup file !
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="454"/>
+        <location filename="../src/hub.cpp" line="467"/>
         <source>The document you are trying to open isn&apos;t a *.plume or *.plume_backup file !
 </source>
         <translation>Das Dokument, das Sie versuchen zu öffnen, ist keine *.plume- oder *.plume_backup-Datei!</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="465"/>
+        <location filename="../src/hub.cpp" line="478"/>
         <source>&lt;p&gt;The document you are trying to open is *.plume_backup file !&lt;/p&gt;&lt;p&gt;It&apos;s a backup created from the last save. This file must be opened in theses cases :&lt;/p&gt;&lt;blockquote&gt;- Your computer crashed when saving, corrupting your work . &lt;/blockquote&gt;&lt;blockquote&gt;- You can&apos;t load your work. &lt;/blockquote&gt;&lt;p&gt;This will replace your work.&lt;/p&gt;&lt;p&gt;Do you want to proceed ?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Das Dokument, das Sie versuchen zu öffnen, ist eine *.plume_backup-Datei!&lt;/p&gt;&lt;p&gt;Es ein Backup, das beim letzten Speichern angelegt wurde. Diese Datei muss in den folgenden Fällen geöffnet werden:&lt;/p&gt;&lt;blockquote&gt;- Ihr Computer ist während des Speicherns abgestürzt und hat Ihre Arbeit beschädigt. &lt;/blockquote&gt;&lt;blockquote&gt;- Sie können Ihre Arbeit nicht laden. &lt;/blockquote&gt;&lt;p&gt;Dies wird Ihre Arbeit ersetzen.&lt;/p&gt;&lt;p&gt;Möchten Sie fortfahren?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="678"/>
-        <location filename="../src/hub.cpp" line="691"/>
-        <location filename="../src/hub.cpp" line="696"/>
-        <location filename="../src/hub.cpp" line="732"/>
-        <location filename="../src/hub.cpp" line="745"/>
+        <location filename="../src/hub.cpp" line="695"/>
+        <location filename="../src/hub.cpp" line="708"/>
+        <location filename="../src/hub.cpp" line="713"/>
         <location filename="../src/hub.cpp" line="750"/>
-        <location filename="../src/hub.cpp" line="779"/>
-        <location filename="../src/hub.cpp" line="796"/>
-        <location filename="../src/hub.cpp" line="801"/>
+        <location filename="../src/hub.cpp" line="763"/>
+        <location filename="../src/hub.cpp" line="768"/>
+        <location filename="../src/hub.cpp" line="797"/>
+        <location filename="../src/hub.cpp" line="814"/>
+        <location filename="../src/hub.cpp" line="819"/>
         <source>Plume Creator</source>
         <translation>Plume Creator</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="679"/>
+        <location filename="../src/hub.cpp" line="696"/>
         <source>Tree File. Parse error at line %1, column %2:
 %3
 </source>
@@ -1223,18 +1235,18 @@
 </translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="692"/>
+        <location filename="../src/hub.cpp" line="709"/>
         <source>The file is not a Plume Creator tree file.</source>
         <translation>Diese Datei ist keine Plume-Creator-Tree-Datei.</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="697"/>
+        <location filename="../src/hub.cpp" line="714"/>
         <source>The file is not a Plume Creator tree file version </source>
         <comment>version added after that</comment>
         <translation>Diese Datei ist keine Plume-Creator-Tree-Datei in Version </translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="733"/>
+        <location filename="../src/hub.cpp" line="751"/>
         <source>Info File. Parse error at line %1, column %2:
 %3
 </source>
@@ -1243,18 +1255,18 @@
 </translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="746"/>
+        <location filename="../src/hub.cpp" line="764"/>
         <source>The file is not a Plume Creator info file.</source>
         <translation>Diese Datei ist keine Plume-Creator-Info-Datei.</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="751"/>
+        <location filename="../src/hub.cpp" line="769"/>
         <source>The file is not a Plume Creator info file version </source>
         <comment>version added after that</comment>
         <translation>Diese Datei ist keine Plume-Creator-Info-Datei in Version </translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="780"/>
+        <location filename="../src/hub.cpp" line="798"/>
         <source>Attend File. Parse error at line %1, column %2:
 %3
 </source>
@@ -1263,12 +1275,12 @@
 </translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="797"/>
+        <location filename="../src/hub.cpp" line="815"/>
         <source>The file is not a Plume Creator attend file.</source>
         <translation>Diese Datei ist keine Plume-Creater-Umgebungs-Datei.</translation>
     </message>
     <message>
-        <location filename="../src/hub.cpp" line="802"/>
+        <location filename="../src/hub.cpp" line="820"/>
         <source>The file is not a Plume Creator attend file version </source>
         <comment>version added after that</comment>
         <translation>Diese Datei ist keine Plume Creator-Umgebungs-Datei in Version </translation>
@@ -1314,210 +1326,465 @@
         <translation type="obsolete">Diese Datei ist keine Plume-Creator-Projektdatei in Version 0.2.</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="330"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Löschen</translation>
+        <translation type="obsolete">&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="335"/>
         <source>&amp;Advanced</source>
-        <translation>&amp;Erweitert</translation>
+        <translation type="obsolete">&amp;Erweitert</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="352"/>
         <source>&amp;Rename</source>
-        <translation>&amp;Umbenennen</translation>
+        <translation type="obsolete">&amp;Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="356"/>
         <source>Add &amp;next</source>
         <translatorcomment>anderen Begriff verwenden?</translatorcomment>
-        <translation>&amp;Knotenpunkt hinzufügen</translation>
+        <translation type="obsolete">&amp;Knotenpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="360"/>
         <source>Add &amp;child</source>
-        <translation>&amp;Unterpunkt hinzufügen</translation>
+        <translation type="obsolete">&amp;Unterpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="364"/>
         <source>Add &amp;scene break</source>
         <translatorcomment>Vielleicht besseren Begriff finden?</translatorcomment>
-        <translation>&amp;Szenentrenner hinzufügen</translation>
+        <translation type="obsolete">&amp;Szenentrenner hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="368"/>
         <source>Move Up</source>
-        <translation>Aufwärts bewegen</translation>
+        <translation type="obsolete">Aufwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="372"/>
         <source>Move Down</source>
-        <translation>Abwärts bewegen</translation>
+        <translation type="obsolete">Abwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="376"/>
         <source>C&amp;onfirm</source>
-        <translation>&amp;Bestätigen</translation>
+        <translation type="obsolete">&amp;Bestätigen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="380"/>
         <source>&amp;Auto Rename Childs</source>
-        <translation>&amp;Unterpunkte automatisch umbenennen</translation>
+        <translation type="obsolete">&amp;Unterpunkte automatisch umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="384"/>
         <source>&amp;Split</source>
-        <translation>&amp;Aufteilen</translation>
+        <translation type="obsolete">&amp;Aufteilen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="388"/>
         <source>Add &amp;X Children</source>
-        <translation>&amp;Mehrere Unterpunkte hinzufügen</translation>
+        <translation type="obsolete">&amp;Mehrere Unterpunkte hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="450"/>
         <source>Rename sheet</source>
-        <translation>Seite Umbenennen</translation>
+        <translation type="obsolete">Seite Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="451"/>
         <source>Sheet name :</source>
-        <translation>Seitenname:</translation>
+        <translation type="obsolete">Seitenname:</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="826"/>
         <source>Sheet Deletion</source>
-        <translation>Seite löschen</translation>
+        <translation type="obsolete">Seite löschen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="827"/>
         <source>&lt;p&gt;The selected sheet and its children will be permanently deleted.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Do you really want to continue ?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Die ausgewählte Seite mit all ihren Unterpunkten wird dauerhaft gelöscht.&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;Die ausgewählte Seite mit all ihren Unterpunkten wird dauerhaft gelöscht.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Möchten Sie wirklich fortfahren?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="853"/>
         <source>Plume Creator Info</source>
-        <translation>Informationen zu Plume Creator</translation>
+        <translation type="obsolete">Informationen zu Plume Creator</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="854"/>
         <source>For safety measure, you are
 not allowed delete a filled book.</source>
         <translatorcomment>nochmal nachprüfen</translatorcomment>
-        <translation>Als Sicherheitsmaßnahme können Sie ein Buch nur löschen, wenn es leer ist.</translation>
+        <translation type="obsolete">Als Sicherheitsmaßnahme können Sie ein Buch nur löschen, wenn es leer ist.</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1133"/>
         <source>Chapter</source>
-        <translation>Kapitel</translation>
+        <translation type="obsolete">Kapitel</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1134"/>
         <source>Scene</source>
-        <translation>Szene</translation>
+        <translation type="obsolete">Szene</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1211"/>
         <source>Split Dialog</source>
-        <translation>Aufteilen-Dialog</translation>
+        <translation type="obsolete">Aufteilen-Dialog</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1214"/>
         <source>&lt;p&gt;With this tool, you can split a text in several parts.For each part, Plume will create a chapter or a scene.&lt;/p&gt;&lt;br&gt;</source>
-        <translation>&lt;p&gt;Mit diesem Werkzeug können Sie einen Text in mehrere Abschnitte aufteilen. Plume wird für jeden Teil ein Kapitel oder eine Szene anlegen.&lt;/p&gt;&lt;br&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Mit diesem Werkzeug können Sie einen Text in mehrere Abschnitte aufteilen. Plume wird für jeden Teil ein Kapitel oder eine Szene anlegen.&lt;/p&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1216"/>
         <source>&lt;center&gt;&lt;b&gt;Each sheet type has different behaviour !&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;In a scene sheet : split &lt;b&gt;only&lt;/b&gt; into scenes with *** .&lt;/blockquote&gt;&lt;blockquote&gt;In a chapter sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;blockquote&gt;In a book sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;/p&gt;</source>
-        <translation>&lt;center&gt;&lt;b&gt;Jeder Seitentyp hat ein eigenes Verhalten!&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;Auf einer Szenenseite: teilen &lt;b&gt;nur&lt;/b&gt; in Szenen mit *** .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Kapitelseite: teile nur in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Buchseite: teile in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;center&gt;&lt;b&gt;Jeder Seitentyp hat ein eigenes Verhalten!&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;Auf einer Szenenseite: teilen &lt;b&gt;nur&lt;/b&gt; in Szenen mit *** .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Kapitelseite: teile nur in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Buchseite: teile in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1228"/>
         <source>Text</source>
-        <translation>Text</translation>
+        <translation type="obsolete">Text</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1228"/>
         <source>Synopsys</source>
-        <translation>Zusammenfassung</translation>
+        <translation type="obsolete">Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1228"/>
         <source>Note</source>
-        <translation>Notiz</translation>
+        <translation type="obsolete">Notiz</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1235"/>
         <source>Choose the type of document that you want to split :</source>
-        <translation>Wählen Sie den Dokumenttyp, den Sie aufteilen wollen:</translation>
+        <translation type="obsolete">Wählen Sie den Dokumenttyp, den Sie aufteilen wollen:</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1349"/>
         <source>Splitting Task</source>
         <translatorcomment>Aufgabe?</translatorcomment>
-        <translation>Aufteilungsvorgang</translation>
+        <translation type="obsolete">Aufteilungsvorgang</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1349"/>
         <source>This sheet does not contain *** .</source>
-        <translation>Diese Seite enthält kein(e) *** .</translation>
+        <translation type="obsolete">Diese Seite enthält kein(e) *** .</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1491"/>
         <source>Add X Children</source>
-        <translation>Mehrere Unterpunkte hinzufügen</translation>
+        <translation type="obsolete">Mehrere Unterpunkte hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1492"/>
         <source>Please enter a number :</source>
-        <translation>Bitte geben Sie eine Zahl ein:</translation>
+        <translation type="obsolete">Bitte geben Sie eine Zahl ein:</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1750"/>
         <source>New Book</source>
-        <translation>Neues Buch</translation>
+        <translation type="obsolete">Neues Buch</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1755"/>
-        <location filename="../src/maintree.cpp" line="1768"/>
         <source>New Chapter</source>
-        <translation>Neues Kapitel</translation>
+        <translation type="obsolete">Neues Kapitel</translation>
     </message>
     <message>
-        <location filename="../src/maintree.cpp" line="1760"/>
-        <location filename="../src/maintree.cpp" line="1773"/>
         <source>New Scene</source>
-        <translation>Neue Szene</translation>
+        <translation type="obsolete">Neue Szene</translation>
+    </message>
+</context>
+<context>
+    <name>MainTreeAbstractModel</name>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>Titles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>Synopsis</source>
+        <translation type="unfinished">Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>Notes</source>
+        <translation type="unfinished">Notizen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>PoV</source>
+        <translation type="unfinished">Blickwinkel</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="394"/>
+        <source>Badge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="842"/>
+        <source>Bin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1040"/>
+        <source>Splitting Task</source>
+        <translation type="unfinished">Aufteilungsvorgang</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1040"/>
+        <source>This sheet does not contain *** .</source>
+        <translation type="unfinished">Diese Seite enthält kein(e) *** .</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1275"/>
+        <source>Act</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1276"/>
+        <source>Chapter</source>
+        <translation type="unfinished">Kapitel</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1277"/>
+        <source>Scene</source>
+        <translation type="unfinished">Szene</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1768"/>
+        <source>Book </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1773"/>
+        <source>Act </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1778"/>
+        <source>Chapter </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1783"/>
+        <source>Scene </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1826"/>
+        <source>1st draft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1827"/>
+        <source>2nd draft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1828"/>
+        <source>3rd draft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1829"/>
+        <source>1st Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1830"/>
+        <source>2nd Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1831"/>
+        <source>3rd Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1832"/>
+        <source>Proofread</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1833"/>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MainTreeContextMenu</name>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="79"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished">&amp;Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="92"/>
+        <source>&amp;Advanced</source>
+        <translation type="unfinished">&amp;Erweitert</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="107"/>
+        <source>&amp;Rename</source>
+        <translation type="unfinished">&amp;Umbenennen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="111"/>
+        <source>Move Up</source>
+        <translation type="unfinished">Aufwärts bewegen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="114"/>
+        <source>Move Down</source>
+        <translation type="unfinished">Abwärts bewegen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="117"/>
+        <source>C&amp;onfirm</source>
+        <translation type="unfinished">&amp;Bestätigen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="120"/>
+        <source>&amp;Auto Rename Children</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="123"/>
+        <source>&amp;Split</source>
+        <translation type="unfinished">&amp;Aufteilen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="126"/>
+        <source>Add &amp;X Children</source>
+        <translation type="unfinished">&amp;Mehrere Unterpunkte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="131"/>
+        <source>Add &amp;book</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="134"/>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="146"/>
+        <source>Add &amp;act</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="137"/>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="149"/>
+        <source>Add &amp;chapter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="140"/>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="152"/>
+        <source>Add &amp;scene</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="143"/>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="155"/>
+        <source>Add &amp;separator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="159"/>
+        <source>Empty Trash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="162"/>
+        <source>Show badges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="167"/>
+        <source>Set badge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="177"/>
+        <source>Split Dialog</source>
+        <translation type="unfinished">Aufteilen-Dialog</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="180"/>
+        <source>&lt;p&gt;With this tool, you can split a text in several parts.For each part, Plume will create a chapter or a scene.&lt;/p&gt;&lt;br&gt;</source>
+        <translation type="unfinished">&lt;p&gt;Mit diesem Werkzeug können Sie einen Text in mehrere Abschnitte aufteilen. Plume wird für jeden Teil ein Kapitel oder eine Szene anlegen.&lt;/p&gt;&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="182"/>
+        <source>&lt;center&gt;&lt;b&gt;Each sheet type has different behaviour !&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;In a scene sheet : split &lt;b&gt;only&lt;/b&gt; into scenes with *** .&lt;/blockquote&gt;&lt;blockquote&gt;In a chapter sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;blockquote&gt;In a book sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;/p&gt;</source>
+        <translation type="unfinished">&lt;center&gt;&lt;b&gt;Jeder Seitentyp hat ein eigenes Verhalten!&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;Auf einer Szenenseite: teilen &lt;b&gt;nur&lt;/b&gt; in Szenen mit *** .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Kapitelseite: teile nur in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;blockquote&gt;Auf einer Buchseite: teile in Szenen mit *** und in Kapitel mit ### .&lt;/blockquote&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="194"/>
+        <source>Text</source>
+        <translation type="unfinished">Text</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="194"/>
+        <source>Synopsys</source>
+        <translation type="unfinished">Zusammenfassung</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="194"/>
+        <source>Note</source>
+        <translation type="unfinished">Notiz</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="201"/>
+        <source>Choose the type of document that you want to split :</source>
+        <translation type="unfinished">Wählen Sie den Dokumenttyp, den Sie aufteilen wollen:</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="257"/>
+        <source>Rename sheet</source>
+        <translation type="unfinished">Seite Umbenennen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="258"/>
+        <source>Sheet name :</source>
+        <translation type="unfinished">Seitenname:</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="268"/>
+        <source>Add X Children</source>
+        <translation type="unfinished">Mehrere Unterpunkte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="269"/>
+        <source>Please enter a number :</source>
+        <translation type="unfinished">Bitte geben Sie eine Zahl ein:</translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="292"/>
+        <source>Set badge text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="293"/>
+        <source>Badge :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="303"/>
+        <source>Empty the trash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainTree/maintreecontextmenu.cpp" line="304"/>
+        <source>&lt;p&gt;The sheets in the trash will be permanently deleted.&lt;/p&gt;
+&lt;br&gt;&lt;p&gt;Do you really want to continue ?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="92"/>
+        <location filename="../src/mainwindow.cpp" line="95"/>
         <source>Welcome</source>
         <translation>Willkommen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="93"/>
+        <location filename="../src/mainwindow.cpp" line="96"/>
         <source>&lt;center&gt;&lt;b&gt;Hello ! Welcome to Plume Creator v</source>
         <translation>&lt;center&gt;&lt;b&gt;Hallo! Willkommen zu Plume Creator v</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="93"/>
+        <location filename="../src/mainwindow.cpp" line="96"/>
         <source>!&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Plume Creator is a little program for writers in quest of a complete yet simple way of writing and organizing a fiction.&lt;/p&gt;&lt;br&gt;&lt;p&gt;It allows :&lt;blockquote&gt;- fullscreen text editing&lt;/blockquote&gt;&lt;blockquote&gt;- chapters and scenes outlining&lt;/blockquote&gt;&lt;blockquote&gt;- note taking&lt;/blockquote&gt;&lt;blockquote&gt;- items/characters/places managing&lt;/blockquote&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;&lt;h1&gt;This is a Beta software ! It&apos;s stable but all the features are not finished !&lt;/h1&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translatorcomment>noch sehr holprig</translatorcomment>
         <translation>!&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Plume Creator ist ein kleines Programm für Autoren, die auf der Suche nach einem umfassenden aber einfachen Weg sind, fiktionale Texte zu schreiben und organisieren.&lt;/p&gt;&lt;br&gt;&lt;p&gt;Es ermöglicht:&lt;blockquote&gt;- Texteingabe im Vollbildmodus&lt;/blockquote&gt;&lt;blockquote&gt;- den Entwurf von Kapiteln und Szenen&lt;/blockquote&gt;&lt;blockquote&gt;- das Anlegen von Notizen&lt;/blockquote&gt;&lt;blockquote&gt;- die Verwaltung von Gegenständen, Figuren und Orten&lt;/blockquote&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;&lt;h1&gt;Diese Software ist eine Beta-Version. Sie ist stabil, aber sämtliche Features sind noch in Arbeit!&lt;/h1&gt;&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="122"/>
+        <location filename="../src/mainwindow.cpp" line="125"/>
         <source>Small screen size detected</source>
         <translation>Geringe Bildschirmauflösung festgestellt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="123"/>
+        <location filename="../src/mainwindow.cpp" line="126"/>
         <source>&lt;center&gt;&lt;b&gt;A small screen has been detected&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Maybe you are running Plume on a netbook. Plume will adapt its interface to this type of computer.&lt;/p&gt;&lt;br&gt;&lt;p&gt;You can change this option in the &apos;Configure&apos; dialog.&lt;/p&gt;</source>
         <translation>&lt;center&gt;&lt;b&gt;Eine geringe Bildschirmauflösung wurde festgestellt&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Möglicherweise nutzen Sie Plume auf einem Netbook. Plume wird seine Oberfläche nun an diesen Rechnertyp anpassen.&lt;/p&gt;&lt;br&gt;&lt;p&gt;Sie können diese Option im &apos;Einstellungen&apos;-Dialog anpassen.&lt;/p&gt;</translation>
     </message>
@@ -1526,129 +1793,135 @@ not allowed delete a filled book.</source>
         <translation type="obsolete">Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="212"/>
-        <location filename="../src/mainwindow.cpp" line="662"/>
-        <location filename="../src/mainwindow.cpp" line="669"/>
-        <location filename="../src/mainwindow.cpp" line="670"/>
+        <location filename="../src/mainwindow.cpp" line="214"/>
+        <location filename="../src/mainwindow.cpp" line="647"/>
+        <location filename="../src/mainwindow.cpp" line="654"/>
+        <location filename="../src/mainwindow.cpp" line="655"/>
         <source>Mise en scène</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="313"/>
-        <location filename="../src/mainwindow.cpp" line="619"/>
-        <location filename="../src/mainwindow.cpp" line="626"/>
-        <location filename="../src/mainwindow.cpp" line="627"/>
+        <location filename="../src/mainwindow.cpp" line="315"/>
+        <location filename="../src/mainwindow.cpp" line="604"/>
+        <location filename="../src/mainwindow.cpp" line="611"/>
+        <location filename="../src/mainwindow.cpp" line="612"/>
         <source>Project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="342"/>
-        <location filename="../src/mainwindow.cpp" line="647"/>
-        <location filename="../src/mainwindow.cpp" line="654"/>
-        <location filename="../src/mainwindow.cpp" line="655"/>
+        <location filename="../src/mainwindow.cpp" line="362"/>
+        <location filename="../src/mainwindow.cpp" line="632"/>
+        <location filename="../src/mainwindow.cpp" line="639"/>
+        <location filename="../src/mainwindow.cpp" line="640"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="355"/>
+        <location filename="../src/mainwindow.cpp" line="375"/>
         <source>Stats</source>
         <translation>Statistiken</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="393"/>
-        <location filename="../src/mainwindow.cpp" line="632"/>
-        <location filename="../src/mainwindow.cpp" line="639"/>
-        <location filename="../src/mainwindow.cpp" line="640"/>
+        <location filename="../src/mainwindow.cpp" line="413"/>
+        <location filename="../src/mainwindow.cpp" line="617"/>
+        <location filename="../src/mainwindow.cpp" line="624"/>
+        <location filename="../src/mainwindow.cpp" line="625"/>
         <source>Notes</source>
         <translation>Notizen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>Draft</source>
         <translation>Entwurf</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>25%</source>
         <translation>25%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>50%</source>
         <translation>50%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>75%</source>
         <translation>75%</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>Corrected</source>
         <translation>Korrigiert</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="479"/>
+        <location filename="../src/mainwindow.cpp" line="464"/>
         <source>Synopsis</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="480"/>
+        <location filename="../src/mainwindow.cpp" line="465"/>
         <source>Note</source>
         <translation>Notiz</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="551"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Project word count</source>
         <translation>Wortanzahl im Projekt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="553"/>
+        <location filename="../src/mainwindow.cpp" line="538"/>
         <source>Book word count</source>
         <translation>Wortanzahl im Buch</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="555"/>
+        <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Chapter word count</source>
         <translation>Wortanzahl im Kapitel</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="557"/>
+        <location filename="../src/mainwindow.cpp" line="542"/>
         <source>Current sheet word count</source>
         <translation>Wortanzahl auf aktueller Seite</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="611"/>
+        <location filename="../src/mainwindow.cpp" line="596"/>
         <source>Side buttons</source>
         <translation>Seitenknöpfe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="669"/>
+        <location filename="../src/mainwindow.cpp" line="670"/>
+        <source>Workbench</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1625"/>
         <source>Your project was successfully saved.</source>
         <translation>Ihr Projekt wurde erfolgreich gespeichert.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2143"/>
+        <location filename="../src/mainwindow.cpp" line="2188"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2148"/>
+        <location filename="../src/mainwindow.cpp" line="2193"/>
         <source>Book: </source>
         <translation>Buch: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2157"/>
+        <location filename="../src/mainwindow.cpp" line="2202"/>
         <source>Chapter: </source>
         <translation>Kapitel: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2163"/>
+        <location filename="../src/mainwindow.cpp" line="2208"/>
         <source>Words: </source>
         <translation>Wörter: </translation>
     </message>
@@ -1658,31 +1931,29 @@ not allowed delete a filled book.</source>
         <translation type="obsolete">Dock-Knöpfe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="677"/>
-        <location filename="../src/mainwindow.cpp" line="684"/>
-        <location filename="../src/mainwindow.cpp" line="685"/>
+        <location filename="../src/mainwindow.cpp" line="662"/>
         <source>Outliner</source>
         <translation>Reißbrett</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="692"/>
-        <location filename="../src/mainwindow.cpp" line="701"/>
-        <location filename="../src/mainwindow.cpp" line="702"/>
+        <location filename="../src/mainwindow.cpp" line="677"/>
+        <location filename="../src/mainwindow.cpp" line="686"/>
+        <location filename="../src/mainwindow.cpp" line="687"/>
         <source>Fullscreen</source>
         <translation>Vollbild</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="694"/>
+        <location filename="../src/mainwindow.cpp" line="679"/>
         <source>Edit this document fullscreen</source>
         <translation>Dieses Dokument im Vollbildmodus bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1590"/>
+        <location filename="../src/mainwindow.cpp" line="1610"/>
         <source>Do you want to quit ?</source>
         <translation>Möchten Sie wirklich beenden?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1591"/>
+        <location filename="../src/mainwindow.cpp" line="1611"/>
         <source>Your changes are already saved.</source>
         <translation>Ihre Veränderungen wurden bereits gespeichert.</translation>
     </message>
@@ -1699,38 +1970,38 @@ not allowed delete a filled book.</source>
 <context>
     <name>MenuBar</name>
     <message>
-        <location filename="../src/menubar.cpp" line="150"/>
+        <location filename="../src/menubar.cpp" line="146"/>
         <source>Do you want to close the current project ?</source>
         <translation>Möchten Sie das aktuelle Projekt schließen?</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="151"/>
+        <location filename="../src/menubar.cpp" line="147"/>
         <source>Your changes are already saved.</source>
         <translation>Ihre Veränderungen wurden bereits gespeichert.</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="238"/>
-        <location filename="../src/menubar.cpp" line="486"/>
+        <location filename="../src/menubar.cpp" line="236"/>
+        <location filename="../src/menubar.cpp" line="490"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="251"/>
+        <location filename="../src/menubar.cpp" line="249"/>
         <source>Release Notes</source>
         <translation>Versionshinweise</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="289"/>
+        <location filename="../src/menubar.cpp" line="287"/>
         <source>About Plume Creator</source>
         <translation>Über Plume Creator</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="366"/>
+        <location filename="../src/menubar.cpp" line="370"/>
         <source>&amp;New Project</source>
         <translation>&amp;Neues Projekt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="368"/>
+        <location filename="../src/menubar.cpp" line="372"/>
         <source>Create a new project</source>
         <translation>Ein neues Projekt anlegen</translation>
     </message>
@@ -1739,73 +2010,73 @@ not allowed delete a filled book.</source>
         <translation type="obsolete">&amp;Projektverwaltung</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="373"/>
+        <location filename="../src/menubar.cpp" line="377"/>
         <source>Create and manage your projects</source>
         <translation>Projekte anlegen und verwalten</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="371"/>
+        <location filename="../src/menubar.cpp" line="375"/>
         <source>Start &amp;Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="377"/>
+        <location filename="../src/menubar.cpp" line="381"/>
         <source>&amp;Configure</source>
         <translation>&amp;Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="379"/>
+        <location filename="../src/menubar.cpp" line="383"/>
         <source>Display the configuration</source>
         <translation>Die Einstellungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="382"/>
+        <location filename="../src/menubar.cpp" line="386"/>
         <source>&amp;Export</source>
         <translation>&amp;Exportieren</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="384"/>
+        <location filename="../src/menubar.cpp" line="388"/>
         <source>Export the project</source>
         <translation>Das Projekt exportieren</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="387"/>
+        <location filename="../src/menubar.cpp" line="391"/>
         <source>&amp;Print</source>
         <translation>&amp;Drucken</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="389"/>
+        <location filename="../src/menubar.cpp" line="393"/>
         <source>Print part of the project</source>
         <translation>Einen Bestandteil des Projektes drucken</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="392"/>
+        <location filename="../src/menubar.cpp" line="396"/>
         <source>&amp;Close project</source>
         <translation>Projekt &amp;schließen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="394"/>
+        <location filename="../src/menubar.cpp" line="398"/>
         <source>Print the document</source>
         <translation>Das Dokument drucken</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="397"/>
+        <location filename="../src/menubar.cpp" line="401"/>
         <source>E&amp;xit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="399"/>
+        <location filename="../src/menubar.cpp" line="403"/>
         <source>Exit the application</source>
         <translation>Beendet das Programm</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="403"/>
-        <location filename="../src/menubar.cpp" line="436"/>
+        <location filename="../src/menubar.cpp" line="407"/>
+        <location filename="../src/menubar.cpp" line="440"/>
         <source>&amp;Project</source>
         <translation>&amp;Projekt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="416"/>
+        <location filename="../src/menubar.cpp" line="420"/>
         <source>&amp;Find &amp;&amp; Replace</source>
         <translation>&amp;Suchen und Ersetzen</translation>
     </message>
@@ -1814,123 +2085,123 @@ not allowed delete a filled book.</source>
         <translation type="obsolete">Suchen/Ersetzen-Dialog</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="418"/>
+        <location filename="../src/menubar.cpp" line="422"/>
         <source>Find &amp;&amp; Replace Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="425"/>
+        <location filename="../src/menubar.cpp" line="429"/>
         <source>Manage &amp;Styles</source>
         <translation>&amp;Stile verwalten</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="427"/>
+        <location filename="../src/menubar.cpp" line="431"/>
         <source>Manage the styles</source>
         <translation>Verwaltet die Stile</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="430"/>
+        <location filename="../src/menubar.cpp" line="434"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="439"/>
+        <location filename="../src/menubar.cpp" line="443"/>
         <source>Show the project dock</source>
         <translation>Zeigt das Projekt-Dock</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="442"/>
+        <location filename="../src/menubar.cpp" line="446"/>
         <source>&amp;Notes</source>
         <translation>&amp;Notizen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="445"/>
+        <location filename="../src/menubar.cpp" line="449"/>
         <source>Show the note dock</source>
         <translation>Zeigt das Notizen-Dock</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="448"/>
+        <location filename="../src/menubar.cpp" line="452"/>
         <source>&amp;Attendance</source>
         <translation>&amp;Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="451"/>
+        <location filename="../src/menubar.cpp" line="455"/>
         <source>Show the attendance dock</source>
         <translation>Zeigt das Umgebungs-Dock</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="454"/>
+        <location filename="../src/menubar.cpp" line="458"/>
         <source>&amp;Tools</source>
         <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="457"/>
+        <location filename="../src/menubar.cpp" line="461"/>
         <source>Show the tool dock</source>
         <translation>Zeigt das Werkzeuge-Dock</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="460"/>
+        <location filename="../src/menubar.cpp" line="464"/>
         <source>&amp;Outliner</source>
         <translatorcomment>Entwurf?</translatorcomment>
         <translation>&amp;Reißbrett</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="462"/>
+        <location filename="../src/menubar.cpp" line="466"/>
         <source>Show the outliner</source>
         <translation>Zeigt das Reißbrett</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="465"/>
+        <location filename="../src/menubar.cpp" line="469"/>
         <source>&amp;Fullscreen</source>
         <translation>&amp;Vollbild</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="467"/>
+        <location filename="../src/menubar.cpp" line="471"/>
         <source>Edit fullscreen</source>
         <translation>Im Vollbildmodus bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="470"/>
+        <location filename="../src/menubar.cpp" line="474"/>
         <source>&amp;View</source>
         <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="481"/>
+        <location filename="../src/menubar.cpp" line="485"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="483"/>
+        <location filename="../src/menubar.cpp" line="487"/>
         <source>about the application</source>
         <translation>Über das Programm</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="488"/>
+        <location filename="../src/menubar.cpp" line="492"/>
         <source>about Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="491"/>
+        <location filename="../src/menubar.cpp" line="495"/>
         <source>Release notes</source>
         <translation>Versionshinweise</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="493"/>
+        <location filename="../src/menubar.cpp" line="497"/>
         <source>Open the Readme with the release notes</source>
         <translation>Die Readme-Datei mit den Versionshinweisen öffnen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="496"/>
+        <location filename="../src/menubar.cpp" line="500"/>
         <source>Check Update</source>
         <translation>Auf Updates prüfen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="498"/>
+        <location filename="../src/menubar.cpp" line="502"/>
         <source>check for an update</source>
         <translation>Auf ein Update prüfen</translation>
     </message>
     <message>
-        <location filename="../src/menubar.cpp" line="501"/>
+        <location filename="../src/menubar.cpp" line="505"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
@@ -2261,159 +2532,140 @@ Bitte öffnen Sie eine Plume-Datei.</translation>
 <context>
     <name>OutlinerAbstractModel</name>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Titles</source>
-        <translation>Überschriften</translation>
+        <translation type="obsolete">Überschriften</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Synopsis</source>
-        <translation>Zusammenfassung</translation>
+        <translation type="obsolete">Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>Notes</source>
-        <translation>Notizen</translation>
+        <translation type="obsolete">Notizen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="345"/>
         <source>PoV</source>
-        <translation>Blickwinkel</translation>
+        <translation type="obsolete">Blickwinkel</translation>
     </message>
 </context>
 <context>
     <name>OutlinerBase</name>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="17"/>
         <source>Outliner</source>
-        <translation>Reißbrett</translation>
+        <translation type="obsolete">Reißbrett</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="40"/>
         <source>Shift to spreadsheet mode</source>
         <translatorcomment>Kontext prüfen</translatorcomment>
-        <translation>Zur Tabellenansicht wechseln</translation>
+        <translation type="obsolete">Zur Tabellenansicht wechseln</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="45"/>
         <source>Close the Outliner</source>
-        <translation>Das Reißbrett schließen</translation>
+        <translation type="obsolete">Das Reißbrett schließen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="49"/>
+        <location filename="../src/outliner/outlinerbase.cpp" line="13"/>
+        <source>Workbench - Outliner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/outliner/outlinerbase.cpp" line="72"/>
         <source>Expand spreadsheet</source>
         <translation>Die Tabelle ausklappen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="52"/>
+        <location filename="../src/outliner/outlinerbase.cpp" line="75"/>
         <source>Shrink spreadsheet</source>
         <translatorcomment>nochmal prüfen</translatorcomment>
         <translation>Die Tabelle einklappen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="55"/>
+        <location filename="../src/outliner/outlinerbase.cpp" line="78"/>
         <source>Move up</source>
         <translation>Aufwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="58"/>
+        <location filename="../src/outliner/outlinerbase.cpp" line="81"/>
         <source>Move down</source>
         <translation>Abwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="61"/>
+        <location filename="../src/outliner/outlinerbase.cpp" line="84"/>
         <source>Reset the view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="555"/>
         <source>Characters</source>
-        <translation>Figuren</translation>
+        <translation type="obsolete">Figuren</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="560"/>
         <source>Items</source>
-        <translation>Gegenstände</translation>
+        <translation type="obsolete">Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerbase.cpp" line="565"/>
         <source>Places</source>
-        <translation>Orte</translation>
+        <translation type="obsolete">Orte</translation>
     </message>
 </context>
 <context>
     <name>OutlinerSpreadsheet</name>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="19"/>
         <source>Outliner</source>
-        <translation>Reißbrett</translation>
+        <translation type="obsolete">Reißbrett</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="22"/>
         <source>This speadsheet outliner is at an early stage of development. &lt;br&gt;For now, you can rename titles, write synopses and notes. Right-click and a menu will appear ! </source>
         <translatorcomment>Tabellen-Entwurf?</translatorcomment>
-        <translation>Dieses Reißbrett ist noch in einem frühen Entwicklungsstadium. &lt;br&gt;Bisher können Sie Überschriften umbennenen, Zusammenfassungen und Notizen schreiben. Bei einem Rechtsklick erscheint ein Menü!</translation>
+        <translation type="obsolete">Dieses Reißbrett ist noch in einem frühen Entwicklungsstadium. &lt;br&gt;Bisher können Sie Überschriften umbennenen, Zusammenfassungen und Notizen schreiben. Bei einem Rechtsklick erscheint ein Menü!</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="26"/>
         <source>Do not warn me again</source>
         <translatorcomment>klingt holprig</translatorcomment>
-        <translation>Mich nicht nocheinmal warnen</translation>
+        <translation type="obsolete">Mich nicht nocheinmal warnen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="194"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Löschen</translation>
+        <translation type="obsolete">&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="199"/>
         <source>&amp;Advanced</source>
-        <translation>&amp;Erweitert</translation>
+        <translation type="obsolete">&amp;Erweitert</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="209"/>
         <source>&amp;Rename</source>
-        <translation>&amp;Umbenennen</translation>
+        <translation type="obsolete">&amp;Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="213"/>
         <source>Add &amp;next</source>
-        <translation>&amp;Knotenpunkt hinzufügen</translation>
+        <translation type="obsolete">&amp;Knotenpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="217"/>
         <source>Add &amp;child</source>
-        <translation>&amp;Unterpunkt hinzufügen</translation>
+        <translation type="obsolete">&amp;Unterpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="221"/>
         <source>Add &amp;scene break</source>
-        <translation>&amp;Szenentrenner hinzufügen</translation>
+        <translation type="obsolete">&amp;Szenentrenner hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="225"/>
         <source>Move Up</source>
-        <translation>Aufwärts bewegen</translation>
+        <translation type="obsolete">Aufwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="229"/>
         <source>Move Down</source>
-        <translation>Abwärts bewegen</translation>
+        <translation type="obsolete">Abwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="233"/>
         <source>C&amp;onfirm</source>
-        <translation>&amp;Bestätigen</translation>
+        <translation type="obsolete">&amp;Bestätigen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="237"/>
         <source>&amp;Auto Rename Childs</source>
-        <translation>Unterpunkte &amp;automatisch umbenennen</translation>
+        <translation type="obsolete">Unterpunkte &amp;automatisch umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/outliner/outlinerspreadsheet.cpp" line="241"/>
         <source>Add &amp;X Children</source>
-        <translation>&amp;Mehrere Unterpunkte hinzufügen</translation>
+        <translation type="obsolete">&amp;Mehrere Unterpunkte hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -2528,22 +2780,16 @@ Bitte öffnen Sie eine Plume-Datei.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/exporter.cpp" line="242"/>
-        <location filename="../src/findreplace.cpp" line="106"/>
         <source>XML problem : parseFolderElement(const QDomElement &amp;element, QTreeWidgetItem *parentItem)</source>
-        <translation>XML-Problem: parseFolderElement(const QDomElement &amp;element, QTreeWidgetItem *parentItem)</translation>
+        <translation type="obsolete">XML-Problem: parseFolderElement(const QDomElement &amp;element, QTreeWidgetItem *parentItem)</translation>
     </message>
     <message>
-        <location filename="../src/exporter.cpp" line="267"/>
-        <location filename="../src/findreplace.cpp" line="131"/>
-        <location filename="../src/maintree.cpp" line="224"/>
         <source>XML problem</source>
-        <translation>XML-Problem</translation>
+        <translation type="obsolete">XML-Problem</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="236"/>
-        <location filename="../src/maintree.cpp" line="199"/>
-        <location filename="../src/outliner/outlinerabstractmodel.cpp" line="449"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="244"/>
+        <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="495"/>
         <source>No Title</source>
         <translation>Kein Titel</translation>
     </message>
@@ -3006,49 +3252,49 @@ Bitte öffnen Sie eine Plume-Datei.</translation>
 <context>
     <name>SlimFindReplace</name>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="14"/>
+        <location filename="../src/slimfindreplace.ui" line="20"/>
         <source>Form</source>
         <translation type="unfinished">Maske</translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="20"/>
+        <location filename="../src/slimfindreplace.ui" line="26"/>
         <source>Find :</source>
         <translation type="unfinished">Suchen:</translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="27"/>
+        <location filename="../src/slimfindreplace.ui" line="33"/>
         <source>Find previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="30"/>
-        <location filename="../src/slimfindreplace.ui" line="53"/>
-        <location filename="../src/slimfindreplace.ui" line="86"/>
+        <location filename="../src/slimfindreplace.ui" line="36"/>
+        <location filename="../src/slimfindreplace.ui" line="59"/>
+        <location filename="../src/slimfindreplace.ui" line="92"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="50"/>
+        <location filename="../src/slimfindreplace.ui" line="56"/>
         <source>Find next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="73"/>
+        <location filename="../src/slimfindreplace.ui" line="79"/>
         <source>Case sensitivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="76"/>
+        <location filename="../src/slimfindreplace.ui" line="82"/>
         <source>Case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="83"/>
+        <location filename="../src/slimfindreplace.ui" line="89"/>
         <source>Replace &amp; Find next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/slimfindreplace.ui" line="106"/>
+        <location filename="../src/slimfindreplace.ui" line="112"/>
         <source>Replace with :</source>
         <translation type="unfinished">Ersetzen durch:</translation>
     </message>
@@ -3292,12 +3538,12 @@ Bitte öffnen Sie eine Plume-Datei.</translation>
 <context>
     <name>TextTab</name>
     <message>
-        <location filename="../src/texttab.cpp" line="522"/>
+        <location filename="../src/texttab.cpp" line="527"/>
         <source>Find &amp;&amp; replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/texttab.cpp" line="524"/>
+        <location filename="../src/texttab.cpp" line="529"/>
         <source>Find text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3307,22 +3553,22 @@ Bitte öffnen Sie eine Plume-Datei.</translation>
         <translation type="unfinished">Maske</translation>
     </message>
     <message>
-        <location filename="../src/texttab.ui" line="76"/>
+        <location filename="../src/texttab.ui" line="281"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/texttab.ui" line="114"/>
+        <location filename="../src/texttab.ui" line="127"/>
         <source>scroll</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/texttab.ui" line="135"/>
-        <location filename="../src/texttab.ui" line="193"/>
+        <location filename="../src/texttab.ui" line="64"/>
+        <location filename="../src/texttab.ui" line="151"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3330,87 +3576,97 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextZone</name>
     <message>
-        <location filename="../src/textzone.cpp" line="66"/>
+        <location filename="../src/textzone.cpp" line="69"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="68"/>
+        <location filename="../src/textzone.cpp" line="71"/>
         <source>Undo the last operation</source>
         <translation>Macht den letzten Vorgang rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="71"/>
+        <location filename="../src/textzone.cpp" line="74"/>
         <source>&amp;Redo</source>
         <translation>&amp;Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="73"/>
+        <location filename="../src/textzone.cpp" line="76"/>
         <source>Redo the last operation</source>
         <translation>Stellt den letzten Vorgang wieder her</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="76"/>
+        <location filename="../src/textzone.cpp" line="79"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="78"/>
+        <location filename="../src/textzone.cpp" line="81"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Schneidet den Inhalt der aktuellen Auswahl aus und speichert ihn in der Zwischenablage</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="82"/>
+        <location filename="../src/textzone.cpp" line="85"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="84"/>
+        <location filename="../src/textzone.cpp" line="87"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Kopiert den Inhalt der aktuellen Auswahl und speichert ihn in der Zwischenablage</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="88"/>
+        <location filename="../src/textzone.cpp" line="91"/>
         <source>&amp;Paste</source>
         <translation>&amp;Einfügen</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="90"/>
+        <location filename="../src/textzone.cpp" line="93"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Fügt den Inhalt der Zwischenablage an der ausgewählten Position ein</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="94"/>
+        <location filename="../src/textzone.cpp" line="97"/>
+        <source>&amp;Paste Unformatted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/textzone.cpp" line="98"/>
+        <source>Paste without formatting the clipboard&apos;s contents into the current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/textzone.cpp" line="105"/>
         <source>&amp;Bold</source>
         <translation>&amp;Fett</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="97"/>
+        <location filename="../src/textzone.cpp" line="108"/>
         <source>Make the text bold</source>
         <translation>Stellt den Text fettgedruckt dar</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="104"/>
+        <location filename="../src/textzone.cpp" line="115"/>
         <source>&amp;Italic</source>
         <translation>Kurs&amp;iv</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="107"/>
+        <location filename="../src/textzone.cpp" line="118"/>
         <source>Make the text italic</source>
         <translation>Stellt den Text kursiv dar</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="118"/>
+        <location filename="../src/textzone.cpp" line="129"/>
         <source>Manage &amp;Styles</source>
         <translation>&amp;Stile verwalten</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="120"/>
+        <location filename="../src/textzone.cpp" line="131"/>
         <source>Manage the styles</source>
         <translation>Öffnet die Stilverwaltung</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="123"/>
+        <location filename="../src/textzone.cpp" line="134"/>
         <source>&amp;Styles</source>
         <translation>&amp;Stile</translation>
     </message>
@@ -3617,6 +3873,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/wordgoalprogressbar.cpp" line="182"/>
         <source>Reset the progress to zero</source>
         <translation>Den Fortschritt auf Null zurücksetzen</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <location filename="../src/workbench.cpp" line="8"/>
+        <source>Workbench</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/workbench.cpp" line="31"/>
+        <source>Shift to spreadsheet mode</source>
+        <translation type="unfinished">Zur Tabellenansicht wechseln</translation>
+    </message>
+    <message>
+        <location filename="../src/workbench.cpp" line="36"/>
+        <source>Close the Outliner</source>
+        <translation type="unfinished">Das Reißbrett schließen</translation>
     </message>
 </context>
 </TS>

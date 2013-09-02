@@ -44,6 +44,7 @@ public:
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
     void quitFullScreen();
+    void cursorPositionChangedSignal(int position);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

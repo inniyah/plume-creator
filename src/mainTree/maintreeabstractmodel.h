@@ -17,8 +17,8 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef OUTLINERABSTRACTMODEL_H
-#define OUTLINERABSTRACTMODEL_H
+#ifndef MAINTREEABSTRACTMODEL_H
+#define MAINTREEABSTRACTMODEL_H
 
 #include <QAbstractTableModel>
 #include <QDomDocument>
@@ -27,14 +27,14 @@
 #include <QTextDocument>
 
 #include "hub.h"
-#include "outliner/outlinertreeitem.h"
+#include "mainTree/maintreeitem.h"
 
-class OutlinerAbstractModel : public QAbstractItemModel
+class MainTreeAbstractModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit OutlinerAbstractModel(QObject *parent = 0);
-    ~OutlinerAbstractModel();
+    explicit MainTreeAbstractModel(QObject *parent = 0);
+    ~MainTreeAbstractModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -47,62 +47,72 @@ public:
                  int role = Qt::EditRole);
     QModelIndex index(int, int, const QModelIndex&) const;
     QModelIndex parent(const QModelIndex&) const;
+    void setDomDocument(QDomDocument domDoc);
+
+
+    static  QStringList giveStatusList();
+    static QString giveStatus(int statusInt);
 signals:
 
     void updateMainDomDocSignal(QDomDocument otoM_domDoc);
     void applySynNoteFontConfigSignal();
+    void applySettingsFromDataSignal();
+    void textAndNoteSignal(int number,QString action);
+    void displayBadgeSignal(bool value);
+    void treeStructureChanged();
 
 public slots:
 
     void setHub(Hub *varHub){hub = varHub;}
 
-    // set the size hint :
-    void shrinkRow(){itemHeight += 20; beginResetModel(); endResetModel();}
-    void expandRow(){if(itemHeight > 40)itemHeight -= 20; beginResetModel(); endResetModel();}
-    void setRowHeight(int height){itemHeight = height; beginResetModel(); endResetModel();}
 
     void resetAbsModel();
 
 
-    void mtoO_setDomDoc(QDomDocument domDoc);
+
     void resetDomDoc();
     void parseFolderElement(const QDomElement &element);
 
     void mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc);
     void reset_mtoO_setNumForDoc();
 
-    void columnOneResizedSlot(int newSize){textZoneColumnOneWidth = newSize;}
-    void columnTwoResizedSlot(int newSize){textZoneColumnTwoWidth = newSize;}
-    void resetAbsModelColumnOne();
-    void resetAbsModelColumnTwo();
+    void actionSlot(QString action, int idNumber, QVariant var);
+    void actionSlot(QString action, int idNumber);
+
+
+    // for "new" button in fullscreen :
+    int addItemNext(int baseNumber);
 
 private slots:
 
-    void updateMainDomDoc();
     void updateMainTextDoc(MainTextDocument *textDoc, int number);
 
 private:
+    void removeItem(QDomElement element);
+
+    QDomElement addSheet(QDomElement targetElement, QString action, QString type);
     QStringList givePovList(QString listOfPovNumbers);
+    QDomElement modifyAttributes(QDomElement newElement, QString typeOfNewElement);
 
     Hub *hub;
-    OutlinerTreeItem *rootItem;
-    int itemHeight;
-    int textZoneColumnOneWidth;
-    int textZoneColumnTwoWidth;
+    MainTreeItem *rootItem;
+
+    QList<int> freeNumList;
+    QList<int> freeSeparatorsNumList;
 
     QDomDocument mtoO_domDoc;
     QHash<int, QDomElement> domElementForNumber;
     QDomElement root;
-    int numberOfDomElements, numberOfBooks, numberOfChapters, numberOfScenes;
+    int numberOfDomElements, numberOfBooks, numberOfActs, numberOfChapters, numberOfScenes;
     QStringList *titlesList;
     QStringList *leftHeadersList;
     QList<int> *numberList;
     QHash<MainTextDocument *, int> mtoO_numForDoc;
     QHash<MainTextDocument *, int> mtoO_numForClonedDoc;
 
-    QList<OutlinerTreeItem *> *treeBookItemList;
-    QList<OutlinerTreeItem *> *treeChapterItemList;
+    QList<MainTreeItem *> *treeBookItemList, *treeActItemList,
+    *treeChapterItemList, *treeTrashItemList;
 
 };
 
-#endif // OUTLINERABSTRACTMODEL_H
+#endif // MAINTREEABSTRACTMODEL_H

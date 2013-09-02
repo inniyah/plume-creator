@@ -20,6 +20,8 @@
 #ifndef TEXTSTYLES_H
 #define TEXTSTYLES_H
 
+#include <QObject>
+
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>
 #endif 
@@ -31,8 +33,9 @@
 
 class TextStyles : public QObject
 {
+    Q_OBJECT
 public:
-    TextStyles(QObject *parent = 0);
+    explicit TextStyles(QObject *parent = 0);
     void setProjectInfoFile();
     void addDefaultStyle(QString name = "New Style");
     void removeStyleAt(int index = 99999);
@@ -83,6 +86,8 @@ public slots:
 
     Qt::Alignment blockAlignmentTrueNameAt(int index);
     bool isDefaultStyle(int index){if(defaultStyle == index) return true; else return false;}
+
+    void changeAllDocsTextStyles();
 
 private slots:
     void readSettings();

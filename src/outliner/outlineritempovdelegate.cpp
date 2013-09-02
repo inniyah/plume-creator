@@ -42,7 +42,7 @@ void OutlinerItemPoVDelegate::setEditorData(QWidget *editor, const QModelIndex &
 
     QListWidget * listWidget = static_cast<QListWidget*>(editor);
 
-    QStringList stringList = index.model()->data(index, 33).toStringList();
+    QStringList stringList = index.model()->data(index, 35).toStringList();
 
     foreach(const QString &name, stringList){
         QListWidgetItem *item = new QListWidgetItem(name, listWidget);
@@ -94,7 +94,7 @@ void OutlinerItemPoVDelegate::paint( QPainter* painter,
 
     QListWidget *listWidget = new QListWidget;
 
-    QStringList stringList = index.model()->data(index, 33).toStringList();
+    QStringList stringList = index.model()->data(index, 35).toStringList();
 
     foreach(const QString &name, stringList){
         QListWidgetItem *item = new QListWidgetItem(name, listWidget);

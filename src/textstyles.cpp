@@ -1,9 +1,5 @@
 #include "textstyles.h"
 
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#endif 
-#include <QtGui>   
 
 TextStyles::TextStyles(QObject *parent) :
     QObject(parent),
@@ -589,4 +585,29 @@ void TextStyles::writeDomDoc()
 {
 //    qDebug() << hub->infoTreeDomDoc().toString();
     hub->addToSaveQueue();
+}
+
+
+
+
+
+void TextStyles::changeAllDocsTextStyles()
+{
+    this->loadBaseStyles();
+    this->loadStyles();
+
+    QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
+    QHash<MainTextDocument *, QFile *>::const_iterator i = fileForDoc.constBegin();
+    while (i != fileForDoc.constEnd()) {
+
+        if(i.key()->objectName().left(7) == "textDoc"){
+
+            this->changeDocStyles(i.key());
+
+
+        }
+
+        ++i;
+    }
+
 }

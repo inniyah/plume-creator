@@ -27,17 +27,28 @@ void WordCountEngineThread::resetTree()
             domElementForNumber.insert(e.attribute("number", "0").toInt(), e);
 
             QDomNode n = m.firstChild();
-            while(!n.isNull()) { // chapter level
+            while(!n.isNull()) { // act level
                 QDomElement f = n.toElement(); // try to convert the node to an element.
                 if(!f.isNull()) {
                     domElementForNumber.insert(f.attribute("number", "0").toInt(), f);
 
                     QDomNode o = n.firstChild();
-                    while(!o.isNull()) { // scene level
+                    while(!o.isNull()) { // chapter level
                         QDomElement g = o.toElement(); // try to convert the node to an element.
                         if(!g.isNull()) {
                             domElementForNumber.insert(g.attribute("number", "0").toInt(), g);
 
+
+                            QDomNode p = o.firstChild();
+                            while(!p.isNull()) { // scene level
+                                QDomElement q = p.toElement(); // try to convert the node to an element.
+                                if(!q.isNull()) {
+                                    domElementForNumber.insert(q.attribute("number", "0").toInt(), q);
+
+                                }
+                                p = p.nextSibling();
+
+                            }
                         }
                         o = o.nextSibling();
 
@@ -73,16 +84,25 @@ QList<QDomElement> WordCountEngineThread::allChildNodes(QDomElement node)
         if(!e.isNull()) {
             list.append(e);
             QDomNode n = m.firstChild();
-            while(!n.isNull()) { // chapter level
+            while(!n.isNull()) { // act level
                 QDomElement f = n.toElement(); // try to convert the node to an element.
                 if(!f.isNull()) {
                     list.append(f);
                     QDomNode o = n.firstChild();
-                    while(!o.isNull()) { // scene level
+                    while(!o.isNull()) { // chapter level
                         QDomElement g = o.toElement(); // try to convert the node to an element.
                         if(!g.isNull()) {
                             list.append(g);
+                            QDomNode p = o.firstChild();
+                            while(!p.isNull()) { // scene level
+                                QDomElement q = p.toElement(); // try to convert the node to an element.
+                                if(!q.isNull()) {
+                                    list.append(q);
 
+                                }
+                                p = p.nextSibling();
+
+                            }
                         }
                         o = o.nextSibling();
 
@@ -179,30 +199,76 @@ void WordCountEngineThread::run()
 
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->size(currentElement));
+        emit actWordCount(-1);
+        emit chapterWordCount(-1);
+        emit sceneWordCount(-1);
+    }
+    else if(currentElement.tagName() == "act"){
+
+        m_projectWordCount = this->parentSize(parentElement(currentElement));
+        emit projectWordCount(m_projectWordCount);
+        emit bookWordCount(this->parentSize(currentElement));
+        emit actWordCount(this->size(currentElement));
         emit chapterWordCount(-1);
         emit sceneWordCount(-1);
     }
     else if(currentElement.tagName() == "chapter"){
 
+        if(parentElement(currentElement).tagName() == "book"){
         m_projectWordCount = this->parentSize(parentElement(currentElement));
-
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->parentSize(currentElement));
+        }
+        else if(parentElement(currentElement).tagName() == "act"){
+            m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
+            emit projectWordCount(m_projectWordCount);
+            emit bookWordCount(this->parentSize(parentElement(currentElement)));
+        emit actWordCount(this->parentSize(currentElement));
+        }
         emit chapterWordCount(this->size(currentElement));
         emit sceneWordCount(-1);
 
     }
     else if(currentElement.tagName() == "scene"){
 
+        if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
         m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
 
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->parentSize(parentElement(currentElement)));
+        }
+        else  if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+            m_projectWordCount = this->parentSize(parentElement(parentElement(parentElement(currentElement))));
+            emit projectWordCount(m_projectWordCount);
+
+            emit bookWordCount(this->parentSize(parentElement(parentElement(currentElement))));
+            emit actWordCount(this->parentSize(parentElement(currentElement)));
+        }
+
         emit chapterWordCount(this->parentSize(currentElement));
         emit sceneWordCount(this->size(currentElement));
 
     }
+    else if(currentElement.tagName() == "separator"){
 
+        if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+        m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
+
+        emit projectWordCount(m_projectWordCount);
+        emit bookWordCount(this->parentSize(parentElement(currentElement)));
+        }
+        else  if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+            m_projectWordCount = this->parentSize(parentElement(parentElement(parentElement(currentElement))));
+            emit projectWordCount(m_projectWordCount);
+
+            emit bookWordCount(this->parentSize(parentElement(parentElement(currentElement))));
+            emit actWordCount(this->parentSize(parentElement(currentElement)));
+        }
+
+        emit chapterWordCount(this->parentSize(currentElement));
+        emit sceneWordCount(-1);
+
+    }
 
 
 

@@ -434,6 +434,7 @@ void FullTextZone::cursorPositionChangedSlot()
     if (QApplication::mouseButtons() == Qt::NoButton) {
         centerCursor();
     }
+    emit cursorPositionChangedSignal(this->textCursor().position());
 }
 
 

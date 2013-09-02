@@ -531,6 +531,7 @@ QString Utils::projectRealName(QString fileName)
 
     infoFile->remove();
 
+    delete infoFile;
 
     return realName;
 }
@@ -589,6 +590,29 @@ QString Utils::parseHtmlText(QString htmlText)
 
 
 
+
+
+
+
+}
+
+void Utils::applyAttributeRecursively(QDomElement element, QString attribute, QString value)
+{
+    if(element.isNull())
+        return;
+
+
+    element.setAttribute(attribute, value);
+    applyAttributeRecursively(element.firstChild().toElement(), attribute, value);
+
+    QDomElement parentElement = element.parentNode().toElement();
+    QDomElement nextElement = element;
+
+    for(int i = 0 ; i < parentElement.childNodes().size() ; ++i ){
+        nextElement = nextElement.nextSibling().toElement();
+        applyAttributeRecursively(nextElement, attribute, value);
+
+    }
 
 
 

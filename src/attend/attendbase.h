@@ -47,6 +47,7 @@ public:
     explicit AttendBase(QWidget *parent = 0);
     ~AttendBase();
     void startAttendance();
+    void stopAttendance();
 
 signals:
 

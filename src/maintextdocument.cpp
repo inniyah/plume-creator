@@ -1,11 +1,10 @@
 #include "maintextdocument.h"
 
 MainTextDocument::MainTextDocument(QObject *parent) :
-    QTextDocument(parent), m_cursorPos(0)
+    QTextDocument(parent), m_cursorPos(0), isWordCountEnabled(false)
 {
 
     wordCountEngine = new WordCountEngine(this, this);
-    connect(wordCountEngine,SIGNAL(wordCountChanged(int)), this, SLOT(wordCountChangedSlot(int)));
 
     highlighter = new TextHighlighter(this);
 }
@@ -45,13 +44,24 @@ void MainTextDocument::setCursorPos(int pos)
 {
     m_cursorPos = pos;
 }
+//-------------------------------------------------------------
 
+void MainTextDocument::connectWordCount()
+{
+    connect(wordCountEngine,SIGNAL(wordCountChanged(int)), this, SLOT(wordCountChangedSlot(int)), Qt::UniqueConnection);
+isWordCountEnabled = true;
+}
+void MainTextDocument::disconnectWordCount()
+{
+    disconnect(wordCountEngine,SIGNAL(wordCountChanged(int)), this, SLOT(wordCountChangedSlot(int)));
+    isWordCountEnabled = false;
+
+}
 //-------------------------------------------------------------
 
 void MainTextDocument::wordCountChangedSlot(int count)
 {
-//    qDebug() << "wordCountChanged : " << this->docType();
-//    qDebug() << "wordCountChanged : " << QString::number(count);
+    if(isWordCountEnabled)
     emit wordCountChanged(this->docType(), this->idNumber(), count);
 }
 

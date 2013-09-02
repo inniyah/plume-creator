@@ -196,15 +196,23 @@ void AttendAbstractModel::resetDomDoc()
     treeGroupItemList = new QList<AttendTreeItem *>;
     treeObjectItemList = new QList<AttendTreeItem *>;
 
-    root = hub->attendTreeDomDoc().documentElement().toElement();
-    parseFolderElement(hub->attendTreeDomDoc().documentElement());
+    root = domDoc.documentElement().toElement();
+    parseFolderElement(domDoc.documentElement());
 
-hub->set_attendTree_domElementForNumberHash(domElementForNumber);
+    hub->set_attendTree_domElementForNumberHash(domElementForNumber);
 
 
 }
 
+QDomDocument AttendAbstractModel::getDomDocument()
+{
+    return domDoc;
+}
 
+void AttendAbstractModel::setDomDocument(QDomDocument domDocument)
+{
+    domDoc = domDocument;
+}
 
 void AttendAbstractModel::parseFolderElement(const QDomElement &element)
 {

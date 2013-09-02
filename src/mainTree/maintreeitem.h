@@ -17,47 +17,96 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Plume Creator.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef OUTLINERTREEITEM_H
-#define OUTLINERTREEITEM_H
+#ifndef MAINTREEITEM_H
+#define MAINTREEITEM_H
 
 #include <QString>
 #include <QVariant>
+#include <QModelIndex>
 
-#include "hub.h"
 
 
-class OutlinerTreeItem
+
+class MainTreeItem
 {
 public:
-    OutlinerTreeItem(const QList<QVariant> &data, OutlinerTreeItem *parent = 0);
-    ~OutlinerTreeItem();
 
-    void appendChild(OutlinerTreeItem *child);
 
-    OutlinerTreeItem *child(int row);
+    enum Tree {
+           DockedTree = 0x0,
+           Outliner = 0x1,
+           Exporter = 0x2
+       };
+       Q_DECLARE_FLAGS(Trees, Tree)
+
+
+
+
+
+
+
+    MainTreeItem(const QList<QVariant> &data, MainTreeItem *parent = 0);
+    ~MainTreeItem();
+
+    void appendChild(MainTreeItem *child);
+
+    MainTreeItem *child(int row);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
   QList<QVariant>* dataList();
   int row() const;
-    OutlinerTreeItem *parent();
+    MainTreeItem *parent();
     int idNumber() const;
     void setIdNumber(int number);
-    bool isExpanded() const;
-    void setIsExpanded(bool isExpandedBool);
+
+    bool isExpanded(MainTreeItem::Trees trees  = MainTreeItem::DockedTree) const;
+    void setIsExpanded(bool isExpandedBool, MainTreeItem::Trees trees  = MainTreeItem::DockedTree);
+
+    void setType(QString type);
+    QString type();
+    QList<MainTreeItem *> childrenItems();
+    MainTreeItem *parentItem() const;
+    void setParentItem(MainTreeItem *parentItem);
+
+    bool isTrashed() const;
+    void setIsTrashed(bool value);
+
+    int status() const;
+    void setStatus(int value);
+
+    QString badge() const;
+    void setBadge(const QString &value);
+
+    Qt::CheckState checkState() const;
+    void setCheckState(const Qt::CheckState &checkState);
+
+
+
+    QModelIndex index() const;
+    void setIndex(const QModelIndex &index);
 
 public slots:
-    void setHub(Hub *varHub){hub = varHub;}
+
 
 private:
-    Hub *hub;
-   QList<OutlinerTreeItem*> childItems;
+
+    QList<MainTreeItem*> childItems;
     QList<QVariant> itemData;
-    OutlinerTreeItem *parentItem;
+    MainTreeItem *m_parentItem;
     int itemId;
     QStringList m_povList;
-    bool m_isExpanded;
+    bool m_isExpandedInDockedTree;
+    bool m_isExpandedInOutliner;
+    bool m_isExpandedInExporter;
+    QString m_type;
+    bool m_isTrashed;
+    int m_status;
+    QString m_badge;
+    Qt::CheckState m_checkState;
+    QModelIndex m_index;
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(MainTreeItem::Trees)
 
-#endif // OUTLINERTREEITEM_H
+#endif // MAINTREEITEM_H

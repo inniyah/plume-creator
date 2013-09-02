@@ -34,6 +34,8 @@
 #include "editmenu.h"
 #include "wordgoalprogressbar.h"
 #include "fulltextzone.h"
+#include "dockedTree/dockedtreeproxy.h"
+#include "mainTree/maintreeabstractmodel.h"
 
 namespace Ui {
 class FullscreenEditor;
@@ -47,7 +49,6 @@ public:
     explicit FullscreenEditor(QWidget *parent = 0);
     ~FullscreenEditor();
     void postConstructor();
-    void openBySheetNumber(int number);
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -57,13 +58,18 @@ signals:
     void closeSignal();
     void manageStylesSignal();
     void newSheetSignal(int number);
+    void openSheetOnMainWindow(int sheetNumber = 0, int textCursorPos = 0, int noteCursorPos = 0, int synCursorPos = 0);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
+    void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
+
     void setTimer(QString);
     void applyConfig();
+    void saveConfig();
   void setTextStyles(TextStyles *styles){textStyles = styles;}
     void resetFullscreenTextWidthSlot();
+    void openBySheetNumber(int number);
 
 private slots:
 
@@ -96,8 +102,11 @@ private slots:
     void zoomIn();
     void zoomOut();
 
-    void cursorPositionChangedSlot();
+    void cursorPositionChangedSlot();   
     void changeTextStyleSlot(int styleIndex);
+    void noteCursorPositionChangedSlot(int position);
+    void synCursorPositionChangedSlot(int position);
+
 
     void restoreDoc();
     void wordCountChangedSlot(QString type, int id, int count);
@@ -105,8 +114,11 @@ private slots:
     void on_newButton_clicked();
     void on_nextButton_clicked();
     void on_prevButton_clicked();
-    void on_navigatorComboBox_currentIndexChanged(const int index);
 
+
+    void on_treeButton_toggled(bool checked);
+    void setTreeViewVisible(bool isVisible);
+    void createTreeView();
 
 private:
     void setText(MainTextDocument *doc);
@@ -117,6 +129,7 @@ private:
     void setNoteCursorPos(int pos);
     void resetNavigatorTree();
     Hub *hub;
+    MainTreeAbstractModel  *absTreeModel;
     Ui::FullscreenEditor *ui;
     MainTextDocument *clonedDoc, *clonedSynDoc, *clonedNoteDoc;
 
@@ -142,6 +155,8 @@ QWidget *synWidget,*noteWidget;
 
     QTimer *mouseTimer;
 
+    bool firstLaunch;
+int currentCursorPos, currentNoteCursoPos, currentSynCursoPos;
 
     // style sheets
     QString backColorString,
@@ -150,7 +165,6 @@ QWidget *synWidget,*noteWidget;
     addOnColorString;
 
     int baseWordCount;
-
 
 
     // navigator :

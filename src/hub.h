@@ -108,6 +108,10 @@ public:
 
     void showStatusBarMessage(QString string = "", int time = 3000);
 
+    MainTextDocument *prevText(int num);
+    MainTextDocument *nextText(int num);
+    void saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number);
+
 protected:
     void timerEvent(QTimerEvent *event);
 
@@ -117,13 +121,14 @@ signals:
 
     void mainTree_fileForDocHashChanged();
     void mainTree_numForDocHashChanged();
+    void mainTree_numForDocHashChanged(QHash<MainTextDocument *, int> numForDoc);
     void mainTree_domElementForNumberHashChanged();
 
     void attendTree_fileForDocHashChanged();
     void attendTree_numForDocHashChanged();
     void attendTree_domElementForNumberHashChanged();
 
-    void openProjectSignal(QFile *file);
+    void openProjectSignal();
     void closeProjectSignal();
 
     void currentSheetNumberChanged(int currentSheetNumber);
@@ -138,6 +143,7 @@ signals:
     //    wordCount :
     void projectWordCount(int count);
     void bookWordCount(int count);
+    void actWordCount(int count);
     void chapterWordCount(int count);
     void sceneWordCount(int count);
     void currentSheetWordCount(int count);
@@ -176,6 +182,7 @@ private:
     QHash<MainTextDocument *, QFile *> m_mainTree_fileForDocHash;
     QHash<MainTextDocument *, int> m_mainTree_numForDocHash;
     QHash<int, QDomElement> m_mainTree_domElementForNumberHash;
+
 
     QDomDocument m_infoTreeDomDoc;
 

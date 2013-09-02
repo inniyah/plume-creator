@@ -2,7 +2,7 @@
 #include "JlCompress.h"
 
 FileUpdater::FileUpdater(QWidget *parent) :
-    QWidget(parent), attendVersion("0.6"), treeVersion("0.3"), infoVersion("0.3")
+    QWidget(parent), attendVersion("0.6"), treeVersion("0.5"), infoVersion("0.3")
 {
 
 }
@@ -473,6 +473,43 @@ void FileUpdater::updateTreeFile()
         //        qDebug() << domDocument.toByteArray(3);
     }
     if(oldVersion == "0.3"){
+
+        newDomDocument = treeDomDocument;
+        QDomNode newRoot = newDomDocument.documentElement();
+        newRoot.toElement().setAttribute("version", "0.4");
+
+        QDomNodeList list = newRoot.toElement().elementsByTagName("separator");
+        int number = 10001;
+
+        for(int i = 0 ; i < list.size(); ++i){
+            list.at(i).toElement().setAttribute("number", number);
+        number += 1;
+             }
+
+        treeDomDocument = newDomDocument;
+        oldVersion = "0.4";
+
+
+    }
+    if(oldVersion == "0.4"){
+
+        newDomDocument = treeDomDocument;
+        QDomElement newRoot = newDomDocument.documentElement().toElement();
+        newRoot.setAttribute("version", "0.5");
+
+
+                QDomElement trash = newDomDocument.createElement("trash");
+                trash.setTagName("trash");
+                trash.setAttribute("name", "");
+                trash.setAttribute("number", "20000");
+                newRoot.appendChild(trash);
+
+
+        treeDomDocument = newDomDocument;
+        oldVersion = "0.5";
+
+    }
+    if(oldVersion == "0.5"){
 
         //        future updates
 

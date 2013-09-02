@@ -1,4 +1,4 @@
-#include "exporter.h"
+#include "exporter/exporter.h"
 #include "ui_exporter.h"
 
 //
@@ -36,12 +36,13 @@ Exporter::Exporter(QString mode, QWidget *parent) :
     dialogMode = mode;
 
 
-    if(dialogMode == "export")
+    if(dialogMode == "export"){
         setWindowTitle(tr("Export Dialog"));
-    if(dialogMode == "print")
+    }
+        if(dialogMode == "print"){
         setWindowTitle(tr("Print Dialog"));
-
-
+ui->stackedWidget->setCurrentIndex(0);
+}
 
     ui->fileNameLineEdit->setValidator(new QRegExpValidator(QRegExp("[^\x002F\\\\:\x002A\?\x0022<>|]+"), ui->fileNameLineEdit));
 
@@ -67,9 +68,22 @@ Exporter::Exporter(QString mode, QWidget *parent) :
 
     if(dialogMode == "print")
     {
-        ui->buttonBox = new QDialogButtonBox(this);
-        ui->buttonBox->addButton(QDialogButtonBox::Cancel);
-        ui->buttonBox->addButton(tr("Print"), QDialogButtonBox::AcceptRole);
+        QWidget *widget = new QWidget;
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout->addWidget(ui->buttonBox);
+        widget->setLayout(layout);
+        delete widget;
+
+        QDialogButtonBox *box = new QDialogButtonBox(this);
+        QPushButton *cancelBut = box->addButton(QDialogButtonBox::Cancel);
+        QPushButton *acceptBut = box->addButton(tr("Print"), QDialogButtonBox::AcceptRole);
+    ui->verticalLayout->addWidget(box);
+
+
+    connect(cancelBut, SIGNAL(clicked()), this, SLOT(close()));
+    connect(acceptBut, SIGNAL(clicked()), this, SLOT(accept()));
+
+
     }
 
     connect(ui->previewPushButton, SIGNAL(clicked()), this, SLOT(seePreview()));
@@ -121,7 +135,7 @@ void Exporter::accept()
             this->exportInPDF();
         }
         else
-            exportDoc();
+            this->exportDoc();
         QApplication::restoreOverrideCursor();
 
 
@@ -132,7 +146,7 @@ void Exporter::accept()
 
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        print();
+        this->print();
         QApplication::restoreOverrideCursor();
 
 
@@ -174,47 +188,18 @@ void Exporter::setExistingDirectory()
 
 void Exporter::createTree()
 {
-    ui->tree->setHeaderHidden(true);
-    ui->tree->setExpandsOnDoubleClick(false);
-    ui->tree->setAutoExpandDelay(1000);
-    ui->tree->setAnimated(true);
-
-    folderIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
-                         QIcon::Normal, QIcon::Off);
-    folderIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirOpenIcon),
-                         QIcon::Normal, QIcon::On);
-    sceneIcon.addPixmap(style()->standardPixmap(QStyle::SP_FileIcon));
+    proxy = new ExporterTreeProxy;
+    proxy->setHub(hub);
+    proxy->setSourceModel(absTreeModel);
+    ui->tree->setHub(hub);
+    ui->tree->setMainTreeAbstractModel(absTreeModel);
+    ui->tree->setModel(proxy);
+    ui->tree->applySettingsFromData();
 
 
-
-    ui->tree->setContextMenuPolicy(Qt::PreventContextMenu);
-
-    read();
-
-    connect(ui->tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(itemClickedSlot(QTreeWidgetItem*,int)));
 
 }
 
-//-----------------------------------------------------------------------------------
-
-bool Exporter::read()
-{
-
-
-    domDocument = hub->mainTreeDomDoc();
-    root = domDocument.documentElement();
-
-
-    buildTree();
-
-
-    setEnabled(true);
-
-
-
-
-    return true;
-}
 
 
 
@@ -223,162 +208,9 @@ bool Exporter::read()
 void Exporter::closeTree()
 {
 
-    ui->tree->clear();
 
 
 }
-
-//---------------------------------------------------------------------------------------
-
-
-
-void Exporter::parseFolderElement(const QDomElement &element,
-                                  QTreeWidgetItem *parentItem)
-{
-    QTreeWidgetItem *item = createItem(element, parentItem);
-
-    QString title = element.attribute("name");
-    if (title.isEmpty())
-        title = QObject::tr("XML problem : parseFolderElement(const QDomElement &element, QTreeWidgetItem *parentItem)");
-
-    ui->tree->setItemExpanded(item, true);
-    item->setFlags( Qt::ItemIsSelectable /*| Qt::ItemIsEditable*/ | Qt::ItemIsUserCheckable | Qt::ItemIsTristate | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
-    item->setIcon(0, folderIcon);
-    item->setText(0, title);
-    item->setCheckState(0, Qt::Checked);
-
-
-    QDomElement child = element.firstChildElement();
-    while (!child.isNull()) {
-        if (child.tagName() == "book") {
-            item->flags();
-            parseFolderElement(child, item);
-
-        } else if (child.tagName() == "chapter") {
-            item->setFlags( item->flags());
-            parseFolderElement(child, item);
-
-
-        } else if (child.tagName() == "scene") {
-            QTreeWidgetItem *childItem = createItem(child, item);
-
-            QString title = child.attribute("name");
-            if (title.isEmpty())
-                title = QObject::tr("XML problem");
-
-
-            childItem->setFlags(item->flags());
-            childItem->setIcon(0, sceneIcon);
-            childItem->setText(0, title);
-            childItem->setCheckState(0, Qt::Checked);
-
-        }
-
-        else if (child.tagName() == "separator") {
-            QTreeWidgetItem *childItem = createItem(child, item);
-            childItem->setFlags(item->flags());
-            childItem->setText(0, "             " + QString(10, 0xB7));
-            childItem->setCheckState(0, Qt::Checked);
-        }
-        child = child.nextSiblingElement();
-    }
-
-
-}
-
-
-//-----------------------------------------------------------------------------------
-
-QTreeWidgetItem *Exporter::createItem(const QDomElement &element,
-                                      QTreeWidgetItem *parentItem)
-{
-    QTreeWidgetItem *item;
-    if (parentItem) {
-        item = new QTreeWidgetItem(parentItem);
-    } else {
-        item = new QTreeWidgetItem(ui->tree);
-    }
-    domElementForItem.insert(item, element);
-
-    int number = element.attribute("number").toInt();
-    domElementForNumber[number] = element;
-    return item;
-}
-
-
-//------------------------------------------------------------------------------------
-
-void Exporter::buildTree()
-{
-
-
-
-
-    ui->tree->clear();
-
-
-    QDomElement child = root.firstChildElement("book");
-    while (!child.isNull()) {
-        parseFolderElement(child);
-        child = child.nextSiblingElement("book");
-    }
-
-
-}
-
-//------------------------------------------------------------------------------------
-
-void Exporter::itemClickedSlot(QTreeWidgetItem* item, int column)
-{
-    Qt::CheckState state = item->checkState(0);
-
-    if(state == Qt::Unchecked){
-        //       qDebug() << "Unchecked ----------------";
-
-
-
-        int i = item->childCount()-1;
-        int j;
-        while(i != -1 && item->childCount() != 0){
-            item->child(i)->setCheckState(0, Qt::Unchecked);
-
-            j = item->child(i)->childCount()-1;
-            while(j != -1 && item->childCount() != 0){
-                item->child(i)->child(j)->setCheckState(0, Qt::Unchecked);
-                j -= 1;
-            }
-
-            i -= 1;
-        }
-
-
-
-    }
-
-    if(state == Qt::Checked){
-        //       qDebug() << "Checked ----------------";
-
-
-        int i = item->childCount()-1;
-        int j;
-        while(i != -1 && item->childCount() != 0){
-            item->child(i)->setCheckState(0, Qt::Checked);
-
-            j = item->child(i)->childCount()-1;
-            while(j != -1 && item->childCount() != 0){
-                item->child(i)->child(j)->setCheckState(0, Qt::Checked);
-                j -= 1;
-            }
-
-            i -= 1;
-        }
-
-
-    }
-}
-
-
-
 
 
 
@@ -388,17 +220,16 @@ void Exporter::itemClickedSlot(QTreeWidgetItem* item, int column)
 
 QTextDocument * Exporter::buildFinalDoc()
 {
-    //search for checked QTreeWidgetItems :
+    //search for checked items :
 
-    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(ui->tree, QTreeWidgetItemIterator::Checked);
-    QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
+    QDomDocument domDoc = hub->mainTreeDomDoc();
+    root = domDoc.documentElement();
 
+    QList<QDomElement> itemList = searchForCheckedItems(root);
 
-    while(iterator->operator *() != 0){
-        itemList->append(iterator->operator *());
-        iterator->operator ++();
+    if(itemList.size() == 0)
+        return new QTextDocument();
 
-    }
 
     // set up the progress bar :
     QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -409,7 +240,7 @@ QTextDocument * Exporter::buildFinalDoc()
     progressLayout->addWidget(progressBar);
     progressWidget->setLayout(progressLayout);
 
-    progressBar->setMaximum(itemList->size());
+    progressBar->setMaximum(itemList.size());
     progressBar->setValue(progressValue);
     progressWidget->show();
 
@@ -425,8 +256,8 @@ QTextDocument * Exporter::buildFinalDoc()
 
 
 
-    for(int i = 0; i < itemList->size(); ++i){
-        QDomElement element = domElementForItem.value(itemList->at(i));
+    for(int i = 0; i < itemList.size(); ++i){
+        QDomElement element = itemList.at(i);
         QTextCursor *tCursor = new QTextCursor(textDocument);
 
         QTextBlockFormat blockFormatLeft;
@@ -445,7 +276,7 @@ QTextDocument * Exporter::buildFinalDoc()
 
         if(element.tagName() != "separator"){
 
-
+            qDebug() << "element name : "+ element.attribute("name");
             MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
             MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
             MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
@@ -468,6 +299,15 @@ QTextDocument * Exporter::buildFinalDoc()
                 tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
                 tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
+                edit->append("<br>");
+
+            }
+            if(element.tagName() == "act"){
+                edit->append("<br>");
+                edit->append("<br>");
+                edit->append("<h2>" + element.attribute("name", "") + "</h2>");
+                tCursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor,1);
+                tCursor->mergeBlockFormat(blockFormatCenter);
                 edit->append("<br>");
 
             }
@@ -582,6 +422,46 @@ QTextDocument * Exporter::buildFinalDoc()
     return textDocument;
 }
 
+//-----------------------------------------------------------------
+
+QList<QDomElement> Exporter::searchForCheckedItems(QDomElement element)
+{
+    QList<QDomElement> list;
+
+    if(element.tagName() == "plume-tree"){
+        for(int i = 0 ; i < element.childNodes().size() ; ++i)
+            list.append(searchForCheckedItems(element.childNodes().at(i).toElement()));
+
+    }
+    else if(element.attribute("exporterCheckState", "2").toInt() != 0){
+
+
+
+        if(element.tagName() == "trash")
+            return list;
+
+
+
+
+        list.append(element);
+
+        if(!element.hasChildNodes())
+            return list;
+
+
+        for(int i = 0 ; i < element.childNodes().size() ; ++i)
+            list.append(searchForCheckedItems(element.childNodes().at(i).toElement()));
+
+
+
+    }
+    return list;
+}
+
+
+
+
+//-----------------------------------------------------------------
 void Exporter::exportDoc()
 {
 
@@ -906,20 +786,15 @@ void Exporter::exportInPDF()
 void Exporter::exportInCSV()
 {
 
-    QList<QStringList> bigList;
+    //search for checked items :
 
-    QHash<int, QDomElement> m_attendTree_domElementForNumberHash = hub->attendTree_domElementForNumberHash();
+    QDomDocument domDoc = hub->mainTreeDomDoc();
+    root = domDoc.documentElement();
 
+    QList<QDomElement> itemList = searchForCheckedItems(root);
 
-    QTreeWidgetItemIterator *iterator = new QTreeWidgetItemIterator(ui->tree, QTreeWidgetItemIterator::Checked);
-    QList<QTreeWidgetItem *> *itemList = new QList<QTreeWidgetItem *>;
-
-
-    while(iterator->operator *() != 0){
-        itemList->append(iterator->operator *());
-        iterator->operator ++();
-
-    }
+    if(itemList.size() == 0)
+        return;
 
     // set up the progress bar :
     QWidget *progressWidget = new QWidget(this, Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -930,9 +805,12 @@ void Exporter::exportInCSV()
     progressLayout->addWidget(progressBar);
     progressWidget->setLayout(progressLayout);
 
-    progressBar->setMaximum(itemList->size());
+    progressBar->setMaximum(itemList.size());
     progressBar->setValue(progressValue);
     progressWidget->show();
+
+
+    QList<QStringList> bigList;
 
 
     QStringList headers;
@@ -953,14 +831,16 @@ void Exporter::exportInCSV()
 
     bigList.append(headers);
 
-    while(!itemList->isEmpty()){
+    while(!itemList.isEmpty()){
         QStringList line;
         QString title, type, syn, note, wordCount, pov;
 
-        QDomElement element = domElementForItem.value(itemList->takeFirst());
+        QDomElement element = itemList.takeFirst();
         title = element.attribute("name", "error");
         if(element.tagName() == "book")
             type = tr("book");
+        else if(element.tagName() == "act")
+            type = tr("act");
         else if(element.tagName() == "chapter")
             type = tr("chapter");
         else if(element.tagName() == "scene")
@@ -995,7 +875,7 @@ void Exporter::exportInCSV()
         objectsList.removeOne(0);
 
         foreach(const int &number, objectsList)
-            pov += m_attendTree_domElementForNumberHash.value(number).attribute("name", "error") + ", ";
+            pov += hub->attendTree_domElementForNumberHash().value(number).attribute("name", "error") + ", ";
         pov.chop(2);
 
 
@@ -1060,7 +940,7 @@ void Exporter::exportInCSV()
     bool opened = textFile->open(QFile::ReadWrite | QFile::Text| QFile::Truncate);
 
     QByteArray array;
-//    array.append(finalString);
+    //    array.append(finalString);
     textFile->write(finalString.toUtf8());
 
     textFile->close();
@@ -1103,9 +983,11 @@ void Exporter::applyConfig()
     QSettings settings;
     settings.beginGroup("Exporter");
     ui->pathLineEdit->setText(settings.value("path", QDir::toNativeSeparators(QDir::homePath())).toString());
+    if(dialogMode == "export"){
     ui->fileTypeComboBox->setCurrentIndex(0); // shake
     ui->fileTypeComboBox->setCurrentIndex(1);// shake
     ui->fileTypeComboBox->setCurrentIndex(settings.value("fileType", 0).toInt());
+    }
     ui->storyCheckBox->setChecked(settings.value("story", true).toBool());
     ui->synopsisCheckBox->setChecked(settings.value("syn", true).toBool());
     ui->notesCheckBox->setChecked(settings.value("notes", true).toBool());

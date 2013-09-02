@@ -1,10 +1,32 @@
 PLUME CREATOR
 
 v 0.62
+	- new Project tree :
+		- "act" level added
+		- new icons
+		- drag / drop faster
+		- new right-click menu
+		- trash added
+		- new "badges" in right-click menu
+	- Outliner :
+		- "Outliner becomes "Workbench"
+		- drag / drop added
+		- new right-click menu
+		- new "badges" column
+		- new "status" column
+	- Fullscreen :
+		- new tree navigator
+		- fix : cursor position isn't saved when quitting fullscreen
+	- bug fixed : outliner doesn’t launch when no sheet is opened
 	- better copy / paste
+	- added "Copy unformatted" to the right-click menu
 	- Bug fixed : text had an underground color when pasted from internet 
 	- Quazip updated
+	- zip files ".plume" are cleaned of intruders before compressing
 	- Portuguese (Brazil) language added
+	- fix : PoV column in Outliner displays sometimes HTML.
+	- exporter updated to the new project tree system
+	
 
 v 0.61
 	- Added colors

@@ -33,6 +33,10 @@
 #endif
 
 #include "hub.h"
+#include "mainTree/maintreeabstractmodel.h"
+#include "exporter/exportertreeproxy.h"
+
+
 namespace Ui {
 class Exporter;
 }
@@ -52,6 +56,7 @@ signals:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
+    void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
 
 private slots:
     void setExistingDirectory();
@@ -59,11 +64,8 @@ private slots:
     void closePreview(){previewDialog->close();}
     //tree :
     void createTree();
-    bool read();
+    QList<QDomElement> searchForCheckedItems(QDomElement element);
     void closeTree();
-    void buildTree();
-    void itemClickedSlot(QTreeWidgetItem* item, int column);
-
     void exportInCSV();
     void exportInPDF();
 
@@ -78,6 +80,8 @@ private:
     void saveConfig();
 
     Hub *hub;
+    MainTreeAbstractModel  *absTreeModel;
+    ExporterTreeProxy *proxy;
     Ui::Exporter *ui;
 
 
@@ -88,10 +92,6 @@ private:
 
     //tree :
 
-    void parseFolderElement(const QDomElement &element,
-                            QTreeWidgetItem *parentItem = 0);
-    QTreeWidgetItem *createItem(const QDomElement &element,
-                                QTreeWidgetItem *parentItem = 0);
 
     QDomDocument domDocument;
     QDomElement root;

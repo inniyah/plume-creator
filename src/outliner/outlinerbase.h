@@ -28,8 +28,12 @@
 #include <QDomDocument>
 
 #include "hub.h"
-#include "outliner/outlinerabstractmodel.h"
 #include "outliner/outlinerspreadsheet.h"
+#include "outliner/outlinerspreadsheetproxy.h"
+#include "mainTree/maintreeabstractmodel.h"
+#include "outliner/outlineritemnotedelegate.h"
+#include "outliner/outlineritempovdelegate.h"
+#include "outliner/outlineritemstatusdelegate.h"
 
 class OutlinerBase : public QWidget
 
@@ -37,9 +41,12 @@ class OutlinerBase : public QWidget
     Q_OBJECT
 public:
     explicit OutlinerBase(QWidget *parent = 0);
+    void postConstructor();
+    QList<QAction *> toolButtons();
+    QWidget *spreadsheetWidget();
 
 protected:
-    void closeEvent(QCloseEvent *event);
+//    void closeEvent(QCloseEvent *event);
 
 signals:
     void toSpreadsheetSignal(bool spreadsheetSignal);
@@ -50,21 +57,15 @@ signals:
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
+    void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
+
     void saveConfig();
-    void applyConfig();
-void showOutliner();
+//void showOutliner();
 void updateOutliner();
 
-// for domDocument :
-void mtoO_setDomDoc(QDomDocument domDoc);
 
 // for textDocument :
 void mtoO_setNumForDoc(QHash<MainTextDocument *, int> numForDoc);
-
-//for attendances :
-void mtoO_updateAttendances(QHash<int, QString> attendStringForNumber);
-void mtoO_setProjectAttendanceList(QHash<QListWidgetItem *, QDomElement> domElementForItem_, QHash<int, QDomElement> domElementForItemNumber_);
-
 
 
 private slots:
@@ -74,20 +75,16 @@ private slots:
 
 void moveViewTo(int hBarValue, int vBarValue);
 
-    //for attendance :
-    QList<QListWidgetItem *> sortAttendItems(QList<int> attend, QString sorting = "nothing");
-    QListWidgetItem *attendSeparator(QString separatorName);
-    QList<QListWidgetItem *> openSheetAttendList(int number ,QString attendString);
-
-
 
 private:
     Hub *hub;
-    QVBoxLayout *zoneLayout;
-    bool spreadsheetMode;
-QAction *shiftToSpreadsheetAct, *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct, *resetAct;
+    MainTreeAbstractModel  *absTreeModel;
+OutlinerSpreadheetProxy *proxy;
 
-OutlinerAbstractModel *absModel;
+    bool spreadsheetMode;
+QAction *expandSpreadsheetAct, *shrinkSpreadsheetAct, *moveUpAct, *moveDownAct, *resetAct;
+
+
 OutlinerSpreadsheet *spreadsheet;
 
 QString lastOpened;

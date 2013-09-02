@@ -78,5 +78,11 @@
         <file>pics/zoom-previous-90.png</file>
         <file>pics/folder-documents.png</file>
         <file>pics/text-field.png</file>
+        <file>pics/tree/tree-act.png</file>
+        <file>pics/tree/tree-book.png</file>
+        <file>pics/tree/tree-book-expanded.png</file>
+        <file>pics/tree/tree-chapter.png</file>
+        <file>pics/tree/tree-scene.png</file>
+        <file>pics/tree/tree-trash.png</file>
     </qresource>
 </RCC>

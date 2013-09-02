@@ -6,7 +6,7 @@
 #include "textzone.h"
 //
 TextZone::TextZone(QWidget *parent) :
-    QTextEdit(parent)
+    QTextEdit(parent), forceCopyWithoutFormatting(false)
 {
 
 }
@@ -28,7 +28,7 @@ TextZone::~TextZone()
 
 void TextZone::createContent()
 {
-//    sounds = new Sounds(this);
+    //    sounds = new Sounds(this);
 
 
     this->setAttribute(Qt::WA_KeyCompression, true);
@@ -93,6 +93,14 @@ void TextZone::createActions()
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
+
+    pasteWithoutFormattingAct = new QAction(QIcon(":/pics/edit-paste.png"),tr("&Paste Unformatted"), this);
+    pasteWithoutFormattingAct->setStatusTip(tr("Paste without formatting the clipboard's contents into the current "
+                                               "selection"));
+    QList<QKeySequence> klist;
+    klist.append(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_V));
+    pasteWithoutFormattingAct->setShortcuts(klist);
+    connect(pasteWithoutFormattingAct, SIGNAL(triggered()), this, SLOT(pasteWithoutFormatting()));
 
     boldAct = new QAction(QIcon(":/pics/format-text-bold.png"),tr("&Bold"), this);
     boldAct->setCheckable(true);
@@ -207,8 +215,13 @@ void TextZone::paste()
 {
     QTextEdit::paste();
 }
+void TextZone::pasteWithoutFormatting()
+{
+    forceCopyWithoutFormatting = true;
+    QTextEdit::paste();
+    forceCopyWithoutFormatting = false;
 
-
+}
 void TextZone::bold(bool boldBool)
 {
     if(boldBool){
@@ -305,6 +318,7 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(cutAct);
     menu.addAction(copyAct);
     menu.addAction(pasteAct);
+    menu.addAction(pasteWithoutFormattingAct);
     menu.addSeparator();
     menu.addAction(undoAct);
     menu.addAction(redoAct);
@@ -447,7 +461,7 @@ void TextZone::createEditWidget()
 
 void TextZone::keyPressEvent(QKeyEvent *event)
 {
-//    sounds->startSoundKeyAny();
+    //    sounds->startSoundKeyAny();
 
 
     if(event->matches(QKeySequence::Italic))
@@ -498,7 +512,7 @@ void TextZone::cursorPositionChangedSlot()
     }
 
 
-emit cursorPositionChanged(this->textCursor().position());
+    emit cursorPositionChanged(this->textCursor().position());
 }
 
 
@@ -545,7 +559,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
     }
 
-    if(source->hasHtml()){
+    if(source->hasHtml() && !forceCopyWithoutFormatting){
         QString sourceString = qvariant_cast<QString>(source->html());
 
 
@@ -580,7 +594,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         qDebug() << "insertFromMimeData Html";
 
     }
-    else if(source->hasText()){
+    else if(source->hasText() || forceCopyWithoutFormatting){
         QTextDocument *document = new QTextDocument;
         document->setPlainText(qvariant_cast<QString>(source->text()));
 

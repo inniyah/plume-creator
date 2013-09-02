@@ -15,6 +15,7 @@ TextTab::TextTab(QWidget *parent) :
     ui->setupUi(this);
 
 
+
     prevTextDocument = new MainTextDocument(this);
     textDocument = new MainTextDocument(this);
     nextTextDocument = new MainTextDocument(this);
@@ -77,7 +78,7 @@ ui->textZone->verticalScrollBar()->hide();
 
 
     QList<int> sizesList;
-    sizesList << 0 << ui->textZone->height()  << 0;
+    sizesList << 0 << ui->textZoneWidget->height()  << 0;
     ui->splitter->setSizes(sizesList);
 
 
@@ -151,9 +152,13 @@ bool TextTab::openText(MainTextDocument *doc)
     QApplication::processEvents();
     ui->textZone->document()->adjustSize();
 
-
+// slim find replace :
 
     this->addSlimFindReplaceAction();
+    ui->findReplace->setDocument(textDocument);
+    ui->findReplace->setHub(hub);
+    ui->findReplace->setTextEdit(ui->textZone);
+ui->findReplace->hide();
 
     connect(ui->textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
     connect(ui->textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -295,6 +300,7 @@ void TextTab::setTextFocus()
 //-------------------------------------------------------------------------------
 void TextTab::setCursorPos(int pos)
 {
+    ui->textZone->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
     for(int i = 0; i < pos ; i++)
         ui->textZone->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 
@@ -369,6 +375,8 @@ void  TextTab::setPrevText(MainTextDocument *prevDoc)
         ui->prevTextToolButton->setHidden(true);
         return;
     }
+    ui->prevTextZone->setHidden(false);
+    ui->prevTextToolButton->setHidden(false);
 
     prevTextDocument = prevDoc;
     ui->prevTextZone->setDoc(prevTextDocument);
@@ -445,6 +453,8 @@ void  TextTab::setNextText(MainTextDocument *nextDoc)
         ui->nextTextToolButton->setHidden(true);
         return;
     }
+    ui->nextTextZone->setHidden(false);
+    ui->nextTextToolButton->setHidden(false);
 
     nextTextDocument = nextDoc;
     ui->nextTextZone->setDoc(nextTextDocument);
@@ -533,12 +543,7 @@ void  TextTab::addSlimFindReplaceAction()
 
 void  TextTab::launchSlimFindReplace()
 {
-    SlimFindReplace *findReplace = new SlimFindReplace(this);
-    findReplace->setHub(hub);
-    findReplace->setDocument(textDocument);
-    findReplace->setTextEdit(ui->textZone);
-
-    ui->gridLayout->addWidget(findReplace, 2, 0, 1 , 3);
+    ui->findReplace->show();
 
 }
 

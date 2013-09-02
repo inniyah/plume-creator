@@ -21,6 +21,7 @@ void AttendBase::startAttendance()
 {
     absModel = new AttendAbstractModel();
     absModel->setHub(hub);
+absModel->setDomDocument(hub->attendTreeDomDoc());
 
     absModel->resetAbsModel();
 
@@ -41,7 +42,6 @@ void AttendBase::startAttendance()
 
     connect(ui->manageButton, SIGNAL(clicked()), this, SLOT(launchAttendManager()), Qt::UniqueConnection);
     connect(ui->povButton, SIGNAL(clicked()), sheetProxyModel, SLOT(setPointOfView()), Qt::UniqueConnection);
-    connect(ui->povButton, SIGNAL(clicked()), hub, SLOT(resetSpreadsheetOutliner()), Qt::UniqueConnection);
     connect(ui->sheetTreeView, SIGNAL(clicked(QModelIndex)), sheetProxyModel, SLOT(setClickedIndex(QModelIndex)), Qt::UniqueConnection);
 
     connect(ui->sheetTreeView, SIGNAL(viewportEntered()), this, SLOT(expandAll()), Qt::UniqueConnection);
@@ -50,6 +50,16 @@ void AttendBase::startAttendance()
 
     connect(ui->sheetTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openDetailsOf_fromSheet(QModelIndex)));
     connect(ui->globalTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openDetailsOf_fromGlobal(QModelIndex)));
+}
+
+void AttendBase::stopAttendance()
+{
+    QDomDocument emptyDomDoc;
+
+
+    absModel->setDomDocument(emptyDomDoc);
+    absModel->resetAbsModel();
+
 }
 
 AttendManager* AttendBase::launchAttendManager()

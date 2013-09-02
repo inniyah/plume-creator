@@ -15,12 +15,15 @@
 #include "texttab.h"
 #include "notezone.h"
 #include "ui_mainwindow.h"
+#include "ui_dockedtreebase.h"
 
 //
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),noTabCss(""),textAlreadyChanged(false)
-    ,ui(new Ui::MainWindow),  isExternalProjectOpeningBool(false)
+    ,ui(new Ui::MainWindow),  ui_dockedTreeBase(new Ui::DockedTreeBase)
+    , isExternalProjectOpeningBool(false)
+    ,workbenchLaunched(false), isProjectOpened(false)
 
 {
 
@@ -43,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     //        setFixedSize(900, 550);
 
     hub = new Hub(this);
-    connect(hub, SIGNAL(openProjectSignal(QFile*)), this, SLOT(openProjectSlot(QFile*)));
+    connect(hub, SIGNAL(openProjectSignal()), this, SLOT(openProjectSlot()));
     connect(hub, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
     connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
     connect(hub, SIGNAL(showStatusBarMessageSignal(QString,int)), ui->bar, SLOT(showMessage(QString,int)));
@@ -58,10 +61,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    createMenuBar();
     //    createMenuDock();
     createAttendDock();
     createTreeDock();
+    createMenuBar();
     createNoteDock();
     createToolDock();
     createStatusBar();
@@ -173,8 +176,7 @@ void MainWindow::postConstructor()
 
 MainWindow::~MainWindow()
 {
-
-
+delete ui_dockedTreeBase;
     delete ui;
 }
 
@@ -184,16 +186,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::createMenuBar()
 {
-    menu = new MenuBar;
+    menu = new MenuBar(this);
     menu->setTextStyles(textStyles);
     menu->setHub(hub);
+    menu->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
     menu->createContent();
 
 
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
     connect(menu, SIGNAL(setDisplayModeSignal(QString, bool)), this, SLOT(setDisplayMode(QString, bool)));
-    connect(menu, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
 
     connect(menu, SIGNAL(launchCheckUpdateSignal(QString)), this, SLOT(launchSlimUpdater(QString)));
 
@@ -312,22 +314,40 @@ void MainWindow::createTreeDock()
     treeDock->setObjectName("projectDock");
     treeDock->setWindowTitle(tr("Project"));
     treeDock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    treeDock->setMinimumSize(160,200);
     treeDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
 
     mainTree = new MainTree;
     mainTree->setHub(hub);
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
 
-    connect(mainTree, SIGNAL(textAndNoteSignal(int, QString)), this, SLOT(textSlot(int, QString)));
-    connect(this, SIGNAL(changeAllDocsTextStylesSignal()), mainTree, SLOT(changeAllDocsTextStyles()));
+    QWidget *baseWidget = new QWidget(this);
+    ui_dockedTreeBase->setupUi(baseWidget);
 
-    treeDock->setWidget(mainTree);
+    // project tree :
+
+    dockedTree = ui_dockedTreeBase->dockedTree;
+    dockedTree->setHub(hub);
+dockedTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+dockedTree->postConstructor();
+
+
+connect(dockedTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
+
+
+// trash :
+dockedTrashTree = ui_dockedTreeBase->dockedTrashTree;
+dockedTrashTree->setHub(hub);
+dockedTrashTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+dockedTrashTree->postConstructor();
+
+connect(dockedTrashTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
+
+
+        treeDock->setWidget(baseWidget);
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
     connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
-
-    mainTree->setTextStyles(textStyles);
 }
 
 //---------------------------------------------------------------------------
@@ -415,41 +435,6 @@ void MainWindow::createNoteDock()
     //    midFrame->setLineWidth(1);
     //    midFrame->setMidLineWidth(3);
 
-    //    QGridLayout *midLayout = new QGridLayout;
-
-    //    QToolButton *hideNotesButton = new QToolButton(this);
-    //    hideNotesButton->setText(tr("&Hide Notes"));
-    //    hideNotesButton->setShortcut(Qt::Key_F10);
-    //    hideNotesButton->setToolTip(tr("Hide the notes"));
-    //    connect(hideNotesButton, SIGNAL(clicked()), noteDock, SLOT(hide()));
-
-    //    QToolButton *tabFullscreenButton = new QToolButton(this);
-    //    tabFullscreenButton->setText(tr("Fullscreen &Edit"));
-    //    tabFullscreenButton->setShortcut(Qt::Key_F11);
-    //    tabFullscreenButton->setToolTip(tr("Edit this document fullscreen"));
-    //    connect(tabFullscreenButton, SIGNAL(clicked()), this, SLOT(editFullscreen()));
-
-    //    QToolButton *outlinerButton = new QToolButton(this);
-    //    outlinerButton->setText(tr("Outliner"));
-    //    outlinerButton->setShortcut(Qt::Key_F12);
-    //    outlinerButton->setToolTip(tr("Launch the project outliner"));
-    //    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
-
-    //    QToolButton *keepVisibleButton = new QToolButton(this);
-    //    keepVisibleButton->setText(tr("Visible"));
-    //    keepVisibleButton->setShortcut(Qt::Key_F11);
-    //    keepVisibleButton->setCheckable(true);
-    //    keepVisibleButton->setToolTip(tr("Keep this dock visible"));
-    //    connect(keepVisibleButton, SIGNAL(toggled(bool)), mainTabWidget, SLOT(showFullScreen()));;
-
-    //    QComboBox *stateCombo = new QComboBox;
-
-
-    //    midLayout->addWidget(hideNotesButton,0,0, Qt::AlignHCenter);
-    //    midLayout->addWidget(tabFullscreenButton,1,0, Qt::AlignHCenter);
-    //    midLayout->addWidget(outlinerButton,2,0, Qt::AlignHCenter);
-    //   midLayout->addWidget(stateCombo);
-    //  midFrame->setLayout(midLayout);
 
     synopsisBox->setLayout(synLayout);
 
@@ -508,9 +493,9 @@ void MainWindow::setDockSizes(){
 
 
     treeDock->setMinimumSize(150, 150);
-    treeDock->setMaximumSize(250, 800);
+//    treeDock->setMaximumSize(250, 800);
     attendDock->setMinimumSize(150, 150);
-    attendDock->setMaximumSize(250, 800);
+//    attendDock->setMaximumSize(250, 800);
     noteDock->setMinimumSize(150, 150);
 //    noteDock->setMaximumSize(250, 800);
 
@@ -551,19 +536,23 @@ void MainWindow::createStatusBar()
     projectWCLabel->setToolTip(tr("Project word count"));
     bookWCLabel = new QLabel();
     bookWCLabel->setToolTip(tr("Book word count"));
+    actWCLabel = new QLabel();
+    actWCLabel->setToolTip(tr("Act word count"));
     chapterWCLabel = new QLabel();
     chapterWCLabel->setToolTip(tr("Chapter word count"));
-    currentWCLabel = new QLabel();
+   currentWCLabel = new QLabel();
     currentWCLabel->setToolTip(tr("Current sheet word count"));
 
     connect(hub, SIGNAL(projectWordCount(int)), this, SLOT(updateProjectWCLabel(int)));
     connect(hub, SIGNAL(bookWordCount(int)), this, SLOT(updateBookWCLabel(int)));
+    connect(hub, SIGNAL(actWordCount(int)), this, SLOT(updateActWCLabel(int)));
     connect(hub, SIGNAL(chapterWordCount(int)), this, SLOT(updateChapterWCLabel(int)));
     connect(hub, SIGNAL(currentSheetWordCount(int)), this, SLOT(updateCurrentSheetWCLabel(int)));
 
 
     ui->bar->addWidget(projectWCLabel);
     ui->bar->addWidget(bookWCLabel);
+    ui->bar->addWidget(actWCLabel);
     ui->bar->addWidget(chapterWCLabel);
     ui->bar->addWidget(stretcher1, 5);
     ui->bar->addWidget(currentWCLabel);
@@ -601,7 +590,7 @@ void MainWindow::createDocksToolBar()
     connect(menu, SIGNAL(showNotesDockSignal(bool)), noteDock, SLOT(setVisible(bool)));
     connect(menu, SIGNAL(showAttendDockSignal(bool)), attendDock, SLOT(setVisible(bool)));
     connect(menu, SIGNAL(showToolsDockSignal(bool)), toolDock, SLOT(setVisible(bool)));
-    connect(menu, SIGNAL(launchOutlinerSignal()), this, SLOT(launchOutliner()));
+    connect(menu, SIGNAL(launchOutlinerSignal()), this, SLOT(launchWorkbench()));
     connect(menu, SIGNAL(showFullscreenSignal()), this, SLOT(editFullscreen()));
 
 
@@ -674,18 +663,18 @@ void MainWindow::createDocksToolBar()
 
 
 
-    OrientationButton *outlinerButton = new OrientationButton(QIcon(":/pics/view-time-schedule-90.png"),tr("Outliner"));
-    outlinerButton->setObjectName("outlinerBt");
-    outlinerButton->setOrientation(Qt::Vertical);
-    outlinerButton->setCheckable(false);
-    outlinerButton->setMirrored(true);
-    connect(outlinerButton, SIGNAL(clicked()), this, SLOT(launchOutliner()));
+    OrientationButton *workbenchButton = new OrientationButton(QIcon(":/pics/view-time-schedule-90.png"),tr("Outliner"));
+    workbenchButton->setObjectName("workbenchBt");
+    workbenchButton->setOrientation(Qt::Vertical);
+    workbenchButton->setCheckable(false);
+    workbenchButton->setMirrored(true);
+    connect(workbenchButton, SIGNAL(clicked()), this, SLOT(launchWorkbench()));
 
-    outlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("Outliner"),this);
-    outlinerAct->setToolTip(tr("Outliner"));
-    outlinerAct->setCheckable(false);
-    connect(outlinerAct, SIGNAL(triggered()), this, SLOT(launchOutliner()));
-    toolBarActionsList.append(outlinerAct);
+    workbenchAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("Workbench"),this);
+    workbenchAct->setToolTip(tr("Workbench"));
+    workbenchAct->setCheckable(false);
+    connect(workbenchAct, SIGNAL(triggered()), this, SLOT(launchWorkbench()));
+    toolBarActionsList.append(workbenchAct);
 
 
 
@@ -704,33 +693,14 @@ void MainWindow::createDocksToolBar()
     connect(fullscreenAct, SIGNAL(triggered()), this, SLOT(editFullscreen()));
     toolBarActionsList.append(fullscreenAct);
 
-    //    showPrvScnButton = new OrientationButton(QIcon(":/pics/zoom-previous-90.png"),tr("&Show Prev. Scene"));
-    //    showPrvScnButton->setObjectName("showPrvScnBt");
-    //    showPrvScnButton->setToolTip(tr("Show the end of the previous scene"));
-    //    showPrvScnButton->setOrientation(Qt::Vertical);
-    //    showPrvScnButton->setShortcut(Qt::Key_F10);
-    //    showPrvScnButton->setCheckable(true);
-    //    showPrvScnButton->setMirrored(true);
-    //    connect(showPrvScnButton, SIGNAL(toggled(bool)), this, SLOT(showPrevText(bool)));
-
-    //    showNxtScnButton = new OrientationButton(tr("&Show Next Scene"));
-    //    showNxtScnButton->setObjectName("showNxtScnBt");
-    //    showNxtScnButton->setToolTip(tr("Show the start of the next scene"));
-    //    showNxtScnButton->setOrientation(Qt::Vertical);
-    //    showNxtScnButton->setShortcut(Qt::Key_F10);
-    //    showNxtScnButton->setCheckable(true);
-    //    showNxtScnButton->setMirrored(true);
-    //    connect(showNxtScnButton, SIGNAL(toggled(bool)), this, SLOT(showNextText(bool)));
 
     //    docksToolBar->addWidget(treeDockButton);
     docksToolBar->addWidget(noteDockButton);
     docksToolBar->addWidget(toolDockButton);
     docksToolBar->addWidget(attendDockButton);
     docksToolBar->addSeparator();
-    docksToolBar->addWidget(outlinerButton);
+    docksToolBar->addWidget(workbenchButton);
     docksToolBar->addWidget(fullscreenButton);
-    //    docksToolBar->addWidget(showPrvScnButton);
-    //    docksToolBar->addWidget(showNxtScnButton);
 
 
     statusDockToolBar = new QToolBar();
@@ -949,8 +919,10 @@ void MainWindow::openExternalProject(QString externalFile)
 }
 //---------------------------------------------------------------------------
 
-void MainWindow::openProjectSlot(QFile *projectFile)
+void MainWindow::openProjectSlot()
 {
+
+
 
     closeAllDocsSlot();
 
@@ -958,6 +930,40 @@ void MainWindow::openProjectSlot(QFile *projectFile)
     textStyles->setProjectInfoFile();
     attendBase->startAttendance();
     mainTree->startTree();
+
+
+    DockedTreeProxy *proxy = new DockedTreeProxy;
+    proxy->setHub(hub);
+    proxy->setSourceModel(mainTree->mainTreeAbstractModel());
+proxy->postConstructor();
+
+    dockedTree->setModel(proxy);
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(applySettingsFromDataSignal()), dockedTree, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+    connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
+    connect(proxy, SIGNAL(resetAbsModelSignal()), mainTree->mainTreeAbstractModel(), SLOT(resetAbsModel()), Qt::UniqueConnection);
+    dockedTree->applySettingsFromData();
+
+
+    DockedTrashTreeProxy *trashProxy = new DockedTrashTreeProxy;
+    trashProxy->setHub(hub);
+    trashProxy->setSourceModel(mainTree->mainTreeAbstractModel());
+    trashProxy->postConstructor();
+
+    dockedTrashTree->setModel(trashProxy);
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(applySettingsFromDataSignal()), dockedTrashTree, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+    connect(dockedTrashTree, SIGNAL(modifyFlagsForDropsSignal(QString)), trashProxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
+    connect(trashProxy, SIGNAL(resetAbsModelSignal()), mainTree->mainTreeAbstractModel(), SLOT(resetAbsModel()), Qt::UniqueConnection);
+    dockedTrashTree->applySettingsFromData();
+
+    // connect between trash and tree :
+    connect(dockedTrashTree, SIGNAL(modifyFlagsForDropsSignal(QString)), trashProxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
+    connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
+
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(displayBadgeSignal(bool)), proxy, SLOT(displayBadgeSlot(bool)), Qt::UniqueConnection);
+    connect(mainTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)), Qt::UniqueConnection);
+
+    isProjectOpened = true;
+
     configTimer();
 }
 
@@ -969,6 +975,8 @@ void MainWindow::closeProjectSlot()
     if(!hub->isProjectOpened())
         return;
 
+    emit closeAllChildrenWindowsSignal();
+
     menu->setMenusEnabled(false);
 
 
@@ -979,6 +987,18 @@ void MainWindow::closeProjectSlot()
     closeAllDocsSlot();
 
     mainTree->closeTree();
+    attendBase->stopAttendance();
+
+    isProjectOpened = false;
+
+
+
+    projectWCLabel->setText("");
+    bookWCLabel->setText("");
+    actWCLabel->setText("");
+    chapterWCLabel->setText("");
+   currentWCLabel->setText("");
+
 
     //    attendList->accept(); //to close the manager;
 
@@ -1005,10 +1025,15 @@ void MainWindow::setProjectNumberSlot(int prjNumber)
 void MainWindow::textSlot(int number, QString action)
 {
     if(action == "open"){
+        if(number > 10000) // separator
+            return;
 
         MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + QString::number(number));
         MainTextDocument *synDoc =  hub->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
         MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
+
+
+
 
         QString name = hub->mainTree_domElementForNumberHash().value(number).attribute("name");
 
@@ -1114,20 +1139,14 @@ void MainWindow::textSlot(int number, QString action)
         connect(tab,SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
 
 
-        //connect note & syn to maintree :
-        connect(synStack, SIGNAL(connectUpdateTextsSignal()), mainTree, SIGNAL(connectUpdateTextsSignal()));
-        connect(synStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
-        connect(noteStack, SIGNAL(connectUpdateTextsSignal()), mainTree, SIGNAL(connectUpdateTextsSignal()));
-        connect(noteStack, SIGNAL(disconnectUpdateTextsSignal()), mainTree, SIGNAL(disconnectUpdateTextsSignal()));
-
         //connect note & syn to maintree (for Outliner) :
 
-        connect(noteStack, SIGNAL(noteFocusOutSignal()), mainTree, SLOT(updateOutliner()));
-        connect(synStack, SIGNAL(noteFocusOutSignal()), mainTree, SLOT(updateOutliner()));
+        connect(noteStack, SIGNAL(noteFocusOutSignal()), this, SIGNAL(updateOutlinerSignal()));
+        connect(synStack, SIGNAL(noteFocusOutSignal()), this, SIGNAL(updateOutlinerSignal()));
 
         //connect maintree to note & syn (for Outliner) :
-        connect(mainTree, SIGNAL(applySynNoteFontConfigSignal()), noteStack, SLOT(applyNoteFontConfig()));
-        connect(mainTree, SIGNAL(applySynNoteFontConfigSignal()), synStack, SLOT(applySynFontConfig()));
+        connect(this, SIGNAL(applySynNoteFontConfigSignal()), noteStack, SLOT(applyNoteFontConfig()));
+        connect(this, SIGNAL(applySynNoteFontConfigSignal()), synStack, SLOT(applySynFontConfig()));
 
         //launch autosaving :
         if(!hub->isProjectOpened())
@@ -1147,7 +1166,7 @@ void MainWindow::textSlot(int number, QString action)
         //        qDebug() << "cursorPosition syn : " << debug.setNum(synCursorPosition);
         //        qDebug() << "cursorPosition note : " << debug.setNum(noteCursorPosition);
 
-        // show previous and nest text :
+        // show previous and next text :
 
         //apply config :
 
@@ -1166,13 +1185,10 @@ void MainWindow::textSlot(int number, QString action)
 
 
 
+        textDoc->connectWordCount();
 
 
 
-        //    temporary config
-
-        //            tab->setObjectName("textTabWidget");
-        //            tab->setStyleSheet("QWidget#textTabWidget { background: white }");
 
 
         // if option "one tab only" is activated :
@@ -1240,27 +1256,19 @@ void MainWindow::setConnections()
 
 
 
-    //    //to show previous text :
-    //    connect(menu, SIGNAL(showPrevTextSignal(bool)), this, SLOT(showPrevText(bool)));
-
 
     //for attendance :
 
-    //    connect(mainTree, SIGNAL(attendStringSignal(int,QString)), attendBase, SLOT(openSheetAttendList(int,QString)));
-    //    connect(mainTree, SIGNAL(allAttendancesSignal(QHash<int,QString>)), attendBase, SLOT(updateAllAttendances(QHash<int,QString>)));
-    //    connect(attendBase, SIGNAL(projectAttendanceList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)),
-    //            mainTree,SLOT(setOutlinerProjectAttendList(QHash<QListWidgetItem*,QDomElement>,QHash<int,QDomElement>)));
+
     connect(ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(setCurrentAttendList(int)));
-    //    connect(attendBase, SIGNAL(removeAttendNumberSignal(int)), mainTree, SLOT(removeAttendNumberSlot(int)));
-    //    connect(attendBase, SIGNAL(removeAttendNumberFromSheetSignal(QList<int>, int)), mainTree, SLOT(removeAttendNumberFromSheetSlot(QList<int>, int)));
-    //    connect(attendBase, SIGNAL(addAttendNumberToSheetSignal(QList<int>, int)), mainTree, SLOT(addAttendNumberToSheetSlot(QList<int>, int)));
+
 
 
 
 
     // for previous and next texts :
     connect(ui->mainTabWidget,SIGNAL(currentChanged(int)),this,SLOT(showPrevAndNextTexts()));
-    connect(mainTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(showPrevAndNextTexts()));
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(treeStructureChanged()), this, SLOT(showPrevAndNextTexts()));
 
 
 }
@@ -1320,7 +1328,7 @@ void MainWindow::tabCloseRequest(int tabNum)
     // Saving
 
 
-    mainTree->saveCursorPos(textWidgetList->at(tabNum)->cursorPos(),
+    hub->saveCursorPos(textWidgetList->at(tabNum)->cursorPos(),
                             synWidgetList->at(tabNum)->saveCursorPos(),
                             noteWidgetList->at(tabNum)->saveCursorPos(),
                             numList->at(tabNum));
@@ -1392,7 +1400,7 @@ void MainWindow::closeAllDocsSlot()
         //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(i)->document());
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
-        mainTree->saveCursorPos(textWidgetList->at(i)->cursorPos(),
+        hub->saveCursorPos(textWidgetList->at(i)->cursorPos(),
                                 synWidgetList->at(i)->saveCursorPos(),
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
@@ -1457,7 +1465,7 @@ void MainWindow::saveAllDocsSlot()
         //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(i)->document());
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
-        mainTree->saveCursorPos(textWidgetList->at(i)->cursorPos(),
+        hub->saveCursorPos(textWidgetList->at(i)->cursorPos(),
                                 synWidgetList->at(i)->saveCursorPos(),
                                 noteWidgetList->at(i)->saveCursorPos(),
                                 numList->at(i));
@@ -1786,6 +1794,8 @@ void MainWindow::editFullscreen()
     fullEditor = new FullscreenEditor(0);
     fullEditor->setHub(hub);
     fullEditor->setTextStyles(textStyles);
+fullEditor->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+
     fullEditor->postConstructor();
     fullEditor->openBySheetNumber(hub->currentSheetNumber());
 
@@ -1793,24 +1803,50 @@ void MainWindow::editFullscreen()
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
     connect(fullEditor, SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
     connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
-    connect(fullEditor, SIGNAL(newSheetSignal(int)), mainTree, SLOT(addItemNext(int)));
+    connect(fullEditor, SIGNAL(newSheetSignal(int)), mainTree->mainTreeAbstractModel(), SLOT(addItemNext(int)));
+    connect(fullEditor, SIGNAL(openSheetOnMainWindow(int,int)), this, SLOT(openSheet(int,int)));
 
 
 }
 
 //----------------------------------------------------------------------------
 
-void MainWindow::launchOutliner()
+void MainWindow::launchWorkbench()
 {
-    if(ui->mainTabWidget->count() == 0)
+    if(isProjectOpened == false)
         return;
 
-    mainTree->launchOutliner();
 
+
+    if(workbenchLaunched){
+
+         workbench->raise();
+
+        return;
+    }
+
+
+
+    workbench = new Workbench(0);
+    workbench->setAttribute(Qt::WA_DeleteOnClose);
+    workbench->setHub(hub);
+    workbench->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+
+    connect(workbench, SIGNAL(applySynNoteFontConfigSignal()), this, SIGNAL(applySynNoteFontConfigSignal()), Qt::UniqueConnection);
+    connect(this, SIGNAL(updateOutlinerSignal()), workbench, SIGNAL(updateOutlinerSignal()), Qt::UniqueConnection);
+    connect(workbench, SIGNAL(destroyed()), this, SLOT(killWorkbench()), Qt::UniqueConnection);
+    connect(this, SIGNAL(closeAllChildrenWindowsSignal()), workbench, SLOT(close()), Qt::UniqueConnection);
+    workbench->postConstructor();
+    workbenchLaunched = true;
 
 
 }
+//-----------------------------------------------------------------------------------------
 
+void MainWindow::killWorkbench()
+{
+    workbenchLaunched = false;
+}
 //----------------------------------------------------------------------------
 
 
@@ -1826,7 +1862,7 @@ void MainWindow::showPrevText(bool showPrevTextBool)
 
     tab->showPrevText(showPrevTextBool);
 
-    tab->setPrevText(mainTree->prevText(number));
+    tab->setPrevText(hub->prevText(number));
 }
 
 //----------------------------------------------------------------------------
@@ -1842,7 +1878,7 @@ void MainWindow::showNextText(bool showNextTextBool)
 
     tab->showNextText(showNextTextBool);
 
-    tab->setNextText(mainTree->nextText(number));
+    tab->setNextText(hub->nextText(number));
 }
 //----------------------------------------------------------------------------
 
@@ -1851,6 +1887,32 @@ void MainWindow::showPrevAndNextTexts(bool showTextsBool)
     showPrevText(showTextsBool);
     showNextText(showTextsBool);
 }
+//----------------------------------------------------------------------------
+void MainWindow::openSheet(int sheetNumber, int textCursorPos, int noteCursorPos, int synCursorPos)
+{
+    if(sheetNumber == 0)
+        return;
+
+
+    this->textSlot(sheetNumber, "open");
+
+
+
+TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + QString::number(hub->currentSheetNumber()));
+
+  NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
+  NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
+
+  //set cursor position :
+  tab->setCursorPos(textCursorPos);
+  synStack->setCursorPos(noteCursorPos);
+  noteStack->setCursorPos(synCursorPos);
+
+  tab->setTextFocus();
+
+
+}
+
 
 //----------------------------------------------------------------------------
 
@@ -2045,9 +2107,9 @@ void MainWindow::giveStyle()
 
 
 
-            "QStatusBar::item {"
-            "border: 0px none transparent;"
-            "}"
+//            "QStatusBar::item {"
+//            "border: 0px none transparent;"
+//            "}"
 
 
 
@@ -2102,7 +2164,14 @@ void MainWindow::giveStyle()
             "padding: 5px;"
 
             "}"
+            "QToolBar#statusDockToolBar {"
+            "spacing: 2px;"
 
+            "}"
+
+            "QStatusBar {"
+
+            "}"
             //            "QToolBar#docksToolBar::separator {"
             //            "}"
 
@@ -2148,6 +2217,16 @@ void MainWindow::updateBookWCLabel(int count)
     bookWCLabel->setText(tr("Book: ") + Utils::spaceInNumber(QString::number(count)));
 
 }
+void MainWindow::updateActWCLabel(int count)
+{
+    if(count == -1)
+        actWCLabel->hide();
+    else {
+        actWCLabel->show();
+    actWCLabel->setText(tr("Act: ") + Utils::spaceInNumber(QString::number(count)));
+}
+}
+
 void MainWindow::updateChapterWCLabel(int count)
 {
     if(count == -1)

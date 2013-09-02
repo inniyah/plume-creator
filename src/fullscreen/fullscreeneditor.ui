@@ -23,7 +23,16 @@
    <locale language="English" country="UnitedKingdom"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -32,7 +41,16 @@
       <bool>true</bool>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,1">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -75,7 +93,16 @@
            </size>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -246,17 +273,33 @@
              </item>
              <item row="0" column="0" colspan="3">
               <layout class="QGridLayout" name="gridLayout_3">
-               <item row="0" column="0" colspan="3">
-                <widget class="QComboBox" name="navigatorComboBox">
-                 <property name="sizeAdjustPolicy">
-                  <enum>QComboBox::AdjustToContents</enum>
+               <item row="1" column="0" colspan="3">
+                <widget class="QToolButton" name="treeButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="frame">
-                  <bool>false</bool>
+                 <property name="text">
+                  <string>treeButton</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../pics.qrc">
+                   <normaloff>:/pics/arrow-up.png</normaloff>:/pics/arrow-up.png</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextUnderIcon</enum>
+                 </property>
+                 <property name="arrowType">
+                  <enum>Qt::NoArrow</enum>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+               <item row="2" column="0">
                 <widget class="QToolButton" name="prevButton">
                  <property name="text">
                   <string>Prev</string>
@@ -276,7 +319,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="2" column="1">
                 <widget class="QToolButton" name="nextButton">
                  <property name="text">
                   <string>Next</string>
@@ -296,7 +339,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="2">
+               <item row="2" column="2">
                 <widget class="QToolButton" name="newButton">
                  <property name="text">
                   <string>New</string>
@@ -313,6 +356,49 @@
                  </property>
                  <property name="autoRaise">
                   <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" colspan="3">
+                <widget class="DockedTree" name="treeView">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>300</height>
+                  </size>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="dragEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="dragDropMode">
+                  <enum>QAbstractItemView::DragDrop</enum>
+                 </property>
+                 <property name="defaultDropAction">
+                  <enum>Qt::MoveAction</enum>
+                 </property>
+                 <property name="verticalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                 </property>
+                 <property name="indentation">
+                  <number>5</number>
+                 </property>
+                 <property name="uniformRowHeights">
+                  <bool>true</bool>
+                 </property>
+                 <property name="animated">
+                  <bool>true</bool>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                 <property name="headerHidden">
+                  <bool>true</bool>
+                 </property>
+                 <property name="expandsOnDoubleClick">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -373,6 +459,11 @@
    <header>wordgoalprogressbar.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>DockedTree</class>
+   <extends>QTreeView</extends>
+   <header location="global">dockedTree/dockedtree.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="../pics.qrc"/>
@@ -385,8 +476,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>887</x>
-     <y>561</y>
+     <x>907</x>
+     <y>622</y>
     </hint>
     <hint type="destinationlabel">
      <x>1011</x>

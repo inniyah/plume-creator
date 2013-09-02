@@ -1,12 +1,8 @@
 #include "menubar.h"
-#include "prjmanager.h"
-#include "newprojectwizard.h"
-#include "settingsdialog.h"
-#include "exporter.h"
-#include "findreplace.h"
+
 //
 MenuBar::MenuBar(QWidget *parent) :
-    QFrame(parent), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
+    QFrame(parent),parentWidget(parent), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
 {
 
     giveStyle();
@@ -30,7 +26,7 @@ void MenuBar::createContent()
 
 void MenuBar::newProject()
 {
-    NewProjectWizard *projectWizard = new NewProjectWizard(this);
+    NewProjectWizard *projectWizard = new NewProjectWizard(parentWidget);
     connect(projectWizard, SIGNAL(openProjectSignal(QString)), hub, SLOT(startProject(QString)));
     projectWizard->exec();
 
@@ -96,7 +92,7 @@ void MenuBar::newProject()
 
 void MenuBar::startCenter()
 {
-    StartCenter *center = new StartCenter(this);
+    StartCenter *center = new StartCenter(parentWidget);
     center->setHub(hub);
     center->postConstructor();
     connect(center,SIGNAL(newPrjSignal()), this, SLOT(openNewProjectSlot()));
@@ -110,7 +106,7 @@ void MenuBar::startCenter()
 
 void MenuBar::displayConfig(int tabIndex)
 {
-    SettingsDialog *settingsDialog = new SettingsDialog(this);
+    SettingsDialog *settingsDialog = new SettingsDialog(parentWidget);
     settingsDialog->setHub(hub);
     settingsDialog->setTextStyles(textStyles);
     textStyles->saveBaseStyles();
@@ -118,8 +114,8 @@ void MenuBar::displayConfig(int tabIndex)
 
     connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
     connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString, bool)), this, SIGNAL(setDisplayModeSignal(QString, bool)));
-    connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), this, SIGNAL(changeAllDocsTextStylesSignal()));
     connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
+    connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), textStyles, SLOT(changeAllDocsTextStyles()));
 
 
     settingsDialog->setCurrentTab(tabIndex);
@@ -181,8 +177,9 @@ void MenuBar::exporter()
 
     emit saveProjectSignal();
 
-    Exporter *exporterDialog = new Exporter(QString("export"), this);
+    Exporter *exporterDialog = new Exporter(QString("export"), parentWidget);
     exporterDialog->setHub(hub);
+    exporterDialog->setMainTreeAbstractModel(absTreeModel);
     exporterDialog->postConstructor();
     exporterDialog->exec();
 
@@ -198,10 +195,11 @@ void MenuBar::print()
 
     emit saveProjectSignal();
 
-    Exporter *exporterDialog = new Exporter(QString("print"), this);
+    Exporter *exporterDialog = new Exporter(QString("print"), parentWidget);
     exporterDialog->setHub(hub);
+    exporterDialog->setMainTreeAbstractModel(absTreeModel);
+    exporterDialog->postConstructor();
     exporterDialog->exec();
-
 
 }
 //--------------------------------------------------------------------------
@@ -215,7 +213,7 @@ void MenuBar::findAndReplace()
 
     emit saveProjectSignal();
 
-    FindReplace *findReplaceDialog = new FindReplace(this);
+    FindReplace *findReplaceDialog = new FindReplace(parentWidget);
     findReplaceDialog->setHub(hub);
     findReplaceDialog->postConstructor();
     findReplaceDialog->exec();
@@ -235,7 +233,7 @@ void MenuBar::manageStyles()
 
 void MenuBar::aboutQt()
 {
-    QMessageBox::aboutQt(this, tr("About Qt"));
+    QMessageBox::aboutQt(parentWidget, tr("About Qt"));
 
 
 
@@ -286,7 +284,7 @@ void MenuBar::viewReleaseNotes()
 
 void MenuBar::about()
 {
-    QMessageBox::about(this, tr("About Plume Creator"),
+    QMessageBox::about(parentWidget, tr("About Plume Creator"),
                        "<p><center><b>Plume Creator</b></p>"
                        "<p><b>A Project Manager and Rich Text Editor for Writers.</b></p>"
 
@@ -297,10 +295,16 @@ void MenuBar::about()
                        "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
                        "<p>cyril.jacquet@plume-creator.eu</p></center>"
                        "<br>"
+                       "<br>"
+                       "<p>Designer : Tushant Mirchandani</p> "
+                       "<p>Contributores and beta-testers : Ken McConnell, Bill Blohm</p> "
+                       "<p>Translators : </p>"
+                       "<p>Special thanks to the Quazip dev team.</p> "
                        "<p>Plume Creator is free software: you can redistribute it and/or modify "
                        "it under the terms of the GNU General Public License as published by "
                        "the Free Software Foundation, either version 3 of the License, or "
                        "(at your option) any later version.</p> "
+                       "<br>"
                        "<br>"
                        "<p>Plume Creator is distributed in the hope that it will be useful, "
                        "but WITHOUT ANY WARRANTY; without even the implied warranty of "

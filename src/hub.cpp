@@ -119,6 +119,10 @@ QDomDocument Hub::mainTreeDomDoc()
     return m_mainTreeDomDoc; // don't forget the data is shared. See Qt doc.
 }
 
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+
 
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
@@ -153,8 +157,11 @@ void Hub::set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc)
     m_mainTree_numForDocHash = numForDoc;
 
     if(!refreshIsLocked)
-        if(ChangesTests::test(m_old_numForDoc, m_mainTree_numForDocHash) == false)
+        if(ChangesTests::test(m_old_numForDoc, m_mainTree_numForDocHash) == false){
+            emit mainTree_numForDocHashChanged(m_mainTree_numForDocHash);
             emit mainTree_numForDocHashChanged();
+            qDebug() << "mainTree_numForDocHashChanged"   ;
+        }
 }
 
 //--------------------------------------------------------------------------------
@@ -175,6 +182,10 @@ void Hub::set_mainTree_domElementForNumberHash(QHash<int, QDomElement> domElemen
             emit mainTree_domElementForNumberHashChanged();
 }
 
+
+
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 
 
 
@@ -381,9 +392,9 @@ void Hub::setWordGoalActivated(bool wordGoalIsActivated)
 
 void Hub::calculatWordCountGoalDelta(int projectCount)
 {
-        if(projectCount - m_baseWordCount < 0)
-            m_baseWordCount = projectCount;
-        this->setAchievedWordGoal(projectCount - m_baseWordCount);
+    if(projectCount - m_baseWordCount < 0)
+        m_baseWordCount = projectCount;
+    this->setAchievedWordGoal(projectCount - m_baseWordCount);
 
 }
 
@@ -514,6 +525,8 @@ bool Hub::startProject(QString file)
 
     loadProject();
 
+
+
     //    this->addProjectToPrjManager(this->projectFileName(), this->projectName(), QDateTime::currentDateTime());
     // QDateTime::currentDateTime() is temporary;
 
@@ -526,6 +539,7 @@ bool Hub::startProject(QString file)
     connect(wcThread, SIGNAL(currentSheetWordCount(int)), this,  SIGNAL(currentSheetWordCount(int)));
     connect(wcThread, SIGNAL(projectWordCount(int)), this,  SIGNAL(projectWordCount(int)));
     connect(wcThread, SIGNAL(bookWordCount(int)), this,  SIGNAL(bookWordCount(int)));
+    connect(wcThread, SIGNAL(actWordCount(int)), this,  SIGNAL(actWordCount(int)));
     connect(wcThread, SIGNAL(chapterWordCount(int)), this,  SIGNAL(chapterWordCount(int)));
     connect(wcThread, SIGNAL(sceneWordCount(int)), this,  SIGNAL(sceneWordCount(int)));
 
@@ -538,13 +552,13 @@ bool Hub::startProject(QString file)
 
 
 
-    QFile *prjFile = new QFile(file);
-    emit openProjectSignal(prjFile);
+    emit openProjectSignal();
     emit projectOpenedSignal(true);
 
     projectOpened = true;
 
     // wordCount goal :
+QApplication::processEvents();
 
     this->setBaseWordCount(wcThread->projectWordCount());
     this->setAchievedWordGoal(0);
@@ -593,6 +607,7 @@ void Hub::closeCurrentProject()
     disconnect(wcThread, SIGNAL(currentSheetWordCount(int)), this,  SIGNAL(currentSheetWordCount(int)));
     disconnect(wcThread, SIGNAL(projectWordCount(int)), this,  SIGNAL(projectWordCount(int)));
     disconnect(wcThread, SIGNAL(bookWordCount(int)), this,  SIGNAL(bookWordCount(int)));
+    disconnect(wcThread, SIGNAL(actWordCount(int)), this,  SIGNAL(actWordCount(int)));
     disconnect(wcThread, SIGNAL(chapterWordCount(int)), this,  SIGNAL(chapterWordCount(int)));
     disconnect(wcThread, SIGNAL(sceneWordCount(int)), this,  SIGNAL(sceneWordCount(int)));
 
@@ -628,7 +643,7 @@ void Hub::closeCurrentProject()
     m_currentSheetNumber = -1;
     m_currentProjectSettingArrayNumber = 9999;
 
-zipChecker->clearList();
+    zipChecker->clearList();
 
     projectOpened = false;
     emit projectOpenedSignal(false);
@@ -716,6 +731,7 @@ bool Hub::loadTemp()
 
 
     this->loadTextDocs(root.elementsByTagName("book"));
+    this->loadTextDocs(root.elementsByTagName("act"));
     this->loadTextDocs(root.elementsByTagName("chapter"));
     this->loadTextDocs(root.elementsByTagName("scene"));
 
@@ -826,9 +842,9 @@ bool Hub::loadTemp()
 
 
 
-//    QDir dir(projectWorkingPath);
+    //    QDir dir(projectWorkingPath);
     QStringList dirList = zipChecker->list();
-//    dirList = dir.entryList();
+    //    dirList = dir.entryList();
 
 
     QApplication::restoreOverrideCursor();
@@ -1253,6 +1269,7 @@ void Hub::connectAllSheetsToWordCountThread()
     while (i != m_mainTree_fileForDocHash.end()) {
         MainTextDocument *doc = i.key();
         if(doc->docType() == "text")
+
             connect(doc, SIGNAL(wordCountChanged(QString,int,int)), wcThread, SLOT(start()), Qt::UniqueConnection);
         ++i;
     }
@@ -1266,8 +1283,8 @@ void Hub::connectAllSheetsToWordCountThread()
 void Hub::clearBin()
 {
 
-// todo before that :
-//Model/view for mainTree
+    // todo before that :
+    //Model/view for mainTree
 
 
 }
@@ -1295,7 +1312,75 @@ void Hub::addFileToZipList(QString type, int number)
 
 
 
+MainTextDocument *Hub::prevText(int num)
+{
+    //find directly before :
+    int prevNum = mainTree_domElementForNumberHash().key(mainTree_domElementForNumberHash().value(num).previousSiblingElement(mainTree_domElementForNumberHash().value(num).tagName()));
 
+
+    //find before the father :
+    if(prevNum == 0){
+        QDomElement father = mainTree_domElementForNumberHash().value(num).parentNode().toElement();
+        QDomElement prevFather = father.previousSiblingElement(father.tagName());
+        QDomElement lastChild = prevFather.lastChild().toElement();
+        prevNum = mainTree_domElementForNumberHash().key(lastChild);
+    }
+    //cancel :
+    else if(prevNum == 0)
+        return 0;
+
+    QString string;
+    MainTextDocument *textDoc = this->findChild<MainTextDocument *>("textDoc_" + string.setNum(prevNum,10));
+    //    qDebug() << "prevNum : " << string;
+
+    return textDoc;
+}
+
+//-----------------------------------------------------------------------------------------------
+
+MainTextDocument *Hub::nextText(int num)
+{
+    //find directly before :
+    int nextNum = mainTree_domElementForNumberHash().key(mainTree_domElementForNumberHash().value(num).nextSiblingElement(mainTree_domElementForNumberHash().value(num).tagName()));
+
+
+    //find after the father :
+    if(nextNum == 0){
+        QDomElement father = mainTree_domElementForNumberHash().value(num).parentNode().toElement();
+        QDomElement nextFather = father.nextSiblingElement(father.tagName());
+        QDomElement firstChild = nextFather.firstChild().toElement();
+        nextNum = mainTree_domElementForNumberHash().key(firstChild);
+    }
+    //cancel :
+    else if(nextNum == 0)
+        return 0;
+
+    QString string;
+    MainTextDocument *textDoc = this->findChild<MainTextDocument *>("textDoc_" + string.setNum(nextNum,10));
+    //    qDebug() << "nextNum : " << string;
+
+    return textDoc;
+}
+
+//-----------------------------------------------------------------------------------------------
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+
+void Hub::saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number)
+{
+    QDomElement element = this->mainTree_domElementForNumberHash().value(number);
+    element.setAttribute("textCursorPos", textCursorPosition);
+    element.setAttribute("synCursorPos", synCursorPosition);
+    element.setAttribute("noteCursorPos", noteCursorPosition);
+    //   this->write(deviceFile);
+
+    this->addToSaveQueue();
+
+}
 
 
 

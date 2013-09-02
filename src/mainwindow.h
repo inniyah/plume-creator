@@ -33,15 +33,19 @@
 #include "notezone.h"
 #include "texttab.h"
 #include "fullscreen/fullscreeneditor.h"
-#include "outliner/outline.h"
 #include "attend/attendbase.h"
 #include "orientationbutton.h"
 #include "slimupdater.h"
 #include "wordgoalprogressbar.h"
-
+#include "workbench.h"
+#include "dockedTree/dockedtree.h"
+#include "dockedTree/dockedtreeproxy.h"
+#include "dockedTree/dockedtrashtree.h"
+#include "dockedTree/dockedtrashtreeproxy.h"
 //
 namespace Ui {
 class MainWindow;
+class DockedTreeBase;
 }
 
 class MainWindow : public QMainWindow
@@ -61,6 +65,7 @@ protected:
 
 signals:
     void closeSignal();
+    void closeAllChildrenWindowsSignal();
 
     void openTabTextSignal(QFile *textFile);
     void properSaveTabTextSignal(QFile *textFile);
@@ -72,10 +77,13 @@ signals:
     void currentNumber(int);
 
 
+    // outliner :
+    void applySynNoteFontConfigSignal();
+    void updateOutlinerSignal();
 public slots:
 
 
-    void openProjectSlot(QFile *projectFile);
+    void openProjectSlot();
     void openExternalProject(QString externalFile);
     void closeProjectSlot();
 
@@ -89,12 +97,14 @@ private slots:
     void tabRenamingSlot(QString newName, int tabNum);
     void setProjectNumberSlot(int prjNumber);
     void editFullscreen();
-    void launchOutliner();
+    void launchWorkbench();
 
     void textChangedSlot();
     void textAlreadyChangedSlot(bool textChanged){textAlreadyChanged = textChanged;}
 
     void showPrevAndNextTexts(bool showTextsBool = true);
+    void openSheet(int sheetNumber = 0, int textCursorPos = 0, int noteCursorPos = 0, int synCursorPos = 0);
+
 
     //config :
     void readDocksSettings();
@@ -120,10 +130,11 @@ private slots:
     int setCurrentNumber();
 
     //wordcount :
-//    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
+    //    void updateSceneWC(int count){QString sceneWCNum; sceneWCLabel->setText(tr("Words : ") + sceneWCNum.setNum(count));}
 
     void updateProjectWCLabel(int count);
     void updateBookWCLabel(int count);
+    void updateActWCLabel(int count);
     void updateChapterWCLabel(int count);
     void updateCurrentSheetWCLabel(int count);
 
@@ -133,8 +144,14 @@ private slots:
     void launchSlimUpdater(QString mode = "auto");
     void closeSlimUpdater();
 
-  void giveStyle();
+    void giveStyle();
+
+
+    void killWorkbench();
+
+
 private:
+    Ui::DockedTreeBase *ui_dockedTreeBase;
     Ui::MainWindow *ui;
 
     TextStyles *textStyles;
@@ -155,6 +172,8 @@ private:
     QToolBox *toolBox;
     //    EditMenuBox *editMenu;
     MainTree *mainTree;
+    DockedTree *dockedTree;
+    DockedTrashTree *dockedTrashTree;
     QDockWidget *treeDock;
     QDockWidget *noteDock;
     QDockWidget *toolDock;
@@ -170,10 +189,10 @@ private:
 
     QToolBar *docksToolBar;
     OrientationButton *menuDockButton, *toolDockButton, *treeDockButton, *noteDockButton, *attendDockButton, *editDockButton;
-QAction *menuDockAct, *toolDockAct, *treeDockAct, *noteDockAct, *attendDockAct, *editDockAct,
-*fullscreenAct, *outlinerAct;
-QList<QAction *> toolBarActionsList;
-QToolBar *statusDockToolBar;
+    QAction *menuDockAct, *toolDockAct, *treeDockAct, *noteDockAct, *attendDockAct, *editDockAct,
+    *fullscreenAct, *workbenchAct;
+    QList<QAction *> toolBarActionsList;
+    QToolBar *statusDockToolBar;
 
     QLabel *sceneWCLabel;
 
@@ -208,26 +227,30 @@ QToolBar *statusDockToolBar;
     QTimer *timer;
     QString displayMode;
     bool oneTabOnly;
-bool noTabBool;
+    bool noTabBool;
 
     void setEditMenuConnections();
 
     FullscreenEditor *fullEditor;
 
-    QString noTabCss;
+
+QString noTabCss;
 
     bool textAlreadyChanged;
- bool isExternalProjectOpeningBool;
+    bool isExternalProjectOpeningBool;
 
     WordGoalProgressBar *wordGoalBar;
     QSystemTrayIcon *systemTray;
 
+    bool isProjectOpened;
 
     //wordcount :
-    QLabel *projectWCLabel;
-    QLabel *bookWCLabel;
-    QLabel *chapterWCLabel;
-    QLabel *currentWCLabel;
+    QLabel *projectWCLabel,*bookWCLabel,*actWCLabel,
+    *chapterWCLabel, *currentWCLabel;
+
+
+    Workbench *workbench;
+    bool workbenchLaunched;
 };
 
 #endif // MAINWINDOW_H

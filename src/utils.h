@@ -43,6 +43,8 @@ public:
     static QString projectRealName(QString fileName);
 
     static QString parseHtmlText(QString htmlText);
+
+    static void applyAttributeRecursively(QDomElement element, QString attribute, QString value);
 };
 
 #endif // UTILS_H

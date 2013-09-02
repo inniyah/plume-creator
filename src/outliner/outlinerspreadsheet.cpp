@@ -5,51 +5,50 @@
 #endif 
 #include <QtGui>   
 #include "notezone.h"
-#include "outliner/outlinertreeitem.h"
 #include "outliner/outlinerspreadsheetheader.h"
 
 OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     QTreeView(parent)
 {
-    QSettings settings;
+//    QSettings settings;
 
-    if(settings.value("Outline/dontWarnMe_1", false).toBool() == false){
+//    if(settings.value("Outline/dontWarnMe_1", false).toBool() == false){
 
-        QDialog *warningDialog = new QDialog(this);
-        warningDialog->setWindowTitle(tr("Outliner"));
-        QVBoxLayout *layout = new QVBoxLayout;
+//        QDialog *warningDialog = new QDialog(this);
+//        warningDialog->setWindowTitle(tr("Outliner"));
+//        QVBoxLayout *layout = new QVBoxLayout;
 
-        QLabel *warningText = new QLabel(tr("This speadsheet outliner is at an early stage of development. <br>"
-                                            "For now, you can rename titles, write synopses and notes. "
-                                            "Right-click and a menu will appear ! "
-                                            ));
-        QCheckBox *doNotWarnAgain = new QCheckBox(tr("Do not warn me again"));
-        connect(doNotWarnAgain, SIGNAL(toggled(bool)), this, SLOT(doNotWarnAgainSlot(bool)));
-        QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+//        QLabel *warningText = new QLabel(tr("This speadsheet outliner is at an early stage of development. <br>"
+//                                            "For now, you can rename titles, write synopses and notes. "
+//                                            "Right-click and a menu will appear ! "
+//                                            ));
+//        QCheckBox *doNotWarnAgain = new QCheckBox(tr("Do not warn me again"));
+//        connect(doNotWarnAgain, SIGNAL(toggled(bool)), this, SLOT(doNotWarnAgainSlot(bool)));
+//        QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
 
-        connect(buttonBox, SIGNAL(accepted()), warningDialog, SLOT(close()));
-
-
-        layout->addWidget(warningText);
-        layout->addWidget(doNotWarnAgain);
-        layout->addWidget(buttonBox);
-
-        warningDialog->setLayout(layout);
-
-        warningDialog->exec();
+//        connect(buttonBox, SIGNAL(accepted()), warningDialog, SLOT(close()));
 
 
+//        layout->addWidget(warningText);
+//        layout->addWidget(doNotWarnAgain);
+//        layout->addWidget(buttonBox);
 
-    }
+//        warningDialog->setLayout(layout);
+
+//        warningDialog->exec();
 
 
+
+//    }
 
 
 
 
 
 
-    prepareContextMenu();
+
+    contextMenu = new MainTreeContextMenu(this, this);
+
 
     this->setFocusPolicy(Qt::WheelFocus);
     this->setEditTriggers(QAbstractItemView::AnyKeyPressed);
@@ -58,14 +57,21 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     this->setAnimated(true);
     this->setUniformRowHeights(false);
 
+    this->setDragEnabled(true);
+    this->setDragDropMode(QAbstractItemView::DragDrop);
+    this->setDefaultDropAction(Qt::MoveAction);
+
+    this->setAcceptDrops(true);
+    this->setDropIndicatorShown(true);
+
+
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
-    this->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection	);
 
     this->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     this->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     setMouseTracking(true);
-    //    connect(this, SIGNAL(entered(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
     connect(this, SIGNAL(activated(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
 
@@ -92,6 +98,12 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
 
 
 //----------------------------------------------------------------------------------
+void OutlinerSpreadsheet::postConstructor()
+{
+    contextMenu->setMainTreeAbstractModel(absTreeModel);
+    contextMenu->setHub(hub);
+    contextMenu->postConstructor();
+}
 
 void OutlinerSpreadsheet::doNotWarnAgainSlot(bool dontWarnMe)
 {
@@ -119,18 +131,31 @@ void OutlinerSpreadsheet::columnResizedSlot(int index, int oldSize, int newSize)
 
 void OutlinerSpreadsheet::itemClicked(QModelIndex index)
 {
-    int itemId = index.data(Qt::UserRole).toInt();
+
     if (index.column() == 0){
-        if(wasClickedOnce == true && itemIdClickedOnce == itemId){
-            this->edit(index);
-            wasClickedOnce = false;
-            itemIdClickedOnce = 99999;
+
+        if(index != oldIndex){ // reset if change
+            oneClickCheckpoint = false;
+            twoClicksCheckpoint = false;
         }
+        oldIndex = index;
+
+
+        if( oneClickCheckpoint && twoClicksCheckpoint){ // third click
+            this->edit(index);
+            oneClickCheckpoint = false; //reset
+            twoClicksCheckpoint = false;
+        }
+        else if(oneClickCheckpoint == true){ // second click
+
+//             emit textAndNoteSignal(index.data(Qt::UserRole).toInt(), "open");
+            twoClicksCheckpoint = true;
+            }
         else
-            wasClickedOnce = true;
-        itemIdClickedOnce = itemId;
+            oneClickCheckpoint = true; // first click
+
     }
-    else if (index.column() == 1 || index.column() == 2|| index.column() == 3)
+    else if (index.column() == 1 || index.column() == 2|| index.column() == 3 || index.column() == 4|| index.column() == 5)
         this->edit(index);
 }
 
@@ -158,7 +183,7 @@ void OutlinerSpreadsheet::wheelEvent(QWheelEvent* event)
 
 
 
-    if(indexColumn == 1 || indexColumn == 2 || indexColumn == 3){
+    if(indexColumn == 1 || indexColumn == 2 || indexColumn == 3 || indexColumn == 5){
         //           this->setFocusProxy(this->indexWidget(index));
         this->setCurrentIndex(index);
         this->edit(index);
@@ -172,85 +197,34 @@ void OutlinerSpreadsheet::wheelEvent(QWheelEvent* event)
 
 void OutlinerSpreadsheet::contextMenuEvent(QContextMenuEvent *event)
 {
-    enteredItemId = this->model()->data(this->indexAt(event->pos()),Qt::UserRole ).toInt();
+    QModelIndex index = this->indexAt(event->pos());
+    if(!index.isValid())
+        return;
 
 
+    int enteredItemId = this->model()->data(index,Qt::UserRole ).toInt();
 
-    QMenu menu(this);
-    menu.addSeparator();
 
-    menu.addAction(renameAct);
-    menu.addAction(addItemNextAct);
-    menu.addAction(addChildAct);
-    menu.addAction(addSeparatorAct);
+    if(index.column() == 0){
+contextMenu->setId(enteredItemId);
 
-    menu.addSeparator();
+contextMenu->menu(MainTreeContextMenu::Rename
+                  | MainTreeContextMenu::Move | MainTreeContextMenu::Delete
+                 | MainTreeContextMenu::AddSheet | MainTreeContextMenu::Advanced)->exec(event->globalPos());
 
-    menu.addAction(moveUpAct);
-    menu.addAction(moveDownAct);
-
-    menu.addSeparator();
-
-    delItemMenu = menu.addMenu(tr("&Delete"));
-    delItemMenu->addAction(delYesAct);
-
-    menu.addSeparator();
-
-    advancedMenu = menu.addMenu(tr("&Advanced"));
-    advancedMenu->addAction(autoRenameChildsAct);
-    advancedMenu->addAction(addMultiAct);
-
-    menu.exec(event->globalPos());
+  }
 }
 
-void OutlinerSpreadsheet::prepareContextMenu()
-{
-
-    renameAct = new QAction(QIcon(":/pics/edit-rename.png"),tr("&Rename"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(renameAct, SIGNAL(triggered()), this, SLOT(rename()));
-
-    addItemNextAct = new QAction(QIcon(":/pics/folder-new.png"),tr("Add &next"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(addItemNextAct, SIGNAL(triggered()), this, SLOT(addItemNext()));
-
-    addChildAct = new QAction(QIcon(":/pics/document-new.png"),tr("Add &child"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(addChildAct, SIGNAL(triggered()), this, SLOT(addChild()));
-
-    addSeparatorAct = new QAction(QIcon(":/pics/insert-horizontal-rule.png"),tr("Add &scene break"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(addSeparatorAct, SIGNAL(triggered()), this, SLOT(addSeparator()));
-
-    moveUpAct = new QAction(QIcon(":/pics/arrow-up.png"),tr("Move Up"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(moveUpAct, SIGNAL(triggered()), this, SLOT(moveUp()));
-
-    moveDownAct = new QAction(QIcon(":/pics/arrow-down.png"),tr("Move Down"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(moveDownAct, SIGNAL(triggered()), this, SLOT(moveDown()));
-
-    delYesAct = new QAction(QIcon(":/pics/knotes_delete.png"),tr("C&onfirm"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(delYesAct, SIGNAL(triggered()), this, SLOT(removeItem()));
-
-    autoRenameChildsAct = new QAction(QIcon(":/pics/edit-rename.png"),tr("&Auto Rename Childs"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(autoRenameChildsAct, SIGNAL(triggered()), this, SLOT(autoRenameChilds()));
-
-    addMultiAct = new QAction(QIcon(":/pics/document-multiple.png"),tr("Add &X Children"), this);
-    //renameAct->setShortcuts(QKeySequence::Rename);
-    connect(addMultiAct, SIGNAL(triggered()), this, SLOT(addMulti()));
-
-
-
-}
 //--------------------------------------------------------------------------------
 
 void OutlinerSpreadsheet::itemEntered(QModelIndex index)
 {
+    if(!index.isValid())
+        return;
+
+enteredItemModelIndex = index;
     enteredItemId = this->model()->data(index,Qt::UserRole ).toInt();
-    //    qDebug() << "itemEntered";
+//        qDebug() << "itemEntered : " +  QString::number(enteredItemId);
 }
 
 
@@ -273,6 +247,15 @@ void OutlinerSpreadsheet::giveStyle()
 
     this->setStyleSheet(css);
 }
+
+void OutlinerSpreadsheet::finishStatusEdit()
+{
+    // only for status from delegate
+    this->commitData(this->indexWidget(enteredItemModelIndex));
+    this->closeEditor(this->indexWidget(enteredItemModelIndex),QAbstractItemDelegate::NoHint );
+}
+
+
 //--------------------------------------------------------------------------------
 void OutlinerSpreadsheet::applySettingsFromData()
 {
@@ -283,7 +266,7 @@ void OutlinerSpreadsheet::applySettingsFromData()
     QList<QModelIndex> indexList = this->allIndexesFromModel(this->model(), QModelIndex());
 
     foreach(const QModelIndex &index, indexList)
-        this->setExpanded(index, index.data(34).toBool());
+        this->setExpanded(index, index.data(39).toBool());
 
     connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)), Qt::UniqueConnection);
     connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)), Qt::UniqueConnection);
@@ -294,17 +277,11 @@ void OutlinerSpreadsheet::itemCollapsedSlot(QModelIndex index)
 {
 
 
-    //    QModelIndex baseIndex = this->model()->index(index.row(),index.column(), index.parent());
-    //    OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(baseIndex.internalPointer());
-
     int itemId = index.data(Qt::UserRole).toInt();
 
     QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("spreadSheetExpanded", "no");
+    element.setAttribute("outlinerExpanded", "no");
 
-    //    item->setIsExpanded(false);
-
-    //    emit dataChanged(baseIndex,baseIndex);
 
     hub->addToSaveQueue();
 }
@@ -315,18 +292,12 @@ void OutlinerSpreadsheet::itemExpandedSlot(QModelIndex index)
 {
 
 
-    //    QModelIndex baseIndex = this->model()->index(index.row(),index.column(), index.parent());
-    //    OutlinerTreeItem *item = static_cast<OutlinerTreeItem*>(baseIndex.internalPointer());
-
     int itemId = index.data(Qt::UserRole).toInt();
 
     QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("spreadSheetExpanded", "yes");
+    element.setAttribute("outlinerExpanded", "yes");
 
 
-    //    item->setIsExpanded(true);
-
-    //    emit dataChanged(baseIndex,baseIndex);
 
     hub->addToSaveQueue();
 
@@ -353,3 +324,92 @@ QList<QModelIndex> OutlinerSpreadsheet::allIndexesFromModel(QAbstractItemModel *
     }
     return indexList;
 }
+
+
+
+
+//-----------------------------------------------------------------------------------------
+void OutlinerSpreadsheet::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+
+    m_selectedIndexes = this->selectedIndexes();
+
+
+    QTreeView::selectionChanged(selected, deselected);
+}
+
+
+//-----------------------------------------------------------------------------------------
+void OutlinerSpreadsheet::dragEnterEvent( QDragEnterEvent *event )
+{
+
+
+    const QMimeData *data = event->mimeData();
+
+    if (data->hasFormat("application/x-plumecreator-maintreedata")){
+
+
+
+
+
+        QString numbersString = QString::fromUtf8(data->data("application/x-plumecreator-maintreedata"));
+        QStringList list = numbersString.split("-", QString::SkipEmptyParts);
+        QList<int> objectsList;
+        foreach(const QString &string, list)
+            objectsList.append(string.toInt());
+
+
+        int draggedInt = objectsList.first();
+
+        QModelIndexList indexList = this->model()->match(this->model()->index(0,0, this->rootIndex()), Qt::UserRole, draggedInt, 1, Qt::MatchExactly | Qt::MatchRecursive | Qt::MatchWrap);
+        if(indexList.isEmpty())
+            return;
+        qDebug() << "indexList.first().data(Qt::UserRole) : " + QString::number(indexList.first().data(Qt::UserRole).toInt());
+
+        draggedIndex = indexList.first();
+
+        emit modifyFlagsForDropsSignal(indexList.first().data(36).toString());
+
+
+
+
+        QTreeView::dragEnterEvent(event);
+    }
+
+
+}
+
+//-----------------------------------------------------------------------------------------
+void OutlinerSpreadsheet::dragLeaveEvent( QDragLeaveEvent *event )
+{
+    qDebug() << "drag leave event";
+
+    emit modifyFlagsForDropsSignal("nothing");
+    QTreeView::dragLeaveEvent(event);
+
+}
+//-----------------------------------------------------------------------------------------
+void OutlinerSpreadsheet::dragMoveEvent( QDragMoveEvent *event )
+{
+    //    qDebug() << "drag move event";
+
+    QTreeView::dragMoveEvent(event);
+
+}
+
+void OutlinerSpreadsheet::dropEvent(QDropEvent* event)
+{
+    qDebug() << "drop event";
+
+    QString type = draggedIndex.data(36).toString();
+
+
+    QTreeView::dropEvent(event);
+    emit modifyFlagsForDropsSignal("nothing");
+}
+
+
+
+
+//----------------------------------------------------------------------------------
+

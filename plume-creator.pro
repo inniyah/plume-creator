@@ -29,6 +29,9 @@ TARGET = plume-creator
 TARGET = Plume-Creator
 }
 
+CONFIG(beta_release) {
+TARGET = $$join(TARGET,,,_beta)
+}
 
 # dossier de zlib.h
 INCLUDEPATH += ./externals/zlib
@@ -54,15 +57,13 @@ src/notezone.cpp \
 src/texttab.cpp \
 src/textzone.cpp \
 src/timer.cpp \
-src/exporter.cpp \
+src/exporter/exporter.cpp \
 src/orientationbutton.cpp \
 src/menubar.cpp \
 #src/outliner/outline.cpp \
 #src/outliner/outlineitem.cpp \
 src/outliner/outlinerbase.cpp \
 src/outliner/outlinerspreadsheet.cpp \
-src/outliner/outlinerabstractmodel.cpp \
-src/outliner/outlinertreeitem.cpp \
 src/settingsdialog.cpp \
 src/editmenu.cpp \
 src/textstyles.cpp \
@@ -95,7 +96,19 @@ src/hub.cpp \
     src/texthighlighter.cpp \
     src/startcenter.cpp \
 #src/sounds.cpp
-    src/zipper/zipchecker.cpp
+    src/zipper/zipchecker.cpp \
+    src/mainTree/maintreeabstractmodel.cpp \
+    src/mainTree/maintreeitem.cpp \
+    src/workbench.cpp \
+    src/dockedTree/dockedtree.cpp \
+    src/dockedTree/dockedtreeproxy.cpp \
+    src/outliner/outlinerspreadsheetproxy.cpp \
+    src/mainTree/maintreecontextmenu.cpp \
+    src/dockedTree/dockedtrashtree.cpp \
+    src/dockedTree/dockedtrashtreeproxy.cpp \
+    src/outliner/outlineritemstatusdelegate.cpp \
+    src/exporter/exportertreeproxy.cpp \
+    src/exporter/exportertree.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -109,15 +122,13 @@ src/notezone.h \
 src/texttab.h \
 src/textzone.h \
 src/timer.h \
-src/exporter.h \
+src/exporter/exporter.h \
 src/orientationbutton.h \
 src/menubar.h \
 #src/outliner/outline.h \
 #src/outliner/outlineitem.h \
 src/outliner/outlinerbase.h \
 src/outliner/outlinerspreadsheet.h \
-src/outliner/outlinerabstractmodel.h \
-src/outliner/outlinertreeitem.h \
 src/settingsdialog.h \
 src/editmenu.h \
 src/textstyles.h \
@@ -150,7 +161,19 @@ src/hub.h \
     src/texthighlighter.h \
     src/startcenter.h \
 #src/sounds.h
-    src/zipper/zipchecker.h
+    src/zipper/zipchecker.h \
+    src/mainTree/maintreeabstractmodel.h \
+    src/mainTree/maintreeitem.h \
+    src/workbench.h \
+    src/dockedTree/dockedtree.h \
+    src/dockedTree/dockedtreeproxy.h \
+    src/outliner/outlinerspreadsheetproxy.h \
+    src/mainTree/maintreecontextmenu.h \
+    src/dockedTree/dockedtrashtree.h \
+    src/dockedTree/dockedtrashtreeproxy.h \
+    src/outliner/outlineritemstatusdelegate.h \
+    src/exporter/exportertreeproxy.h \
+    src/exporter/exportertree.h
 
 CODECFORTR = UTF-8
 
@@ -175,9 +198,10 @@ src/wordgoalprogressbar.ui \
     src/attend/attendmanager.ui \
     src/attend/attendsettings.ui \
     src/slimfindreplace.ui \
-    src/exporter.ui \
+    src/exporter/exporter.ui \
     src/startcenter.ui \
-    src/texttab.ui
+    src/texttab.ui \
+    src/dockedTree/dockedtreebase.ui
 
 RESOURCES += \
 translations/langs.qrc \

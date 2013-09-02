@@ -8,7 +8,7 @@ AttendSheetTreeProxyModel::AttendSheetTreeProxyModel(QObject *parent) :
 
 
 QVariant AttendSheetTreeProxyModel::headerData(int section, Qt::Orientation orientation,
-                                         int role) const
+                                               int role) const
 {
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -33,8 +33,8 @@ bool AttendSheetTreeProxyModel::filterAcceptsRow(int sourceRow,
 {
     QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
 
-//    if(!index0.isValid())
-//        return false;
+    //    if(!index0.isValid())
+    //        return false;
 
     AttendTreeItem *treeItem = static_cast<AttendTreeItem*>(index0.internalPointer());
     if(treeItem->isGroup()){         // groups
@@ -71,22 +71,51 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
     QDomElement root = treeDomDoc.documentElement();
 
     QDomNode m = root.firstChild();
-    while(!m.isNull()) { // book level
+    while(!m.isNull()) { // trash level
         QDomElement e = m.toElement(); // try to convert the node to an element.
         if(!e.isNull()) {
             domElementForNumber.insert(e.attribute("number", "0").toInt(), e);
 
             QDomNode n = m.firstChild();
-            while(!n.isNull()) { // chapter level
+            while(!n.isNull()) { // book level
                 QDomElement f = n.toElement(); // try to convert the node to an element.
                 if(!f.isNull()) {
                     domElementForNumber.insert(f.attribute("number", "0").toInt(), f);
 
                     QDomNode o = n.firstChild();
-                    while(!o.isNull()) { // scene level
+                    while(!o.isNull()) { // act level
                         QDomElement g = o.toElement(); // try to convert the node to an element.
                         if(!g.isNull()) {
                             domElementForNumber.insert(g.attribute("number", "0").toInt(), g);
+
+
+                            QDomNode p = o.firstChild();
+                            while(!p.isNull()) { // chapter level
+                                QDomElement q = p.toElement(); // try to convert the node to an element.
+                                if(!q.isNull()) {
+                                    domElementForNumber.insert(q.attribute("number", "0").toInt(), q);
+
+                                    QDomNode r = p.firstChild();
+                                    while(!r.isNull()) { // scene level
+                                        QDomElement s = r.toElement(); // try to convert the node to an element.
+                                        if(!s.isNull()) {
+                                            domElementForNumber.insert(s.attribute("number", "0").toInt(), s);
+
+
+
+                                        }
+                                        r = r.nextSibling();
+
+                                    }
+
+
+                                }
+                                p = p.nextSibling();
+
+                            }
+
+
+
 
                         }
                         o = o.nextSibling();
@@ -118,7 +147,7 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
 
     //set Header title :
     sheetName = openedElement.attribute("name", tr("Sheet"));
-this->headerDataChanged(Qt::Horizontal,1,1);
+    this->headerDataChanged(Qt::Horizontal,1,1);
 
     invalidateFilter();
     nothingWasClicked = true;
@@ -144,13 +173,18 @@ void AttendSheetTreeProxyModel::removeSheetObjects(QList<int> objectsList)
 
     openedElement.setAttribute("attend", attendString);
 
-//    qDebug() << "REMOVE :";
-//    qDebug() << "openedElement : " << openedElement.tagName() << "  " << openedElement.attribute("name", "null");
-//    qDebug() << "attendList.size : " << QString::number(attendList.size());
-//    qDebug() << "attendString : " << attendString;
-//    qDebug() << hub->mainTreeDomDoc().toString(5);
 
+
+    QString povString;
+    foreach(const int &number, povList)
+        povString.append("-" + QString::number(number));
+
+    openedElement.setAttribute("pov", povString);
+
+
+    hub->resetSpreadsheetOutliner();
     hub->addToSaveQueue();
+    this->dataChanged(clickedProxyIndex.parent(),clickedProxyIndex);
 
     invalidateFilter();
     nothingWasClicked = true;
@@ -178,10 +212,10 @@ void AttendSheetTreeProxyModel::addSheetObjects(QList<int> objectsList)
 
     openedElement.setAttribute("attend", attendString);
 
-//    qDebug() << "ADD :";
-//    qDebug() << "attendList.size : " << QString::number(attendList.size());
-//    qDebug() << "attendString : " << attendString;
-//    qDebug() << hub->mainTreeDomDoc().toString(5);
+    //    qDebug() << "ADD :";
+    //    qDebug() << "attendList.size : " << QString::number(attendList.size());
+    //    qDebug() << "attendString : " << attendString;
+    //    qDebug() << hub->mainTreeDomDoc().toString(5);
 
     hub->addToSaveQueue();
 
@@ -243,7 +277,7 @@ bool AttendSheetTreeProxyModel::dropMimeData ( const QMimeData * data, Qt::DropA
 
     if (data->hasFormat("application/x-plumecreator-attendnumberdata-fromglobaltree"))
     {
-//        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
+        //        qDebug() << "to sheet : data->text :  "<< QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
 
 
         QString numbersString = QString::fromUtf8(data->data("application/x-plumecreator-attendnumberdata-fromglobaltree"));
@@ -351,10 +385,11 @@ void AttendSheetTreeProxyModel::setPointOfView()
         povString.append("-" + QString::number(number));
 
     openedElement.setAttribute("pov", povString);
-//    qDebug() << "povString : " << povString;
+
     hub->addToSaveQueue();
 
 
+    hub->resetSpreadsheetOutliner();
 
     this->dataChanged(clickedProxyIndex.parent(),clickedProxyIndex);
 

@@ -32,6 +32,12 @@
 #include "settingsdialog.h"
 #include "editmenu.h"
 #include "startcenter.h"
+#include "prjmanager.h"
+#include "newprojectwizard.h"
+#include "settingsdialog.h"
+#include "exporter/exporter.h"
+#include "findreplace.h"
+#include "mainTree/maintreeabstractmodel.h"
 
 //
 class MenuBar : public QFrame
@@ -122,6 +128,9 @@ void setAttendDockAct(bool attendVisible){showAttendDockAct->setChecked(attendVi
 
 void setMenusEnabled(bool enabledBool);
 
+void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
+
+
 private slots:
 
     void newProject();
@@ -144,7 +153,9 @@ private slots:
 
 private:
     Hub *hub;
+    MainTreeAbstractModel  *absTreeModel;
 
+    QWidget *parentWidget;
 QString currentVersion;
 bool projectAlreadyOpened;
 

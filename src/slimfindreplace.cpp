@@ -80,7 +80,7 @@ void SlimFindReplace::closeSlot()
     this->saveConfig();
     document->textHighlighter()->setTextToHighlight("");
 
-    this->close();
+    this->hide();
 }
 
 

@@ -26,15 +26,25 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
-      <widget class="QTreeWidget" name="tree">
-       <attribute name="headerVisible">
+      <widget class="ExporterTree" name="tree">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
+       </property>
+       <property name="indentation">
+        <number>10</number>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+       <attribute name="headerDefaultSectionSize">
+        <number>0</number>
        </attribute>
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
       </widget>
      </item>
      <item>
@@ -111,7 +121,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -335,6 +345,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ExporterTree</class>
+   <extends>QTreeView</extends>
+   <header location="global">exporter/exportertree.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

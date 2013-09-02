@@ -27,7 +27,8 @@
 #include <QWidget>
 
 #include "hub.h"
-
+#include "mainTree/maintreecontextmenu.h"
+#include "mainTree/maintreeabstractmodel.h"
 
 class OutlinerSpreadsheet : public QTreeView
 {
@@ -35,42 +36,36 @@ class OutlinerSpreadsheet : public QTreeView
 public:
     explicit OutlinerSpreadsheet(QWidget *parent = 0);
     
+    void postConstructor();
 protected :
-    //    void	updateGeometries ();
-    //    void	paintEvent ( QPaintEvent * event );
+
     void focusInEvent ( QFocusEvent * event );
-    //        void mouseEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
     void contextMenuEvent(QContextMenuEvent *event);
+    void selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
 
 
 signals:
-    void otoM_actionSignal(QString action, int idNumber);
     void columnOneResizedSignal(int newSize);
     void columnTwoResizedSignal(int newSize);
+    void modifyFlagsForDropsSignal(QString type);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
-    void temp_moveUp(){moveUp();}
-    void temp_moveDown(){moveDown();}
+    void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
     void applySettingsFromData();
     void giveStyle();
+    void finishStatusEdit();
 
 private slots:
     void doNotWarnAgainSlot(bool dontWarnMe);
     void itemClicked(QModelIndex index);
-    void prepareContextMenu();
     void itemEntered(QModelIndex index);
 
-    void rename(){emit otoM_actionSignal("rename", enteredItemId);}
-    void addItemNext(){emit otoM_actionSignal("addItemNext", enteredItemId);}
-    void addChild(){emit otoM_actionSignal("addChild", enteredItemId);}
-    void addSeparator(){emit otoM_actionSignal("addSeparator", enteredItemId);}
-    void moveUp(){emit otoM_actionSignal("moveUp", enteredItemId);}
-    void moveDown(){emit otoM_actionSignal("moveDown", enteredItemId);}
-    void removeItem(){emit otoM_actionSignal("removeItem", enteredItemId);}
-    void autoRenameChilds(){emit otoM_actionSignal("autoRenameChilds", enteredItemId);}
-    void addMulti(){emit otoM_actionSignal("addMulti", enteredItemId);}
 
     void columnResizedSlot(int index,int oldSize,int newSize);
 
@@ -86,9 +81,12 @@ private:
     QList<QModelIndex> allIndexesFromModel(QAbstractItemModel *model, const QModelIndex &parent);
 
     Hub *hub;
+    MainTreeAbstractModel  *absTreeModel;
+
     bool wasClickedOnce;
     int itemIdClickedOnce;
     int enteredItemId;
+QModelIndex enteredItemModelIndex;
 
     QAction *renameAct,
     *addItemNextAct,
@@ -101,6 +99,25 @@ private:
     *addMultiAct;
     QMenu *delItemMenu,
     *advancedMenu;
+
+
+
+
+    MainTreeContextMenu *contextMenu;
+    QModelIndexList m_selectedIndexes;
+    QModelIndex draggedIndex;
+
+    // clicks :
+    bool oneClickCheckpoint, twoClicksCheckpoint, threeClicksCheckpoint;
+    QModelIndex oldIndex;
+
+
+
+
+
+
 };
+
+
 
 #endif // OUTLINERSPREADSHEET_H

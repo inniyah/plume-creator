@@ -744,6 +744,7 @@ void NoteZone::cursorPositionChangedSlot()
 
 void NoteZone::setCursorPos(int pos)
 {
+    this->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
     for(int i = 0; i < pos ; i++)
         moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
 

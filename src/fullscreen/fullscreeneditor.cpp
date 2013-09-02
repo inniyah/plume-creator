@@ -2,12 +2,14 @@
 #include "ui_fullscreeneditor.h"
 
 FullscreenEditor::FullscreenEditor(QWidget *parent) :
-    QWidget(parent), treeString("0"),
+    QWidget(parent), firstLaunch(true), currentCursorPos(0),
     ui(new Ui::FullscreenEditor)
 {
     ui->setupUi(this);
 
+this->setAttribute(Qt::WA_DeleteOnClose);
     setWindowModality(Qt::ApplicationModal);
+
 
 
 }
@@ -16,12 +18,26 @@ FullscreenEditor::~FullscreenEditor()
 {
 
     this->restoreDoc();
+    emit openSheetOnMainWindow(numberOfCurrentFullscreenSheet, currentCursorPos);
+
 
     delete ui;
 }
 //------------------------------------------------------------------------------------
 void FullscreenEditor::postConstructor()
 {
+    clonedDoc = new MainTextDocument;
+    clonedNoteDoc = new MainTextDocument;
+            clonedSynDoc = new MainTextDocument;
+
+            synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
+            fullSynEdit = new FullTextZone(synWidget);
+            fullSynEdit->setHub(hub);
+
+            noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
+            fullNoteEdit = new FullTextZone(noteWidget);
+            fullNoteEdit->setHub(hub);
+
     ui->progressBar->setHub(hub);
     ui->progressBar->postConstructor();
     ui->progressBar->init();
@@ -34,6 +50,8 @@ void FullscreenEditor::postConstructor()
     createNotesMenu();
 
     createOptionMenu();
+
+    createTreeView();
 
     //        QPushButton *showSynButton = new QPushButton(tr("Synopsis"), this);
     //        connect(showSynButton, SIGNAL(clicked()),this,SLOT(showSyn()));
@@ -57,7 +75,7 @@ void FullscreenEditor::postConstructor()
 
     mouseTimer = new QTimer(this);
     connect(mouseTimer, SIGNAL(timeout()), this, SLOT(hideMouse()));
-    mouseTimer->start(3000);
+    mouseTimer->start(6000);
 
     ui->timerBuddyLabel->hide();
     ui->timerLabel->hide();
@@ -121,6 +139,7 @@ void FullscreenEditor::setText(MainTextDocument *doc)
 
 
     //for wordcount goal :
+    clonedDoc->connectWordCount();
 
     connect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(wordCountChangedSlot(QString,int,int)), Qt::UniqueConnection);
 
@@ -231,6 +250,8 @@ void FullscreenEditor::setTimer(QString text)
 
 void FullscreenEditor::closeEvent(QCloseEvent* event)
 {
+    saveConfig();
+
     synWidget->close();
     noteWidget->close();
     mouseTimer->stop();
@@ -321,10 +342,7 @@ void FullscreenEditor::setSyn(MainTextDocument *doc)
 {
     originalSynDoc = doc;
 
-    synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
-
     fullSynEdit = new FullTextZone(synWidget);
-    fullSynEdit->setHub(hub);
 
     clonedSynDoc = new MainTextDocument();
     clonedSynDoc->setHtml(doc->toHtml());
@@ -340,6 +358,7 @@ void FullscreenEditor::setSyn(MainTextDocument *doc)
     //for autosave :
 
     connect(clonedSynDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()), Qt::UniqueConnection);
+    connect(fullSynEdit, SIGNAL(cursorPositionChangedSignal(int)), this, SLOT(synCursorPositionChangedSlot(int)), Qt::UniqueConnection);
 
     //    synDoc = doc;
     //    synCursorPos = cursorPos;
@@ -351,10 +370,8 @@ void FullscreenEditor::setNote(MainTextDocument *doc)
 {
     originalNoteDoc = doc;
 
-    noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
-
     fullNoteEdit = new FullTextZone(noteWidget);
-    fullNoteEdit->setHub(hub);
+
     clonedNoteDoc = new MainTextDocument();
     clonedNoteDoc->setHtml(doc->toHtml());
     fullNoteEdit->setDoc(clonedNoteDoc);
@@ -367,6 +384,7 @@ void FullscreenEditor::setNote(MainTextDocument *doc)
     noteWidget->setWindowTitle(tr("Notes"));
 
     connect(clonedNoteDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()), Qt::UniqueConnection);
+    connect(fullNoteEdit, SIGNAL(cursorPositionChangedSignal(int)), this, SLOT(noteCursorPositionChangedSlot(int)), Qt::UniqueConnection);
 
     //    noteDoc = doc;
     //    noteCursorPos = cursorPos;
@@ -468,6 +486,8 @@ void FullscreenEditor::cursorPositionChangedSlot()
     //    qDebug() << "currentStyleIndex : " << QString::number(currentStyleIndex);
     editWidget->setStyleSelectionSlot(currentStyleIndex);
 
+    currentCursorPos = tCursor.position();
+
 }
 
 
@@ -519,6 +539,17 @@ void FullscreenEditor::changeTextStyleSlot(int styleIndex)
     tCursor.mergeBlockFormat(blockFormat);
     tCursor.mergeCharFormat(charFormat);
     ui->fullTextEdit->mergeCurrentCharFormat(charFormat);
+
+}
+
+void FullscreenEditor::noteCursorPositionChangedSlot(int position)
+{
+currentNoteCursoPos = position;
+}
+
+void FullscreenEditor::synCursorPositionChangedSlot(int position)
+{
+    currentSynCursoPos = position;
 
 }
 
@@ -633,6 +664,7 @@ void FullscreenEditor::setTextBackColor()
     textBackColorString = "FullTextZone {background-color: rgb(" + r + ", " + g + ", " + b + ");"
             "border: 0px none black; border-radius: 0px;"
             "}"
+            "QToolButton#treeButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QPushButton#textBackColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
@@ -704,8 +736,8 @@ void FullscreenEditor::setAddOnColor()
             "QLabel#wordCountLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QLabel#wordCountBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QLabel#wordGoalLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
-            "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
-    "QComboBox#navigatorComboBox {color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QToolButton#treeButton {color: rgb(" + r + ", " + g + ", " + b + ");}"
+    "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
     //    "QToolButton {background-color: red; border: none;}"
     ;
@@ -753,10 +785,18 @@ void FullscreenEditor::applyConfig()
 
 
 
+    setTreeViewVisible(settings.value("FullTextArea/treeOpened", "false").toBool());
+
+
+
 }
 
 
+void FullscreenEditor::saveConfig()
+{
+    settings.setValue("FullTextArea/treeOpened",ui->treeView->isVisible());
 
+}
 
 
 
@@ -773,11 +813,27 @@ void FullscreenEditor::applyConfig()
 
 void FullscreenEditor::openBySheetNumber(int number)
 {
+    if(number == 0)
+        return;
 
-    disconnect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_navigatorComboBox_currentIndexChanged(QString)));
-    if(treeString != hub->mainTreeDomDoc().toString())
-        this->resetNavigatorTree();
-    connect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_navigatorComboBox_currentIndexChanged(QString)), Qt::UniqueConnection);
+clonedDoc->disconnectWordCount();
+    disconnect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(setWordCount(QString,int,int)));
+    disconnect(clonedDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
+    disconnect(ui->fullTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+    disconnect(fullNoteEdit, SIGNAL(cursorPositionChangedSignal(int)), this, SLOT(noteCursorPositionChangedSlot(int)));
+    disconnect(fullSynEdit, SIGNAL(cursorPositionChangedSignal(int)), this, SLOT(synCursorPositionChangedSlot(int)));
+    disconnect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(wordCountChangedSlot(QString,int,int)));
+
+    disconnect(clonedNoteDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
+
+    disconnect(clonedSynDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
+
+    if(firstLaunch == false)
+        restoreDoc();
+    firstLaunch = false;
+
+
+
 
 
     QList<MainTextDocument *> sheetsList = hub->mainTree_numForDocHash().keys(number);
@@ -807,17 +863,19 @@ void FullscreenEditor::openBySheetNumber(int number)
     }
 
 
-    disconnect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_navigatorComboBox_currentIndexChanged(int)));
-    ui->navigatorComboBox->setCurrentIndex(indexForNumber.key(number));
-    connect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_navigatorComboBox_currentIndexChanged(int)));
-
     numberOfCurrentFullscreenSheet = number;
+    ui->treeButton->setText(hub->mainTree_domElementForNumberHash().value(number).attribute("name", tr("Project")));
+
+
+    ui->fullTextEdit->setFocus();
+
 }
 
 
 
 void FullscreenEditor::setTextCursorPos(int pos)
 {
+    ui->fullTextEdit->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
     //set cursor position :
     for(int i = 0; i < pos ; i++)
         ui->fullTextEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
@@ -828,6 +886,7 @@ void FullscreenEditor::setTextCursorPos(int pos)
 
 void FullscreenEditor::setSynCursorPos(int pos)
 {
+    fullSynEdit->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
     //set cursor position :
     for(int i = 0; i < pos ; i++)
         fullSynEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
@@ -838,6 +897,7 @@ void FullscreenEditor::setSynCursorPos(int pos)
 
 void FullscreenEditor::setNoteCursorPos(int pos)
 {
+    fullNoteEdit->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
     //set cursor position :
     for(int i = 0; i < pos ; i++)
         fullNoteEdit->moveCursor(QTextCursor::NextCharacter, QTextCursor::MoveAnchor);
@@ -859,19 +919,58 @@ void FullscreenEditor::setNoteCursorPos(int pos)
 void FullscreenEditor::on_newButton_clicked()
 {
     emit newSheetSignal(numberOfCurrentFullscreenSheet);
-    resetNavigatorTree();
+    QApplication::processEvents();
     on_nextButton_clicked();
 }
 
+
+void FullscreenEditor::on_treeButton_toggled(bool checked)
+{
+this->setTreeViewVisible(checked);
+}
+
+void FullscreenEditor::setTreeViewVisible(bool isVisible)
+{
+
+    ui->treeView->setVisible(isVisible);
+    ui->treeButton->setChecked(isVisible);
+
+}
+
+void FullscreenEditor::createTreeView()
+{
+    ui->treeView->setHub(hub);
+ui->treeView->setMainTreeAbstractModel(absTreeModel);
+ui->treeView->postConstructor();
+
+
+    DockedTreeProxy *proxy = new DockedTreeProxy;
+    proxy->setHub(hub);
+    proxy->setSourceModel(absTreeModel);
+proxy->postConstructor();
+proxy->setSourceModel(absTreeModel);
+ui->treeView->setModel(proxy);
+
+    ui->treeView->setModel(proxy);
+    connect(absTreeModel, SIGNAL(applySettingsFromDataSignal()), ui->treeView, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+    connect(ui->treeView, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
+    connect(proxy, SIGNAL(resetAbsModelSignal()), absTreeModel, SLOT(resetAbsModel()), Qt::UniqueConnection);
+    ui->treeView->applySettingsFromData();
+
+
+    connect(ui->treeView, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(openBySheetNumber(int)), Qt::UniqueConnection);
+
+
+}
 void FullscreenEditor::on_prevButton_clicked()
 {
     //find directly before :
-    int prevNum = domElementForNumber.key(domElementForNumber.value(numberOfCurrentFullscreenSheet).previousSiblingElement(domElementForNumber.value(numberOfCurrentFullscreenSheet).tagName()));
+    int prevNum = hub->mainTree_domElementForNumberHash().key(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).previousSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
 
 
     //find before the father :
     if(prevNum == 0){
-        QDomElement father = domElementForNumber.value(numberOfCurrentFullscreenSheet).parentNode().toElement();
+        QDomElement father = hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
         QDomElement prevFather = father.previousSiblingElement(father.tagName());
         if(prevFather.isNull())
             return;
@@ -879,24 +978,23 @@ void FullscreenEditor::on_prevButton_clicked()
         //cancel :
         if(lastChild.isNull())
             return;
-        prevNum = domElementForNumber.key(lastChild);
+        prevNum = hub->mainTree_domElementForNumberHash().key(lastChild);
 
     }
 
-
-    ui->navigatorComboBox->setCurrentIndex(indexForNumber.key(prevNum));
+    this->openBySheetNumber(prevNum);
 }
 
 void FullscreenEditor::on_nextButton_clicked()
 {
     //find directly after :
 
-    int nextNum = domElementForNumber.key(domElementForNumber.value(numberOfCurrentFullscreenSheet).nextSiblingElement(domElementForNumber.value(numberOfCurrentFullscreenSheet).tagName()));
+    int nextNum = hub->mainTree_domElementForNumberHash().key(domElementForNumber.value(numberOfCurrentFullscreenSheet).nextSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
 
 
     //find after the father :
     if(nextNum == 0){
-        QDomElement father = domElementForNumber.value(numberOfCurrentFullscreenSheet).parentNode().toElement();
+        QDomElement father = hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
         QDomElement nextFather = father.nextSiblingElement(father.tagName());
         if(nextFather.isNull())
             return;
@@ -904,98 +1002,11 @@ void FullscreenEditor::on_nextButton_clicked()
         //cancel :
         if(firstChild.isNull())
             return;
-        nextNum = domElementForNumber.key(firstChild);
+        nextNum = hub->mainTree_domElementForNumberHash().key(firstChild);
     }
 
-
-    ui->navigatorComboBox->setCurrentIndex(indexForNumber.key(nextNum));
+this->openBySheetNumber(nextNum);
 
 }
 
 
-
-void FullscreenEditor::resetNavigatorTree()
-{
-
-    ui->navigatorComboBox->clear();
-
-
-    domElementForNumber.clear();
-    nameForNumber.clear();
-    indexForNumber.clear();
-    QList<int> numberList;
-    QStringList nameList;
-
-
-    QDomDocument treeDomDoc = hub->mainTreeDomDoc();
-    QDomElement root = treeDomDoc.documentElement();
-
-    QDomNode m = root.firstChild();
-    while(!m.isNull()) { // book level
-        QDomElement e = m.toElement(); // try to convert the node to an element.
-        if(!e.isNull()) {
-            domElementForNumber.insert(e.attribute("number", "0").toInt(), e);
-            numberList.append(e.attribute("number", "0").toInt());
-            nameList.append(e.attribute("name", "error"));
-            QDomNode n = m.firstChild();
-            while(!n.isNull()) { // chapter level
-                QDomElement f = n.toElement(); // try to convert the node to an element.
-                if(!f.isNull()) {
-                    domElementForNumber.insert(f.attribute("number", "0").toInt(), f);
-                    numberList.append(f.attribute("number", "0").toInt());
-                    nameList.append("  " + f.attribute("name", "error"));
-
-                    QDomNode o = n.firstChild();
-                    while(!o.isNull()) { // scene level
-                        QDomElement g = o.toElement(); // try to convert the node to an element.
-                        if(!g.isNull()) {
-                            domElementForNumber.insert(g.attribute("number", "0").toInt(), g);
-                            numberList.append(g.attribute("number", "0").toInt());
-                            nameList.append("    " + g.attribute("name", "error"));
-
-                        }
-                        o = o.nextSibling();
-
-                    }
-
-                }
-                n = n.nextSibling();
-            }
-        }
-        m = m.nextSibling();
-    }
-
-
-
-    treeString = hub->mainTreeDomDoc().toString();
-
-
-    for(int i = 0; i < numberList.size(); ++i)  {
-
-
-        nameForNumber.insert(i, nameList.at(i));
-        indexForNumber.insert(i, numberList.at(i));
-
-
-    }
-    disconnect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_navigatorComboBox_currentIndexChanged(int)));
-    ui->navigatorComboBox->addItems(nameList);
-    connect(ui->navigatorComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_navigatorComboBox_currentIndexChanged(int)));
-}
-
-
-void FullscreenEditor::on_navigatorComboBox_currentIndexChanged(const int index)
-{
-    disconnect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(setWordCount(QString,int,int)));
-    disconnect(clonedDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
-    disconnect(ui->fullTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
-    disconnect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(wordCountChangedSlot(QString,int,int)));
-
-    disconnect(clonedNoteDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
-
-    disconnect(clonedSynDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
-
-    restoreDoc();
-    openBySheetNumber(indexForNumber.value(index));
-
-}

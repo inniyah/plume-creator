@@ -44,6 +44,9 @@ public:
     int wordCount(){return wordCountEngine->wordCount();}
     TextHighlighter* textHighlighter();
 
+    void connectWordCount();
+    void disconnectWordCount();
+
 signals:
     void wordCountChanged(QString type, int id, int count);
 
@@ -58,6 +61,7 @@ private:
     TextHighlighter *highlighter;
     int itemId, m_cursorPos;
     QString m_docType;
+    bool isWordCountEnabled;
 
 };
 

@@ -28,18 +28,20 @@
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
-//
+
 int main(int argc, char *argv[])
 {
+
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
-
     instance.setApplicationVersion(VERSIONSTR);
+
 
     QString message=argv[1];
 
     if (instance.sendMessage(message))
         return 0;
+
 
 
 
@@ -121,6 +123,8 @@ int main(int argc, char *argv[])
         iniSettings.setValue("Settings/isMovedtoIniFile", true);
     }
     QSettings::setDefaultFormat(QSettings::IniFormat);
+
+
 
 
 

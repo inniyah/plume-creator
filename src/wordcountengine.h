@@ -37,12 +37,13 @@ signals:
     void wordCountChanged(int);
 
 public slots:
+    void update();
 
 private slots:
-    void update();
     void updateCursorPosition(QTextCursor textCursor);
 private:
-    int m_wordCount, preBlockCount, preBlockNum, blockNum, wordCountWithoutBlock;
+    int m_wordCount, preBlockCount, preBlockNum,
+    blockNum, wordCountWithoutBlock;
     QTextDocument *m_doc;
 };
 

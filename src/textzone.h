@@ -76,6 +76,7 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void pasteWithoutFormatting();
     void bold(bool boldBool);
     void italic(bool italBool);
     //    void leftAlign(bool leftBool);
@@ -104,7 +105,7 @@ private:
     QAction *redoAct;
     QAction *cutAct;
     QAction *copyAct;
-    QAction *pasteAct;
+    QAction *pasteAct, *pasteWithoutFormattingAct;
     QAction *boldAct;
     QAction *italicAct;
     QAction *manageStylesAct;
@@ -125,7 +126,7 @@ private:
     bool showScrollbar;
 
     bool preventDoubleSpaceOption;
-
+bool forceCopyWithoutFormatting;
     QList<QAction*> m_actions;
 
 

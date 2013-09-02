@@ -43,6 +43,7 @@ protected:
 signals:
     void projectWordCount(int count);
     void bookWordCount(int count);
+    void actWordCount(int count);
     void chapterWordCount(int count);
     void sceneWordCount(int count);
     void currentSheetWordCount(int count);
