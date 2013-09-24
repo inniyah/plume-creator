@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2012 by Cyril Jacquet                                   *
- *   cyril.jacquet@plume-creator.eu                                                 *
+ *   cyril.jacquet@plume-creator.eu                                        *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -35,7 +35,8 @@ public:
     enum Tree {
            DockedTree = 0x0,
            Outliner = 0x1,
-           Exporter = 0x2
+        Exporter = 0x2,
+        FindReplace = 0x4
        };
        Q_DECLARE_FLAGS(Trees, Tree)
 
@@ -78,8 +79,8 @@ public:
     QString badge() const;
     void setBadge(const QString &value);
 
-    Qt::CheckState checkState() const;
-    void setCheckState(const Qt::CheckState &checkState);
+    Qt::CheckState checkState(MainTreeItem::Trees trees  = MainTreeItem::DockedTree) const;
+    void setCheckState(const Qt::CheckState &checkState, MainTreeItem::Trees trees  = MainTreeItem::DockedTree);
 
 
 
@@ -96,14 +97,12 @@ private:
     MainTreeItem *m_parentItem;
     int itemId;
     QStringList m_povList;
-    bool m_isExpandedInDockedTree;
-    bool m_isExpandedInOutliner;
-    bool m_isExpandedInExporter;
+    bool m_isExpandedInDockedTree, m_isExpandedInOutliner, m_isExpandedInExporter, m_isExpandedInFindReplace;
+    Qt::CheckState m_exporterCheckState, m_findReplaceCheckState;
     QString m_type;
     bool m_isTrashed;
     int m_status;
     QString m_badge;
-    Qt::CheckState m_checkState;
     QModelIndex m_index;
 
 };

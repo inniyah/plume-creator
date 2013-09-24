@@ -4,7 +4,7 @@ DockedTree::DockedTree(QWidget *parent) :
     QTreeView(parent)
 {
 
-    contextMenu = new MainTreeContextMenu(this, this);
+
 
 
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
@@ -19,9 +19,7 @@ DockedTree::DockedTree(QWidget *parent) :
 
 void DockedTree::postConstructor()
 {
-    contextMenu->setMainTreeAbstractModel(absTreeModel);
-    contextMenu->setHub(hub);
-    contextMenu->postConstructor();
+
 
 }
 
@@ -46,14 +44,12 @@ void DockedTree::itemCollapsedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
 
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("dockedTreeExpanded", "no");
 
-    this->update(index);
+    this->model()->setData(index, false, Qt::DecorationRole );
+      this->update(index);
 
-    hub->addToSaveQueue();
+
 }
 
 //--------------------------------------------------------------------------------
@@ -62,13 +58,9 @@ void DockedTree::itemExpandedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
+  this->model()->setData(index, true, Qt::DecorationRole );
+    this->update(index);
 
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("dockedTreeExpanded", "yes");
-
-
-    hub->addToSaveQueue();
 
 }
 //-----------------------------------------------------------------------------------------
@@ -189,6 +181,7 @@ void DockedTree::itemClicked(QModelIndex index)
         else if(oneClickCheckpoint == true){ // second click
 
              emit textAndNoteSignal(index.data(Qt::UserRole).toInt(), "open");
+            emit currentOpenedSheetSignal(index.data(Qt::UserRole).toInt());
             twoClicksCheckpoint = true;
             }
         else
@@ -199,6 +192,12 @@ void DockedTree::itemClicked(QModelIndex index)
 //----------------------------------------------------------------------------------
 void DockedTree::contextMenuEvent(QContextMenuEvent *event)
 {
+    MainTreeContextMenu *contextMenu = new MainTreeContextMenu(this, this);
+    contextMenu->setMainTreeAbstractModel(absTreeModel);
+    contextMenu->setHub(hub);
+    contextMenu->postConstructor();
+
+
     QModelIndex index = this->indexAt(event->pos());
     if(!index.isValid()){
         return;
@@ -213,8 +212,9 @@ contextMenu->setId(enteredItemId);
 contextMenu->menu(MainTreeContextMenu::Rename | MainTreeContextMenu::Badge
                   | MainTreeContextMenu::Move | MainTreeContextMenu::Delete
                  | MainTreeContextMenu::AddSheet | MainTreeContextMenu::Advanced
-                  /*| MainTreeContextMenu::Status*/)->exec(event->globalPos());
+                  | MainTreeContextMenu::Status)->exec(event->globalPos());
 
+delete contextMenu;
 
 }
 

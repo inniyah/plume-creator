@@ -69,6 +69,8 @@ void FullscreenEditor::postConstructor()
 
     connect(ui->fullTextEdit, SIGNAL(quitFullScreen()),this,SLOT(close()));
     connect(editWidget, SIGNAL(styleSelectedSignal(int)), this, SLOT(changeTextStyleSlot(int)));
+    connect(ui->treeView, SIGNAL(currentOpenedSheetSignal(int)),absTreeModel, SLOT(  modifyDataForOpenedSheetMarker(int)), Qt::UniqueConnection);
+    connect(this, SIGNAL(currentOpenedSheetSignal(int)),absTreeModel, SLOT(  modifyDataForOpenedSheetMarker(int)), Qt::UniqueConnection);
 
     applyConfig();
 
@@ -393,6 +395,8 @@ void FullscreenEditor::setNote(MainTextDocument *doc)
 void FullscreenEditor::showSyn()
 {
     synWidget->show();
+
+
 }
 //----------------------------------------------------------------------------------------
 void FullscreenEditor::showNote()
@@ -865,6 +869,7 @@ clonedDoc->disconnectWordCount();
 
     numberOfCurrentFullscreenSheet = number;
     ui->treeButton->setText(hub->mainTree_domElementForNumberHash().value(number).attribute("name", tr("Project")));
+    emit currentOpenedSheetSignal(number);
 
 
     ui->fullTextEdit->setFocus();
@@ -989,7 +994,7 @@ void FullscreenEditor::on_nextButton_clicked()
 {
     //find directly after :
 
-    int nextNum = hub->mainTree_domElementForNumberHash().key(domElementForNumber.value(numberOfCurrentFullscreenSheet).nextSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
+    int nextNum = hub->mainTree_domElementForNumberHash().key(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).nextSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
 
 
     //find after the father :

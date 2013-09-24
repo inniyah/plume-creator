@@ -73,8 +73,8 @@ private:
     QHash<int, QDomElement> domElementForNumber;
     QDomElement root;
     int numberOfDomElements;
-    QStringList *titlesList;
-    QList<int> *numberList;
+    QStringList namesList;
+    QList<int> numberList;
     QHash<QTextDocument *, int> numForDoc;
 
     QList<AttendTreeItem *> *treeGroupItemList;

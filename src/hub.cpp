@@ -3,7 +3,7 @@
 Hub::Hub(QWidget *parent) :
     QWidget(parent), refreshIsLocked(false), projectOpened(false),
     saveStack(0), m_currentSheetNumber(-1), m_wordGoal(1000), m_achievedWordGoal(0), m_baseWordCount(0),
-    m_currentProjectSettingArrayNumber(9999)
+    m_currentProjectSettingArrayNumber(9999), m_userDict(QString())
 {
     wcThread = new WordCountEngineThread(this);    // wordCount thread
     zipChecker = new ZipChecker(this);
@@ -263,6 +263,22 @@ void Hub::set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElem
             emit attendTree_domElementForNumberHashChanged();
 }
 
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+
+QStringList Hub::attendTree_namesList()
+{
+    return m_namesList;
+}
+
+void Hub::set_attendTree_namesList(QStringList namesList)
+{
+    m_namesList = namesList;
+
+    emit attendTree_namesListChanged(namesList);
+}
+
 
 
 
@@ -398,8 +414,33 @@ void Hub::calculatWordCountGoalDelta(int projectCount)
 
 }
 
+//--------------------------------------------------------------------------------
+
+QString Hub::userDict()
+{
+    return m_userDict;
+}
+
+void Hub::setUserDict(QString userDict)
+{
+    m_userDict = userDict;
 
 
+    // send to all :
+    emit spellDictsChangedSignal(m_spellDictPath , m_userDict);
+
+this->addToSaveQueue();
+}
+//--------------------------------------------------------------------------------
+QString Hub::spellDictPath()
+{
+    return m_spellDictPath;
+}
+
+void Hub::setSpellDictPath(QString spellDictPath)
+{
+    m_spellDictPath = spellDictPath;
+}
 
 
 
@@ -488,12 +529,14 @@ bool Hub::startProject(QString file)
         else
         {
             //remove the .plume if it exists
-            QFile oldFile(file.remove("_backup"));
+            QString oldFileName = file;
+            oldFileName.remove("_backup");
+            QFile oldFile(oldFileName);
             if(oldFile.exists())
                 oldFile.remove();
             //replace it by the backup
             QFile bckFile(file);
-            bckFile.rename(file.remove("_backup"));
+             bckFile.rename(file.remove("_backup"));
 
             file = bckFile.fileName();
         }
@@ -545,11 +588,25 @@ bool Hub::startProject(QString file)
 
 
 
+    //  connecting :
 
     connectAllSheetsToWordCountThread();
+    connectAllSheetsToSpellChecker();
 
+    // setting spellchecking
+    QSettings settings;
+    QString defaultDict;
+    if(!SpellChecker::dictsList().isEmpty())
+        defaultDict = SpellChecker::dictsList().begin().key();
+    else
+        defaultDict = "";
 
+    QString dict = settings.value("SpellChecking/lang", defaultDict).toString();
+    if(!dict.isEmpty()){
+        dict =  SpellChecker::dictsList().key(dict);
 
+        this->spellDictsChangedSlot(dict);
+    }
 
 
     emit openProjectSignal();
@@ -558,7 +615,7 @@ bool Hub::startProject(QString file)
     projectOpened = true;
 
     // wordCount goal :
-QApplication::processEvents();
+    QApplication::processEvents();
 
     this->setBaseWordCount(wcThread->projectWordCount());
     this->setAchievedWordGoal(0);
@@ -677,6 +734,7 @@ bool Hub::loadTemp()
     updater.checkAttendanceFile(projectWorkingPath + "/tree");
     updater.checkTreeFile(projectWorkingPath + "/tree");
     updater.checkInfoFile(projectWorkingPath + "/tree");
+
 
 
     //    qDebug() << "loading temporary files";
@@ -843,12 +901,37 @@ bool Hub::loadTemp()
 
 
     //    QDir dir(projectWorkingPath);
-    QStringList dirList = zipChecker->list();
+    //    QStringList dirList = zipChecker->list();
     //    dirList = dir.entryList();
+
+
+
+
+    // user dictionary :
+    // if user dict file gets too complex, add it to FileUpdater.h
+    QFile *userDictonaryFile = new QFile(projectWorkingPath + "/dicts/userDict.dict_plume");
+
+
+
+        if(userDictonaryFile->open(QIODevice::ReadOnly)) {
+        QTextStream stream(userDictonaryFile);
+        QString userString;
+        stream >> userString;
+        this->setUserDict(userString);
+
+        userDictonaryFile->close();
+    } else {
+//        qWarning() << "User dictionary in " << projectWorkingPath + "/dicts/userDict.dict_plume" << "could not be opened";
+            this->setUserDict("");
+    }
+
+
+    //end :
 
 
     QApplication::restoreOverrideCursor();
     this->unlockRefresh();
+
 
     return true;
 }
@@ -1122,6 +1205,18 @@ void Hub::saveTemp()
 
 
 
+    // user dictionary :
+    QDir dir(projectWorkingPath);
+    if(!dir.cd("dicts"))
+    dir.mkdir("dicts");
+
+    QFile *userDictonaryFile = new QFile(projectWorkingPath + "/dicts/userDict.dict_plume");
+    if(userDictonaryFile->open(QIODevice::Truncate | QFile::WriteOnly | QFile::Text)) {
+        userDictonaryFile->waitForBytesWritten(500);
+        QTextStream stream(userDictonaryFile);
+        stream << this->userDict();
+        userDictonaryFile->close();
+    }
 
 
 
@@ -1277,6 +1372,34 @@ void Hub::connectAllSheetsToWordCountThread()
 }
 
 
+void Hub::connectAllSheetsToSpellChecker()
+{
+
+    QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
+    while (i != m_mainTree_fileForDocHash.end()) {
+        MainTextDocument *doc = i.key();
+        if(doc->docType() == "text" /*|| doc->docType() == "synopsis" || doc->docType() == "note"*/)
+
+            connect(this, SIGNAL(spellDictsChangedSignal(QString, QString)), doc, SLOT(setDicts(QString, QString)), Qt::UniqueConnection);
+        connect(doc, SIGNAL(userDictSignal(QString)), this, SLOT(setUserDict(QString)), Qt::UniqueConnection);
+        connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), doc, SIGNAL(attendTree_namesListChanged(QStringList)), Qt::UniqueConnection);
+        ++i;
+    }
+
+}
+
+
+//--------------------------------------------------------------------------------------
+void Hub::spellDictsChangedSlot(QString dictionaryPath)
+{
+
+
+    this->setSpellDictPath(dictionaryPath);
+
+    // send to all docs:
+    emit spellDictsChangedSignal(dictionaryPath, this->userDict());
+
+}
 
 
 //--------------------------------------------------------------------------------------

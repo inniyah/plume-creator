@@ -277,13 +277,11 @@ void OutlinerSpreadsheet::itemCollapsedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
 
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("outlinerExpanded", "no");
+    this->model()->setData(index, false, Qt::DecorationRole );
+      this->update(index);
 
 
-    hub->addToSaveQueue();
 }
 
 //--------------------------------------------------------------------------------
@@ -292,14 +290,11 @@ void OutlinerSpreadsheet::itemExpandedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
 
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("outlinerExpanded", "yes");
-
+    this->model()->setData(index, true, Qt::DecorationRole );
+      this->update(index);
 
 
-    hub->addToSaveQueue();
 
 }
 //-----------------------------------------------------------------------------------------

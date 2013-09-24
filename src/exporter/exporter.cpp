@@ -9,30 +9,6 @@ Exporter::Exporter(QString mode, QWidget *parent) :
     ui->setupUi(this);
 
 
-
-
-    //dialog :
-
-    //tree with check
-
-    //name
-    //path
-    // odt or html
-    // story ?
-    // notes ?
-    // synopsis ?
-
-    // add export characters/items/places
-
-    //    setTitle(tr("New Project"));
-    //    setSubTitle(tr("Specify the path of your new project. "
-    //                   "Please note you must have writing rights in it. "
-    //                   "Plume Creator will create a basic skeleton."));
-
-
-    //setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo1.png"));
-
-
     dialogMode = mode;
 
 
@@ -188,9 +164,10 @@ void Exporter::setExistingDirectory()
 
 void Exporter::createTree()
 {
-    proxy = new ExporterTreeProxy;
+    proxy = new CheckableTreeProxy(this, "exporterExpanded", "exporterCheckState", MainTreeItem::Exporter);
     proxy->setHub(hub);
     proxy->setSourceModel(absTreeModel);
+    proxy->setTreeFlags(CheckableTreeProxy::SeparatorCheckable);
     ui->tree->setHub(hub);
     ui->tree->setMainTreeAbstractModel(absTreeModel);
     ui->tree->setModel(proxy);
@@ -223,7 +200,7 @@ QTextDocument * Exporter::buildFinalDoc()
     //search for checked items :
 
     QDomDocument domDoc = hub->mainTreeDomDoc();
-    root = domDoc.documentElement();
+    QDomElement root = domDoc.documentElement();
 
     QList<QDomElement> itemList = searchForCheckedItems(root);
 
@@ -789,7 +766,7 @@ void Exporter::exportInCSV()
     //search for checked items :
 
     QDomDocument domDoc = hub->mainTreeDomDoc();
-    root = domDoc.documentElement();
+    QDomElement root = domDoc.documentElement();
 
     QList<QDomElement> itemList = searchForCheckedItems(root);
 

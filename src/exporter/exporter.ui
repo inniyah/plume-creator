@@ -26,7 +26,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
-      <widget class="ExporterTree" name="tree">
+      <widget class="CheckableTree" name="tree">
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
@@ -39,8 +39,20 @@
        <property name="indentation">
         <number>10</number>
        </property>
+       <property name="uniformRowHeights">
+        <bool>true</bool>
+       </property>
+       <property name="animated">
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
        <property name="headerHidden">
         <bool>true</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
+        <bool>false</bool>
        </property>
        <attribute name="headerDefaultSectionSize">
         <number>0</number>
@@ -347,9 +359,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ExporterTree</class>
+   <class>CheckableTree</class>
    <extends>QTreeView</extends>
-   <header location="global">exporter/exportertree.h</header>
+   <header location="global">common/trees/checkabletree.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

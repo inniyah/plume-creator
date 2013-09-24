@@ -48,12 +48,12 @@ int MainTreeAbstractModel::rowCount(const QModelIndex &parent) const
 
 int MainTreeAbstractModel::columnCount(const QModelIndex &parent) const
 {
-//    if (parent.isValid())
-//        return static_cast<MainTreeItem*>(parent.internalPointer())->columnCount();
-//    else
-//        return rootItem->columnCount();
+    //    if (parent.isValid())
+    //        return static_cast<MainTreeItem*>(parent.internalPointer())->columnCount();
+    //    else
+    //        return rootItem->columnCount();
 
-        return 6;
+    return 6;
 
 }
 
@@ -117,11 +117,11 @@ QVariant MainTreeAbstractModel::data(const QModelIndex &index, int role) const
         MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
         return item->status();
     }
-//     badge :
-           if ((role == Qt::DisplayRole || role == Qt::EditRole) && col == 5){
-               MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
-               return item->badge();
-           }
+    //     badge :
+    if ((role == Qt::DisplayRole || role == Qt::EditRole) && col == 5){
+        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+        return item->badge();
+    }
 
     if (role == Qt::UserRole){
         MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
@@ -139,26 +139,6 @@ QVariant MainTreeAbstractModel::data(const QModelIndex &index, int role) const
         MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
         return item->isExpanded(MainTreeItem::Exporter);
     }
-   if (role == Qt::DecorationRole && col == 0){
-        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
-        if(item->type() == "book"  && !item->isExpanded())
-            return QPixmap(":/pics/tree/tree-book.png");
-        if(item->type() == "book" && item->isExpanded())
-            return QPixmap(":/pics/tree/tree-book-expanded.png");
-        if(item->type() == "act")
-            return QPixmap(":/pics/tree/tree-act.png");
-        if(item->type() == "chapter")
-            return QPixmap(":/pics/tree/tree-chapter.png");
-        if(item->type() == "scene")
-            return QPixmap(":/pics/tree/tree-scene.png");
-        if(item->type() == "separator")
-            return QPixmap("");
-        if(item->type() == "trash")
-            return QPixmap(":/pics/tree/tree-trash.png");
-        else
-            return QPixmap(":/pics/tree/tree-scene.png");
-
-    }
     if (role == 36){
         MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
         return item->type();
@@ -167,11 +147,25 @@ QVariant MainTreeAbstractModel::data(const QModelIndex &index, int role) const
         MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
         return item->isTrashed();
     }
-    else
-        return QVariant();
-    //}
+    if (role == Qt::BackgroundRole && col == 0){
+        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+        if(item->idNumber() == m_currentSheet)
+            return QBrush(Qt::lightGray);
+        else
+            return QVariant();
+    }
+    if (role == Qt::FontRole && col == 0){
+        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+        if(item->idNumber() == m_currentSheet){
+            QFont font;
+            font.setBold(true);
+            return font;
+        }
+    }
+    return QVariant();
 
 }
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -189,7 +183,7 @@ QModelIndex MainTreeAbstractModel::parent(const QModelIndex &index) const
 
 
     QModelIndex parentIndex = createIndex(parentItem->row(), 0, parentItem);
-   parentItem->setIndex(parentIndex);
+    parentItem->setIndex(parentIndex);
     return parentIndex;
 
     //    return QModelIndex();
@@ -216,7 +210,7 @@ QModelIndex MainTreeAbstractModel::index ( int row, int column, const QModelInde
 
     MainTreeItem *childItem = parentItem->child(row);
     if (childItem){
-       QModelIndex index = createIndex(row, column, childItem);
+        QModelIndex index = createIndex(row, column, childItem);
         childItem->setIndex(index);
         return index;
     }else
@@ -240,7 +234,7 @@ Qt::ItemFlags MainTreeAbstractModel::flags(const QModelIndex &index) const
         return defaultFlags;
 
     if (index.column() == 0 || index.column() == 1 || index.column() == 2 || index.column() == 3
-           || index.column() == 4 || index.column() == 5)
+            || index.column() == 4 || index.column() == 5)
         return defaultFlags;
 
     return defaultFlags;
@@ -322,61 +316,59 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
         }
 
 
-            emit dataChanged(index, index);
+        emit dataChanged(index, index);
 
-            updateMainTextDoc(noteDoc, index.data(Qt::UserRole).toInt());
+        updateMainTextDoc(noteDoc, index.data(Qt::UserRole).toInt());
 
-            hub->addToSaveQueue();
+        hub->addToSaveQueue();
 
-            return true;
+        return true;
 
-        }
-        if (index.isValid() && role == Qt::EditRole && index.column() == 4) {
-          // status :
+    }
+    if (index.isValid() && role == Qt::EditRole && index.column() == 4) {
+        // status :
 
 
-            MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
 
-            if (item->type() == "separator" || item->type() == "trash")//for not sheets
+        if (item->type() == "separator" || item->type() == "trash")//for not sheets
             return false;
 
-            QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
-            element.setAttribute("status", QString::number(value.toInt()));
+        QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
+        element.setAttribute("status", QString::number(value.toInt()));
 
-            item->setStatus(value.toInt());
-
-
-            emit dataChanged(index, index);
-
-            hub->addToSaveQueue();
-
-            return true;
-
-        }
-        if (index.isValid() && role == Qt::EditRole && index.column() == 5) {
-          // badge :
+        item->setStatus(value.toInt());
 
 
-            MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+        emit dataChanged(index, index);
 
-            if (item->type() == "trash")
+        hub->addToSaveQueue();
+
+        return true;
+
+    }
+    if (index.isValid() && role == Qt::EditRole && index.column() == 5) {
+        // badge :
+
+
+        MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+
+        if (item->type() == "trash")
             return false;
 
-            QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
-            element.setAttribute("badge", value.toString());
+        QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
+        element.setAttribute("badge", value.toString());
 
-            item->setBadge(value.toString());
-
-
-            emit dataChanged(index, index);
-
-            hub->addToSaveQueue();
-
-            return true;
-
-        }
+        item->setBadge(value.toString());
 
 
+        emit dataChanged(index, index);
+
+        hub->addToSaveQueue();
+
+        return true;
+
+    }
 
 
 
@@ -544,7 +536,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setType("book");
             treeItem->setStatus(child.attribute("status", "0").toInt());
             treeItem->setBadge(child.attribute("badge", ""));
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
 
             if(child.attribute("isTrashed", "no") == "yes")
                 treeItem->setIsTrashed(true);
@@ -563,6 +556,11 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
                 treeItem->setIsExpanded(true, MainTreeItem::Exporter);
             else
                 treeItem->setIsExpanded(false, MainTreeItem::Exporter);
+            if(child.attribute("findreplaceExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, MainTreeItem::FindReplace);
+            else
+                treeItem->setIsExpanded(false, MainTreeItem::FindReplace);
+
 
             if(child.parentNode().toElement().tagName() == "plume-tree")
                 rootItem->appendChild(treeItem);
@@ -614,7 +612,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setType("act");
             treeItem->setStatus(child.attribute("status", "0").toInt());
             treeItem->setBadge(child.attribute("badge", ""));
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
 
             if(child.attribute("isTrashed", "no") == "yes")
                 treeItem->setIsTrashed(true);
@@ -634,6 +633,11 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
                 treeItem->setIsExpanded(true, MainTreeItem::Exporter);
             else
                 treeItem->setIsExpanded(false, MainTreeItem::Exporter);
+            if(child.attribute("findreplaceExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, MainTreeItem::FindReplace);
+            else
+                treeItem->setIsExpanded(false, MainTreeItem::FindReplace);
+
 
             if(child.parentNode().toElement().tagName() == "book")
                 treeBookItemList->last()->appendChild(treeItem);
@@ -690,7 +694,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setType("chapter");
             treeItem->setStatus(child.attribute("status", "0").toInt());
             treeItem->setBadge(child.attribute("badge", ""));
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
 
             if(child.attribute("isTrashed", "no") == "yes")
                 treeItem->setIsTrashed(true);
@@ -710,6 +715,11 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
                 treeItem->setIsExpanded(true, MainTreeItem::Exporter);
             else
                 treeItem->setIsExpanded(false, MainTreeItem::Exporter);
+            if(child.attribute("findreplaceExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, MainTreeItem::FindReplace);
+            else
+                treeItem->setIsExpanded(false, MainTreeItem::FindReplace);
+
 
             if(child.parentNode().toElement().tagName() == "book")
                 treeBookItemList->last()->appendChild(treeItem);
@@ -769,7 +779,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setType("scene");
             treeItem->setStatus(child.attribute("status", "0").toInt());
             treeItem->setBadge(child.attribute("badge", ""));
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
 
             if(child.attribute("isTrashed", "no") == "yes")
                 treeItem->setIsTrashed(true);
@@ -789,6 +800,10 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
                 treeItem->setIsExpanded(true, MainTreeItem::Exporter);
             else
                 treeItem->setIsExpanded(false, MainTreeItem::Exporter);
+            if(child.attribute("findreplaceExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, MainTreeItem::FindReplace);
+            else
+                treeItem->setIsExpanded(false, MainTreeItem::FindReplace);
 
             if(child.parentNode().toElement().tagName() == "chapter")
                 treeChapterItemList->last()->appendChild(treeItem);
@@ -820,7 +835,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setType("separator");
             treeItem->setStatus(-1);
             treeItem->setBadge(child.attribute("badge", ""));
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
 
             if(child.attribute("isTrashed", "no") == "yes")
                 treeItem->setIsTrashed(true);
@@ -846,7 +862,8 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setIsTrashed(false);
             treeItem->setType("trash");
             treeItem->setStatus(-1);
-            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "0").toInt()));
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("exporterCheckState", "2").toInt()), MainTreeItem::Exporter);
+            treeItem->setCheckState(static_cast<Qt::CheckState>(child.attribute("findReplaceCheckState", "2").toInt()), MainTreeItem::FindReplace);
             rootItem->appendChild(treeItem);
 
 
@@ -862,6 +879,10 @@ void MainTreeAbstractModel::parseFolderElement(const QDomElement &element)
                 treeItem->setIsExpanded(true, MainTreeItem::Exporter);
             else
                 treeItem->setIsExpanded(false, MainTreeItem::Exporter);
+            if(child.attribute("findreplaceExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, MainTreeItem::FindReplace);
+            else
+                treeItem->setIsExpanded(false, MainTreeItem::FindReplace);
 
             treeTrashItemList->append(treeItem);
 
@@ -1169,12 +1190,12 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
         emit displayBadgeSignal(var.toBool());
 
     }
-else if(action == "setBadgeText"){
+    else if(action == "setBadgeText"){
         targetElement.setAttribute("badge", var.toString());
     }
     else if(action == "setStatus"){
-            targetElement.setAttribute("status", var.toString());
-        }
+        targetElement.setAttribute("status", var.toString());
+    }
 
 
     hub->addToSaveQueue();
@@ -1757,6 +1778,7 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         hub->set_mainTree_fileForDocHash(fileForDoc);
         hub->set_mainTree_numForDocHash(numForDoc);
         hub->connectAllSheetsToWordCountThread();
+        hub->connectAllSheetsToSpellChecker();
 
         //temporary :
         hub->addFileToZipList("text", number);
@@ -1769,22 +1791,22 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
 
     if(typeOfNewElement == "book"){
         newElement.setTagName("book");
-        newElement.setAttribute("name", tr("Book ")); //for config
+        newElement.setAttribute("name", tr("Book ", "add an empty space after so it's easier for the user to add quickly a number")); //for config
 
     }
     if(typeOfNewElement == "act"){
         newElement.setTagName("act");
-        newElement.setAttribute("name", tr("Act "));//for config
+        newElement.setAttribute("name", tr("Act ", "add an empty space after so it's easier for the user to add quickly a number"));//for config
 
     }
     if(typeOfNewElement == "chapter"){
         newElement.setTagName("chapter");
-        newElement.setAttribute("name", tr("Chapter "));//for config
+        newElement.setAttribute("name", tr("Chapter ", "add an empty space after so it's easier for the user to add quickly a number"));//for config
 
     }
     if(typeOfNewElement == "scene" ){
         newElement.setTagName("scene");
-        newElement.setAttribute("name", tr("Scene "));//for config
+        newElement.setAttribute("name", tr("Scene ", "add an empty space after so it's easier for the user to add quickly a number"));//for config
 
     }
     if(typeOfNewElement == "separator"){
@@ -1839,7 +1861,24 @@ QStringList MainTreeAbstractModel::giveStatusList()
 
 
 
-        return statusList;
+    return statusList;
+
+
+
+
+}
+
+
+void MainTreeAbstractModel::modifyDataForOpenedSheetMarker(const int currentSheet)
+{
+
+
+
+
+
+    m_currentSheet = currentSheet;
+
+
 
 
 
@@ -1848,3 +1887,27 @@ QStringList MainTreeAbstractModel::giveStatusList()
 
 
 
+QPixmap MainTreeAbstractModel::giveDecoration(QModelIndex index,MainTreeItem::Tree tree)
+{
+    MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+    if(item->type() == "book"  && (!item->isExpanded(tree) || item->childCount() == 0))
+        return QPixmap(":/pics/tree/tree-book.png");
+    if(item->type() == "book" && item->isExpanded(tree))
+        return QPixmap(":/pics/tree/tree-book-expanded.png");
+    if(item->type() == "act"  && (!item->isExpanded(tree) || item->childCount() == 0))
+        return QPixmap(":/pics/tree/tree-act.png");
+    if(item->type() == "act"  && item->isExpanded(tree))
+        return QPixmap(":/pics/tree/tree-act-expanded.png");
+    if(item->type() == "chapter"  && (!item->isExpanded(tree) || item->childCount() == 0))
+        return QPixmap(":/pics/tree/tree-chapter.png");
+    if(item->type() == "chapter"  && item->isExpanded(tree))
+        return QPixmap(":/pics/tree/tree-chapter-expanded.png");
+    if(item->type() == "scene")
+        return QPixmap(":/pics/tree/tree-scene.png");
+    if(item->type() == "separator")
+        return QPixmap("");
+    if(item->type() == "trash")
+        return QPixmap(":/pics/tree/tree-trash.png");
+    else
+        return QPixmap(":/pics/tree/tree-scene.png");
+}

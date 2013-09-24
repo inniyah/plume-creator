@@ -46,14 +46,11 @@ void DockedTrashTree::itemCollapsedSlot(QModelIndex index)
 {
 
 
-int itemId = index.data(Qt::UserRole).toInt();
 
-QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-element.setAttribute("dockedTreeExpanded", "no");
+    this->model()->setData(index, false, Qt::DecorationRole );
+      this->update(index);
 
-this->update(index);
 
-hub->addToSaveQueue();
 }
 
 //--------------------------------------------------------------------------------
@@ -62,13 +59,11 @@ void DockedTrashTree::itemExpandedSlot(QModelIndex index)
 {
 
 
-int itemId = index.data(Qt::UserRole).toInt();
 
-QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-element.setAttribute("dockedTreeExpanded", "yes");
+    this->model()->setData(index, true, Qt::DecorationRole );
+      this->update(index);
 
 
-hub->addToSaveQueue();
 
 }
 //-----------------------------------------------------------------------------------------
@@ -192,6 +187,8 @@ void DockedTrashTree::itemClicked(QModelIndex index)
     else if(oneClickCheckpoint == true){ // second click
 
          emit textAndNoteSignal(index.data(Qt::UserRole).toInt(), "open");
+        emit currentOpenedSheetSignal(index.data(Qt::UserRole).toInt());
+
         twoClicksCheckpoint = true;
         }
     else

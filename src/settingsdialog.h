@@ -61,6 +61,8 @@ signals:
     // style tab :
     void changeAllDocsTextStylesSignal();
 
+    // spell tab :
+    void spellDictsChangedSignal(const QString &dictionaryPath);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
@@ -71,6 +73,7 @@ private slots:
     void createGeneralTab();
     void createTextTab();
     void createStyleTab();
+    void createSpellingTab();
 
     void readSettings();
 
@@ -91,6 +94,20 @@ private slots:
     void removeStyle();
     void renameStyle();
 
+    //spelling tab :
+    void dictsChanged();
+
+    void spellCheckerComboBox_currentTextChanged();
+
+    void on_importWordsButton_clicked();
+
+    void on_renameWordButton_clicked();
+
+    void on_removeWordButton_clicked();
+
+    void on_addWordButton_clicked();
+
+void itemDataChanged(QListWidgetItem *item);
 private:
     Hub *hub;
     Ui::SettingsDialog *ui;
@@ -132,7 +149,9 @@ bool prevIsToolBarInStatusBar;
     bool styleInfoModified;
     int currentStyleIndex;
 
-
+    // spelling Tab :
+bool spellLangIsModified;
+QStringList userDictStringList;
 
 };
 

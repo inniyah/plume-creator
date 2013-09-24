@@ -88,8 +88,10 @@ bool MainTreeItem::isExpanded(MainTreeItem::Trees tree) const
         return m_isExpandedInDockedTree;
         if(tree.testFlag(MainTreeItem::Outliner))
             return m_isExpandedInOutliner;
-            if(tree.testFlag(MainTreeItem::Exporter))
-                return m_isExpandedInExporter;
+        if(tree.testFlag(MainTreeItem::Exporter))
+            return m_isExpandedInExporter;
+        if(tree.testFlag(MainTreeItem::FindReplace))
+            return m_isExpandedInFindReplace;
 
 
 
@@ -105,7 +107,9 @@ void MainTreeItem::setIsExpanded(bool isExpandedBool, MainTreeItem::Trees tree)
         if(tree.testFlag(MainTreeItem::Outliner))
              m_isExpandedInOutliner = isExpandedBool;
             if(tree.testFlag(MainTreeItem::Exporter))
-                 m_isExpandedInExporter = isExpandedBool;
+                 m_isExpandedInExporter = isExpandedBool;          
+            if(tree.testFlag(MainTreeItem::FindReplace))
+                m_isExpandedInFindReplace = isExpandedBool;
 
 
 
@@ -166,14 +170,21 @@ void MainTreeItem::setBadge(const QString &value)
     m_badge = value;
 }
 
-Qt::CheckState MainTreeItem::checkState() const
+Qt::CheckState MainTreeItem::checkState(MainTreeItem::Trees tree) const
 {
-    return m_checkState;
+    if(tree.testFlag(MainTreeItem::Exporter))
+         return m_exporterCheckState;
+    if(tree.testFlag(MainTreeItem::FindReplace))
+        return m_findReplaceCheckState;
 }
 
-void MainTreeItem::setCheckState(const Qt::CheckState &checkState)
+void MainTreeItem::setCheckState(const Qt::CheckState &checkState, MainTreeItem::Trees tree)
 {
-    m_checkState = checkState;
+    if(tree.testFlag(MainTreeItem::Exporter))
+         m_exporterCheckState = checkState;
+    if(tree.testFlag(MainTreeItem::FindReplace))
+        m_findReplaceCheckState = checkState;
+
 }
 
 

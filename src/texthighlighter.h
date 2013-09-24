@@ -21,13 +21,14 @@
 #define TEXTHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
+#include "spellchecker.h"
 
 
 class TextHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    TextHighlighter(QTextDocument *parentDoc = 0);
+    TextHighlighter(QTextDocument *parentDoc = 0, SpellChecker *spellCheck = new SpellChecker());
     void setTextToHighlight(QString string);
     void setCaseSensitivity(bool isCaseSensitive);
 
@@ -40,6 +41,7 @@ public slots:
 private:
     QString textToHighLight;
     Qt::CaseSensitivity sensitivity;
+    SpellChecker *spellChecker;
 };
 
 #endif // TEXTHIGHLIGHTER_H

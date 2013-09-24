@@ -39,12 +39,18 @@ class TextTab : public QWidget
     Q_OBJECT
 public:
     explicit TextTab(QWidget *parent = 0);
+    ~TextTab();
 
     bool openText(MainTextDocument *doc);
     //    bool saveText(QFile *textFile, QString name);
 
     //for wordcount:
     MainTextDocument* document();
+
+
+
+    int idNumber() const;
+    void setIdNumber(int idNumber);
 
 signals:
 
@@ -93,6 +99,9 @@ private slots:
 
     void on_splitter_splitterMoved(int pos, int index);
 
+    void modifySize(int modifier);
+
+
 private:
     Ui::TextTab *ui;
 
@@ -107,8 +116,8 @@ private:
     MainTextDocument *nextTextDocument;
 
     QString stackName;
-
-
+int m_idNumber;
+bool firstTime;
 };
 
 #endif // TEXTTAB_H

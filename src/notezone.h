@@ -51,6 +51,9 @@ public:
     bool closeAttendDetail();
 
 
+    int idNumber() const;
+    void setIdNumber(int idNumber);
+
 signals:
     void connectUpdateTextsSignal();
     void disconnectUpdateTextsSignal();
@@ -146,6 +149,7 @@ Hub *hub;
     bool alwaysCenter;
     bool preventDoubleSpaceOption;
 
+    int m_idNumber;
 };
 
 #endif // NOTEZONE_H

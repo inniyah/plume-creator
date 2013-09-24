@@ -1,12 +1,12 @@
-#include "exporter/exportertree.h"
+#include "checkabletree.h"
 
-ExporterTree::ExporterTree(QWidget *parent) :
+CheckableTree::CheckableTree(QWidget *parent) :
     QTreeView(parent)
 {
 
 
 
-    //    connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
+    connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 
     connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)), Qt::UniqueConnection);
     connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)), Qt::UniqueConnection);
@@ -16,14 +16,14 @@ ExporterTree::ExporterTree(QWidget *parent) :
 
 }
 
-void ExporterTree::postConstructor()
+void CheckableTree::postConstructor()
 {
 
 
 }
 
 //--------------------------------------------------------------------------------
-void ExporterTree::applySettingsFromData()
+void CheckableTree::applySettingsFromData()
 {
     disconnect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)));
     disconnect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)));
@@ -39,40 +39,34 @@ void ExporterTree::applySettingsFromData()
 }
 //--------------------------------------------------------------------------------
 
-void ExporterTree::itemCollapsedSlot(QModelIndex index)
+void CheckableTree::itemCollapsedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
 
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("exporterExpanded", "no");
-
+    this->model()->setData(index, false, Qt::DecorationRole );
     this->update(index);
 
-    hub->addToSaveQueue();
+
 }
 
 //--------------------------------------------------------------------------------
 
-void ExporterTree::itemExpandedSlot(QModelIndex index)
+void CheckableTree::itemExpandedSlot(QModelIndex index)
 {
 
 
-    int itemId = index.data(Qt::UserRole).toInt();
-
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
-    element.setAttribute("exporterExpanded", "yes");
+    this->model()->setData(index, true, Qt::DecorationRole );
+    this->update(index);
 
 
-    hub->addToSaveQueue();
 
 }
 //-----------------------------------------------------------------------------------------
 
 
 
-QList<QModelIndex> ExporterTree::allIndexesFromModel(QAbstractItemModel *model, const QModelIndex &parent)
+QList<QModelIndex> CheckableTree::allIndexesFromModel(QAbstractItemModel *model, const QModelIndex &parent)
 {
     QList<QModelIndex> indexList;
 
@@ -94,4 +88,31 @@ QList<QModelIndex> ExporterTree::allIndexesFromModel(QAbstractItemModel *model, 
 //-----------------------------------------------------------------------------------------
 
 
+//----------------------------------------------------------------------------------
+
+void CheckableTree::itemClicked(QModelIndex index)
+{
+
+    if(index != oldIndex){ // reset if change
+        oneClickCheckpoint = false;
+        twoClicksCheckpoint = false;
+    }
+    oldIndex = index;
+
+
+    if( oneClickCheckpoint && twoClicksCheckpoint){ // third click
+        //            this->edit(index);
+        oneClickCheckpoint = false; //reset
+        twoClicksCheckpoint = false;
+    }
+    else if(oneClickCheckpoint == true){ // second click
+
+        emit textAndNoteSignal(index.data(Qt::UserRole).toInt(), "open");
+        emit currentOpenedSheetSignal(index.data(Qt::UserRole).toInt());
+        twoClicksCheckpoint = true;
+    }
+    else
+        oneClickCheckpoint = true; // first click
+
+}
 

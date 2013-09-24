@@ -1,5 +1,7 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "spellchecker.h"
+#include "importuserdictdialog.h"
 
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>
@@ -9,7 +11,8 @@
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog),
-    styleInfoModified(false)
+    styleInfoModified(false),
+    spellLangIsModified(false)
 {
     ui->setupUi(this);
 
@@ -37,6 +40,8 @@ void SettingsDialog::createContent()
         ui->stylesTab->setEnabled(true);
     }
 
+    createSpellingTab();
+
     readSettings();
 }
 //---------------------------------------------------------------------------------
@@ -53,8 +58,8 @@ void SettingsDialog::createGeneralTab()
 
 
 
-    langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)";
-    langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR";
+    langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)" << "Español (España)"<< "Pусский";
+    langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR" << "sp_SP" << "ru_RU";
     ui->langComboBox->addItems(langs);
 
 
@@ -124,7 +129,7 @@ void SettingsDialog::toolBarInToolBarChanged(bool isToolBarInStatusBar)
 {
     emit setDisplayModeSignal(displayModeCodes.at(ui->displayModeComboBox->currentIndex()), isToolBarInStatusBar);
 }
-    //---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 
 void SettingsDialog::portableModeChanged(bool mode)
 {
@@ -289,6 +294,7 @@ void SettingsDialog::renameStyle()
 
 }
 
+
 //---------------------------------------------------------------------------------
 
 void SettingsDialog::removeStyle()
@@ -322,6 +328,188 @@ void SettingsDialog::removeStyle()
         break;
     }
 }
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::createSpellingTab()
+{
+
+    QHash<QString, QString> hash =  SpellChecker::dictsList();
+    QHash<QString, QString>::iterator i = hash.begin();
+    while (i != hash.end()) {
+        QString dict = i.value();
+
+        ui->spellCheckerComboBox->addItem(dict);
+
+
+        ++i;
+    }
+
+    connect(ui->spellCheckerComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(spellCheckerComboBox_currentTextChanged()));
+
+
+
+
+
+    // filling ui->dictInstallTipLabel :
+
+
+#ifdef Q_OS_LINUX
+
+
+    ui->dictInstallTipLabel->setText(tr(
+                                         "<p>To install additional dictionaries, research \"hunspell\" "
+                                         "in your package manager.</p>"
+                                         "<p>On Ubuntu you can type in a console :</p>"
+                                         "<p>sudo apt-get install hunspell*</p>"
+
+
+                                         ));
+
+
+#endif
+#ifdef Q_OS_WIN32
+    QString downloadLink = "http://extensions.services.openoffice.org/en/search?f[0]=field_project_tags%3A157";
+    ui->dictInstallTipLabel->setText(tr(
+                                         "<p>To install additional dictionaries, paste hunspell dictionaries in the \"dicts\" folder "
+                                         "of the install directory.</p>"
+                                         "<p>Hunspell dictionaries are in the form of pairs of *.aff and *.dic files.</p>"
+                                         "<p>You can find these files unzipping dictionaries extensions from OpenOffice or LibreOffice. They are "
+                                         "*.oxt files and you can find them here : </p>") +
+
+                                     "<address><a href=" + downloadLink + ">" + downloadLink + "</a></address></center>"
+
+
+                                     );
+
+
+#endif
+#ifdef Q_OS_MAC
+    ui->dictInstallTipLabel->setText(tr(
+                                         "<p>To install additional dictionaries, research \"hunspell\" "
+                                         "in your paquage manager.</p>"
+
+                                         ));
+
+
+
+
+#endif
+
+
+
+    // filling listWidget
+
+    QStringList userDictList = hub->userDict().split("\n", QString::SkipEmptyParts);
+
+
+    foreach(QString word, userDictList){
+        QListWidgetItem *item = new QListWidgetItem(word,ui->wordListWidget);
+        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+    }
+
+
+    connect(ui->wordListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(itemDataChanged(QListWidgetItem*)));
+}
+
+
+void SettingsDialog::dictsChanged()
+{
+
+
+    QString dict = ui->spellCheckerComboBox->currentText();
+    if(dict.isEmpty())
+        return;
+
+
+
+    dict =  SpellChecker::dictsList().key(dict);
+
+
+    emit spellDictsChangedSignal(dict);
+
+
+
+}
+
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::spellCheckerComboBox_currentTextChanged()
+{
+    spellLangIsModified = true;
+    qDebug() << "spellLangIsModified = true";
+}
+//---------------------------------------------------------------------------------
+
+
+void SettingsDialog::on_importWordsButton_clicked()
+{
+    ImportUserDictDialog *importuserdictdialog = new ImportUserDictDialog(this);
+
+    QStringList importedList;
+    if(importuserdictdialog->exec())
+        importedList = importuserdictdialog->importedList();
+    else
+        return;
+
+
+    // current word list:
+    QStringList itemsNames;
+    QList<QListWidgetItem *> itemsList = ui->wordListWidget->findItems("", Qt::MatchContains);
+    foreach(QListWidgetItem *item , itemsList)
+        itemsNames << item->text();
+
+
+    itemsNames.append(importedList);
+    ui->wordListWidget->clear();
+
+    itemsNames.removeDuplicates();
+
+    foreach(QString word, itemsNames){
+        QListWidgetItem *item = new QListWidgetItem(word,ui->wordListWidget);
+        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+    }
+}
+
+
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::on_renameWordButton_clicked()
+{
+    if(ui->wordListWidget->selectedItems().isEmpty())
+        return;
+
+      QListWidgetItem *item = ui->wordListWidget->selectedItems().first();
+    ui->wordListWidget->editItem(item);
+
+}
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::on_removeWordButton_clicked()
+{
+    if(!ui->wordListWidget->selectedItems().isEmpty())
+        ui->wordListWidget->takeItem(ui->wordListWidget->row(ui->wordListWidget->selectedItems().first()));
+}
+//---------------------------------------------------------------------------------
+
+void SettingsDialog::on_addWordButton_clicked()
+{
+    QListWidgetItem *item = new QListWidgetItem(ui->wordListWidget);
+    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+
+    ui->wordListWidget->setItemSelected(item, true);
+    ui->wordListWidget->scrollToItem(item);
+    ui->wordListWidget->editItem(item);
+}
+
+void SettingsDialog::itemDataChanged(QListWidgetItem *item)
+{
+    QList<QListWidgetItem *> itemsList = ui->wordListWidget->findItems(item->text(), Qt::MatchCaseSensitive | Qt::MatchExactly);
+
+    if(itemsList.size() > 1)
+        ui->wordListWidget->removeItemWidget(itemsList.first());
+}
+
+
 
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
@@ -420,6 +608,25 @@ void SettingsDialog::readSettings()
         ui->styleListWidget->addItems(textStyles->namesList());
         ui->styleListWidget->setCurrentRow(0);
     }
+
+
+    // spelling tab :
+    QString spellLang = settings.value("SpellChecking/lang", "").toString();
+#if QT_VERSION < 0x050000
+    ui->spellCheckerComboBox->setCurrentIndex(ui->spellCheckerComboBox->findText(spellLang));
+#endif
+#if QT_VERSION >= 0x050000
+    ui->spellCheckerComboBox->setCurrentText(spellLang);
+#endif
+    if(spellLang == "" && ui->spellCheckerComboBox->count() != 0){
+        ui->spellCheckerComboBox->setCurrentIndex(0);
+        spellLangIsModified = true;
+    }
+    ui->includeNamesFromTheMiseEnSceneCheckBox->setChecked(settings.value("SpellChecking/includeNamesFromTheMiseEnScene", true).toBool());
+
+
+
+
     // proxy tab :
 
     settings.beginGroup("Updater");
@@ -519,6 +726,25 @@ void SettingsDialog::accept()
             emit changeAllDocsTextStylesSignal();
         }
     }
+
+
+    // spelling tab :
+
+
+    settings.setValue("SpellChecking/lang", ui->spellCheckerComboBox->currentText());
+    if(spellLangIsModified)
+        this->dictsChanged();
+
+    settings.setValue("SpellChecking/includeNamesFromTheMiseEnScene", ui->includeNamesFromTheMiseEnSceneCheckBox->isChecked());
+
+    QString userDict;
+    QList<QListWidgetItem *> itemsList = ui->wordListWidget->findItems("", Qt::MatchContains);
+    foreach(QListWidgetItem *item , itemsList)
+        userDict.append(item->text().toUtf8() + "\u000a");
+        hub->setUserDict(userDict);
+
+
+
     // proxy tab :
 
     settings.beginGroup("Updater");

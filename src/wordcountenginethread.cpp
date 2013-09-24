@@ -218,6 +218,7 @@ void WordCountEngineThread::run()
         m_projectWordCount = this->parentSize(parentElement(currentElement));
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->parentSize(currentElement));
+        emit actWordCount(-1);
         }
         else if(parentElement(currentElement).tagName() == "act"){
             m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
@@ -231,13 +232,14 @@ void WordCountEngineThread::run()
     }
     else if(currentElement.tagName() == "scene"){
 
-        if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+        if(parentElement(parentElement(currentElement)).tagName() == "book"){
         m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
 
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->parentSize(parentElement(currentElement)));
+        emit actWordCount(-1);
         }
-        else  if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+        else  if(parentElement(parentElement(currentElement)).tagName() == "act"){
             m_projectWordCount = this->parentSize(parentElement(parentElement(parentElement(currentElement))));
             emit projectWordCount(m_projectWordCount);
 
@@ -246,18 +248,19 @@ void WordCountEngineThread::run()
         }
 
         emit chapterWordCount(this->parentSize(currentElement));
-        emit sceneWordCount(this->size(currentElement));
+        emit sceneWordCount(-1);
 
     }
     else if(currentElement.tagName() == "separator"){
 
-        if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+        if(parentElement(parentElement(currentElement)).tagName() == "book"){
         m_projectWordCount = this->parentSize(parentElement(parentElement(currentElement)));
 
         emit projectWordCount(m_projectWordCount);
         emit bookWordCount(this->parentSize(parentElement(currentElement)));
+        emit actWordCount(-1);
         }
-        else  if(parentElement(parentElement(currentElement)).tagName() == "chapter"){
+        else  if(parentElement(parentElement(currentElement)).tagName() == "act"){
             m_projectWordCount = this->parentSize(parentElement(parentElement(parentElement(currentElement))));
             emit projectWordCount(m_projectWordCount);
 

@@ -186,8 +186,8 @@ void AttendAbstractModel::resetAbsModel()
 void AttendAbstractModel::resetDomDoc()
 {
 
-    titlesList = new QStringList;
-    numberList = new QList<int>;
+    namesList.clear();
+    numberList.clear();
     domElementForNumber.clear();
 
 
@@ -200,6 +200,7 @@ void AttendAbstractModel::resetDomDoc()
     parseFolderElement(domDoc.documentElement());
 
     hub->set_attendTree_domElementForNumberHash(domElementForNumber);
+    hub->set_attendTree_namesList(namesList);
 
 
 }
@@ -250,8 +251,8 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
     QDomElement child = element.firstChildElement();
     while (!child.isNull()) {
 
-        titlesList->append(child.attribute("name"));
-        numberList->append(child.attribute("number").toInt());
+        namesList.append(child.attribute("name"));
+        numberList.append(child.attribute("number").toInt());
         domElementForNumber.insert(child.attribute("number").toInt(), child);
 
         if (child.tagName() == "group") {

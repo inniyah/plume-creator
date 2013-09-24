@@ -76,6 +76,8 @@ public:
     void set_attendTree_numForDocHash(QHash<QTextDocument *, int> numForDoc);
     QHash<int, QDomElement> attendTree_domElementForNumberHash();
     void set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
+    QStringList attendTree_namesList();
+    void set_attendTree_namesList(QStringList namesList);
 
     int currentProjectSettingArrayNumber() const;
     void setCurrentProjectSettingArrayNumber(int projectNumber);
@@ -95,6 +97,11 @@ public:
 
     int projectWordCount() const{return wcThread->projectWordCount();}
 
+    // spell check :
+    QString userDict();
+    QString spellDictPath();
+    void setSpellDictPath(QString spellDictPath);
+
 
 
     // files managment :
@@ -105,12 +112,15 @@ public:
     void addFileToZipList(QString type, int number);
 
     void connectAllSheetsToWordCountThread();
+    void connectAllSheetsToSpellChecker();
 
     void showStatusBarMessage(QString string = "", int time = 3000);
 
     MainTextDocument *prevText(int num);
     MainTextDocument *nextText(int num);
     void saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number);
+
+
 
 protected:
     void timerEvent(QTimerEvent *event);
@@ -127,6 +137,7 @@ signals:
     void attendTree_fileForDocHashChanged();
     void attendTree_numForDocHashChanged();
     void attendTree_domElementForNumberHashChanged();
+    void attendTree_namesListChanged(QStringList namesList);
 
     void openProjectSignal();
     void closeProjectSignal();
@@ -157,10 +168,18 @@ signals:
 
     void resetSpreadsheetOutlinerSignal();
 
+    // spell check :
+    void spellDictsChangedSignal(QString dictionaryPath, QString userDictionary);
+
+
 public slots:
     bool startProject(QString file);
     void addToSaveQueue();
     void resetSpreadsheetOutliner(){emit resetSpreadsheetOutlinerSignal();}
+
+    // spell check :
+    void spellDictsChangedSlot(const QString dictionaryPath);
+    void setUserDict(QString userDict);
 
 private slots:
     void saveProject(QString mode = "");
@@ -171,6 +190,8 @@ private slots:
     void calculatWordCountGoalDelta(int projectCount);
 
     void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
+
+
 
 private:
     bool refreshIsLocked;
@@ -190,6 +211,7 @@ private:
     QHash<QTextDocument *, QFile *> m_attendTree_fileForDocHash;
     QHash<QTextDocument *, int> m_attendTree_numForDocHash;
     QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
+    QStringList m_namesList;
 
     int m_currentSheetNumber, m_currentProjectSettingArrayNumber;
     int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
@@ -218,6 +240,9 @@ private:
     //zipChecker :
     ZipChecker *zipChecker;
 
+    // spell check :
+    QString m_userDict;
+    QString m_spellDictPath;
 };
 
 #endif // HUB_H

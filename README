@@ -1,5 +1,32 @@
 PLUME CREATOR
 
+
+v 0.63
+	- Spanish (Spain) language added
+	- Russian language added
+	- New spell-checker
+		- suggestions
+		- underlining
+		- user dictionary manager
+		- user dictionary importer
+		- Mise en scène names are added
+		- user dictionary importer
+	- New Find & Replace dialog
+	- New quick Find & Replace
+	- Project tree :
+		- added "status" to right-click menu
+		- added a bold font for the currently opened sheet
+	- Exporter :
+		- checkbox behavior now allow for single selection
+	- fix : no wordcount in status bar for scenes and separators
+	- fix : tree icons didn't update for collapsed state or not
+	- new handle bars to change the size of the main text area
+	- Fullscreen :
+		- fix : "next" button didn't work
+	- fix : "paste unformatted" shortcut didn't work
+	- fix : crash when opening directly a *.plume_backup
+	- removed system tray message when closing Plume
+	
 v 0.62
 	- new Project tree :
 		- "act" level added

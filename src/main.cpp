@@ -10,7 +10,6 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QStyleFactory>
-
 #include <QProxyStyle>
 
 #if QT_VERSION < 0x050000
@@ -25,12 +24,12 @@
 #endif
 
 
-
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
 
 int main(int argc, char *argv[])
 {
+
 
     // QtSingleApplication is here to allow only one instance of the application :
     QtSingleApplication instance(argc, argv);
@@ -41,6 +40,7 @@ int main(int argc, char *argv[])
 
     if (instance.sendMessage(message))
         return 0;
+
 
 
 
@@ -75,7 +75,6 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(langs);
 
 
-    instance.setWindowIcon(QIcon(":/pics/plume-creator.png"));
 
 
 
@@ -83,9 +82,13 @@ int main(int argc, char *argv[])
     // splashscreen :
 
     QPixmap pixmap(":/pics/plume-creator-splash.png");
-    QSplashScreen splash(pixmap);
-    splash.show();
+    QSplashScreen *splash = new QSplashScreen(pixmap);
+    splash->show();
     instance.processEvents();
+
+
+    instance.setWindowIcon(QIcon(":/pics/plume-creator.png"));
+
 
 
     // UTF-8 codec
@@ -188,6 +191,11 @@ int main(int argc, char *argv[])
 
     // ---------------------------------------style :
 
+    splash->showMessage("Applying style");
+    instance.processEvents();
+
+
+
     QSettings settings;
 
     QString plumeStyle = settings.value("MainWindow/style", "default").toString();
@@ -286,7 +294,11 @@ int main(int argc, char *argv[])
     }
 #endif
 
+
     // Lang menu :
+
+    splash->showMessage("Setting language");
+    instance.processEvents();
 
 
     QString translatorFileName = QLatin1String("qt_");
@@ -297,9 +309,9 @@ int main(int argc, char *argv[])
     if (settings.value("MainWindow/firstStart", true).toBool() || settings.value("MainWindow/lang", "none").toString() == "none" ){
 
         QStringList langs;
-        langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)";
+        langs << "Français" << "English" << "Italiano" << "Deutsch" << "Português (Brasil)" << "Español (España)" << "Pусский";
         QStringList langCodes;
-        langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR";
+        langCodes << "fr_FR" << "en_US" << "it_IT" << "de_DE" << "pt_BR"<< "sp_SP" << "ru_RU";
 
 
         bool ok;
@@ -382,10 +394,11 @@ int main(int argc, char *argv[])
 //                }
     }
 
-    splash.finish(&mw);
+    splash->finish(&mw);
     mw.show();
     mw.setWindowState(Qt::WindowActive);
     mw.postConstructor();
+
 
 
 

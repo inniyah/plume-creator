@@ -37,6 +37,7 @@ public:
     static bool isProjectExistingInSettingArray(QString fileName);
     static int adaptSettingArrayToProject(QString fileName);
     static void sortSettingsArray();
+    static QHash<QString, QString> listAllProjectsInSettingsArray(); // QHash< path, name>
 
     static bool isProjectFromOldSystem(QString file);
     static QString updateProjectIfOldSystem(QString file);
@@ -45,6 +46,8 @@ public:
     static QString parseHtmlText(QString htmlText);
 
     static void applyAttributeRecursively(QDomElement element, QString attribute, QString value);
-};
+
+}
+;
 
 #endif // UTILS_H

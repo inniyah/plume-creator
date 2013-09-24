@@ -28,7 +28,10 @@
 #include <QDomDocument>
 
 #include "hub.h"
-
+#include "mainTree/maintreeabstractmodel.h"
+#include "common/trees/checkabletreeproxy.h"
+#include "maintextdocument.h"
+#include "textzone.h"
 
 namespace Ui {
 class FindReplace;
@@ -43,25 +46,89 @@ public:
     void postConstructor();
     ~FindReplace();
     
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
+
 signals:
+void currentOpenedSheetSignal(int id);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
+    void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
+    void setTextStyles(TextStyles *styles){textStyles = styles;}
 
 private slots:
     //tree :
     void createTree();
 
+    QList<QDomElement> searchForCheckedItems(QDomElement element);
+    QList<int> findTextPos(QString text, MainTextDocument *document);
 
+    void cloneAllDocs();
+    void applyConfig();
+    void saveConfig();
+    void openText(int id);
+    void closeText(int id);
+    void resetSearch();
 
+    void accept();
+    void reject();
+
+    void on_findButton_clicked();
+
+    void on_replaceDocButton_clicked();
+
+    void on_replaceAllButton_clicked();
+
+    void on_prevDocButton_clicked();
+
+    void on_nextDocButton_clicked();
+
+    void on_prevButton_clicked();
+
+    void on_nextButton_clicked();
+
+    void on_replaceAndNextButton_clicked();
+
+    void on_caseSensitiveCheckBox_toggled(bool checked);
+
+    void on_textCheckBox_toggled(bool checked);
+
+    void on_synCheckBox_toggled(bool checked);
+
+    void on_noteCheckBox_toggled(bool checked);
+
+    void on_findEdit_textChanged(const QString &arg1);
+
+    void on_findEdit_editingFinished();
 
 private:
     Hub *hub;
     Ui::FindReplace *ui;
+    MainTreeAbstractModel  *absTreeModel;
+    TextStyles *textStyles;
+    CheckableTreeProxy *proxy;
 
+    bool caseSensitive;
+    QTextDocument::FindFlags findFlags;
+QHash<QString, QList<int> > listOfPositionsForDocObjectName;
 
     QDomDocument domDocument;
     QDomElement root;
+QString currentWordToFind, currentSheetObjectName;
+
+    int progressTotal, docProgressTotal, currentTextOpened;
+bool m_textCheckBox, m_synCheckBox, m_noteCheckBox;
+
+QList<QString> objectNamesListOfFoundDocs;
+
+bool allowRestartFromBeginning, allowRestartFromEnd, startingOrClosing;
+int oldPosition;
+QList<int> positionsList;
+
+bool configApplying;
 
 };
 

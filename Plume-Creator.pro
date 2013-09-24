@@ -4,6 +4,11 @@
 # Project created by QtCreator 2011-07-25T11:13:12
 #
 #-------------------------------------------------
+lessThan(QT_VERSION, 4.8.3) {
+        error("FocusWriter requires Qt 4.8.3 or greater")
+}
+
+
 QT += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
@@ -11,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.62
+VERSION = 0.62.14
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -43,6 +48,25 @@ win32: LIBS += -lzdll
 # dossier des headers de quazip
 INCLUDEPATH +=  ./externals/quazip
 
+# hunspell
+
+
+win32 {
+
+include(./externals/hunspell/hunspell.pro)
+
+}
+else {
+LIBS += -lhunspell
+}
+
+
+
+
+
+
+
+
 
 
 SOURCES += src/main.cpp\
@@ -67,7 +91,7 @@ src/outliner/outlinerspreadsheet.cpp \
 src/settingsdialog.cpp \
 src/editmenu.cpp \
 src/textstyles.cpp \
-src/findreplace.cpp \
+src/findReplace/findreplace.cpp \
 src/fullscreen/fulltextzone.cpp \
 src/fullscreen/fullscreeneditor.cpp \
 src/slimupdater.cpp \
@@ -107,8 +131,11 @@ src/hub.cpp \
     src/dockedTree/dockedtrashtree.cpp \
     src/dockedTree/dockedtrashtreeproxy.cpp \
     src/outliner/outlineritemstatusdelegate.cpp \
-    src/exporter/exportertreeproxy.cpp \
-    src/exporter/exportertree.cpp
+    src/common/trees/checkabletreeproxy.cpp \
+    src/common/trees/checkabletree.cpp \
+    src/sizehandle.cpp \
+    src/spellchecker.cpp \
+    src/importuserdictdialog.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -132,7 +159,7 @@ src/outliner/outlinerspreadsheet.h \
 src/settingsdialog.h \
 src/editmenu.h \
 src/textstyles.h \
-src/findreplace.h \
+src/findReplace/findreplace.h \
 src/fullscreen/fulltextzone.h \
 src/fullscreen/fullscreeneditor.h \
 src/slimupdater.h \
@@ -172,8 +199,11 @@ src/hub.h \
     src/dockedTree/dockedtrashtree.h \
     src/dockedTree/dockedtrashtreeproxy.h \
     src/outliner/outlineritemstatusdelegate.h \
-    src/exporter/exportertreeproxy.h \
-    src/exporter/exportertree.h
+    src/common/trees/checkabletreeproxy.h \
+    src/common/trees/checkabletree.h \
+    src/sizehandle.h \
+    src/spellchecker.h \
+    src/importuserdictdialog.h
 
 CODECFORTR = UTF-8
 
@@ -181,6 +211,8 @@ TRANSLATIONS = translations/plume-creator_fr_FR.ts \
 # translations/plume-creator_ro_RO.ts \
 translations/plume-creator_it_IT.ts \
 translations/plume-creator_de_DE.ts \
+translations/plume-creator_sp_SP.ts \
+translations/plume-creator_ru_RU.ts \
 translations/plume-creator_pt_BR.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
@@ -189,7 +221,7 @@ include(./externals/quazip/quazip.pro)
 FORMS += \
 src/settingsdialog.ui \
 src/editmenu.ui \
-src/findreplace.ui \
+src/findReplace/findreplace.ui \
 src/fullscreen/fullscreeneditor.ui \
 src/slimupdater.ui \
 src/mainwindow.ui \
@@ -201,7 +233,8 @@ src/wordgoalprogressbar.ui \
     src/exporter/exporter.ui \
     src/startcenter.ui \
     src/texttab.ui \
-    src/dockedTree/dockedtreebase.ui
+    src/dockedTree/dockedtreebase.ui \
+    src/importuserdictdialog.ui
 
 RESOURCES += \
 translations/langs.qrc \

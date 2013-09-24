@@ -6,13 +6,19 @@
 #include "textzone.h"
 //
 TextZone::TextZone(QWidget *parent) :
-    QTextEdit(parent), forceCopyWithoutFormatting(false)
+    QTextEdit(parent), forceCopyWithoutFormatting(false), m_idNumber(-1),
+    m_spellcheckBool(false)
+
 {
+
+
 
 }
 
 TextZone::~TextZone()
 {
+    textDocument->deactivateSpellChecker();
+
     delete undoAct;
     delete redoAct;
     delete cutAct;
@@ -56,6 +62,11 @@ void TextZone::setDoc(MainTextDocument *doc)
 {
     textDocument = doc;
     this->setDocument(doc);
+
+    if(this->objectName().mid(0,7) == "textDoc"
+            || this->objectName().mid(0,6) == "synDoc"
+            || this->objectName().mid(0,7) == "noteDoc")
+        this->setIdNumber(this->objectName().mid(this->objectName().indexOf("_") + 1).toInt());
 
     connect(this, SIGNAL(cursorPositionChanged(int)), doc, SLOT(setCursorPos(int)));
 }
@@ -121,6 +132,23 @@ void TextZone::createActions()
     QFont italicFont = italicAct->font();
     italicFont.setItalic(true);
     italicAct->setFont(italicFont);
+
+    spellcheckAct = new QAction(QIcon(""),tr("&Check Spelling"), this);
+    spellcheckAct->setCheckable(true);
+    //    spellcheckAct->setShortcuts(QKeySequence::Italic);
+    spellcheckAct->setStatusTip(tr("Verify your spelling"));
+    connect(spellcheckAct, SIGNAL(triggered(bool)), this, SLOT(activateSpellcheck(bool)));
+
+    addToUserDictAct = new QAction(QIcon(""),tr("&Add to Dictionary"), this);
+    //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
+    addToUserDictAct->setStatusTip(tr("Add the current word selection to the project dictionary"));
+    connect(addToUserDictAct, SIGNAL(triggered()), this, SLOT(addToUserDictionary()));
+
+    removeFromUserDictAct = new QAction(QIcon(""),tr("&Remove from Dictionary"), this);
+    //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
+    removeFromUserDictAct->setStatusTip(tr("Remove the current word selection from the project dictionary"));
+    connect(removeFromUserDictAct, SIGNAL(triggered()), this, SLOT(removeFromUserDictionary()));
+
 
     createEditWidget();
     QWidgetAction *editWidgetAct = new QWidgetAction(this);
@@ -242,6 +270,35 @@ void TextZone::italic(bool italBool)
     }
 }
 
+void TextZone::activateSpellcheck(bool spellcheckBool)
+{    if(spellcheckBool){
+        textDocument->activateSpellChecker();
+        m_spellcheckBool = true;
+    }
+    else{
+
+        textDocument->deactivateSpellChecker();
+        m_spellcheckBool = false;
+    }
+}
+
+void TextZone::addToUserDictionary()
+{
+    if(selectedWord.isEmpty())
+        return;
+
+    textDocument->spellChecker()->addToUserWordlist(selectedWord);
+
+}
+void TextZone::removeFromUserDictionary()
+{
+    if(selectedWord.isEmpty())
+        return;
+
+    textDocument->spellChecker()->removeFromUserWordlist(selectedWord);
+
+}
+
 //void TextZone::leftAlign(bool leftBool)
 //{
 //    if(leftBool){
@@ -307,13 +364,80 @@ void TextZone::italic(bool italBool)
 
 void TextZone::contextMenuEvent(QContextMenuEvent *event)
 {
+    QTextCursor tCursor = this->textCursor();
+    int tCursorPos = tCursor.position();
+    int tCursorAnchor = tCursor.anchor();
+
+    int minSelect = qMin(tCursorPos, tCursorAnchor);
+    int maxSelect = qMax(tCursorPos, tCursorAnchor);
+
+    QTextCursor cursor= this->cursorForPosition(event->pos());
+
+    if(cursor.position() < minSelect || cursor.position() > maxSelect){
+        this->setTextCursor(cursor);
+
+    }
+
+
     QMenu menu(this);
-    menu.addSeparator();
+
+    if(m_spellcheckBool){
+        selectedWord.clear();
+
+
+        cursor.select(QTextCursor::WordUnderCursor);
+
+
+        selectedWord=cursor.selection().toPlainText();
+
+
+        menu.addSeparator();
+
+        bool isWellSpelled;
+        if(textDocument->spellChecker()->spell(selectedWord) != 0)
+        isWellSpelled = true;
+        else
+            isWellSpelled = false;
+
+
+        if(!isWellSpelled){
+
+            QStringList suggestions = textDocument->spellChecker()->suggest(selectedWord);
+
+            QList<QAction *> suggestionWordsList;
+
+            for(int i=0;i<suggestions.count();i++)
+            {
+                QAction *suggestedWord = new QAction(this);
+                suggestedWord->setText(suggestions.at(i));
+                connect(suggestedWord, SIGNAL(triggered()),this, SLOT(replaceWord()));
+                suggestionWordsList.append(suggestedWord);
+            }
+            menu.addActions(suggestionWordsList);
+        }
+        if(!cursor.selection().isEmpty()){
+            if(!isWellSpelled && !textDocument->spellChecker()->isInUserWordlist(selectedWord))
+            {
+                menu.addSeparator();
+                menu.addAction(addToUserDictAct);
+            }
+            else if(textDocument->spellChecker()->isInUserWordlist(selectedWord)){
+                menu.addSeparator();
+                menu.addAction(removeFromUserDictAct);
+            }
+        }
+
+        menu.addSeparator();
+    }
+
+
+
     menu.addAction(boldAct);
     menu.addAction(italicAct);
     menu.addSeparator();
     //    menu.addMenu(alignmentGroup); // styles do that already
     menu.addMenu(stylesGroup);
+    menu.addAction(spellcheckAct);
     menu.addSeparator();
     menu.addAction(cutAct);
     menu.addAction(copyAct);
@@ -476,6 +600,18 @@ void TextZone::keyPressEvent(QKeyEvent *event)
     //        center(true);
     //    else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_J)
     //        justify(true);
+
+#if QT_VERSION >= 0x050000
+    else if(event->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier) && event->key() == QVariant(QKeySequence(tr("V", "paste unformated"))).toInt())
+        pasteWithoutFormatting();
+
+#else
+    else if(event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) && event->key() == QKeySequence(tr("V", "paste unformated")))
+        pasteWithoutFormatting();
+
+#endif
+
+
     else if(event->key() == Qt::Key_Space){
         if(preventDoubleSpaceOption == true)
             preventDoubleSpace();
@@ -643,7 +779,7 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
-    textDocument->setTextWidth(this->width() - this->verticalScrollBar()->width() - 2);
+    textDocument->setTextWidth(this->width());
     QWidget::resizeEvent(event);
 
 }
@@ -718,3 +854,32 @@ void TextZone::applyConfig()
 
     editWidget->applyConfig();
 }
+
+int TextZone::idNumber() const
+{
+    return m_idNumber;
+}
+
+void TextZone::setIdNumber(int idNumber)
+{
+    m_idNumber = idNumber;
+}
+
+
+void TextZone::replaceWord()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action){
+        QTextCursor cursor = this->textCursor();
+        cursor.select(QTextCursor::WordUnderCursor);
+        this->setTextCursor(cursor);
+        insertPlainText(action->text());
+    }
+}
+
+
+//void TextZone::addToDictionary()
+//{
+//    textDocument->spellChecker()->addToUserWordlist(selectedWord);
+//    insertPlainText(selectedWord);
+//}

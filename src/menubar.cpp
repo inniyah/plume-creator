@@ -116,6 +116,7 @@ void MenuBar::displayConfig(int tabIndex)
     connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString, bool)), this, SIGNAL(setDisplayModeSignal(QString, bool)));
     connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
     connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), textStyles, SLOT(changeAllDocsTextStyles()));
+    connect(settingsDialog, SIGNAL(spellDictsChangedSignal(QString)), hub, SLOT(spellDictsChangedSlot(QString)));
 
 
     settingsDialog->setCurrentTab(tabIndex);
@@ -215,6 +216,8 @@ void MenuBar::findAndReplace()
 
     FindReplace *findReplaceDialog = new FindReplace(parentWidget);
     findReplaceDialog->setHub(hub);
+    findReplaceDialog->setMainTreeAbstractModel(absTreeModel);
+    findReplaceDialog->setTextStyles(textStyles);
     findReplaceDialog->postConstructor();
     findReplaceDialog->exec();
 

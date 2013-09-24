@@ -7,7 +7,7 @@ DockedTreeProxy::DockedTreeProxy(QObject *parent) :
 void DockedTreeProxy::postConstructor()
 {
     QSettings settings;
-badgeIsDisplayed = settings.value("MainTree/badgeDisplayed", false).toBool();
+    badgeIsDisplayed = settings.value("MainTree/badgeDisplayed", false).toBool();
 }
 
 int DockedTreeProxy::columnCount(const QModelIndex &parent) const
@@ -49,12 +49,57 @@ QVariant DockedTreeProxy::data(const QModelIndex &index, int role) const
             return item->data(col).toString();
 
     }
+    if (role == Qt::DecorationRole && col == 0){
+        return MainTreeAbstractModel::giveDecoration(this->mapToSource(index), MainTreeItem::DockedTree);
+
+    }
 
 
-
-        return QSortFilterProxyModel::data(index,role);
+    return QSortFilterProxyModel::data(index,role);
 
 }
+//------------------------------------------------------------------------------
+
+
+
+bool DockedTreeProxy::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    QModelIndex sourceIndex = this->mapToSource(index);
+    QVector<int> vector(1, role);
+
+    if (sourceIndex.isValid() && role == Qt::DecorationRole && sourceIndex.column() == 0) {
+
+
+        int itemId = sourceIndex.data(Qt::UserRole).toInt();
+
+        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        if(value.toBool() == true)
+            element.setAttribute("dockedTreeExpanded", "yes");
+        else
+            element.setAttribute("dockedTreeExpanded", "no");
+
+
+        MainTreeItem *item = static_cast<MainTreeItem*>(sourceIndex.internalPointer());
+        item->setIsExpanded(value.toBool(), MainTreeItem::DockedTree);
+
+#if QT_VERSION < 0x050000
+        emit dataChanged(index, index);
+#endif
+#if QT_VERSION >= 0x050000
+        emit dataChanged(index, index, vector);
+#endif
+
+        hub->addToSaveQueue();
+
+        return true;
+    }
+
+
+    return QSortFilterProxyModel::setData(index, value, role)  ;
+}
+
+//------------------------------------------------------------------------------
+
 
 
 //-----------------------------------------------------------------------------------------
@@ -240,7 +285,10 @@ Qt::ItemFlags DockedTreeProxy::flags(const QModelIndex &index) const
             break;
 
         default:
-            return defaultFlags| Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+            if(type == "separator")
+                return defaultFlags | Qt::ItemIsDragEnabled;
+            else
+                return defaultFlags| Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 
             break;
 
@@ -255,3 +303,4 @@ void DockedTreeProxy::modifyFlagsForDrops(QString indexType)
 {
     m_indexTypeDragged = indexType;
 }
+

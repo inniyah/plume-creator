@@ -34,7 +34,7 @@
 
 #include "hub.h"
 #include "mainTree/maintreeabstractmodel.h"
-#include "exporter/exportertreeproxy.h"
+#include "common/trees/checkabletreeproxy.h"
 
 
 namespace Ui {
@@ -81,7 +81,7 @@ private:
 
     Hub *hub;
     MainTreeAbstractModel  *absTreeModel;
-    ExporterTreeProxy *proxy;
+    CheckableTreeProxy *proxy;
     Ui::Exporter *ui;
 
 
@@ -91,16 +91,6 @@ private:
     QDialog *previewDialog;
 
     //tree :
-
-
-    QDomDocument domDocument;
-    QDomElement root;
-    QHash<QTreeWidgetItem *, QDomElement> domElementForItem;
-    QHash<QTreeWidgetItem *, QDomElement>::iterator h;
-    QHash<int, QDomElement> domElementForNumber;
-    QHash<int, QDomElement>::iterator t;
-    QIcon folderIcon;
-    QIcon sceneIcon;
 
 
     // accept :

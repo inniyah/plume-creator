@@ -1,18 +1,95 @@
 #include "dockedtrashtreeproxy.h"
 
 DockedTrashTreeProxy::DockedTrashTreeProxy(QObject *parent) :
-    QSortFilterProxyModel(parent), m_indexTypeDragged("nothing")
+    QSortFilterProxyModel(parent), m_indexTypeDragged("nothing"), badgeIsDisplayed(false)
 {
 }
 void DockedTrashTreeProxy::postConstructor()
 {
+    QSettings settings;
+badgeIsDisplayed = settings.value("MainTree/badgeDisplayed", false).toBool();
+
 }
 
 int DockedTrashTreeProxy::columnCount(const QModelIndex &parent) const
 {
     return 1;
 }
+
+
 //--------------------------------------------------------------------------------------------------
+
+QVariant DockedTrashTreeProxy::data(const QModelIndex &index, int role) const
+{
+    int row = index.row();
+    int col = index.column();
+
+
+    if( role == Qt::EditRole  && col == 0){
+        MainTreeItem *item = static_cast<MainTreeItem*>(this->mapToSource(index).internalPointer());
+        return item->data(col).toString();
+    }
+    if (role == Qt::DisplayRole && col == 0){
+        MainTreeItem *item = static_cast<MainTreeItem*>(this->mapToSource(index).internalPointer());
+
+
+        if(badgeIsDisplayed && item->badge() != "")
+            return item->data(col).toString() + " - " + item->badge();
+        else
+            return item->data(col).toString();
+
+    }
+    if (role == Qt::DecorationRole && col == 0){
+        return MainTreeAbstractModel::giveDecoration(this->mapToSource(index), MainTreeItem::DockedTree);
+
+    }
+
+
+        return QSortFilterProxyModel::data(index,role);
+
+}
+
+//------------------------------------------------------------------------------
+
+
+
+bool DockedTrashTreeProxy::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    QModelIndex sourceIndex = this->mapToSource(index);
+    QVector<int> vector(1, role);
+
+    if (sourceIndex.isValid() && role == Qt::DecorationRole && sourceIndex.column() == 0) {
+
+
+        int itemId = sourceIndex.data(Qt::UserRole).toInt();
+
+        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        if(value.toBool() == true)
+            element.setAttribute("dockedTreeExpanded", "yes");
+        else
+            element.setAttribute("dockedTreeExpanded", "no");
+
+
+        MainTreeItem *item = static_cast<MainTreeItem*>(sourceIndex.internalPointer());
+        item->setIsExpanded(value.toBool(), MainTreeItem::DockedTree);
+
+#if QT_VERSION < 0x050000
+        emit dataChanged(index, index);
+#endif
+#if QT_VERSION >= 0x050000
+        emit dataChanged(index, index, vector);
+#endif
+
+        hub->addToSaveQueue();
+
+        return true;
+    }
+
+
+    return QSortFilterProxyModel::setData(index, value, role)  ;
+}
+
+//------------------------------------------------------------------------------
 
 
 bool DockedTrashTreeProxy::filterAcceptsRow(int sourceRow,
@@ -22,7 +99,7 @@ bool DockedTrashTreeProxy::filterAcceptsRow(int sourceRow,
     QString type = indexToFilter.data(36).toString();
     bool isTrashed = indexToFilter.data(37).toBool();
 
-    if( (isTrashed == true )  && (type == "book" || type == "act" || type == "chapter" ||type == "scene")  || type == "separator")
+    if( (isTrashed == true )  && (type == "book" || type == "act" || type == "chapter" ||type == "scene"  || type == "separator"))
         return true;
     else if(type == "trash")
         return true;

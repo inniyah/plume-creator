@@ -555,6 +555,20 @@ void NoteZone::center(bool centBool)
 
 void NoteZone::contextMenuEvent(QContextMenuEvent *event)
 {
+    QTextCursor tCursor = this->textCursor();
+    int tCursorPos = tCursor.position();
+    int tCursorAnchor = tCursor.anchor();
+
+    int minSelect = qMin(tCursorPos, tCursorAnchor);
+    int maxSelect = qMax(tCursorPos, tCursorAnchor);
+
+    QTextCursor cursor= this->cursorForPosition(event->pos());
+
+        if(cursor.position() < minSelect || cursor.position() > maxSelect){
+        this->setTextCursor(cursor);
+
+    }
+
     QMenu menu(this);
     menu.addSeparator();
     menu.addAction(boldAct);
@@ -1392,4 +1406,14 @@ void NoteZone::applyAttendFontConfig()
     font.setPointSize(attendTextHeight);
     this->document()->setDefaultFont(font);
 
+}
+
+int NoteZone::idNumber() const
+{
+    return m_idNumber;
+}
+
+void NoteZone::setIdNumber(int idNumber)
+{
+    m_idNumber = idNumber;
 }

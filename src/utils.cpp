@@ -431,6 +431,44 @@ void Utils::sortSettingsArray()
 
 //-------------------------------------------------------------
 
+QHash<QString, QString> Utils::listAllProjectsInSettingsArray()
+{
+
+    QSettings settings;
+
+
+    settings.beginGroup("Manager/projects");
+
+    QStringList groups = settings.childGroups();
+    int size = groups.size();
+    settings.setValue("size", size);
+
+
+
+    settings.endGroup();
+
+
+    QString name, path;
+    QHash<QString, QString> hash;
+
+    settings.beginReadArray("Manager/projects");
+
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex(i);
+
+        name = settings.value("name").toString();
+        path = settings.value("path").toString();
+        hash.insert(path, name);
+    }
+
+
+    settings.endArray();
+
+    return hash;
+}
+
+//-------------------------------------------------------------
+
 
 
 bool Utils::isProjectFromOldSystem(QString file)

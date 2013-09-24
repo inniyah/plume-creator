@@ -36,7 +36,7 @@
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter/exporter.h"
-#include "findreplace.h"
+#include "findReplace/findreplace.h"
 #include "mainTree/maintreeabstractmodel.h"
 
 //

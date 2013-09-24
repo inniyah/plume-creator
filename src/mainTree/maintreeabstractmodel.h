@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Cyril Jacquet                                   *
- *   cyril.jacquet@plume-creator.eu                                                 *
+ *   Copyright (C) 2013 by Cyril Jacquet                                   *
+ *   cyril.jacquet@plume-creator.eu                                        *
  *                                                                         *
  *  This file is part of Plume Creator.                                    *
  *                                                                         *
@@ -52,6 +52,8 @@ public:
 
     static  QStringList giveStatusList();
     static QString giveStatus(int statusInt);
+    static QPixmap giveDecoration(QModelIndex index, MainTreeItem::Tree tree);
+
 signals:
 
     void updateMainDomDocSignal(QDomDocument otoM_domDoc);
@@ -83,6 +85,9 @@ public slots:
     // for "new" button in fullscreen :
     int addItemNext(int baseNumber);
 
+
+    void modifyDataForOpenedSheetMarker(const int currentSheet);
+
 private slots:
 
     void updateMainTextDoc(MainTextDocument *textDoc, int number);
@@ -113,6 +118,7 @@ private:
     QList<MainTreeItem *> *treeBookItemList, *treeActItemList,
     *treeChapterItemList, *treeTrashItemList;
 
+    int m_currentSheet;
 };
 
 #endif // MAINTREEABSTRACTMODEL_H

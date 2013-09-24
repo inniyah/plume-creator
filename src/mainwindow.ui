@@ -14,10 +14,10 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">TextZone {
+   <string notr="true">/*TextZone {
 background-color: transparent;
 
-}
+}*/
 
 
 QTreeView {

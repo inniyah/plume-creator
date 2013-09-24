@@ -39,6 +39,7 @@ public:
     void setDocument(MainTextDocument *doc);
     void setTextEdit(QTextEdit *txtEdit);
 
+    void postConstructor();
 protected:
 
 
@@ -79,7 +80,7 @@ private:
     QTextDocument::FindFlags findFlags;
     bool allowRestartFromBeginning, allowRestartFromEnd;
     int oldPosition;
-
+bool findReplaceLaunched;
 };
 
 #endif // SLIMFINDREPLACE_H

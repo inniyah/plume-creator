@@ -45,5 +45,6 @@ void MainTree::closeTree()
     this->mainTreeAbstractModel()->setDomDocument(emptyDomDoc);
     this->mainTreeAbstractModel()->resetAbsModel();
 
+    this->mainTreeAbstractModel()->modifyDataForOpenedSheetMarker(0);
 }
 

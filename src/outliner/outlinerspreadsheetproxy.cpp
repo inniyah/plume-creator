@@ -3,7 +3,7 @@
 OutlinerSpreadheetProxy::OutlinerSpreadheetProxy(QObject *parent) :
     QSortFilterProxyModel(parent),itemHeight(40),
     textZoneColumnOneWidth(300), textZoneColumnTwoWidth(300),
-   m_indexTypeDragged("nothing")
+    m_indexTypeDragged("nothing")
 {
 }
 
@@ -30,7 +30,7 @@ OutlinerSpreadheetProxy::~OutlinerSpreadheetProxy()
 int OutlinerSpreadheetProxy::rowCount(const QModelIndex &parent) const
 {
 
-return QSortFilterProxyModel::rowCount(parent);
+    return QSortFilterProxyModel::rowCount(parent);
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ int OutlinerSpreadheetProxy::columnCount(const QModelIndex &parent) const
 
 //------------------------------------------------------------------------------
 bool OutlinerSpreadheetProxy::filterAcceptsRow(int sourceRow,
-                                                 const QModelIndex &sourceParent) const
+                                               const QModelIndex &sourceParent) const
 {
     QModelIndex indexToFilter = sourceModel()->index(sourceRow, 0, sourceParent);
     QString type = indexToFilter.data(36).toString();
@@ -73,7 +73,7 @@ Qt::ItemFlags OutlinerSpreadheetProxy::flags(const QModelIndex &index) const
     myOptions << "book" << "act" << "chapter" << "scene" << "separator";
 
     if (!index.isValid()){
-            return defaultFlags| Qt::ItemIsDropEnabled;
+        return defaultFlags| Qt::ItemIsDropEnabled;
     }
     QString type = index.data(36).toString();
 
@@ -131,7 +131,41 @@ Qt::ItemFlags OutlinerSpreadheetProxy::flags(const QModelIndex &index) const
 
 bool OutlinerSpreadheetProxy::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  return QSortFilterProxyModel::setData(index, value, role)  ;
+    QModelIndex sourceIndex = this->mapToSource(index);
+    QVector<int> vector(1, role);
+
+    if (sourceIndex.isValid() && role == Qt::DecorationRole && sourceIndex.column() == 0) {
+
+
+        int itemId = sourceIndex.data(Qt::UserRole).toInt();
+
+        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        if(value.toBool() == true)
+            element.setAttribute("outlinerExpanded", "yes");
+        else
+            element.setAttribute("outlinerExpanded", "no");
+
+
+        MainTreeItem *item = static_cast<MainTreeItem*>(sourceIndex.internalPointer());
+        item->setIsExpanded(value.toBool(), MainTreeItem::Outliner);
+
+
+
+
+#if QT_VERSION < 0x050000
+        emit dataChanged(index, index);
+#endif
+#if QT_VERSION >= 0x050000
+        emit dataChanged(index, index, vector);
+#endif
+
+        hub->addToSaveQueue();
+
+        return true;
+    }
+
+
+    return QSortFilterProxyModel::setData(index, value, role)  ;
 }
 
 //------------------------------------------------------------------------------
@@ -195,6 +229,12 @@ QVariant OutlinerSpreadheetProxy::data(const QModelIndex &index, int role) const
             return (QSize(100,itemHeight));
         }
     }
+
+    if (role == Qt::DecorationRole && col == 0){
+        return MainTreeAbstractModel::giveDecoration(this->mapToSource(index), MainTreeItem::Outliner);
+
+    }
+
 
     return QSortFilterProxyModel::data(index,role);
 }

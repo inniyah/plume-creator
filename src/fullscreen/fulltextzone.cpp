@@ -597,7 +597,7 @@ void FullTextZone::resizeEvent(QResizeEvent* event)
 
 void FullTextZone::mouseMoveEvent(QMouseEvent* event)
 {
-    if( (event->buttons() & Qt::RightButton == Qt::RightButton) && !mDragging ){
+    if( event->buttons() == Qt::RightButton && !mDragging ){
         this->unsetCursor();
         mDragging = true;
     }

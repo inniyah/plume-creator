@@ -7,7 +7,10 @@ ZipChecker::ZipChecker(QObject *parent) :
 
 
 
-    baseList << "tree" << "info" << "attendance" << "attend/" << "text/" ;
+    baseList << "tree" << "info" << "attendance"
+             << "attend/"
+             << "text/"
+             << "dicts/" << "dicts/userDict.dict_plume" ;
 
 
 

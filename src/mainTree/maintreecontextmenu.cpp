@@ -1,7 +1,7 @@
 #include "maintreecontextmenu.h"
 
 MainTreeContextMenu::MainTreeContextMenu(QObject *parent, QWidget *baseWidget):
-    QObject(parent), base(baseWidget), numberOfStatusActions(0)
+    QObject(parent), base(baseWidget)
 {
 
 
@@ -71,9 +71,10 @@ QMenu *MainTreeContextMenu::menu(MainTreeContextMenu::Actions flags)
     if(flags.testFlag(MainTreeContextMenu::Status)){
 
         QMenu *statusMenu = m_menu->addMenu(tr("&Status"));
-        numberOfStatusActions = 0;
-        for(int i = 0 ; i < MainTreeAbstractModel::giveStatusList().size() ; ++i){
+      for(int i = 0 ; i < MainTreeAbstractModel::giveStatusList().size() ; ++i){
+
             QAction *statusAct = new QAction(MainTreeAbstractModel::giveStatus(i), this);
+
             statusAct->setCheckable(true);
             statusAct->setObjectName("statusAction_" + QString::number(i));
             if(targetedElement.attribute("status", "0").toInt() == i)
@@ -83,7 +84,6 @@ QMenu *MainTreeContextMenu::menu(MainTreeContextMenu::Actions flags)
 
             connect(statusAct, SIGNAL(toggled(bool)), this, SLOT(setStatus()), Qt::UniqueConnection);
             statusMenu->addAction(statusAct);
-            numberOfStatusActions += 1;
 
         }
 //        m_menu->addAction(displayStatusAct);
@@ -324,19 +324,18 @@ void MainTreeContextMenu::setBadgeText()
 
 void MainTreeContextMenu::setStatus()
 {
+
     int elementStatus = targetedElement.attribute("status", "0").toInt();
 
 
-    for(int i = 0; i < numberOfStatusActions; ++i ){
-
-
+    for(int i = 0; i < MainTreeAbstractModel::giveStatusList().size(); ++i ){
 
         QAction *action = this->findChild<QAction *>("statusAction_" + QString::number(i));
-        if(action->objectName() == "statusAction_" + QString::number(elementStatus)
-                && action->isChecked() == false){
+
+        if(action->objectName() == "statusAction_" + QString::number(elementStatus)){
             continue;
         }
-        if(action->isChecked() == true){
+        else if(action->isChecked() == true){
             emit actionSignal("setStatus", m_id, QString::number(i));
         }
 

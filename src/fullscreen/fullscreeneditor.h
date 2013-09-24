@@ -59,6 +59,7 @@ signals:
     void manageStylesSignal();
     void newSheetSignal(int number);
     void openSheetOnMainWindow(int sheetNumber = 0, int textCursorPos = 0, int noteCursorPos = 0, int synCursorPos = 0);
+    void currentOpenedSheetSignal(int sheetIdNumber);
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}

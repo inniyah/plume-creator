@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    systemTray = new QSystemTrayIcon(0);
-    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
+//    systemTray = new QSystemTrayIcon(this);
+//    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
 
     this->setMinimumSize(800, 400);
     setWindowTitle("Plume Creator");
@@ -932,6 +932,12 @@ void MainWindow::openProjectSlot()
     mainTree->startTree();
 
 
+
+
+
+
+
+
     DockedTreeProxy *proxy = new DockedTreeProxy;
     proxy->setHub(hub);
     proxy->setSourceModel(mainTree->mainTreeAbstractModel());
@@ -941,7 +947,7 @@ proxy->postConstructor();
     connect(mainTree->mainTreeAbstractModel(), SIGNAL(applySettingsFromDataSignal()), dockedTree, SLOT(applySettingsFromData()), Qt::UniqueConnection);
     connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
     connect(proxy, SIGNAL(resetAbsModelSignal()), mainTree->mainTreeAbstractModel(), SLOT(resetAbsModel()), Qt::UniqueConnection);
-    dockedTree->applySettingsFromData();
+             dockedTree->applySettingsFromData();
 
 
     DockedTrashTreeProxy *trashProxy = new DockedTrashTreeProxy;
@@ -960,7 +966,13 @@ proxy->postConstructor();
     connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
 
     connect(mainTree->mainTreeAbstractModel(), SIGNAL(displayBadgeSignal(bool)), proxy, SLOT(displayBadgeSlot(bool)), Qt::UniqueConnection);
+    connect(mainTree->mainTreeAbstractModel(), SIGNAL(displayBadgeSignal(bool)), trashProxy, SLOT(displayBadgeSlot(bool)), Qt::UniqueConnection);
     connect(mainTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)), Qt::UniqueConnection);
+
+    connect(dockedTree, SIGNAL(currentOpenedSheetSignal(int)),mainTree->mainTreeAbstractModel(), SLOT(  modifyDataForOpenedSheetMarker(int)), Qt::UniqueConnection);
+    connect(dockedTrashTree, SIGNAL(currentOpenedSheetSignal(int)),mainTree->mainTreeAbstractModel(), SLOT(  modifyDataForOpenedSheetMarker(int)), Qt::UniqueConnection);
+    connect(this, SIGNAL(currentOpenedSheetSignal(int)),mainTree->mainTreeAbstractModel(), SLOT(  modifyDataForOpenedSheetMarker(int)), Qt::UniqueConnection);
+
 
     isProjectOpened = true;
 
@@ -1067,10 +1079,13 @@ void MainWindow::textSlot(int number, QString action)
         TextTab *tab = new TextTab(this);
         tab->setHub(hub);
 
+
         //set text Styles :
         tab->setTextStyles(textStyles);
 
         tab->openText(textDoc);
+
+
 
 
         QWidget *noteWidget = new QWidget(this);
@@ -1090,6 +1105,13 @@ void MainWindow::textSlot(int number, QString action)
         synStack->openSyn(synDoc);
         synWidget->setLayout(sLayout);
 
+        //set idNumber :
+        tab->setIdNumber(number);
+
+noteStack->setIdNumber(number);
+synStack->setIdNumber(number);
+
+        //append :
 
         textDocList->append(textDoc);
         noteDocList->append(noteDoc);
@@ -1153,13 +1175,7 @@ void MainWindow::textSlot(int number, QString action)
             autosaveTimer();
 
 
-        //focus on text :
-        tab->setTextFocus();
 
-        //set cursor position :
-        tab->setCursorPos(textDoc->cursorPos());
-        synStack->setCursorPos(synDoc->cursorPos());
-        noteStack->setCursorPos(noteDoc->cursorPos());
 
         //        QString debug;
         //        qDebug() << "cursorPosition tab : " << debug.setNum(textCursorPosition);
@@ -1181,14 +1197,23 @@ void MainWindow::textSlot(int number, QString action)
         connect(synStack, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
 
 
-        QTimer::singleShot(0, tab, SLOT(changeWidthSlot()));
 
+        //focus on text :
+        tab->setTextFocus();
+
+        //set cursor position :
+        tab->setCursorPos(textDoc->cursorPos());
+        synStack->setCursorPos(synDoc->cursorPos());
+        noteStack->setCursorPos(noteDoc->cursorPos());
 
 
         textDoc->connectWordCount();
 
 
 
+
+
+        QTimer::singleShot(0, tab, SLOT(applyConfig()));
 
 
         // if option "one tab only" is activated :
@@ -1292,6 +1317,7 @@ void MainWindow::tabChangeSlot(int tabNum)
     tabNumList->append(tabNum);
 
 
+    emit currentOpenedSheetSignal(textWidgetList->at(tabNum)->idNumber());
 
 
 
@@ -1368,6 +1394,10 @@ void MainWindow::tabCloseRequest(int tabNum)
     synWidgetList->removeAt(tabNum);
     numList->removeAt(tabNum);
     tabNumList->removeAt(tabNum);
+
+
+    emit currentOpenedSheetSignal(0);
+
 
     //    qDebug() << "tabCloseRequest post :" << tabNum;
 
@@ -1609,8 +1639,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
         hub->closeCurrentProject();
         event->accept();
 
-        systemTray->show();
-        systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
+//        systemTray->show();
+//        systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
 
         break;
 

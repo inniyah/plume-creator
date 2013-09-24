@@ -84,5 +84,8 @@
         <file>pics/tree/tree-chapter.png</file>
         <file>pics/tree/tree-scene.png</file>
         <file>pics/tree/tree-trash.png</file>
+        <file>pics/tree/tree-act-expanded.png</file>
+        <file>pics/tree/tree-chapter-expanded.png</file>
+        <file>pics/document-import.png</file>
     </qresource>
 </RCC>

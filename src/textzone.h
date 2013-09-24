@@ -29,6 +29,7 @@
 #include "editmenu.h"
 #include "utils.h"
 
+
 //#include "sounds.h"
 
 //
@@ -41,6 +42,9 @@ public:
     void createContent();
     void setDoc(MainTextDocument *doc);
     void addActions(QList<QAction*> actions);
+
+    int idNumber() const;
+    void setIdNumber(int idNumber);
 
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
@@ -79,6 +83,9 @@ private slots:
     void pasteWithoutFormatting();
     void bold(bool boldBool);
     void italic(bool italBool);
+    void activateSpellcheck(bool spellcheckBool);
+    void addToUserDictionary();
+    void removeFromUserDictionary();
     //    void leftAlign(bool leftBool);
     //    void rightAlign(bool rightBool);
     //    void justify(bool justBool);
@@ -91,6 +98,8 @@ private slots:
     void cursorPositionChangedSlot();
 
     void preventDoubleSpace();
+
+    void replaceWord();
 
 private:
     Hub *hub;
@@ -107,8 +116,8 @@ private:
     QAction *copyAct;
     QAction *pasteAct, *pasteWithoutFormattingAct;
     QAction *boldAct;
-    QAction *italicAct;
-    QAction *manageStylesAct;
+    QAction *italicAct, *spellcheckAct;
+    QAction *manageStylesAct, *addToUserDictAct, *removeFromUserDictAct;
     //    QAction *leftAlignAct;
     //    QAction *rightAlignAct;
     //    QAction *justifyAct;
@@ -129,8 +138,12 @@ private:
 bool forceCopyWithoutFormatting;
     QList<QAction*> m_actions;
 
+    int m_idNumber;
 
 //    Sounds *sounds;
+
+QString selectedWord;
+bool m_spellcheckBool;
 
 };
 

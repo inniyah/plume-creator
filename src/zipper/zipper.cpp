@@ -14,11 +14,11 @@ void Zipper::setJob(QString job, QString fileName, QString workPath)
     QDir dir(workPath);
     m_workPath = dir.absolutePath();
 
-    qDebug() << "##### JOB ##########";
-    qDebug() << "job : " << currentJob;
-    qDebug() << "file : " << m_fileName;
-    qDebug() << "post path : " << workPath;
-    qDebug() << "path : " << m_workPath;
+//    qDebug() << "##### JOB ##########";
+//    qDebug() << "job : " << currentJob;
+//    qDebug() << "file : " << m_fileName;
+//    qDebug() << "post path : " << workPath;
+//    qDebug() << "path : " << m_workPath;
 
 }
 

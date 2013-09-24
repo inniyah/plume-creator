@@ -10,10 +10,9 @@
 
 TextTab::TextTab(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TextTab)
+    ui(new Ui::TextTab), m_idNumber(-1), firstTime(true)
 {
     ui->setupUi(this);
-
 
 
     prevTextDocument = new MainTextDocument(this);
@@ -25,47 +24,48 @@ TextTab::TextTab(QWidget *parent) :
     connect(baseScrollBar, SIGNAL(rangeChanged(int,int)), this, SLOT(scrollBar_setRange(int, int)));
     connect(baseScrollBar, SIGNAL(valueChanged(int)), ui->verticalScrollBar, SLOT(setValue(int)));
     connect(ui->verticalScrollBar, SIGNAL(valueChanged(int)), baseScrollBar, SLOT(setValue(int)));
-ui->textZone->verticalScrollBar()->hide();
-//    ui->textZone->setVerticalScrollBar(vertScrollBar);
+    ui->textZone->verticalScrollBar()->hide();
+    //    ui->textZone->setVerticalScrollBar(vertScrollBar);
+
+
+    ui->leftHandle->setSide(SizeHandle::Left);
+    ui->rightHandle->setSide(SizeHandle::Right);
+
+
+    //    prevTextZone = new TextZone(this);
+    //    prevTextZone->setHub(hub);
+    //    prevTextZone->toHtml();
+
+    //    nextTextZone = new TextZone(this);
+    //    nextTextZone->setHub(hub);
+    //    nextTextZone->toHtml();
+
+
+    //    textZone = new TextZone(this);
+    //    textZone->setHub(hub);
+    //    textZone->toHtml();
+
+    //    QWidget *textZoneWidget = new QWidget;
+    //    textZoneVLayout = new QVBoxLayout;
+    //    textZoneVLayout->setSpacing(0);
+    //    textZoneVLayout->addWidget(textZone);
+    //    textZoneWidget->setLayout(textZoneVLayout);
+
+    //    QHBoxLayout *layout = new QHBoxLayout;
+    //    QSplitter *splitter = new QSplitter;
+    //    splitter->setOrientation(Qt::Vertical);
+    //    splitter->addWidget(prevTextZone);
+    //    splitter->addWidget(textZoneWidget);
+    //    splitter->addWidget(nextTextZone);
 
 
 
+    //    layout->addStretch();
+    //    //    layout->addLayout(vLayout);
+    //    layout->addWidget(splitter);
+    //    layout->addStretch();
 
-
-//    prevTextZone = new TextZone(this);
-//    prevTextZone->setHub(hub);
-//    prevTextZone->toHtml();
-
-//    nextTextZone = new TextZone(this);
-//    nextTextZone->setHub(hub);
-//    nextTextZone->toHtml();
-
-
-//    textZone = new TextZone(this);
-//    textZone->setHub(hub);
-//    textZone->toHtml();
-
-//    QWidget *textZoneWidget = new QWidget;
-//    textZoneVLayout = new QVBoxLayout;
-//    textZoneVLayout->setSpacing(0);
-//    textZoneVLayout->addWidget(textZone);
-//    textZoneWidget->setLayout(textZoneVLayout);
-
-//    QHBoxLayout *layout = new QHBoxLayout;
-//    QSplitter *splitter = new QSplitter;
-//    splitter->setOrientation(Qt::Vertical);
-//    splitter->addWidget(prevTextZone);
-//    splitter->addWidget(textZoneWidget);
-//    splitter->addWidget(nextTextZone);
-
-
-
-//    layout->addStretch();
-//    //    layout->addLayout(vLayout);
-//    layout->addWidget(splitter);
-//    layout->addStretch();
-
-//    setLayout(layout);
+    //    setLayout(layout);
 
 
     setContextMenuPolicy(Qt::PreventContextMenu);
@@ -116,6 +116,14 @@ ui->textZone->verticalScrollBar()->hide();
 
     giveStyle();
 
+    connect(ui->leftHandle, SIGNAL(modifySizeSignal(int)), this, SLOT(modifySize(int)));
+    connect(ui->rightHandle, SIGNAL(modifySizeSignal(int)), this, SLOT(modifySize(int)));
+
+}
+
+TextTab::~TextTab()
+{
+
 }
 
 void TextTab::setTextStyles(TextStyles *styles)
@@ -152,13 +160,14 @@ bool TextTab::openText(MainTextDocument *doc)
     QApplication::processEvents();
     ui->textZone->document()->adjustSize();
 
-// slim find replace :
+    // slim find replace :
 
     this->addSlimFindReplaceAction();
     ui->findReplace->setDocument(textDocument);
     ui->findReplace->setHub(hub);
     ui->findReplace->setTextEdit(ui->textZone);
-ui->findReplace->hide();
+    ui->findReplace->postConstructor();
+    ui->findReplace->hide();
 
     connect(ui->textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
     connect(ui->textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -172,7 +181,6 @@ ui->findReplace->hide();
     //    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
 
 
-    applyConfig();
 
     return true;
 
@@ -211,21 +219,26 @@ MainTextDocument* TextTab::document()
 
 void TextTab::changeWidthSlot(int width)
 {
-    if(width == -1){
-    QSettings settings;
-    width = settings.value("Settings/TextArea/textWidth", this->width()/2 ).toInt();
 
+
+    QSettings settings;
+    if(width == -1){
+        width = settings.value("Settings/TextArea/textWidth", this->width()/2 ).toInt();
+//        qDebug() << "eeeee : " + QString::number(width);
     }
 
 
-    int scrollBarWidth = 30;
+
 
     ui->textZone->setFixedWidth(width);
-    ui->textZone->document()->setTextWidth(width);
+    //    ui->textZone->document()->setTextWidth(width);
     ui->prevTextZone->setFixedWidth(width);
-    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
+    //    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
     ui->nextTextZone->setFixedWidth(width);
-    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+    //    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+
+    settings.setValue("Settings/TextArea/textWidth", width);
+
 }
 //-------------------------------------------------------------------------------
 void TextTab::changeTextFontSlot(QFont font)
@@ -343,8 +356,8 @@ void TextTab::cursorPositionChangedSlot()
 void TextTab::updateTextZone()
 {
 
-    ui->textZone->document()->setTextWidth(ui->textZone->width() - 20);
-    ui->prevTextZone->document()->setTextWidth(ui->prevTextZone->width() - 20);
+//    ui->textZone->document()->setTextWidth(ui->textZone->width() - 20);
+//    ui->prevTextZone->document()->setTextWidth(ui->prevTextZone->width() - 20);
 
     //    qDebug() << "updateTextZone";
 }
@@ -393,7 +406,7 @@ void  TextTab::setPrevButtonState(bool state)
 {
     if(state)
         ui->prevTextToolButton->setArrowType(Qt::UpArrow);
-else
+    else
         ui->prevTextToolButton->setArrowType(Qt::DownArrow);
 }
 
@@ -423,7 +436,7 @@ void TextTab::on_prevTextToolButton_clicked()
         ui->textZone->ensureCursorVisible();
         this->setPrevButtonState(false);
 
-}
+    }
 }
 
 
@@ -471,7 +484,7 @@ void  TextTab::setNextButtonState(bool state)
 {
     if(state)
         ui->nextTextToolButton->setArrowType(Qt::DownArrow);
-else
+    else
         ui->nextTextToolButton->setArrowType(Qt::UpArrow);
 }
 
@@ -501,14 +514,14 @@ void TextTab::on_nextTextToolButton_clicked()
         ui->textZone->ensureCursorVisible();
         this->setNextButtonState(false);
 
-}
+    }
 
 }
 
 //-------------------------------------------------------------------------------
 void TextTab::on_splitter_splitterMoved(int pos, int index)
 {
-    qDebug() << "pos : "<< QString::number(pos) << "index : "<<QString::number(index) ;
+//    qDebug() << "pos : "<< QString::number(pos) << "index : "<<QString::number(index) ;
     if(index == 1 && pos != 0)
         this->setPrevButtonState(true);
     if(index == 1 && pos == 0)
@@ -518,6 +531,36 @@ void TextTab::on_splitter_splitterMoved(int pos, int index)
     if(index == 2 && pos == ui->splitter->maximumHeight())
         this->setNextButtonState(false);
 }
+
+void TextTab::modifySize(int modifier)
+{
+    int textZoneWidth;
+
+    if(modifier == 0)
+        changeWidthSlot();
+
+
+    if(ui->textZone->width() < 400)
+        textZoneWidth = 400;
+    if(ui->textZone->width() <= 400 && modifier < 0)
+        return;
+    if(ui->textZone->width() > this->width())
+        textZoneWidth = this->width() - 20 ;
+    if(ui->textZone->width() > this->width() - 20 &&  modifier > 0)
+        return;
+    else{
+        textZoneWidth = ui->textZone->width() + modifier;
+
+    }
+
+    changeWidthSlot(textZoneWidth);
+
+    ui->textZone->ensureCursorVisible();
+
+
+
+}
+
 
 
 
@@ -559,7 +602,7 @@ void TextTab::applyConfig()
     //    int textIndent = settings.value("TextArea/textIndent", 20).toInt();
     //    int textHeight = settings.value("TextArea/textHeight", 12).toInt();
     //    QString fontFamily = settings.value("TextArea/textFontFamily", "Liberation Serif").toString();
-    changeWidthSlot(settings.value("TextArea/textWidth", this->width()/2).toInt());
+    changeWidthSlot();
     settings.endGroup();
 
 
@@ -577,27 +620,42 @@ void TextTab::giveStyle()
 
 
 void TextTab::paintEvent(QPaintEvent *)
- {
-     QStyleOption opt;
-     opt.init(this);
-     QPainter p(this);
-     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
- }
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
 //-------------------------------------------------------------------
 
 void TextTab::resizeEvent(QResizeEvent *event)
 {
-//    int percent = ui->textZone->width()/this->width();
+    //    int percent = ui->textZone->width()/this->width();
 
-//    int w = event->size().width();
+    //    int w = event->size().width();
 
-//    ui->textZone->setFixedWidth(w*percent);
-//    ui->prevTextZone->setFixedWidth(w*percent);
-//    ui->nextTextZone->setFixedWidth(w*percent);
+    //    ui->textZone->setFixedWidth(w*percent);
+    //    ui->prevTextZone->setFixedWidth(w*percent);
+    //    ui->nextTextZone->setFixedWidth(w*percent);
 
-//    ui->textZone->document()->setTextWidth(width - scrollBarWidth);
-//    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
-//    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+    //    ui->textZone->document()->setTextWidth(width - scrollBarWidth);
+    //    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
+    //    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
+
+//    qDebug() << "event->size().width() : " + QString::number(event->size().width());
+
+    if(firstTime){
+     firstTime = false;
+        return;
+    }
+
+    this->modifySize(event->size().width() - event->oldSize().width());
+
+
+
+//    qDebug() << "event->size().width() - event->oldSize().width() : " + QString::number(event->size().width() - event->oldSize().width());
+
+//    qDebug() << "resizing";
 }
 
 //-------------------------------------------------------------------
@@ -613,3 +671,13 @@ void TextTab::scrollBar_setRange(int min, int max)
 
 }
 
+
+int TextTab::idNumber() const
+{
+    return m_idNumber;
+}
+
+void TextTab::setIdNumber(int idNumber)
+{
+    m_idNumber = idNumber;
+}

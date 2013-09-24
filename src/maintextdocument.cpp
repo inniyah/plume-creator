@@ -6,7 +6,12 @@ MainTextDocument::MainTextDocument(QObject *parent) :
 
     wordCountEngine = new WordCountEngine(this, this);
 
-    highlighter = new TextHighlighter(this);
+    m_spellChecker = new SpellChecker;
+    connect(m_spellChecker, SIGNAL(userDictSignal(QString)), this, SIGNAL(userDictSignal(QString)));
+    connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), this, SLOT(attendTree_namesListChangedSlot(QStringList)));
+
+    highlighter = new TextHighlighter(this, m_spellChecker);
+
 }
 
 //-------------------------------------------------------------
@@ -49,7 +54,7 @@ void MainTextDocument::setCursorPos(int pos)
 void MainTextDocument::connectWordCount()
 {
     connect(wordCountEngine,SIGNAL(wordCountChanged(int)), this, SLOT(wordCountChangedSlot(int)), Qt::UniqueConnection);
-isWordCountEnabled = true;
+    isWordCountEnabled = true;
 }
 void MainTextDocument::disconnectWordCount()
 {
@@ -62,10 +67,101 @@ void MainTextDocument::disconnectWordCount()
 void MainTextDocument::wordCountChangedSlot(int count)
 {
     if(isWordCountEnabled)
-    emit wordCountChanged(this->docType(), this->idNumber(), count);
+        emit wordCountChanged(this->docType(), this->idNumber(), count);
 }
+
 
 TextHighlighter* MainTextDocument::textHighlighter()
 {
     return highlighter;
+}
+
+
+
+
+
+//-------------------------------------------------------------
+//-------------------------------------------------------------
+//------------------Spell checker---------------------------
+//-------------------------------------------------------------
+
+void MainTextDocument::activateSpellChecker()
+{
+    if(m_dictionaryPath.isEmpty()){
+        qWarning() << "activateSpellChecker() without dictionary";
+        return;
+    }
+    m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+
+
+    m_spellChecker->activate();
+    highlighter->rehighlight();
+}
+
+//-------------------------------------------------------------
+
+void MainTextDocument::deactivateSpellChecker()
+{
+    m_spellChecker->deactivate();
+    highlighter->rehighlight();
+
+}
+//-------------------------------------------------------------
+
+void MainTextDocument::setDicts(const QString &dictionaryPath, const QString &userDictionary)
+{
+    m_dictionaryPath = dictionaryPath;
+    m_userDictionary = userDictionary + m_attendTree_names;
+
+
+    if(m_spellChecker->isActive()){
+        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+        highlighter->rehighlight();
+    }
+
+}
+
+//-------------------------------------------------------------
+SpellChecker *MainTextDocument::spellChecker() const
+{
+    return m_spellChecker;
+}
+//-------------------------------------------------------------
+
+void MainTextDocument::setSpellChecker(SpellChecker *spellChecker)
+{
+    m_spellChecker = spellChecker;
+
+}
+
+//-------------------------------------------------------------
+
+void MainTextDocument::attendTree_namesListChangedSlot(QStringList namesList)
+{
+    m_attendTree_names.clear();
+
+QSettings settings;
+
+if(namesList.isEmpty() || !settings.value("SpellChecking/includeNamesFromTheMiseEnScene", true).toBool())
+        return;
+
+    for(int i = 0; i < namesList.size() ; ++i){
+
+        QString name = namesList.at(i);
+
+
+        QStringList fragmentList = name.split(" ", QString::SkipEmptyParts);
+        if(!fragmentList.isEmpty())
+            foreach (QString fragment, fragmentList) {
+                m_attendTree_names.append( fragment + "\n");
+            }
+
+
+
+    }
+    m_userDictionary = m_userDictionary + m_attendTree_names;
+    if(m_spellChecker->isActive()){
+        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+        highlighter->rehighlight();
+    }
 }

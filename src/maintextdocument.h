@@ -27,6 +27,7 @@
 
 #include "wordcountengine.h"
 #include "texthighlighter.h"
+#include "spellchecker.h"
 
 class MainTextDocument : public QTextDocument
 {
@@ -47,14 +48,27 @@ public:
     void connectWordCount();
     void disconnectWordCount();
 
+
+    //spellchecker :
+    void activateSpellChecker();
+    void deactivateSpellChecker();
+
+    SpellChecker *spellChecker() const;
+    void setSpellChecker(SpellChecker *spellChecker);
+
+
 signals:
     void wordCountChanged(QString type, int id, int count);
+    void userDictSignal(QString userDictString);
+    void attendTree_namesListChanged(QStringList namesList);
 
 public slots:
     void setCursorPos(int pos);
+    void setDicts(const QString &dictionaryPath, const QString &userDictionary);
 
 private slots:
     void wordCountChangedSlot(int count);
+    void attendTree_namesListChangedSlot(QStringList namesList);
 
 private:
     WordCountEngine *wordCountEngine;
@@ -62,6 +76,10 @@ private:
     int itemId, m_cursorPos;
     QString m_docType;
     bool isWordCountEnabled;
+    SpellChecker *m_spellChecker;
+
+    QString m_dictionaryPath, m_userDictionary, m_attendTree_names;
+
 
 };
 

@@ -80,6 +80,10 @@ signals:
     // outliner :
     void applySynNoteFontConfigSignal();
     void updateOutlinerSignal();
+
+
+    void currentOpenedSheetSignal(int sheetIdNumber);
+
 public slots:
 
 

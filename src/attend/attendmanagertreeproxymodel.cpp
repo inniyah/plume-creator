@@ -396,9 +396,9 @@ void AttendManagerTreeProxyModel::removeAttendNumberFromSheets(int itemNumber)
 
         QString newAttendString;
 
-        for( int i = 0 ; i < thisAttendStringList.size(); ++i)
-            newAttendString.append(thisAttendStringList.at(i) + "-");
-        //      qDebug() << "newAttendString : " << newAttendString;
+        for( int j = 0 ; j < thisAttendStringList.size(); ++j)
+            newAttendString.append(thisAttendStringList.at(j) + "-");
+
 
         element.setAttribute("attend", newAttendString);
         ++i;
