@@ -59,6 +59,7 @@ signals:
     void setStyleSelectionSignal(int styleIndex);
     void textChangedSignal();
     void manageStylesSignal();
+    void changeTextStyleSignal(int styleIndex);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -69,13 +70,10 @@ public slots:
     void changeWidthSlot(int width = -1);
     void changeTextFontSlot(QFont font);
     void changeTextHeightSlot(int height);
-    void changeTextStyleSlot(int styleIndex);
     void setTextFocus();
     void setCursorPos(int pos);
     int cursorPos();
     void applyConfig();
-    QTextCharFormat tabFontChangedSlot();
-    void updateTextZone();
 
     void showPrevText(bool showPrevTextBool);
     bool setShowPrevTextButton();
@@ -88,7 +86,6 @@ public slots:
 
 private slots:
     void launchSlimFindReplace();
-    void cursorPositionChangedSlot();
     void giveStyle();
     void scrollBar_setRange(int min, int max);
 

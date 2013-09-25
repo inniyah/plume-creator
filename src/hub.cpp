@@ -416,12 +416,12 @@ void Hub::calculatWordCountGoalDelta(int projectCount)
 
 //--------------------------------------------------------------------------------
 
-QString Hub::userDict()
+QStringList Hub::userDict()
 {
     return m_userDict;
 }
 
-void Hub::setUserDict(QString userDict)
+void Hub::setUserDict(QStringList userDict)
 {
     m_userDict = userDict;
 
@@ -916,13 +916,16 @@ bool Hub::loadTemp()
         if(userDictonaryFile->open(QIODevice::ReadOnly)) {
         QTextStream stream(userDictonaryFile);
         QString userString;
-        stream >> userString;
-        this->setUserDict(userString);
+         stream >> userString;
+
+         QStringList list  = userString.split(";*$;", QString::SkipEmptyParts);
+
+         this->setUserDict(list);
 
         userDictonaryFile->close();
     } else {
 //        qWarning() << "User dictionary in " << projectWorkingPath + "/dicts/userDict.dict_plume" << "could not be opened";
-            this->setUserDict("");
+            this->setUserDict(QStringList());
     }
 
 
@@ -1206,6 +1209,7 @@ void Hub::saveTemp()
 
 
     // user dictionary :
+
     QDir dir(projectWorkingPath);
     if(!dir.cd("dicts"))
     dir.mkdir("dicts");
@@ -1214,7 +1218,8 @@ void Hub::saveTemp()
     if(userDictonaryFile->open(QIODevice::Truncate | QFile::WriteOnly | QFile::Text)) {
         userDictonaryFile->waitForBytesWritten(500);
         QTextStream stream(userDictonaryFile);
-        stream << this->userDict();
+        foreach(QString string, this->userDict())
+            stream << string + ";*$;";
         userDictonaryFile->close();
     }
 
@@ -1380,8 +1385,8 @@ void Hub::connectAllSheetsToSpellChecker()
         MainTextDocument *doc = i.key();
         if(doc->docType() == "text" /*|| doc->docType() == "synopsis" || doc->docType() == "note"*/)
 
-            connect(this, SIGNAL(spellDictsChangedSignal(QString, QString)), doc, SLOT(setDicts(QString, QString)), Qt::UniqueConnection);
-        connect(doc, SIGNAL(userDictSignal(QString)), this, SLOT(setUserDict(QString)), Qt::UniqueConnection);
+            connect(this, SIGNAL(spellDictsChangedSignal(QString, QStringList)), doc, SLOT(setDicts(QString, QStringList)), Qt::UniqueConnection);
+        connect(doc, SIGNAL(userDictSignal(QStringList)), this, SLOT(setUserDict(QStringList)), Qt::UniqueConnection);
         connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), doc, SIGNAL(attendTree_namesListChanged(QStringList)), Qt::UniqueConnection);
         ++i;
     }
@@ -1504,11 +1509,6 @@ void Hub::saveCursorPos(int textCursorPosition, int synCursorPosition, int noteC
     this->addToSaveQueue();
 
 }
-
-
-
-
-
 
 
 

@@ -25,7 +25,9 @@ v 0.63
 		- fix : "next" button didn't work
 	- fix : "paste unformatted" shortcut didn't work
 	- fix : crash when opening directly a *.plume_backup
-	- removed system tray message when closing Plume
+	- removed system tray message when closing Plume (bug in Ubuntu)
+	- added style switching in the "previous" and "next" texts zones
+	- now we know what style is selected.
 	
 v 0.62
 	- new Project tree :

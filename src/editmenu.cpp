@@ -26,8 +26,14 @@ void EditMenu::createContent()
     ui->styleListWidget->clear();
     ui->styleListWidget->addItems(textStyles->namesList());
 
+
+    // not used
     connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), this, SIGNAL(textFontChangedSignal(QFont)));
     connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(textHeightChangedSignal(int)));
+
+
+
+
 
     connect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
 
@@ -84,6 +90,18 @@ void EditMenu::tabChangedSlot(QTextCharFormat newTabFormat)
 void EditMenu::styleSelectedSlot(QListWidgetItem *item)
 {
 
+    for (int i = 0; i < textStyles->namesList().size(); ++i) {
+    QFont font = ui->styleListWidget->item(i)->font();
+     font.setBold(false);
+     ui->styleListWidget->item(i)->setFont(font);
+    }
+
+
+            QFont font = item->font();
+             font.setBold(true);
+             item->setFont(font);
+
+
     emit styleSelectedSignal(ui->styleListWidget->row(item));
 }
 
@@ -94,14 +112,25 @@ void EditMenu::setStyleSelectionSlot(int selection)
     if(selection == 99999){
         for (int i = 0; i < textStyles->namesList().size(); ++i) {
             ui->styleListWidget->item(i)->setSelected(false);
+
+            QFont font = ui->styleListWidget->item(i)->font();
+            font.setBold(false);
+            ui->styleListWidget->item(i)->setFont(font);
         }
         return;
     }
-
+    for (int i = 0; i < textStyles->namesList().size(); ++i) {
+    QFont font = ui->styleListWidget->item(i)->font();
+     font.setBold(false);
+     ui->styleListWidget->item(i)->setFont(font);
+    }
 
     disconnect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
 
             ui->styleListWidget->item(selection)->setSelected(true);
+            QFont font = ui->styleListWidget->item(selection)->font();
+             font.setBold(true);
+             ui->styleListWidget->item(selection)->setFont(font);
 
     connect(ui->styleListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(styleSelectedSlot(QListWidgetItem*)));
 }

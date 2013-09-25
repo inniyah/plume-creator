@@ -32,41 +32,6 @@ TextTab::TextTab(QWidget *parent) :
     ui->rightHandle->setSide(SizeHandle::Right);
 
 
-    //    prevTextZone = new TextZone(this);
-    //    prevTextZone->setHub(hub);
-    //    prevTextZone->toHtml();
-
-    //    nextTextZone = new TextZone(this);
-    //    nextTextZone->setHub(hub);
-    //    nextTextZone->toHtml();
-
-
-    //    textZone = new TextZone(this);
-    //    textZone->setHub(hub);
-    //    textZone->toHtml();
-
-    //    QWidget *textZoneWidget = new QWidget;
-    //    textZoneVLayout = new QVBoxLayout;
-    //    textZoneVLayout->setSpacing(0);
-    //    textZoneVLayout->addWidget(textZone);
-    //    textZoneWidget->setLayout(textZoneVLayout);
-
-    //    QHBoxLayout *layout = new QHBoxLayout;
-    //    QSplitter *splitter = new QSplitter;
-    //    splitter->setOrientation(Qt::Vertical);
-    //    splitter->addWidget(prevTextZone);
-    //    splitter->addWidget(textZoneWidget);
-    //    splitter->addWidget(nextTextZone);
-
-
-
-    //    layout->addStretch();
-    //    //    layout->addLayout(vLayout);
-    //    layout->addWidget(splitter);
-    //    layout->addStretch();
-
-    //    setLayout(layout);
-
 
     setContextMenuPolicy(Qt::PreventContextMenu);
 
@@ -94,24 +59,7 @@ TextTab::TextTab(QWidget *parent) :
 
 
 
-    //   textZone->setMinimumWidth(600);
 
-
-    //    QFont synLiberationFont("Liberation Serif", 13);
-    //    textZone->setFont(synLiberationFont);
-    //    textZone->setFontPointSize(13);
-
-    //    QTextBlockFormat synTextBlockFormat;
-    //    synTextBlockFormat.setBottomMargin(10);
-    //    synTextBlockFormat.setTextIndent(50);
-    //    QTextCharFormat synTextCharFormat;
-    //    synTextCharFormat.setFontFamily("Liberation Serif");
-    //    synTextCharFormat.setFontPointSize(13);
-
-    //    QTextCursor synTextCursor;
-    //    synTextCursor = textZone->textCursor();
-    //    synTextCursor.setBlockFormat(synTextBlockFormat);
-    //    synTextCursor.setCharFormat(synTextCharFormat);
 
 
     giveStyle();
@@ -169,12 +117,25 @@ bool TextTab::openText(MainTextDocument *doc)
     ui->findReplace->postConstructor();
     ui->findReplace->hide();
 
-    connect(ui->textZone, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+
+    //    connect(ui->textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
+//    connect(ui->textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+
     connect(ui->textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
+    connect(ui->prevTextZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
+    connect(ui->nextTextZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
     connect(ui->textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
-    connect(ui->textZone,SIGNAL(styleSelectedSignal(int)), this,SLOT(changeTextStyleSlot(int)));
-    connect(this, SIGNAL(setStyleSelectionSignal(int)), ui->textZone, SIGNAL(setStyleSelectionSignal(int)));
+    connect(ui->prevTextZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
+    connect(ui->nextTextZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
     connect(ui->textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+    connect(ui->prevTextZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+    connect(ui->nextTextZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+    connect(ui->textZone, SIGNAL(setStyleSelectionSignal(int)),this , SIGNAL(setStyleSelectionSignal(int)));
+    connect(ui->prevTextZone, SIGNAL(setStyleSelectionSignal(int)),this , SIGNAL(setStyleSelectionSignal(int)));
+    connect(ui->nextTextZone, SIGNAL(setStyleSelectionSignal(int)),this , SIGNAL(setStyleSelectionSignal(int)));
+    connect(this, SIGNAL(changeTextStyleSignal(int)), ui->textZone, SLOT(changeTextStyleSlot(int)));
+    connect(this, SIGNAL(changeTextStyleSignal(int)), ui->prevTextZone, SLOT(changeTextStyleSlot(int)));
+    connect(this, SIGNAL(changeTextStyleSignal(int)), ui->nextTextZone, SLOT(changeTextStyleSlot(int)));
 
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
@@ -252,55 +213,6 @@ void TextTab::changeTextHeightSlot(int height)
 }
 
 //-------------------------------------------------------------------------------
-void TextTab::changeTextStyleSlot(int styleIndex)
-{
-
-
-    QTextBlockFormat blockFormat;
-    blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));
-    blockFormat.setTextIndent(textStyles->blockFirstLineIndentAt(styleIndex));
-    blockFormat.setLeftMargin(textStyles->blockLeftMarginAt(styleIndex));
-    blockFormat.setAlignment(textStyles->blockAlignmentTrueNameAt(styleIndex));
-    blockFormat.setTopMargin(0);
-    blockFormat.setRightMargin(0);
-    QTextCharFormat charFormat;
-    charFormat.setFontPointSize(textStyles->fontSizeAt(styleIndex));
-    charFormat.setFontFamily(textStyles->fontFamilyAt(styleIndex));
-    //    charFormat.setFontItalic(textStyles->fontItalicAt(styleIndex));
-    //    if (textStyles->fontBoldAt(styleIndex) == true)
-    //        charFormat.setFontWeight(75);
-    //    else
-    //        charFormat.setFontWeight(50);
-    //    charFormat.setFontUnderline(textStyles->fontUnderlineAt(styleIndex));
-    //    charFormat.setFontStrikeOut(textStyles->fontStrikeOutAt(styleIndex));
-
-    //    charFormat.clearForeground();
-
-
-    QTextCursor tCursor = ui->textZone->textCursor();
-
-    // select all of the blocks selected :
-
-    QTextCursor tStartCursor = ui->textZone->textCursor();
-    tStartCursor.setPosition(tCursor.selectionStart());
-    tStartCursor.movePosition(QTextCursor::StartOfBlock);
-    int startFirstBlock = tStartCursor.position();
-
-    QTextCursor tEndCursor = ui->textZone->textCursor();
-    tEndCursor.setPosition(tCursor.selectionEnd());
-    tEndCursor.movePosition(QTextCursor::EndOfBlock);
-    int endLastBlock = tEndCursor.position();
-
-    tCursor.setPosition(startFirstBlock);
-    tCursor.setPosition(endLastBlock, QTextCursor::KeepAnchor);
-
-
-    // merge :
-    tCursor.mergeBlockFormat(blockFormat);
-    tCursor.mergeCharFormat(charFormat);
-    ui->textZone->mergeCurrentCharFormat(charFormat);
-
-}
 
 
 //-------------------------------------------------------------------------------
@@ -327,41 +239,9 @@ int TextTab::cursorPos()
     return cursor.position();
 
 }
-//-------------------------------------------------------------------------------
-QTextCharFormat TextTab::tabFontChangedSlot()
-{
-    return ui->textZone->textCursor().charFormat();
-}
+
 
 //-------------------------------------------------------------------------------
-void TextTab::cursorPositionChangedSlot()
-{
-    QTextCursor tCursor = ui->textZone->textCursor();
-
-    if((tCursor.atStart() == true
-        || tCursor.position() == 1
-        || tCursor.position() == 0) && tCursor.hasSelection() == false){
-        this->changeTextStyleSlot(textStyles->defaultStyleIndex());
-    }
-
-    int currentStyleIndex = textStyles->compareStylesWithText(tCursor.charFormat(), tCursor.blockFormat());
-
-    emit setStyleSelectionSignal(currentStyleIndex);
-
-}
-
-//-------------------------------------------------------------------------------
-
-
-void TextTab::updateTextZone()
-{
-
-//    ui->textZone->document()->setTextWidth(ui->textZone->width() - 20);
-//    ui->prevTextZone->document()->setTextWidth(ui->prevTextZone->width() - 20);
-
-    //    qDebug() << "updateTextZone";
-}
-
 
 //-------------------------------------------------------------------------------
 
@@ -556,6 +436,8 @@ void TextTab::modifySize(int modifier)
     changeWidthSlot(textZoneWidth);
 
     ui->textZone->ensureCursorVisible();
+    ui->prevTextZone->ensureCursorVisible();
+    ui->nextTextZone->ensureCursorVisible();
 
 
 
@@ -594,6 +476,8 @@ void  TextTab::launchSlimFindReplace()
 void TextTab::applyConfig()
 {
     ui->textZone->applyConfig();
+    ui->prevTextZone->applyConfig();
+    ui->nextTextZone->applyConfig();
 
 
     QSettings settings;

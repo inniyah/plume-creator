@@ -98,7 +98,7 @@ public:
     int projectWordCount() const{return wcThread->projectWordCount();}
 
     // spell check :
-    QString userDict();
+    QStringList userDict();
     QString spellDictPath();
     void setSpellDictPath(QString spellDictPath);
 
@@ -169,7 +169,7 @@ signals:
     void resetSpreadsheetOutlinerSignal();
 
     // spell check :
-    void spellDictsChangedSignal(QString dictionaryPath, QString userDictionary);
+    void spellDictsChangedSignal(QString dictionaryPath, QStringList userDictionary);
 
 
 public slots:
@@ -179,7 +179,7 @@ public slots:
 
     // spell check :
     void spellDictsChangedSlot(const QString dictionaryPath);
-    void setUserDict(QString userDict);
+    void setUserDict(QStringList userDict);
 
 private slots:
     void saveProject(QString mode = "");
@@ -241,7 +241,7 @@ private:
     ZipChecker *zipChecker;
 
     // spell check :
-    QString m_userDict;
+    QStringList m_userDict;
     QString m_spellDictPath;
 };
 

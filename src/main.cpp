@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
     QtSingleApplication instance(argc, argv);
     instance.setApplicationVersion(VERSIONSTR);
 
-
     QString message=argv[1];
 
     if (instance.sendMessage(message))

@@ -7,7 +7,7 @@ MainTextDocument::MainTextDocument(QObject *parent) :
     wordCountEngine = new WordCountEngine(this, this);
 
     m_spellChecker = new SpellChecker;
-    connect(m_spellChecker, SIGNAL(userDictSignal(QString)), this, SIGNAL(userDictSignal(QString)));
+    connect(m_spellChecker, SIGNAL(userDictSignal(QStringList)), this, SIGNAL(userDictSignal(QStringList)));
     connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), this, SLOT(attendTree_namesListChangedSlot(QStringList)));
 
     highlighter = new TextHighlighter(this, m_spellChecker);
@@ -91,7 +91,7 @@ void MainTextDocument::activateSpellChecker()
         qWarning() << "activateSpellChecker() without dictionary";
         return;
     }
-    m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+    m_spellChecker->setDict(m_dictionaryPath, m_userDictionary, m_attendTree_names);
 
 
     m_spellChecker->activate();
@@ -108,14 +108,14 @@ void MainTextDocument::deactivateSpellChecker()
 }
 //-------------------------------------------------------------
 
-void MainTextDocument::setDicts(const QString &dictionaryPath, const QString &userDictionary)
+void MainTextDocument::setDicts(const QString &dictionaryPath, const QStringList &userDictionary)
 {
     m_dictionaryPath = dictionaryPath;
-    m_userDictionary = userDictionary + m_attendTree_names;
+    m_userDictionary = userDictionary ;
 
 
     if(m_spellChecker->isActive()){
-        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary, m_attendTree_names);
         highlighter->rehighlight();
     }
 
@@ -149,19 +149,19 @@ if(namesList.isEmpty() || !settings.value("SpellChecking/includeNamesFromTheMise
 
         QString name = namesList.at(i);
 
-
+//break names into parts :
         QStringList fragmentList = name.split(" ", QString::SkipEmptyParts);
         if(!fragmentList.isEmpty())
             foreach (QString fragment, fragmentList) {
-                m_attendTree_names.append( fragment + "\n");
+                m_attendTree_names.append( fragment );
             }
 
 
 
     }
-    m_userDictionary = m_userDictionary + m_attendTree_names;
+
     if(m_spellChecker->isActive()){
-        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary);
+        m_spellChecker->setDict(m_dictionaryPath, m_userDictionary, m_attendTree_names);
         highlighter->rehighlight();
     }
 }

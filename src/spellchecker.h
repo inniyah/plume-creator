@@ -17,7 +17,7 @@ public:
 
     SpellChecker();
     ~SpellChecker();
-    void setDict(const QString &dictionaryPath, const QString &userDictionary);
+    void setDict(const QString &dictionaryPath, const QStringList &userDictionary, const QStringList &attendTree_names);
 
     bool spell(const QString &word);
     QStringList suggest(const QString &word);
@@ -38,15 +38,14 @@ public:
     QString testHunspellForEncoding();
 
 signals:
-  void userDictSignal(QString userDictString);
+  void userDictSignal(QStringList userDict);
 
 private:
     void put_word(const QString &word);
     Hunspell *_hunspell;
-    QString _userDictionary;
     bool m_isActive;
-    QString userDictString;
-    QStringList userDictStringList;
+    QStringList userDict;
+
 
     QString encodingFix;
 };

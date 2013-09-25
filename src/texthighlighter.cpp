@@ -95,17 +95,28 @@ void TextHighlighter::highlightBlock(const QString &text)
 
 
                 if(text.mid(wordStart + wordLength, 1) == "-"){ // cerf-volant, orateur-né
-wordFinder.toNextBoundary();
+                    wordFinder.toNextBoundary();
                     int nextWordLength = wordFinder.toNextBoundary()- (wordStart + wordLength +1);
                     wordFinder.toPreviousBoundary();
                     wordFinder.toPreviousBoundary();
 
-                    QString longWord = text.mid(wordStart, wordLength + nextWordLength + 1);
-                    if(!spellChecker->spell(text.mid(wordStart, longWord.size()))){
+                    QString hyphenWord = text.mid(wordStart, wordLength + nextWordLength + 1);
+                    qDebug() << "hyphenWord_Highlighter : " + hyphenWord;
+                    if(!spellChecker->spell(text.mid(wordStart, hyphenWord.size()))){
+                        wordLength = hyphenWord.size();
+                        wordFinder.toNextBoundary();
+                        wordFinder.toNextBoundary();
+
+                        for(int i = wordStart; i < wordStart + wordLength; ++i)
+                            spellcheckerList.append(i);
+                        continue;
+
+                    }
+                    else {
 
                         wordFinder.toNextBoundary();
                         wordFinder.toNextBoundary();
-                        continue;
+                    continue;
                     }
                 }
 

@@ -85,6 +85,7 @@ private slots:
     void italic(bool italBool);
     void activateSpellcheck(bool spellcheckBool);
     void addToUserDictionary();
+    void addHyphenToUserDictionary();
     void removeFromUserDictionary();
     //    void leftAlign(bool leftBool);
     //    void rightAlign(bool rightBool);
@@ -100,6 +101,9 @@ private slots:
     void preventDoubleSpace();
 
     void replaceWord();
+
+    void changeTextStyleSlot(int styleIndex);
+
 
 private:
     Hub *hub;
@@ -117,7 +121,8 @@ private:
     QAction *pasteAct, *pasteWithoutFormattingAct;
     QAction *boldAct;
     QAction *italicAct, *spellcheckAct;
-    QAction *manageStylesAct, *addToUserDictAct, *removeFromUserDictAct;
+    QAction *manageStylesAct, *addToUserDictAct, *removeFromUserDictAct,
+    *addHyphenToUserDictAct;
     //    QAction *leftAlignAct;
     //    QAction *rightAlignAct;
     //    QAction *justifyAct;
@@ -142,7 +147,7 @@ bool forceCopyWithoutFormatting;
 
 //    Sounds *sounds;
 
-QString selectedWord;
+QString selectedWord, selectedHyphenWord;
 bool m_spellcheckBool;
 
 };

@@ -1153,10 +1153,10 @@ synStack->setIdNumber(number);
 
         //connect edit menu to tab
 
-        connect(menu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
-        connect(menu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
+
+// maybe obsolete : to verify :
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
-        connect(menu,SIGNAL(styleSelectedSignal(int)), tab, SLOT(changeTextStyleSlot(int)));
+        connect(menu,SIGNAL(styleSelectedSignal(int)), tab, SIGNAL(changeTextStyleSignal(int)));
         connect(tab,SIGNAL(setStyleSelectionSignal(int)), menu, SIGNAL(setStyleSelectionSignal(int)));
         connect(tab,SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
 
@@ -1239,8 +1239,8 @@ synStack->setIdNumber(number);
         //disconnect edit menu to tab
         disconnect(menu, SIGNAL(widthChangedSignal(int)), tab, SLOT(changeWidthSlot(int)));
 
-        disconnect(menu,SIGNAL(textFontChangedSignal(QFont)),tab,SLOT(changeTextFontSlot(QFont)));
-        disconnect(menu,SIGNAL(textHeightChangedSignal(int)),tab,SLOT(changeTextHeightSlot(int)));
+
+
         disconnect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
 
 
@@ -1323,25 +1323,6 @@ void MainWindow::tabChangeSlot(int tabNum)
 
 
     if(preTabNum != -1){
-
-        //        bool textBool = mainTree->saveDoc(textWidgetList->at(preTabNum)->document());
-        //        bool noteBool = mainTree->saveDoc(noteWidgetList->at(preTabNum)->document());
-        //        bool synBool = mainTree->saveDoc(synWidgetList->at(preTabNum)->document());
-
-        //        qDebug() << "tabChangeRequest textName :" << textWidgetList->at(preTabNum)->objectName() << "----------- saved :" << textBool;
-        //        qDebug() << "tabChangeRequest noteName :" << noteWidgetList->at(preTabNum)->objectName() << "----------- saved :" << noteBool;
-        //        qDebug() << "tabChangeRequest synName :" << synWidgetList->at(preTabNum)->objectName() << "----------- saved :" << synBool;
-        //                qDebug() << "tabChangeRequest pre :" << preTabNum;
-        //        qDebug() << "tabChangeRequest name :" << nameList->at(preTabNum);
-
-
-        //to initialize edit menu fonts:
-
-        //        TextTab *tab = textWidgetList->at(tabNum);
-        //        menu->tabChangedSlot(tab->tabFontChangedSlot());
-
-
-        //        setCurrentAttendList(tabNum);
 
 
     }

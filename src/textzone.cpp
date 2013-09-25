@@ -69,6 +69,10 @@ void TextZone::setDoc(MainTextDocument *doc)
         this->setIdNumber(this->objectName().mid(this->objectName().indexOf("_") + 1).toInt());
 
     connect(this, SIGNAL(cursorPositionChanged(int)), doc, SLOT(setCursorPos(int)));
+
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
+
 }
 
 
@@ -143,6 +147,11 @@ void TextZone::createActions()
     //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
     addToUserDictAct->setStatusTip(tr("Add the current word selection to the project dictionary"));
     connect(addToUserDictAct, SIGNAL(triggered()), this, SLOT(addToUserDictionary()));
+
+    addHyphenToUserDictAct = new QAction(QIcon(""),tr("Add &Hyphen to Dictionary"), this);
+    //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
+    addHyphenToUserDictAct->setStatusTip(tr("Add the selected hyphenated word to the project dictionary"));
+    connect(addHyphenToUserDictAct, SIGNAL(triggered()), this, SLOT(addHyphenToUserDictionary()));
 
     removeFromUserDictAct = new QAction(QIcon(""),tr("&Remove from Dictionary"), this);
     //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
@@ -290,6 +299,16 @@ void TextZone::addToUserDictionary()
     textDocument->spellChecker()->addToUserWordlist(selectedWord);
 
 }
+void TextZone::addHyphenToUserDictionary()
+{
+    if(selectedWord.isEmpty())
+        return;
+
+
+
+    textDocument->spellChecker()->addToUserWordlist(selectedHyphenWord);
+
+}
 void TextZone::removeFromUserDictionary()
 {
     if(selectedWord.isEmpty())
@@ -395,7 +414,7 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
 
         bool isWellSpelled;
         if(textDocument->spellChecker()->spell(selectedWord) != 0)
-        isWellSpelled = true;
+            isWellSpelled = true;
         else
             isWellSpelled = false;
 
@@ -406,20 +425,50 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
 
             QList<QAction *> suggestionWordsList;
 
-            for(int i=0;i<suggestions.count();i++)
-            {
+            if(!suggestions.isEmpty())
+                for(int i=0;i<suggestions.count();i++)
+                {
+                    QAction *suggestedWord = new QAction(this);
+                    suggestedWord->setText(suggestions.at(i));
+                    connect(suggestedWord, SIGNAL(triggered()),this, SLOT(replaceWord()));
+                    suggestionWordsList.append(suggestedWord);
+                }
+            if(suggestions.isEmpty()){
                 QAction *suggestedWord = new QAction(this);
-                suggestedWord->setText(suggestions.at(i));
-                connect(suggestedWord, SIGNAL(triggered()),this, SLOT(replaceWord()));
+                suggestedWord->setText(tr("No suggestion"));
+                suggestedWord->setDisabled(true);
                 suggestionWordsList.append(suggestedWord);
             }
             menu.addActions(suggestionWordsList);
         }
         if(!cursor.selection().isEmpty()){
+
+            QTextCursor hyphenCursor = this->textCursor();
+            int cursorMax = qMax(cursor.anchor(), cursor.position());
+            hyphenCursor.setPosition(cursorMax, QTextCursor::MoveAnchor);
+            hyphenCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+
+            //            qDebug() << "anchor : "   + QString::number(cursor.anchor());
+            //            qDebug() << "pos : "   + QString::number(cursor.position());
+
+//            qDebug() << "hyphenCursorSelection : " + hyphenCursor.selection().toPlainText();
+
             if(!isWellSpelled && !textDocument->spellChecker()->isInUserWordlist(selectedWord))
             {
                 menu.addSeparator();
                 menu.addAction(addToUserDictAct);
+
+                if(!isWellSpelled && !textDocument->spellChecker()->isInUserWordlist(selectedWord)
+                        && hyphenCursor.selection().toPlainText() == "-")
+                {
+                    int hyphenCursorMin = qMin(hyphenCursor.anchor(), hyphenCursor.position());
+                    hyphenCursor.setPosition(hyphenCursorMin);
+                    hyphenCursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor, 2);
+                    selectedHyphenWord = selectedWord + hyphenCursor.selection().toPlainText();
+//                                    qDebug() << "selectedHyphenWord : " + selectedHyphenWord;
+                    menu.addSeparator();
+                    menu.addAction(addHyphenToUserDictAct);
+                }
             }
             else if(textDocument->spellChecker()->isInUserWordlist(selectedWord)){
                 menu.addSeparator();
@@ -577,7 +626,7 @@ void TextZone::createEditWidget()
 
     //    connect(this,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)),editWidget,SLOT(charFormatChangedSlot(QTextCharFormat)));
 
-    connect(editWidget,SIGNAL(styleSelectedSignal(int)), this, SIGNAL(styleSelectedSignal(int)));
+    connect(editWidget,SIGNAL(styleSelectedSignal(int)), this, SLOT(changeTextStyleSlot(int)));
     connect(this,SIGNAL(setStyleSelectionSignal(int)), editWidget, SLOT(setStyleSelectionSlot(int)));
 }
 
@@ -649,6 +698,23 @@ void TextZone::cursorPositionChangedSlot()
 
 
     emit cursorPositionChanged(this->textCursor().position());
+
+
+
+    // for textstyle :
+    QTextCursor tCursor = this->textCursor();
+
+    if((tCursor.atStart() == true
+        || tCursor.position() == 1
+        || tCursor.position() == 0) && tCursor.hasSelection() == false){
+        this->changeTextStyleSlot(textStyles->defaultStyleIndex());
+    }
+
+    int currentStyleIndex = textStyles->compareStylesWithText(tCursor.charFormat(), tCursor.blockFormat());
+
+    emit setStyleSelectionSignal(currentStyleIndex);
+
+
 }
 
 
@@ -883,3 +949,66 @@ void TextZone::replaceWord()
 //    textDocument->spellChecker()->addToUserWordlist(selectedWord);
 //    insertPlainText(selectedWord);
 //}
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------
+
+
+
+void TextZone::changeTextStyleSlot(int styleIndex)
+{
+
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(textStyles->blockBottomMarginAt(styleIndex));
+    blockFormat.setTextIndent(textStyles->blockFirstLineIndentAt(styleIndex));
+    blockFormat.setLeftMargin(textStyles->blockLeftMarginAt(styleIndex));
+    blockFormat.setAlignment(textStyles->blockAlignmentTrueNameAt(styleIndex));
+    blockFormat.setTopMargin(0);
+    blockFormat.setRightMargin(0);
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(textStyles->fontSizeAt(styleIndex));
+    charFormat.setFontFamily(textStyles->fontFamilyAt(styleIndex));
+    //    charFormat.setFontItalic(textStyles->fontItalicAt(styleIndex));
+    //    if (textStyles->fontBoldAt(styleIndex) == true)
+    //        charFormat.setFontWeight(75);
+    //    else
+    //        charFormat.setFontWeight(50);
+    //    charFormat.setFontUnderline(textStyles->fontUnderlineAt(styleIndex));
+    //    charFormat.setFontStrikeOut(textStyles->fontStrikeOutAt(styleIndex));
+
+    //    charFormat.clearForeground();
+
+
+    QTextCursor tCursor = this->textCursor();
+
+    // select all of the blocks selected :
+
+    QTextCursor tStartCursor = this->textCursor();
+    tStartCursor.setPosition(tCursor.selectionStart());
+    tStartCursor.movePosition(QTextCursor::StartOfBlock);
+    int startFirstBlock = tStartCursor.position();
+
+    QTextCursor tEndCursor =  this->textCursor();
+    tEndCursor.setPosition(tCursor.selectionEnd());
+    tEndCursor.movePosition(QTextCursor::EndOfBlock);
+    int endLastBlock = tEndCursor.position();
+
+    tCursor.setPosition(startFirstBlock);
+    tCursor.setPosition(endLastBlock, QTextCursor::KeepAnchor);
+
+
+    // merge :
+    tCursor.mergeBlockFormat(blockFormat);
+    tCursor.mergeCharFormat(charFormat);
+    this->mergeCurrentCharFormat(charFormat);
+
+}

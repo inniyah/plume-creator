@@ -399,10 +399,13 @@ void SettingsDialog::createSpellingTab()
 
     // filling listWidget
 
-    QStringList userDictList = hub->userDict().split("\n", QString::SkipEmptyParts);
+    QStringList userDictList = hub->userDict();
+    QStringList attendTreeNamesList = hub->attendTree_namesList();
 
 
     foreach(QString word, userDictList){
+        if(attendTreeNamesList.contains(word))
+            continue;
         QListWidgetItem *item = new QListWidgetItem(word,ui->wordListWidget);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
     }
@@ -478,7 +481,7 @@ void SettingsDialog::on_renameWordButton_clicked()
     if(ui->wordListWidget->selectedItems().isEmpty())
         return;
 
-      QListWidgetItem *item = ui->wordListWidget->selectedItems().first();
+    QListWidgetItem *item = ui->wordListWidget->selectedItems().first();
     ui->wordListWidget->editItem(item);
 
 }
@@ -737,11 +740,11 @@ void SettingsDialog::accept()
 
     settings.setValue("SpellChecking/includeNamesFromTheMiseEnScene", ui->includeNamesFromTheMiseEnSceneCheckBox->isChecked());
 
-    QString userDict;
+    QStringList userDict;
     QList<QListWidgetItem *> itemsList = ui->wordListWidget->findItems("", Qt::MatchContains);
     foreach(QListWidgetItem *item , itemsList)
-        userDict.append(item->text().toUtf8() + "\u000a");
-        hub->setUserDict(userDict);
+        userDict.append(item->text().toUtf8());
+    hub->setUserDict(userDict);
 
 
 

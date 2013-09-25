@@ -21,11 +21,10 @@ SpellChecker::~SpellChecker()
     delete _hunspell;
 }
 
-void SpellChecker::setDict(const QString &dictionaryPath, const QString &userDictionary)
+void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &userDictionary, const QStringList &attendTree_names)
 {
 
 
-    _userDictionary = userDictionary;
 
     QString dictFile = dictionaryPath + ".dic";
     QString affixFile = dictionaryPath + ".aff";
@@ -34,28 +33,22 @@ void SpellChecker::setDict(const QString &dictionaryPath, const QString &userDic
     _hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData());
 
 
-    userDictString = userDictionary;
+    userDict = userDictionary;
 
-    userDictStringList = userDictString.split("\n", QString::SkipEmptyParts);
+    foreach (const QString name, userDict) {
+        put_word(name);
+    }
 
-    if(!userDictStringList.isEmpty())
-        for(int i = 0; i < userDictStringList.size() ; ++i){
-            put_word(userDictStringList.at(i));
-            //                qWarning() << "user dict word : " + userDictStringList.at(i);
-
-
-
-        }
-    else
-        qWarning() << "user dict is empty";
-
+    foreach (const QString name, attendTree_names) {
+        ignoreWord(name);
+    }
 
 
     //test :
 
 
     encodingFix = this->testHunspellForEncoding();
-    qWarning() << "encodingFix : " + encodingFix;
+//    qWarning() << "encodingFix : " + encodingFix;
 
 
 
@@ -197,11 +190,11 @@ void SpellChecker::addToUserWordlist(const QString &word)
 {
     put_word(word);
 
-    userDictString.append(word + "\n");
+    userDict.append(word);
 
 
 
-    emit userDictSignal(userDictString);
+    emit userDictSignal(userDict);
 
 }
 
@@ -212,17 +205,18 @@ void SpellChecker::removeFromUserWordlist(const QString &word)
         _hunspell->remove(word.toLatin1().constData());
     if(encodingFix == "utf8")
         _hunspell->remove(word.toUtf8().constData());
-    userDictString.remove(word);
+
+    userDict.removeAll(word);
 
 
 
-    emit userDictSignal(userDictString);
+    emit userDictSignal(userDict);
 
 }
 bool SpellChecker::isInUserWordlist( QString &word)
 {
 
-    return userDictStringList.contains(word);
+    return userDict.contains(word);
 
 }
 void SpellChecker::activate()
@@ -299,7 +293,7 @@ QHash<QString, QString> SpellChecker::dictsList()
 QString SpellChecker::testHunspellForEncoding()
 {
 QString encoding(_hunspell->get_dic_encoding());
-qWarning() << "_hunspell->get_dic_encoding() : " + encoding;
+//qWarning() << "_hunspell->get_dic_encoding() : " + encoding;
 
 
     if(encoding == "ISO8859-1")
