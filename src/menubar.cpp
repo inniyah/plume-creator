@@ -295,7 +295,7 @@ void MenuBar::about()
 
                        "<p><center><address><a href=http://www.plume-creator.eu>http://www.plume-creator.eu</a></address></center></p>"
 
-                       "<p>Copyright (C) 2011 by Cyril Jacquet</p>"
+                       "<p>Copyright (C)" + QString::number(QDate::currentDate().year())   +" by Cyril Jacquet</p>"
                        "<p>cyril.jacquet@plume-creator.eu</p></center>"
                        "<br>"
                        "<br>"

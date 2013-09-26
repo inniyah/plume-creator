@@ -465,6 +465,8 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
                     hyphenCursor.setPosition(hyphenCursorMin);
                     hyphenCursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor, 2);
                     selectedHyphenWord = selectedWord + hyphenCursor.selection().toPlainText();
+                    if(selectedHyphenWord.right(1) == " ")
+                        selectedHyphenWord.chop(1);
 //                                    qDebug() << "selectedHyphenWord : " + selectedHyphenWord;
                     menu.addSeparator();
                     menu.addAction(addHyphenToUserDictAct);

@@ -74,6 +74,9 @@ void TextHighlighter::highlightBlock(const QString &text)
         QString wordValue = "";
         while (wordFinder.position() < text.length())
         {
+            if(wordFinder.position() == -1)
+                break;
+
             if (wordFinder.position()==0)
             {
                 wordStart=0;
@@ -101,7 +104,7 @@ void TextHighlighter::highlightBlock(const QString &text)
                     wordFinder.toPreviousBoundary();
 
                     QString hyphenWord = text.mid(wordStart, wordLength + nextWordLength + 1);
-                    qDebug() << "hyphenWord_Highlighter : " + hyphenWord;
+//                    qDebug() << "hyphenWord_Highlighter : " + hyphenWord;
                     if(!spellChecker->spell(text.mid(wordStart, hyphenWord.size()))){
                         wordLength = hyphenWord.size();
                         wordFinder.toNextBoundary();
@@ -115,7 +118,7 @@ void TextHighlighter::highlightBlock(const QString &text)
                     else {
 
                         wordFinder.toNextBoundary();
-                        wordFinder.toNextBoundary();
+                            wordFinder.toNextBoundary();
                     continue;
                     }
                 }
