@@ -5,26 +5,26 @@
 <context>
     <name>AttendAbstractModel</name>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="175"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="189"/>
         <source>Titles</source>
         <translation>Títulos</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="221"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="223"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="224"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="227"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="229"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="230"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="233"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="235"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="236"/>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="363"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="237"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="239"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="240"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="243"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="245"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="246"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="249"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="251"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="252"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="396"/>
         <source>None</source>
         <translation>Nenhum</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="239"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="255"/>
         <source>Age :</source>
         <translation>Idade:</translation>
     </message>
@@ -68,63 +68,63 @@
         <translation>Gerenciador de Objetos</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="108"/>
+        <location filename="../src/attend/attendmanager.ui" line="132"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="155"/>
-        <location filename="../src/attend/attendmanager.cpp" line="209"/>
+        <location filename="../src/attend/attendmanager.ui" line="179"/>
+        <location filename="../src/attend/attendmanager.cpp" line="217"/>
         <source>Age :</source>
         <translation>Idade</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="182"/>
+        <location filename="../src/attend/attendmanager.ui" line="206"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="208"/>
+        <location filename="../src/attend/attendmanager.ui" line="232"/>
         <source>One-line description</source>
         <translation>Descrição curta</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="221"/>
+        <location filename="../src/attend/attendmanager.ui" line="245"/>
         <source>Aliases (separated by , (comma) )</source>
         <translation>Apelidos (separados por , (vírgula) )</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="228"/>
+        <location filename="../src/attend/attendmanager.ui" line="252"/>
         <source>Close</source>
         <translation>Fechar</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="243"/>
+        <location filename="../src/attend/attendmanager.ui" line="267"/>
         <source>add object</source>
         <translation>adicionar objeto</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="246"/>
+        <location filename="../src/attend/attendmanager.ui" line="270"/>
         <source>add an object (character, item, places, ...) to the list</source>
         <translation>adicionar um objeto (personagem, item, lugar ...) à lista</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="251"/>
+        <location filename="../src/attend/attendmanager.ui" line="275"/>
         <source>add group</source>
         <translation>adcionar grupo</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="254"/>
+        <location filename="../src/attend/attendmanager.ui" line="278"/>
         <source>add a group to the list</source>
         <translation>adicionar um grupo à lista</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="259"/>
+        <location filename="../src/attend/attendmanager.ui" line="283"/>
         <source>remove</source>
         <translation>remover</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanager.ui" line="262"/>
+        <location filename="../src/attend/attendmanager.ui" line="286"/>
         <source>remove the selected object or group</source>
         <translation>remover o grupo ou objeto selecionado</translation>
     </message>
@@ -132,28 +132,28 @@
 <context>
     <name>AttendManagerTreeProxyModel</name>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="167"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="186"/>
         <source>new</source>
         <translation>novo</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="226"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="245"/>
         <source>new group</source>
         <translation>novo grupo</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="283"/>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="290"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="302"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="309"/>
         <source>Plume Creator Attendance</source>
         <translation type="unfinished">Plume Creator - Objetos</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="284"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="303"/>
         <source>You can&apos;t delete a group if it&apos;s not empty./nIf you want to delete it, please delete its children first.</source>
         <translation>Você não pode deletar um grupo se ele não estiver vazio./nSe quiser deletá-lo, por favor delete os itens do grupo primeiro.</translation>
     </message>
     <message>
-        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="291"/>
+        <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="310"/>
         <source>Do you really  want to delete it ?/nYou will not be able to recover it afterwards.</source>
         <translation>Você realmente deseja deletar?/nEsta operação não pode ser desfeita.</translation>
     </message>
@@ -1722,27 +1722,27 @@ not allowed delete a filled book.</source>
         <translation type="obsolete">Seu projeto foi salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2223"/>
+        <location filename="../src/mainwindow.cpp" line="2252"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2228"/>
+        <location filename="../src/mainwindow.cpp" line="2257"/>
         <source>Book: </source>
         <translation>Livro: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2237"/>
+        <location filename="../src/mainwindow.cpp" line="2266"/>
         <source>Act: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2247"/>
+        <location filename="../src/mainwindow.cpp" line="2276"/>
         <source>Chapter: </source>
         <translation>Capítulo: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="2253"/>
+        <location filename="../src/mainwindow.cpp" line="2282"/>
         <source>Words: </source>
         <translation>Palavras: </translation>
     </message>
@@ -1764,12 +1764,12 @@ not allowed delete a filled book.</source>
         <translation>Edite este documento em tela-cheia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1609"/>
+        <location filename="../src/mainwindow.cpp" line="1615"/>
         <source>Do you want to quit ?</source>
         <translation>Você quer sair?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1610"/>
+        <location filename="../src/mainwindow.cpp" line="1616"/>
         <source>Your changes are already saved.</source>
         <translation>Suas modificações já estão salvas.</translation>
     </message>
@@ -2432,7 +2432,7 @@ not allowed delete a filled book.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/attend/attendabstractmodel.cpp" line="245"/>
+        <location filename="../src/attend/attendabstractmodel.cpp" line="261"/>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="488"/>
         <source>No Title</source>
         <translation>Sem Título</translation>
@@ -2820,112 +2820,112 @@ not allowed delete a filled book.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="66"/>
+        <location filename="../src/settingsdialog.cpp" line="70"/>
         <source>System default</source>
         <translation>Padrão do Sistema</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="66"/>
+        <location filename="../src/settingsdialog.cpp" line="70"/>
         <source>Plastique (KDE)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="66"/>
+        <location filename="../src/settingsdialog.cpp" line="70"/>
         <source>Cleanlooks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="68"/>
+        <location filename="../src/settingsdialog.cpp" line="72"/>
         <source>Gtk (Gnome/XFCE)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="71"/>
+        <location filename="../src/settingsdialog.cpp" line="75"/>
         <source>Windows Vista</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="71"/>
+        <location filename="../src/settingsdialog.cpp" line="75"/>
         <source>Windows XP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="74"/>
+        <location filename="../src/settingsdialog.cpp" line="78"/>
         <source>Macintosh (OSX)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="91"/>
+        <location filename="../src/settingsdialog.cpp" line="95"/>
         <source>Desktop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="91"/>
+        <location filename="../src/settingsdialog.cpp" line="95"/>
         <source>Netbook</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="105"/>
+        <location filename="../src/settingsdialog.cpp" line="109"/>
         <source>A different language has been selected.&lt;br&gt;The change will be effective after restarting the program.</source>
         <translation>Um outro idioma foi selecionado.&lt;br&gt;A mudança terá efeito após reiniciar o programa.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="114"/>
+        <location filename="../src/settingsdialog.cpp" line="118"/>
         <source>A different style has been selected.&lt;br&gt;The change will be effective after restarting the program.</source>
         <translation>Um outro estilo foi selecionado;&lt;br&gt;A mudança terá efeito após reiniciar o programa.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="138"/>
+        <location filename="../src/settingsdialog.cpp" line="142"/>
         <source>A different portable mode has been selected.&lt;br&gt;The change will be effective after restarting the program.</source>
         <translation>Um outro modo portátil foi selecionado;&lt;br&gt;A mudança terá efeito após reiniciar o programa.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="274"/>
+        <location filename="../src/settingsdialog.cpp" line="278"/>
         <source>Name new style</source>
         <translation>Nomear novo estilo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="275"/>
+        <location filename="../src/settingsdialog.cpp" line="279"/>
         <source>Style name :</source>
         <translation>Nome do estilo:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="276"/>
+        <location filename="../src/settingsdialog.cpp" line="280"/>
         <source>New Style</source>
         <translation>Novo estilo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="287"/>
+        <location filename="../src/settingsdialog.cpp" line="291"/>
         <source>Style Renaming</source>
         <translation>Renomeamento de Estilo</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="288"/>
+        <location filename="../src/settingsdialog.cpp" line="292"/>
         <source>Style new name :</source>
         <translation>Novo nome do estilo:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="303"/>
+        <location filename="../src/settingsdialog.cpp" line="307"/>
         <source>Do you want to remove this style ?</source>
         <translation>Você deseja remover este estilo?</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="304"/>
+        <location filename="../src/settingsdialog.cpp" line="308"/>
         <source>The texts written with this style will not be linked anymore.</source>
         <translation>Os textos escritos com este estilo não serão mais linkados.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="359"/>
+        <location filename="../src/settingsdialog.cpp" line="363"/>
         <source>&lt;p&gt;To install additional dictionaries, research &quot;hunspell&quot; in your package manager.&lt;/p&gt;&lt;p&gt;On Ubuntu you can type in a console :&lt;/p&gt;&lt;p&gt;sudo apt-get install hunspell*&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="372"/>
+        <location filename="../src/settingsdialog.cpp" line="376"/>
         <source>&lt;p&gt;To install additional dictionaries, paste hunspell dictionaries in the &quot;dicts&quot; folder of the install directory.&lt;/p&gt;&lt;p&gt;Hunspell dictionaries are in the form of pairs of *.aff and *.dic files.&lt;/p&gt;&lt;p&gt;You can find these files unzipping dictionaries extensions from OpenOffice or LibreOffice. They are *.oxt files and you can find them here : &lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="387"/>
+        <location filename="../src/settingsdialog.cpp" line="391"/>
         <source>&lt;p&gt;To install additional dictionaries, research &quot;hunspell&quot; in your paquage manager.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3187,12 +3187,12 @@ not allowed delete a filled book.</source>
 <context>
     <name>TextTab</name>
     <message>
-        <location filename="../src/texttab.cpp" line="457"/>
+        <location filename="../src/texttab.cpp" line="466"/>
         <source>Find &amp;&amp; replace</source>
         <translation>Localizar &amp;&amp; substituir</translation>
     </message>
     <message>
-        <location filename="../src/texttab.cpp" line="459"/>
+        <location filename="../src/texttab.cpp" line="468"/>
         <source>Find text</source>
         <translation>Localizar texto</translation>
     </message>
@@ -3225,148 +3225,148 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextZone</name>
     <message>
-        <location filename="../src/textzone.cpp" line="84"/>
+        <location filename="../src/textzone.cpp" line="95"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="86"/>
+        <location filename="../src/textzone.cpp" line="97"/>
         <source>Undo the last operation</source>
         <translation>Desfazer a última operação</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="89"/>
+        <location filename="../src/textzone.cpp" line="100"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="91"/>
+        <location filename="../src/textzone.cpp" line="102"/>
         <source>Redo the last operation</source>
         <translation>Refazer a última operação</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="94"/>
+        <location filename="../src/textzone.cpp" line="105"/>
         <source>Cu&amp;t</source>
         <translation>Recor&amp;tar</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="96"/>
+        <location filename="../src/textzone.cpp" line="107"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Recortar o conteúdo da seleção atual para a área de transferência</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="100"/>
+        <location filename="../src/textzone.cpp" line="111"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="102"/>
+        <location filename="../src/textzone.cpp" line="113"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Copiar o conteúdo da seleção atual para a área de transferência</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="106"/>
+        <location filename="../src/textzone.cpp" line="117"/>
         <source>&amp;Paste</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="108"/>
+        <location filename="../src/textzone.cpp" line="119"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Colar o conteúdo da área de transferência na seleção atual</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="112"/>
+        <location filename="../src/textzone.cpp" line="123"/>
         <source>&amp;Paste Unformatted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="113"/>
+        <location filename="../src/textzone.cpp" line="124"/>
         <source>Paste without formatting the clipboard&apos;s contents into the current selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="120"/>
+        <location filename="../src/textzone.cpp" line="131"/>
         <source>&amp;Bold</source>
         <translation>&amp;Negrito</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="123"/>
+        <location filename="../src/textzone.cpp" line="134"/>
         <source>Make the text bold</source>
         <translation>Tornar o texto negrito</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="130"/>
+        <location filename="../src/textzone.cpp" line="141"/>
         <source>&amp;Italic</source>
         <translation>&amp;Itálico</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="133"/>
+        <location filename="../src/textzone.cpp" line="144"/>
         <source>Make the text italic</source>
         <translation>Tornar o texto itálico</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="140"/>
+        <location filename="../src/textzone.cpp" line="151"/>
         <source>&amp;Check Spelling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="143"/>
+        <location filename="../src/textzone.cpp" line="154"/>
         <source>Verify your spelling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="146"/>
+        <location filename="../src/textzone.cpp" line="157"/>
         <source>&amp;Add to Dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="148"/>
+        <location filename="../src/textzone.cpp" line="159"/>
         <source>Add the current word selection to the project dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="151"/>
+        <location filename="../src/textzone.cpp" line="162"/>
         <source>Add &amp;Hyphen to Dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="153"/>
+        <location filename="../src/textzone.cpp" line="164"/>
         <source>Add the selected hyphenated word to the project dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="156"/>
+        <location filename="../src/textzone.cpp" line="167"/>
         <source>&amp;Remove from Dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="158"/>
+        <location filename="../src/textzone.cpp" line="169"/>
         <source>Remove the current word selection from the project dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="166"/>
+        <location filename="../src/textzone.cpp" line="177"/>
         <source>Manage &amp;Styles</source>
         <translation>Gerenciar &amp;Estilos</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="168"/>
+        <location filename="../src/textzone.cpp" line="179"/>
         <source>Manage the styles</source>
         <translation>Gerenciar os estilos</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="171"/>
+        <location filename="../src/textzone.cpp" line="182"/>
         <source>&amp;Styles</source>
         <translation>&amp;Estilos</translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="438"/>
+        <location filename="../src/textzone.cpp" line="469"/>
         <source>No suggestion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/textzone.cpp" line="654"/>
-        <location filename="../src/textzone.cpp" line="658"/>
+        <location filename="../src/textzone.cpp" line="687"/>
+        <location filename="../src/textzone.cpp" line="691"/>
         <source>V</source>
         <comment>paste unformated</comment>
         <translation type="unfinished"></translation>
