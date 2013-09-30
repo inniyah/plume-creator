@@ -209,10 +209,10 @@ void DockedTree::contextMenuEvent(QContextMenuEvent *event)
 
 contextMenu->setId(enteredItemId);
 
-contextMenu->menu(MainTreeContextMenu::Rename | MainTreeContextMenu::Badge
+contextMenu->menu((MainTreeContextMenu::Rename | MainTreeContextMenu::Badge
                   | MainTreeContextMenu::Move | MainTreeContextMenu::Delete
                  | MainTreeContextMenu::AddSheet | MainTreeContextMenu::Advanced
-                  | MainTreeContextMenu::Status)->exec(event->globalPos());
+                  | MainTreeContextMenu::Status) & ~(MainTreeContextMenu::EmptyTrash))->exec(event->globalPos());
 
 delete contextMenu;
 

@@ -282,6 +282,46 @@ void MenuBar::viewReleaseNotes()
 
 
 }
+//--------------------------------------------------------------------------
+
+void MenuBar::viewCredits()
+{
+
+
+    QDialog *creditsDialog = new QDialog(this);
+    creditsDialog->setWindowTitle(tr("Credits"));
+    creditsDialog->setMinimumSize(600,400);
+
+
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QLabel *creditsText = new QLabel();
+
+
+
+    QFile *creditsFile = new QFile(":/Credits");
+    creditsFile->open(QFile::ReadOnly | QFile::Text);
+    QTextStream textFileStream( creditsFile );
+
+    QPlainTextEdit *textViewer = new QPlainTextEdit(textFileStream.readAll());
+    creditsFile->close();
+    textViewer->setReadOnly(true);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+
+    connect(buttonBox, SIGNAL(accepted()), creditsDialog, SLOT(close()));
+
+
+    layout->addWidget(creditsText);
+    layout->addWidget(textViewer);
+    layout->addWidget(buttonBox);
+
+    creditsDialog->setLayout(layout);
+
+    creditsDialog->exec();
+
+
+}
 
 //----------------------------------------------------------------------------
 
@@ -295,19 +335,13 @@ void MenuBar::about()
 
                        "<p><center><address><a href=http://www.plume-creator.eu>http://www.plume-creator.eu</a></address></center></p>"
 
-                       "<p>Copyright (C)" + QString::number(QDate::currentDate().year())   +" by Cyril Jacquet</p>"
+                       "<p>Copyright (C)" + QString::number(QDate::currentDate().year())   +", created by Cyril Jacquet</p>"
                        "<p>cyril.jacquet@plume-creator.eu</p></center>"
                        "<br>"
-                       "<br>"
-                       "<p>Designer : Tushant Mirchandani</p> "
-                       "<p>Contributores and beta-testers : Ken McConnell, Bill Blohm</p> "
-                       "<p>Translators : </p>"
-                       "<p>Special thanks to the Quazip dev team.</p> "
                        "<p>Plume Creator is free software: you can redistribute it and/or modify "
                        "it under the terms of the GNU General Public License as published by "
                        "the Free Software Foundation, either version 3 of the License, or "
                        "(at your option) any later version.</p> "
-                       "<br>"
                        "<br>"
                        "<p>Plume Creator is distributed in the hope that it will be useful, "
                        "but WITHOUT ANY WARRANTY; without even the implied warranty of "
@@ -500,6 +534,11 @@ void MenuBar::createActions()
     viewReleaseNotesAct->setToolTip(tr("Open the Readme with the release notes"));
     connect(viewReleaseNotesAct, SIGNAL(triggered()), this, SLOT(viewReleaseNotes()));
 
+    viewCreditsAct = new QAction(tr("Credits"),this);
+    // aboutQtAct->setShortcut(QKeySequence::Quit);
+    viewCreditsAct->setToolTip(tr("View credits"));
+    connect(viewCreditsAct, SIGNAL(triggered()), this, SLOT(viewCredits()));
+
     updaterAct = new QAction(QIcon(":/pics/download.png"),tr("Check Update"),this);
     // aboutQtAct->setShortcut(QKeySequence::Quit);
     updaterAct->setToolTip(tr("check for an update"));
@@ -510,6 +549,7 @@ void MenuBar::createActions()
     helpGroup->addAction(aboutQtAct);
     helpGroup->addSeparator();
     helpGroup->addAction(viewReleaseNotesAct);
+    helpGroup->addAction(viewCreditsAct);
     helpGroup->addAction(updaterAct);
 }
 

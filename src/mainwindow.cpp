@@ -91,23 +91,23 @@ MainWindow::MainWindow(QWidget *parent)
     // Welcome dialog at first start
 
     if (m_firstStart){
-        QMessageBox firstStart;
-        firstStart.setWindowTitle(tr("Welcome"));
-        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QApplication::applicationVersion() + tr("!</b></center>"
-                                                                                                                         "<p>Plume Creator is a little program for writers"
-                                                                                                                         " in quest of a complete yet simple way of"
-                                                                                                                         " writing and organizing a fiction.</p>"
-                                                                                                                         "<br>"
-                                                                                                                         "<p>It allows :"
-                                                                                                                         "<blockquote>- fullscreen text editing</blockquote>"
-                                                                                                                         "<blockquote>- chapters and scenes outlining</blockquote>"
-                                                                                                                         "<blockquote>- note taking</blockquote>"
-                                                                                                                         "<blockquote>- items/characters/places managing</blockquote></p>"
-                                                                                                                         "<p><b><h1>This is a Beta software ! It's stable but all the features are not finished !</h1></b></p>"
+//        QMessageBox firstStart;
+//        firstStart.setWindowTitle(tr("Welcome"));
+//        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QApplication::applicationVersion() + tr("!</b></center>"
+//                                                                                                                         "<p>Plume Creator is a little program for writers"
+//                                                                                                                         " in quest of a complete yet simple way of"
+//                                                                                                                         " writing and organizing a fiction.</p>"
+//                                                                                                                         "<br>"
+//                                                                                                                         "<p>It allows :"
+//                                                                                                                         "<blockquote>- fullscreen text editing</blockquote>"
+//                                                                                                                         "<blockquote>- chapters and scenes outlining</blockquote>"
+//                                                                                                                         "<blockquote>- note taking</blockquote>"
+//                                                                                                                         "<blockquote>- items/characters/places managing</blockquote></p>"
+//                                                                                                                         "<p><b><h1>This is a Beta software ! It's stable but all the features are not finished !</h1></b></p>"
 
 
-                                                                                                                         ));
-        firstStart.exec();
+//                                                                                                                         ));
+//        firstStart.exec();
 
 
 

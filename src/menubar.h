@@ -145,6 +145,7 @@ private slots:
     void aboutQt();
     void about();
     void viewReleaseNotes();
+    void viewCredits();
     void checkUpdate(){ launchCheckUpdateDialog("none"); }
     void exit();
 
@@ -183,6 +184,7 @@ bool projectAlreadyOpened;
     *aboutQtAct,
     *aboutAct,
     *viewReleaseNotesAct,
+    *viewCreditsAct,
     *updaterAct,
    *showTreeDockAct, *showNotesDockAct, *showAttendDockAct, *showToolsDockAct, *launchOutlinerAct, *showFullscreenAct;
 

@@ -145,7 +145,7 @@ void MainTreeContextMenu::prepareContextMenu()
     connect(autoRenameChildrenAct, SIGNAL(triggered()), this, SLOT(autoRenameChildren()));
 
     splitAct = new QAction(tr("&Split"), this);
-    connect(splitAct, SIGNAL(triggered()), this, SLOT(split()));
+    connect(splitAct, SIGNAL(triggered()), this, SLOT(displaySplitDialog()));
 
     addMultiAct = new QAction(QIcon(":/pics/document-multiple.png"),tr("Add &X Children"), this);
     connect(addMultiAct, SIGNAL(triggered()), this, SLOT(addMulti()));
