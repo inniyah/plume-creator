@@ -83,8 +83,22 @@ QVariant AttendAbstractModel::data(const QModelIndex &index, int role) const
         AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
         return AttendAbstractModel::createToolTipText(item);
     }
+    if (role == 36){
+        AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
+        return item->type();
+    }
+    if (role == 34){
+        AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
+        return item->isExpanded(AttendTreeItem::ManagerTree);
+    }
+    if (role == 39){
+        AttendTreeItem *item = static_cast<AttendTreeItem*>(index.internalPointer());
+        return item->isExpanded(AttendTreeItem::GlobalTree);
+    }
     else
         return QVariant();
+
+    return QVariant();
 }
 
 
@@ -180,6 +194,8 @@ void AttendAbstractModel::resetAbsModel()
     resetDomDoc();
 
     endResetModel();
+
+    emit applySettingsFromDataSignal();
 
 }
 
@@ -283,9 +299,16 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
 
             treeItem->setSpinbox_1_label(spinBox_1_label);
             treeItem->setSpinbox_1Value(child.attribute("spinBox_1", "0").toInt());
+            treeItem->setType("group");
 
-
-
+            if(child.attribute("managerTreeExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, AttendTreeItem::ManagerTree);
+            else
+                treeItem->setIsExpanded(false, AttendTreeItem::ManagerTree);
+            if(child.attribute("globalTreeExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, AttendTreeItem::GlobalTree);
+            else
+                treeItem->setIsExpanded(false, AttendTreeItem::GlobalTree);
 
 
 
@@ -329,7 +352,17 @@ void AttendAbstractModel::parseFolderElement(const QDomElement &element)
             treeItem->setSpinbox_1_label(spinBox_1_label);
             treeItem->setSpinbox_1Value(child.attribute("spinBox_1", "0").toInt());
 
+            treeItem->setType("object");
 
+
+            if(child.attribute("managerTreeExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, AttendTreeItem::ManagerTree);
+            else
+                treeItem->setIsExpanded(false, AttendTreeItem::ManagerTree);
+            if(child.attribute("globalTreeExpanded", "yes") == "yes")
+                treeItem->setIsExpanded(true, AttendTreeItem::GlobalTree);
+            else
+                treeItem->setIsExpanded(false, AttendTreeItem::GlobalTree);
 
 
 

@@ -154,6 +154,9 @@ private slots:
     void killWorkbench();
 
 
+    // spell check :
+    void activateSpellCheck(bool isActivated);
+
 private:
     Ui::DockedTreeBase *ui_dockedTreeBase;
     Ui::MainWindow *ui;

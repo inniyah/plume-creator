@@ -50,7 +50,7 @@ public:
 
 
     //spellchecker :
-    void activateSpellChecker();
+    bool activateSpellChecker();
     void deactivateSpellChecker();
 
     SpellChecker *spellChecker() const;

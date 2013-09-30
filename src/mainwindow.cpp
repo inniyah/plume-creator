@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-//    systemTray = new QSystemTrayIcon(this);
-//    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
+    //    systemTray = new QSystemTrayIcon(this);
+    //    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
 
     this->setMinimumSize(800, 400);
     setWindowTitle("Plume Creator");
@@ -176,7 +176,7 @@ void MainWindow::postConstructor()
 
 MainWindow::~MainWindow()
 {
-delete ui_dockedTreeBase;
+    delete ui_dockedTreeBase;
     delete ui;
 }
 
@@ -327,23 +327,23 @@ void MainWindow::createTreeDock()
 
     dockedTree = ui_dockedTreeBase->dockedTree;
     dockedTree->setHub(hub);
-dockedTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
-dockedTree->postConstructor();
+    dockedTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+    dockedTree->postConstructor();
 
 
-connect(dockedTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
+    connect(dockedTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
 
 
-// trash :
-dockedTrashTree = ui_dockedTreeBase->dockedTrashTree;
-dockedTrashTree->setHub(hub);
-dockedTrashTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
-dockedTrashTree->postConstructor();
+    // trash :
+    dockedTrashTree = ui_dockedTreeBase->dockedTrashTree;
+    dockedTrashTree->setHub(hub);
+    dockedTrashTree->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+    dockedTrashTree->postConstructor();
 
-connect(dockedTrashTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
+    connect(dockedTrashTree, SIGNAL(textAndNoteSignal(int,QString)), this, SLOT(textSlot(int,QString)));
 
 
-        treeDock->setWidget(baseWidget);
+    treeDock->setWidget(baseWidget);
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
@@ -493,11 +493,11 @@ void MainWindow::setDockSizes(){
 
 
     treeDock->setMinimumSize(150, 150);
-//    treeDock->setMaximumSize(250, 800);
+    //    treeDock->setMaximumSize(250, 800);
     attendDock->setMinimumSize(150, 150);
-//    attendDock->setMaximumSize(250, 800);
+    //    attendDock->setMaximumSize(250, 800);
     noteDock->setMinimumSize(150, 150);
-//    noteDock->setMaximumSize(250, 800);
+    //    noteDock->setMaximumSize(250, 800);
 
 }
 
@@ -540,7 +540,7 @@ void MainWindow::createStatusBar()
     actWCLabel->setToolTip(tr("Act word count"));
     chapterWCLabel = new QLabel();
     chapterWCLabel->setToolTip(tr("Chapter word count"));
-   currentWCLabel = new QLabel();
+    currentWCLabel = new QLabel();
     currentWCLabel->setToolTip(tr("Current sheet word count"));
 
     connect(hub, SIGNAL(projectWordCount(int)), this, SLOT(updateProjectWCLabel(int)));
@@ -941,13 +941,13 @@ void MainWindow::openProjectSlot()
     DockedTreeProxy *proxy = new DockedTreeProxy;
     proxy->setHub(hub);
     proxy->setSourceModel(mainTree->mainTreeAbstractModel());
-proxy->postConstructor();
+    proxy->postConstructor();
 
     dockedTree->setModel(proxy);
     connect(mainTree->mainTreeAbstractModel(), SIGNAL(applySettingsFromDataSignal()), dockedTree, SLOT(applySettingsFromData()), Qt::UniqueConnection);
     connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
     connect(proxy, SIGNAL(resetAbsModelSignal()), mainTree->mainTreeAbstractModel(), SLOT(resetAbsModel()), Qt::UniqueConnection);
-             dockedTree->applySettingsFromData();
+    dockedTree->applySettingsFromData();
 
 
     DockedTrashTreeProxy *trashProxy = new DockedTrashTreeProxy;
@@ -1009,7 +1009,7 @@ void MainWindow::closeProjectSlot()
     bookWCLabel->setText("");
     actWCLabel->setText("");
     chapterWCLabel->setText("");
-   currentWCLabel->setText("");
+    currentWCLabel->setText("");
 
 
     //    attendList->accept(); //to close the manager;
@@ -1072,7 +1072,14 @@ void MainWindow::textSlot(int number, QString action)
             numList->clear();
         }
 
-
+        // if option "one tab only" is activated :
+        if(oneTabOnly){
+            int i = 0 ;
+            while( numList->size() > 1 ){
+                this->textSlot(numList->at(0), "close");
+                ++i;
+            }
+        }
 
         // open and mem in :
 
@@ -1108,8 +1115,8 @@ void MainWindow::textSlot(int number, QString action)
         //set idNumber :
         tab->setIdNumber(number);
 
-noteStack->setIdNumber(number);
-synStack->setIdNumber(number);
+        noteStack->setIdNumber(number);
+        synStack->setIdNumber(number);
 
         //append :
 
@@ -1154,7 +1161,7 @@ synStack->setIdNumber(number);
         //connect edit menu to tab
 
 
-// maybe obsolete : to verify :
+        // maybe obsolete : to verify :
         connect(tab,SIGNAL(charFormatChangedSignal(QTextCharFormat)),menu,SIGNAL(charFormatChangedSlotSignal(QTextCharFormat)));
         connect(menu,SIGNAL(styleSelectedSignal(int)), tab, SIGNAL(changeTextStyleSignal(int)));
         connect(tab,SIGNAL(setStyleSelectionSignal(int)), menu, SIGNAL(setStyleSelectionSignal(int)));
@@ -1210,20 +1217,19 @@ synStack->setIdNumber(number);
         textDoc->connectWordCount();
 
 
+        //connect spell checker signal
+
+
+        connect(tab, SIGNAL(activateSpellcheckSignal(bool)), this, SLOT(activateSpellCheck(bool)));
+
+
 
 
 
         QTimer::singleShot(0, tab, SLOT(applyConfig()));
 
 
-        // if option "one tab only" is activated :
-        if(oneTabOnly){
-            int i = 0 ;
-            while( numList->size() > 1 ){
-                this->textSlot(numList->at(0), "close");
-                ++i;
-            }
-        }
+
 
 
     }
@@ -1336,9 +1342,9 @@ void MainWindow::tabCloseRequest(int tabNum)
 
 
     hub->saveCursorPos(textWidgetList->at(tabNum)->cursorPos(),
-                            synWidgetList->at(tabNum)->saveCursorPos(),
-                            noteWidgetList->at(tabNum)->saveCursorPos(),
-                            numList->at(tabNum));
+                       synWidgetList->at(tabNum)->saveCursorPos(),
+                       noteWidgetList->at(tabNum)->saveCursorPos(),
+                       numList->at(tabNum));
 
 
     //    qDebug() << "tabCloseRequest textName :" << textWidgetList->at(tabNum)->objectName() << "----------- saved :" << textBool;
@@ -1412,9 +1418,9 @@ void MainWindow::closeAllDocsSlot()
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
         hub->saveCursorPos(textWidgetList->at(i)->cursorPos(),
-                                synWidgetList->at(i)->saveCursorPos(),
-                                noteWidgetList->at(i)->saveCursorPos(),
-                                numList->at(i));
+                           synWidgetList->at(i)->saveCursorPos(),
+                           noteWidgetList->at(i)->saveCursorPos(),
+                           numList->at(i));
 
         //        qDebug() << "closeAllRequest name :" << nameList->at(i);
         //        qDebug() << "closeAllRequest textName :" << textWidgetList->at(i)->objectName() << "----------- saved :" << textBool;
@@ -1477,9 +1483,9 @@ void MainWindow::saveAllDocsSlot()
         //        bool synBool = mainTree->saveDoc(synWidgetList->at(i)->document());
 
         hub->saveCursorPos(textWidgetList->at(i)->cursorPos(),
-                                synWidgetList->at(i)->saveCursorPos(),
-                                noteWidgetList->at(i)->saveCursorPos(),
-                                numList->at(i));
+                           synWidgetList->at(i)->saveCursorPos(),
+                           noteWidgetList->at(i)->saveCursorPos(),
+                           numList->at(i));
 
         //        qDebug() << "tabSaveRequest name :" << nameList->at(i);
         //        qDebug() << "tabSaveRequest textName nÂ° " << i << " ---> " << textWidgetList->at(i)->objectName() << "----- saved :" << textBool;
@@ -1620,8 +1626,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
         hub->closeCurrentProject();
         event->accept();
 
-//        systemTray->show();
-//        systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
+        //        systemTray->show();
+        //        systemTray->showMessage("Plume Creator", tr("Your project was successfully saved."), QSystemTrayIcon::Information, 3000);
 
         break;
 
@@ -1805,7 +1811,7 @@ void MainWindow::editFullscreen()
     fullEditor = new FullscreenEditor(0);
     fullEditor->setHub(hub);
     fullEditor->setTextStyles(textStyles);
-fullEditor->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
+    fullEditor->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
 
     fullEditor->postConstructor();
     fullEditor->openBySheetNumber(hub->currentSheetNumber());
@@ -1831,7 +1837,7 @@ void MainWindow::launchWorkbench()
 
     if(workbenchLaunched){
 
-         workbench->raise();
+        workbench->raise();
 
         return;
     }
@@ -1857,6 +1863,29 @@ void MainWindow::launchWorkbench()
 void MainWindow::killWorkbench()
 {
     workbenchLaunched = false;
+}
+//----------------------------------------------------------------------------
+
+void MainWindow::activateSpellCheck(bool isActivated)
+{
+
+
+
+    for(int i = nameList->size()-1; i >= 0; --i){
+
+
+        QWidget* widget = ui->mainTabWidget->widget(i);
+
+        TextTab *tab = ui->mainTabWidget->findChild<TextTab *>(widget->objectName());
+
+        tab->activateSpellcheck(isActivated);
+    }
+
+    QSettings settings;
+    settings.setValue("SpellChecking/globalSpellCheckActivated", isActivated);
+
+
+
 }
 //----------------------------------------------------------------------------
 
@@ -1909,17 +1938,17 @@ void MainWindow::openSheet(int sheetNumber, int textCursorPos, int noteCursorPos
 
 
 
-TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + QString::number(hub->currentSheetNumber()));
+    TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + QString::number(hub->currentSheetNumber()));
 
-  NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
-  NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
+    NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
+    NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
 
-  //set cursor position :
-  tab->setCursorPos(textCursorPos);
-  synStack->setCursorPos(noteCursorPos);
-  noteStack->setCursorPos(synCursorPos);
+    //set cursor position :
+    tab->setCursorPos(textCursorPos);
+    synStack->setCursorPos(noteCursorPos);
+    noteStack->setCursorPos(synCursorPos);
 
-  tab->setTextFocus();
+    tab->setTextFocus();
 
 
 }
@@ -2118,9 +2147,9 @@ void MainWindow::giveStyle()
 
 
 
-//            "QStatusBar::item {"
-//            "border: 0px none transparent;"
-//            "}"
+            //            "QStatusBar::item {"
+            //            "border: 0px none transparent;"
+            //            "}"
 
 
 
@@ -2234,8 +2263,8 @@ void MainWindow::updateActWCLabel(int count)
         actWCLabel->hide();
     else {
         actWCLabel->show();
-    actWCLabel->setText(tr("Act: ") + Utils::spaceInNumber(QString::number(count)));
-}
+        actWCLabel->setText(tr("Act: ") + Utils::spaceInNumber(QString::number(count)));
+    }
 }
 
 void MainWindow::updateChapterWCLabel(int count)

@@ -39,14 +39,25 @@ public:
     void remove(QModelIndex index);
     void setNameSlot(QModelIndex index, QString name);
 
+
+
+    Qt::DropActions supportedDropActions() const;
+
+    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+
+
+
 signals:
-    void resetDomDocSignal();
+    void resetAbsModelSignal();
     void setNameSignal(QString value);
     void activateItemSignal(QModelIndex index);
     void resetDomElementForNumberSignal();
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
+    void modifyFlagsForDrops(QString indexType);
 
 
 private:
@@ -57,6 +68,9 @@ private:
     int maxNumber;
 
     QHash<int, QDomElement> domElementForNumber;
+
+
+    QString m_indexTypeDragged;
 
 };
 

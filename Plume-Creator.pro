@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.63
+VERSION = 0.64
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -135,7 +135,8 @@ src/hub.cpp \
     src/common/trees/checkabletree.cpp \
     src/sizehandle.cpp \
     src/spellchecker.cpp \
-    src/importuserdictdialog.cpp
+    src/importuserdictdialog.cpp \
+    src/attend/attendmanagertree.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -203,7 +204,8 @@ src/hub.h \
     src/common/trees/checkabletree.h \
     src/sizehandle.h \
     src/spellchecker.h \
-    src/importuserdictdialog.h
+    src/importuserdictdialog.h \
+    src/attend/attendmanagertree.h
 
 CODECFORTR = UTF-8
 

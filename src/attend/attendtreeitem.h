@@ -29,6 +29,14 @@
 class AttendTreeItem
 {
 public:
+
+    enum Tree {
+           ManagerTree = 0x0,
+           GlobalTree = 0x1
+       };
+       Q_DECLARE_FLAGS(Trees, Tree)
+
+
     AttendTreeItem(const QList<QVariant> &data, AttendTreeItem *parent = 0);
     ~AttendTreeItem();
 
@@ -46,8 +54,8 @@ public:
     void setIdNumber(int number);
     bool isGroup() const;
     void setIsGroup(bool groupBool);
-    bool isFolded() const;
-    void setIsFolded(bool foldedBool);
+    bool isExpanded(AttendTreeItem::Trees trees  = AttendTreeItem::ManagerTree) const;
+    void setIsExpanded(bool isExpandedBool, AttendTreeItem::Trees trees  = AttendTreeItem::ManagerTree);
 
 
     //details :
@@ -68,6 +76,8 @@ public:
     void setSpinbox_1_label(QString text);
     int spinBox_1Value() const;
     void setSpinbox_1Value(int value);
+    void setType(QString type);
+    QString type();
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
@@ -79,12 +89,14 @@ private:
     AttendTreeItem *parentItem;
     int itemId;
     bool m_isGroupBool;
-    bool m_isFoldedBool;
+    bool m_isExpandedInManagerTree, m_isExpandedInGlobalTree;
     QString m_name, m_aliases,m_quickDetails,
-    m_box_1Value, m_box_2Value, m_box_3Value, m_spinBox_1_label;
+    m_box_1Value, m_box_2Value, m_box_3Value, m_spinBox_1_label,
+    m_type;
     int m_spinBox_1Value;
 
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(AttendTreeItem::Trees)
 
 #endif // ATTENDTREEITEM_H

@@ -145,7 +145,7 @@ signals:
     void currentSheetNumberChanged(int currentSheetNumber);
 
     void textAlreadyChangedSignal(bool textChanged);
-    void showStatusBarMessageSignal(QString string, int time);
+    void showStatusBarMessageSignal(QString string = "", int time = 3000);
 
     void projectOpenedSignal(bool opened);
 

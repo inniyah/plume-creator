@@ -12,8 +12,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog),
     styleInfoModified(false),
-    spellLangIsModified(false)
+    spellLangIsModified(false),
+    includeNamesFromTheMiseEnSceneIsModified(false)
 {
+
+
+
     ui->setupUi(this);
 
     ui->isPortableToBeCreated->hide();
@@ -439,10 +443,16 @@ void SettingsDialog::dictsChanged()
 void SettingsDialog::spellCheckerComboBox_currentTextChanged()
 {
     spellLangIsModified = true;
-    qDebug() << "spellLangIsModified = true";
+//    qDebug() << "spellLangIsModified = true";
 }
 //---------------------------------------------------------------------------------
 
+void SettingsDialog::on_includeNamesFromTheMiseEnSceneCheckBox_clicked()
+{
+    includeNamesFromTheMiseEnSceneIsModified = true;
+}
+
+//---------------------------------------------------------------------------------
 
 void SettingsDialog::on_importWordsButton_clicked()
 {
@@ -739,6 +749,8 @@ void SettingsDialog::accept()
         this->dictsChanged();
 
     settings.setValue("SpellChecking/includeNamesFromTheMiseEnScene", ui->includeNamesFromTheMiseEnSceneCheckBox->isChecked());
+    if(includeNamesFromTheMiseEnSceneIsModified)
+        this->dictsChanged();
 
     QStringList userDict;
     QList<QListWidgetItem *> itemsList = ui->wordListWidget->findItems("", Qt::MatchContains);

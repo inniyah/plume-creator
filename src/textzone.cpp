@@ -73,6 +73,17 @@ void TextZone::setDoc(MainTextDocument *doc)
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
+
+
+
+
+
+    // activate spell check at start
+
+    QSettings settings;
+    this->activateSpellcheck(settings.value("SpellChecking/globalSpellCheckActivated", true).toBool());
+
+
 }
 
 
@@ -141,7 +152,7 @@ void TextZone::createActions()
     spellcheckAct->setCheckable(true);
     //    spellcheckAct->setShortcuts(QKeySequence::Italic);
     spellcheckAct->setStatusTip(tr("Verify your spelling"));
-    connect(spellcheckAct, SIGNAL(triggered(bool)), this, SLOT(activateSpellcheck(bool)));
+    connect(spellcheckAct, SIGNAL(triggered(bool)), this, SIGNAL(activateSpellcheckSignal(bool)));
 
     addToUserDictAct = new QAction(QIcon(""),tr("&Add to Dictionary"), this);
     //    addToUserDictAct->setShortcuts(QKeySequence::Paste);
@@ -280,15 +291,35 @@ void TextZone::italic(bool italBool)
 }
 
 void TextZone::activateSpellcheck(bool spellcheckBool)
-{    if(spellcheckBool){
-        textDocument->activateSpellChecker();
+{
+
+
+if(m_spellcheckBool == spellcheckBool){
+    return;
+}
+
+    if(spellcheckBool){
+        if(!textDocument->activateSpellChecker()){
+//                        QMessageBox::warning(this, tr("Plume Creator Spell Checker"), tr("No dictionary is selected. Please select one in "));
+            spellcheckAct->setChecked(false);
+            m_spellcheckBool = false;
+            //hub->showStatusBarMessage(tr("No dictionary is selected. Please select one in Settings/Spelling."));
+            qDebug() << "TextZone : !textDocument->activateSpellChecker()";
+            return;
+        }
+        spellcheckAct->setChecked(true);
         m_spellcheckBool = true;
+
     }
     else{
 
         textDocument->deactivateSpellChecker();
+        spellcheckAct->setChecked(false);
         m_spellcheckBool = false;
     }
+
+
+
 }
 
 void TextZone::addToUserDictionary()
@@ -451,7 +482,7 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
             //            qDebug() << "anchor : "   + QString::number(cursor.anchor());
             //            qDebug() << "pos : "   + QString::number(cursor.position());
 
-//            qDebug() << "hyphenCursorSelection : " + hyphenCursor.selection().toPlainText();
+            //            qDebug() << "hyphenCursorSelection : " + hyphenCursor.selection().toPlainText();
 
             if(!isWellSpelled && !textDocument->spellChecker()->isInUserWordlist(selectedWord))
             {
@@ -467,7 +498,7 @@ void TextZone::contextMenuEvent(QContextMenuEvent *event)
                     selectedHyphenWord = selectedWord + hyphenCursor.selection().toPlainText();
                     if(selectedHyphenWord.right(1) == " ")
                         selectedHyphenWord.chop(1);
-//                                    qDebug() << "selectedHyphenWord : " + selectedHyphenWord;
+                    //                                    qDebug() << "selectedHyphenWord : " + selectedHyphenWord;
                     menu.addSeparator();
                     menu.addAction(addHyphenToUserDictAct);
                 }

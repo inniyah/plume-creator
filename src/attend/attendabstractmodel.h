@@ -53,7 +53,8 @@ public slots:
 
 
 signals:
-    
+    void applySettingsFromDataSignal();
+
 public slots:
     void resetAbsModel();
 

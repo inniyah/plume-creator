@@ -82,19 +82,32 @@ AttendTreeItem::~AttendTreeItem()
  {
      m_isGroupBool = groupBool;
  }
-
-
- bool AttendTreeItem::isFolded() const
+//---------------------------------------------------------------
+ bool AttendTreeItem::isExpanded(AttendTreeItem::Trees tree) const
  {
-     return m_isFoldedBool;
+
+     if(tree.testFlag(AttendTreeItem::ManagerTree))
+         return m_isExpandedInManagerTree;
+         if(tree.testFlag(AttendTreeItem::GlobalTree))
+             return m_isExpandedInGlobalTree;
+
+
+
+
+     return true;
  }
 
- void AttendTreeItem::setIsFolded(bool foldedBool)
+ void AttendTreeItem::setIsExpanded(bool isExpandedBool, AttendTreeItem::Trees tree)
  {
-     m_isFoldedBool = foldedBool;
+     if(tree.testFlag(AttendTreeItem::ManagerTree))
+          m_isExpandedInManagerTree = isExpandedBool;
+         if(tree.testFlag(AttendTreeItem::GlobalTree))
+              m_isExpandedInGlobalTree = isExpandedBool;
+
+
+
+
  }
-
-
  //---------------------------------------------------------------
 
 
@@ -184,3 +197,12 @@ AttendTreeItem::~AttendTreeItem()
      m_spinBox_1Value = value;
  }
 
+ void AttendTreeItem::setType(QString type)
+ {
+     m_type = type;
+ }
+
+ QString AttendTreeItem::type()
+ {
+     return m_type;
+ }

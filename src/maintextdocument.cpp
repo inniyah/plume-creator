@@ -85,17 +85,19 @@ TextHighlighter* MainTextDocument::textHighlighter()
 //------------------Spell checker---------------------------
 //-------------------------------------------------------------
 
-void MainTextDocument::activateSpellChecker()
+bool MainTextDocument::activateSpellChecker()
 {
     if(m_dictionaryPath.isEmpty()){
         qWarning() << "activateSpellChecker() without dictionary";
-        return;
+        return false;
     }
     m_spellChecker->setDict(m_dictionaryPath, m_userDictionary, m_attendTree_names);
 
 
     m_spellChecker->activate();
     highlighter->rehighlight();
+
+    return true;
 }
 
 //-------------------------------------------------------------

@@ -25,14 +25,22 @@ void AttendManager::postConstructor()
     managerProxyModel->setHub(hub);
     managerProxyModel->postConstructor();
     managerProxyModel->setSourceModel(abstractModel);
+
+    ui->managerTreeView->setHub(hub);
+    ui->managerTreeView->setAttendAbstractModel(abstractModel);
     ui->managerTreeView->setModel(managerProxyModel );
 
+    connect(ui->managerTreeView, SIGNAL(modifyFlagsForDropsSignal(QString)), managerProxyModel, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
 
-    connect(managerProxyModel, SIGNAL(resetDomDocSignal()), abstractModel, SLOT(resetAbsModel()));
+    connect(managerProxyModel, SIGNAL(resetAbsModelSignal()), abstractModel, SLOT(resetAbsModel()), Qt::UniqueConnection);
     connect(managerProxyModel, SIGNAL(resetDomElementForNumberSignal()), this, SLOT(resetDomElementForNumber()));
     connect(managerProxyModel, SIGNAL(setNameSignal(QString)), this, SLOT(setNameSlot(QString)));
-    connect(managerProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(expandAll()));
+    connect(managerProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), ui->managerTreeView, SLOT(applySettingsFromData()));
     connect(managerProxyModel, SIGNAL(activateItemSignal(QModelIndex)), this, SLOT(setItemActivated(QModelIndex)));
+
+    connect(abstractModel, SIGNAL(applySettingsFromDataSignal()), ui->managerTreeView, SLOT(applySettingsFromData()), Qt::UniqueConnection);
+ui->managerTreeView->applySettingsFromData();
+
     ui->textEdit->setHub(hub);
 
 
@@ -153,7 +161,7 @@ void AttendManager::resetDomElementForNumber()
     }
 
 
-    ui->managerTreeView->expandAll();
+    ui->managerTreeView->applySettingsFromData();
 
 }
 
@@ -339,7 +347,7 @@ void AttendManager::on_addObjectAction_triggered()
     if(!ui->managerTreeView->currentIndex().isValid())
         return;
     managerProxyModel->addObject(ui->managerTreeView->currentIndex());
-    ui->managerTreeView->expandAll();
+    ui->managerTreeView->applySettingsFromData();
 
 
 }
@@ -349,7 +357,7 @@ void AttendManager::on_addGroupAction_triggered()
     if(!ui->managerTreeView->currentIndex().isValid())
         return;
     managerProxyModel->addGroup(ui->managerTreeView->currentIndex());
-    ui->managerTreeView->expandAll();
+    ui->managerTreeView->applySettingsFromData();
 
 }
 
@@ -358,14 +366,10 @@ void AttendManager::on_removeAction_triggered()
     if(!ui->managerTreeView->currentIndex().isValid())
         return;
     managerProxyModel->remove(ui->managerTreeView->currentIndex());
-    ui->managerTreeView->expandAll();
+    ui->managerTreeView->applySettingsFromData();
 
 }
 
-void AttendManager::expandAll()
-{
-    ui->managerTreeView->expandAll();
-}
 
 void AttendManager::nameEditingFinished()
 {

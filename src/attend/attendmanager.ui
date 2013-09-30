@@ -65,18 +65,42 @@
       </layout>
      </item>
      <item>
-      <widget class="QTreeView" name="managerTreeView">
+      <widget class="AttendManagerTree" name="managerTreeView">
        <property name="maximumSize">
         <size>
          <width>200</width>
          <height>16777215</height>
         </size>
        </property>
+       <property name="mouseTracking">
+        <bool>true</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
        <property name="editTriggers">
         <set>QAbstractItemView::EditKeyPressed</set>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragDrop</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
        <property name="indentation">
         <number>10</number>
+       </property>
+       <property name="uniformRowHeights">
+        <bool>true</bool>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="animated">
+        <bool>true</bool>
        </property>
        <attribute name="headerVisible">
         <bool>false</bool>
@@ -268,6 +292,11 @@
    <class>NoteZone</class>
    <extends>QTextEdit</extends>
    <header location="global">notezone.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AttendManagerTree</class>
+   <extends>QTreeView</extends>
+   <header location="global">attend/attendmanagertree.h</header>
   </customwidget>
  </customwidgets>
  <resources>

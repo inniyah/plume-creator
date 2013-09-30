@@ -61,7 +61,6 @@ private slots:
 
     void on_removeAction_triggered();
 
-    void expandAll();
     void nameEditingFinished();
 
 private:

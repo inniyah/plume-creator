@@ -1,5 +1,10 @@
 PLUME CREATOR
 
+v 0.64
+	- fix : crash when no dictionary was selected
+	- spell check activates for the whole project
+	- Mise en scène (ex-Attendance) : 
+		- added Drag & Drop
 
 v 0.63
 	- Spanish (Spain) language added

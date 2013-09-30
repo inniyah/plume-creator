@@ -119,7 +119,7 @@ bool TextTab::openText(MainTextDocument *doc)
 
 
     //    connect(ui->textZone,SIGNAL(textChanged()), this,SIGNAL(textChangedSignal()));
-//    connect(ui->textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
+    //    connect(ui->textZone,SIGNAL(manageStylesSignal()), this,SIGNAL(manageStylesSignal()));
 
     connect(ui->textZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
     connect(ui->prevTextZone,SIGNAL(charFormatChangedSignal(QTextCharFormat)), this,SIGNAL(charFormatChangedSignal(QTextCharFormat)));
@@ -136,6 +136,9 @@ bool TextTab::openText(MainTextDocument *doc)
     connect(this, SIGNAL(changeTextStyleSignal(int)), ui->textZone, SLOT(changeTextStyleSlot(int)));
     connect(this, SIGNAL(changeTextStyleSignal(int)), ui->prevTextZone, SLOT(changeTextStyleSlot(int)));
     connect(this, SIGNAL(changeTextStyleSignal(int)), ui->nextTextZone, SLOT(changeTextStyleSlot(int)));
+    connect(ui->textZone, SIGNAL(activateSpellcheckSignal(bool)),this , SIGNAL(activateSpellcheckSignal(bool)));
+    connect(ui->prevTextZone, SIGNAL(activateSpellcheckSignal(bool)),this , SIGNAL(activateSpellcheckSignal(bool)));
+    connect(ui->nextTextZone, SIGNAL(activateSpellcheckSignal(bool)),this , SIGNAL(activateSpellcheckSignal(bool)));
 
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
@@ -175,6 +178,12 @@ MainTextDocument* TextTab::document()
 {
     return textDocument;
 }
+//-------------------------------------------------------------------------------
+
+TextZone *TextTab::textZone()
+{
+    return ui->textZone;
+}
 
 //-------------------------------------------------------------------------------
 
@@ -185,7 +194,7 @@ void TextTab::changeWidthSlot(int width)
     QSettings settings;
     if(width == -1){
         width = settings.value("Settings/TextArea/textWidth", this->width()/2 ).toInt();
-//        qDebug() << "eeeee : " + QString::number(width);
+        //        qDebug() << "eeeee : " + QString::number(width);
     }
 
 
@@ -401,7 +410,7 @@ void TextTab::on_nextTextToolButton_clicked()
 //-------------------------------------------------------------------------------
 void TextTab::on_splitter_splitterMoved(int pos, int index)
 {
-//    qDebug() << "pos : "<< QString::number(pos) << "index : "<<QString::number(index) ;
+    //    qDebug() << "pos : "<< QString::number(pos) << "index : "<<QString::number(index) ;
     if(index == 1 && pos != 0)
         this->setPrevButtonState(true);
     if(index == 1 && pos == 0)
@@ -526,10 +535,10 @@ void TextTab::resizeEvent(QResizeEvent *event)
     //    ui->prevTextZone->document()->setTextWidth(width - scrollBarWidth);
     //    ui->nextTextZone->document()->setTextWidth(width - scrollBarWidth);
 
-//    qDebug() << "event->size().width() : " + QString::number(event->size().width());
+    //    qDebug() << "event->size().width() : " + QString::number(event->size().width());
 
     if(firstTime){
-     firstTime = false;
+        firstTime = false;
         return;
     }
 
@@ -537,9 +546,9 @@ void TextTab::resizeEvent(QResizeEvent *event)
 
 
 
-//    qDebug() << "event->size().width() - event->oldSize().width() : " + QString::number(event->size().width() - event->oldSize().width());
+    //    qDebug() << "event->size().width() - event->oldSize().width() : " + QString::number(event->size().width() - event->oldSize().width());
 
-//    qDebug() << "resizing";
+    //    qDebug() << "resizing";
 }
 
 //-------------------------------------------------------------------
@@ -564,4 +573,12 @@ int TextTab::idNumber() const
 void TextTab::setIdNumber(int idNumber)
 {
     m_idNumber = idNumber;
+}
+
+void TextTab::activateSpellcheck(bool isActivated)
+{
+
+    ui->textZone->activateSpellcheck(isActivated);
+    ui->prevTextZone->activateSpellcheck(isActivated);
+    ui->nextTextZone->activateSpellcheck(isActivated);
 }

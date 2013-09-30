@@ -47,10 +47,12 @@ public:
     //for wordcount:
     MainTextDocument* document();
 
-
+    TextZone* textZone();
 
     int idNumber() const;
     void setIdNumber(int idNumber);
+
+    void activateSpellcheck(bool isActivated);
 
 signals:
 
@@ -60,6 +62,7 @@ signals:
     void textChangedSignal();
     void manageStylesSignal();
     void changeTextStyleSignal(int styleIndex);
+    void activateSpellcheckSignal(bool isActivated);
 
 protected:
     void paintEvent(QPaintEvent *);

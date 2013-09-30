@@ -108,6 +108,8 @@ private slots:
     void on_addWordButton_clicked();
 
 void itemDataChanged(QListWidgetItem *item);
+void on_includeNamesFromTheMiseEnSceneCheckBox_clicked();
+
 private:
     Hub *hub;
     Ui::SettingsDialog *ui;
@@ -150,7 +152,7 @@ bool prevIsToolBarInStatusBar;
     int currentStyleIndex;
 
     // spelling Tab :
-bool spellLangIsModified;
+bool spellLangIsModified, includeNamesFromTheMiseEnSceneIsModified;
 QStringList userDictStringList;
 
 };

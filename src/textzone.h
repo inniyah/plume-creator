@@ -46,12 +46,15 @@ public:
     int idNumber() const;
     void setIdNumber(int idNumber);
 
+    void activateSpellcheck(bool spellcheckBool);
+
 signals:
     void charFormatChangedSignal(QTextCharFormat format);
     void setStyleSelectionSignal(int styleIndex);
     void styleSelectedSignal(int styleIndex);
     void manageStylesSignal();
     void cursorPositionChanged(int pos);
+    void activateSpellcheckSignal(bool isActivated);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -83,7 +86,6 @@ private slots:
     void pasteWithoutFormatting();
     void bold(bool boldBool);
     void italic(bool italBool);
-    void activateSpellcheck(bool spellcheckBool);
     void addToUserDictionary();
     void addHyphenToUserDictionary();
     void removeFromUserDictionary();

@@ -321,7 +321,7 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
 
     if(niv1bool || niv2bool || niv3bool){
         //        QString downloadLink = node.toElement().attribute("url1") + milestone + node.toElement().attribute("url2") + updateVersion + node.toElement().attribute("url3");
-                QString downloadLink = "http://www.plume-creator.eu";
+                QString downloadLink = "http://www.plume-creator.eu/site/index.php/en/download-en";
         ui->updateLabel->setText(("<b><h3><center>An update is available ! Plume Creator version ")
                                  + updateVersion + tr("</h3><b><br>Download it directly here : <address><a href=")
                                  + downloadLink + ">" + downloadLink + tr("</a></address></center>"));
