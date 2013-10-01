@@ -134,7 +134,6 @@ private:
 bool prevIsToolBarInStatusBar;
     // text tab :
 
-    int textWidthValue, previous_textWidthValue;
 
 
     QFont synFont;

@@ -878,7 +878,7 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
-    textDocument->setTextWidth(this->width());
+    textDocument->setTextWidth(this->width() - 14);// Fix ticket #10 : the wobbling of the text
     QWidget::resizeEvent(event);
 
 }

@@ -572,10 +572,6 @@ void SettingsDialog::readSettings()
 
     settings.beginGroup( "Settings" );
 
-    textWidthValue = settings.value("TextArea/textWidth", 700).toInt();
-    previous_textWidthValue = textWidthValue;
-    ui->widthSpin->setValue(textWidthValue);
-
 
     // Fullscreen text :
 
@@ -704,10 +700,6 @@ void SettingsDialog::accept()
 
     settings.beginGroup( "Settings" );
 
-    settings.setValue( "TextArea/textWidth", ui->widthSpin->value());
-
-
-
     settings.setValue("FullTextArea/showScrollbar", ui->showFullScrollbarBox->isChecked());
 
 
@@ -803,7 +795,6 @@ void SettingsDialog::reject()
     emit setDisplayModeSignal(prev_displayMode, prevIsToolBarInStatusBar);
 
     // text tab :
-    ui->widthSpin->setValue(previous_textWidthValue);
 
 
     QDialog::reject();
