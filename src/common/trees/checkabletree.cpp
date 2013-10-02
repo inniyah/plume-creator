@@ -116,3 +116,4 @@ void CheckableTree::itemClicked(QModelIndex index)
 
 }
 
+

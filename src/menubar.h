@@ -81,6 +81,7 @@ signals:
     void setDisplayModeSignal(QString mode, bool isToolBarInStatusBar);
 void changeAllDocsTextStylesSignal();
 void resetFullscreenTextWidthSignal();
+void applyStyleSheetSignal();
 
     // repeater to join editWidget to MainWindow :
 

@@ -117,6 +117,7 @@ void MenuBar::displayConfig(int tabIndex)
     connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
     connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), textStyles, SLOT(changeAllDocsTextStyles()));
     connect(settingsDialog, SIGNAL(spellDictsChangedSignal(QString)), hub, SLOT(spellDictsChangedSlot(QString)));
+    connect(settingsDialog, SIGNAL(applyStyleSheetSignal()), this, SIGNAL(applyStyleSheetSignal()));
 
 
     settingsDialog->setCurrentTab(tabIndex);

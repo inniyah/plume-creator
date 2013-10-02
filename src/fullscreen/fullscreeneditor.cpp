@@ -631,7 +631,20 @@ void FullscreenEditor::setBackColor()
     QString b = string.setNum(backgroundColor.blue(),10);
 
     backColorString = "QWidget#mainBackground {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
-            "QPushButton#backColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QToolButton#treeButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QPushButton#backColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QTreeView#treeView {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QToolButton#prevButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QToolButton#nextButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QToolButton#newButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#timerLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#timerBuddyLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#clockLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#clockBuddyLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordCountLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordCountBuddyLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QLabel#wordGoalLabel {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+            "QWidget#controlsPanelWidget {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
 
@@ -668,7 +681,6 @@ void FullscreenEditor::setTextBackColor()
     textBackColorString = "FullTextZone {background-color: rgb(" + r + ", " + g + ", " + b + ");"
             "border: 0px none black; border-radius: 0px;"
             "}"
-            "QToolButton#treeButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QPushButton#textBackColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
 
 
@@ -741,7 +753,8 @@ void FullscreenEditor::setAddOnColor()
             "QLabel#wordCountBuddyLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QLabel#wordGoalLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QToolButton#treeButton {color: rgb(" + r + ", " + g + ", " + b + ");}"
-    "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
+    "QTreeView::item#treeView {color: rgb(" + r + ", " + g + ", " + b + ");}";
 
     //    "QToolButton {background-color: red; border: none;}"
     ;

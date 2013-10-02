@@ -280,3 +280,4 @@ void DockedTrashTree::shrinkTrashTree()
     this->scrollTo(indexList.first(),QAbstractItemView::PositionAtTop);
 
 }
+//----------------------------------------------------------------------------------------

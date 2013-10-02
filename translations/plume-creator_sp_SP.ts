@@ -39,7 +39,7 @@
     <message>
         <location filename="../src/attend/attendbase.ui" line="87"/>
         <source>Set the point of view</source>
-        <translation>Ajuste el punto de vista</translation>
+        <translation>Ajustar el punto de vista</translation>
     </message>
     <message>
         <location filename="../src/attend/attendbase.ui" line="113"/>
@@ -57,7 +57,7 @@
     <message>
         <location filename="../src/attend/attendmanager.ui" line="14"/>
         <source>Mise en scène Manager</source>
-        <translation>Puesta en escena Administrador</translation>
+        <translation>Administrador de puesta en escena</translation>
     </message>
     <message>
         <location filename="../src/attend/attendmanager.ui" line="132"/>
@@ -93,7 +93,7 @@
     <message>
         <location filename="../src/attend/attendmanager.ui" line="267"/>
         <source>add object</source>
-        <translation>añadir objetos</translation>
+        <translation>Añadir objetos</translation>
     </message>
     <message>
         <location filename="../src/attend/attendmanager.ui" line="270"/>
@@ -131,7 +131,7 @@
     <message>
         <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="245"/>
         <source>new group</source>
-        <translation>Nuevo Grupo</translation>
+        <translation>Grupo nuevo</translation>
     </message>
     <message>
         <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="302"/>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../src/attend/attendmanagertreeproxymodel.cpp" line="310"/>
         <source>Do you really  want to delete it ?/nYou will not be able to recover it afterwards.</source>
-        <translation>¿Está seguro que quiere borrar esto? / No podrá recuperarlo después.</translation>
+        <translation>¿Está seguro que quiere borrar esto? / No podrá ser recuperado.</translation>
     </message>
 </context>
 <context>
@@ -195,7 +195,7 @@
     <message>
         <location filename="../src/attend/attendsettings.ui" line="262"/>
         <source>Warning : modify orders changes the Attendance manager lists orders </source>
-        <translation>Alerta: modificar órdenes cambia el administrador de asistencia de listas de órdenes</translation>
+        <translation>Alerta: modificar el orden cambia el orden en la lista del administrador de asistencia</translation>
     </message>
     <message>
         <location filename="../src/attend/attendsettings.cpp" line="32"/>
@@ -249,7 +249,7 @@
     <message>
         <location filename="../src/editmenu.ui" line="116"/>
         <source>Text Width :</source>
-        <translation>Texto Ancho:</translation>
+        <translation>Anchura del Texto:</translation>
     </message>
     <message>
         <location filename="../src/editmenu.ui" line="138"/>
@@ -355,7 +355,7 @@
     <message>
         <location filename="../src/exporter/exporter.ui" line="239"/>
         <source>Preview</source>
-        <translation>Avance</translation>
+        <translation>Vista preliminar</translation>
     </message>
     <message>
         <location filename="../src/exporter/exporter.ui" line="258"/>
@@ -411,7 +411,7 @@
     <message>
         <location filename="../src/exporter/exporter.cpp" line="99"/>
         <source>The destination fields must be completed !</source>
-        <translation>Los campos de destino deben ser completados!</translation>
+        <translation>¡Los campos de destino deben ser completados!</translation>
     </message>
     <message>
         <location filename="../src/exporter/exporter.cpp" line="144"/>
@@ -437,17 +437,17 @@
     <message>
         <location filename="../src/exporter/exporter.cpp" line="453"/>
         <source>You have selected the .txt format. There is no formatting !</source>
-        <translation>Ha seleccionado el formato. txt. No hay formato!</translation>
+        <translation>Ha seleccionado el formato. txt. ¡No hay formato!</translation>
     </message>
     <message>
         <location filename="../src/exporter/exporter.cpp" line="490"/>
         <source>Project exported</source>
-        <translation>Exporta Proyecto</translation>
+        <translation>Proyecto exportado</translation>
     </message>
     <message>
         <location filename="../src/exporter/exporter.cpp" line="490"/>
         <source>This project was successfully exported !</source>
-        <translation>Este proyecto se ha exportado con éxito!</translation>
+        <translation>¡Este proyecto se ha exportado con éxito!</translation>
     </message>
     <message>
         <location filename="../src/exporter/exporter.cpp" line="731"/>
@@ -562,12 +562,12 @@
     <message>
         <location filename="../src/fileupdater.cpp" line="127"/>
         <source>Plume Creator Attendance</source>
-        <translation>Asistencia Plume Creator</translation>
+        <translation>Asistencia de Plume Creator</translation>
     </message>
     <message>
         <location filename="../src/fileupdater.cpp" line="128"/>
         <source>The file is not a a Plume Creator attendance file.</source>
-        <translation>El archivo no es un archivo de asistencia de Plume Creator aa.</translation>
+        <translation>El archivo no es un archivo de asistencia de Plume Creator.</translation>
     </message>
     <message>
         <location filename="../src/fileupdater.cpp" line="185"/>
@@ -577,7 +577,7 @@
     <message>
         <location filename="../src/fileupdater.cpp" line="188"/>
         <source>Items</source>
-        <translation>Items</translation>
+        <translation>Objetos</translation>
     </message>
     <message>
         <location filename="../src/fileupdater.cpp" line="191"/>
@@ -597,7 +597,7 @@
     <message>
         <location filename="../src/fileupdater.cpp" line="622"/>
         <source>Plume Creator Info File</source>
-        <translation>Información de archivo de Plume Creator</translation>
+        <translation>Archivo de información de Plume Creator</translation>
     </message>
     <message>
         <location filename="../src/fileupdater.cpp" line="641"/>
@@ -615,7 +615,7 @@
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="20"/>
         <source>Find &amp; Replace Dialog</source>
-        <translation>Diálogo Buscar y reemplazar</translation>
+        <translation>Buscar y reemplazar</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="104"/>
@@ -690,7 +690,7 @@
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="369"/>
         <source>Check notes</source>
-        <translation>Comprobar nota</translation>
+        <translation>Comprobar notas</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="379"/>
@@ -700,22 +700,22 @@
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="483"/>
         <source>Replace in the selected documents</source>
-        <translation>Reemplace los documentos seleccionados</translation>
+        <translation>Reemplazar en los documentos seleccionados</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="486"/>
         <source>Replace All</source>
-        <translation>Reemplace todo</translation>
+        <translation>Reemplazar todos</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="467"/>
         <source>Replace in this document</source>
-        <translation>Reemplace en este documento</translation>
+        <translation>Reemplazar en este documento</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.ui" line="470"/>
         <source>Replace Doc</source>
-        <translation>Reemplace Doc</translation>
+        <translation>Reemplazar en documento</translation>
     </message>
     <message>
         <source>Replace the selected word</source>
@@ -756,7 +756,7 @@
         <source>No document has been selected in the tree.
 Have you checked the one(s) you want to look through ?</source>
         <translation>Ningún documento ha sido seleccionado en el árbol.
-¿Ha revisado la (s) que desea buscar a través de?</translation>
+¿Marcaste en el que deseas buscar?</translation>
     </message>
     <message>
         <location filename="../src/findReplace/findreplace.cpp" line="126"/>
@@ -794,7 +794,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="50"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation>Cortar el contenido de la selección actual en el portapapeles</translation>
+        <translation>Cortar el contenido seleccionado al portapapeles</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="54"/>
@@ -804,7 +804,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="56"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation>Copie el contenido de la selección actual en el portapapeles</translation>
+        <translation>Copiar el contenido seleccionado al portapapeles</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="60"/>
@@ -814,7 +814,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="62"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation>Pegue el contenido del portapapeles en la selección actual</translation>
+        <translation>Pegar el contenido del portapapeles en la selección actual</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fulltextzone.cpp" line="66"/>
@@ -852,7 +852,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/fullscreen/fullscreeneditor.ui" line="139"/>
         <source>Timer :</source>
-        <translation>Timer:</translation>
+        <translation>Cronómetro:</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fullscreeneditor.ui" line="175"/>
@@ -922,12 +922,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/fullscreen/fullscreeneditor.cpp" line="323"/>
         <source>Text b&amp;ackground color:</source>
-        <translation>Texto b &amp;color de fondo:</translation>
+        <translation>Color &amp;de texto:</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fullscreeneditor.cpp" line="324"/>
         <source>&amp;Text color:</source>
-        <translation>&amp;color del texto:</translation>
+        <translation>&amp;Color del texto:</translation>
     </message>
     <message>
         <location filename="../src/fullscreen/fullscreeneditor.cpp" line="325"/>
@@ -975,24 +975,24 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/hub.cpp" line="486"/>
         <source> you are trying to open doesn&apos;t exist !
 </source>
-        <translation>lo que está intentando abrir no existe !</translation>
+        <translation>¡Lo que está intentando abrir no existe!</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="494"/>
         <source> you are trying to open isn&apos;t a *.plume or .plume_backup file !
 </source>
-        <translation>lo que está intentando abrir no es un archivo *. plume o. archivo plume_backup !</translation>
+        <translation>¡Lo que está intentando abrir no es un archivo *.plume o un archivo *.plume_backup!</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="508"/>
         <source>The document you are trying to open isn&apos;t a *.plume or *.plume_backup file !
 </source>
-        <translation>El documento que está intentando abrir no es un archivo *. plume o *. Archivo plume_backup !</translation>
+        <translation>¡El documento que está intentando abrir no es un archivo * plume o un archivo * plume_backup!</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="519"/>
         <source>&lt;p&gt;The document you are trying to open is *.plume_backup file !&lt;/p&gt;&lt;p&gt;It&apos;s a backup created from the last save. This file must be opened in theses cases :&lt;/p&gt;&lt;blockquote&gt;- Your computer crashed when saving, corrupting your work . &lt;/blockquote&gt;&lt;blockquote&gt;- You can&apos;t load your work. &lt;/blockquote&gt;&lt;p&gt;This will replace your work.&lt;/p&gt;&lt;p&gt;Do you want to proceed ?&lt;/p&gt;</source>
-        <translation>&lt;p&gt; El documento que está intentando abrir es *. plume_backup archivo &lt;/ p&gt; Se trata de una copia de seguridad creada a partir de la última grabación. Este archivo debe abrirse en estos casos: &lt;/ p&gt; &lt;blockquote&gt; - Su equipo se estrelló al guardar, corrompiendo su trabajo. &lt;/ blockquote&gt; &lt;blockquote&gt; - No se puede cargar el trabajo. &lt;/ blockquote&gt; &lt;p Esto reemplazará su trabajo. &lt;/ p&gt; ¿Desea continuar? &lt;/ p&gt;</translation>
+        <translation>&lt;p&gt;¡El documento que está intentando abrir es un archivo *.plume_backup!&lt;/p&gt;Se trata de una copia de seguridad creada a partir de la última grabación. Este archivo debe abrirse en estos casos: &lt;/p&gt; &lt;blockquote&gt; - Su equipo se estrelló al guardar, corrompiendo su trabajo.&lt;/blockquote&gt; &lt;blockquote&gt; - No se puede cargar el trabajo. &lt;/blockquote&gt; &lt;p&gt;Esto reemplazará su trabajo.&lt;/p&gt;¿Desea continuar? &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="755"/>
@@ -1023,14 +1023,14 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/hub.cpp" line="774"/>
         <source>The file is not a Plume Creator tree file version </source>
         <comment>version added after that</comment>
-        <translation>El archivo no es un creador de versión de archivo árbol Plume</translation>
+        <translation>El archivo no es un archivo de árbol de Plume Creator versión </translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="811"/>
         <source>Info File. Parse error at line %1, column %2:
 %3
 </source>
-        <translation>Información de archivo. Error de análisis en la línea %1, columna%2:%3</translation>
+        <translation>Archivo de información. Error de análisis en la línea %1, columna%2:%3</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="824"/>
@@ -1041,7 +1041,7 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/hub.cpp" line="829"/>
         <source>The file is not a Plume Creator info file version </source>
         <comment>version added after that</comment>
-        <translation>El archivo no es un archivo de información de esta versión de Plume Creator  </translation>
+        <translation>El archivo no es un archivo de información de Plume Creator versión </translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="858"/>
@@ -1053,13 +1053,13 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/hub.cpp" line="875"/>
         <source>The file is not a Plume Creator attend file.</source>
-        <translation>El archivo no es un archivo de sistencia de Plume Creator.</translation>
+        <translation>El archivo no es un archivo de asistencia de Plume Creator.</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="880"/>
         <source>The file is not a Plume Creator attend file version </source>
         <comment>version added after that</comment>
-        <translation>El archivo no es un archivo de asistencia de esta versión dePlume Creator</translation>
+        <translation>El archivo no es un archivo de asistencia de Plume Creator versión </translation>
     </message>
 </context>
 <context>
@@ -1067,32 +1067,32 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/importuserdictdialog.ui" line="14"/>
         <source>Import Dictionary From Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar diccionario de proyecto</translation>
     </message>
     <message>
         <location filename="../src/importuserdictdialog.ui" line="52"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar </translation>
     </message>
     <message>
         <location filename="../src/importuserdictdialog.ui" line="59"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Elegir... </translation>
     </message>
     <message>
         <location filename="../src/importuserdictdialog.ui" line="79"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="../src/importuserdictdialog.cpp" line="79"/>
         <source>Open Plume Project Or Exported Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir proyecto o diccionario</translation>
     </message>
     <message>
         <location filename="../src/importuserdictdialog.cpp" line="80"/>
         <source>Plume Project File (*.plume);;Plume Backup Project File (*.plume_backup);;Plume Exported Dictionary (*.plume_dict)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de proyecto Plume (*.plume);;Archivo de respaldo Plume (*.plume_backup);;Diccionario exportado Plume (*.plume_dict)</translation>
     </message>
 </context>
 <context>
@@ -1105,7 +1105,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="171"/>
         <source>Welcome to Plume Creator !</source>
-        <translation>Bienvenido a Plume Creator !</translation>
+        <translation>¡Bienvenido a Plume Creator!</translation>
     </message>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="173"/>
@@ -1133,7 +1133,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="386"/>
         <source>PoV</source>
-        <translation>PoV</translation>
+        <translation>PdV</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="386"/>
@@ -1179,25 +1179,25 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1794"/>
         <source>Book </source>
         <comment>add an empty space after so it&apos;s easier for the user to add quickly a number</comment>
-        <translation type="unfinished">Libro </translation>
+        <translation>Libro </translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1799"/>
         <source>Act </source>
         <comment>add an empty space after so it&apos;s easier for the user to add quickly a number</comment>
-        <translation type="unfinished">Acto </translation>
+        <translation>Acto </translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1804"/>
         <source>Chapter </source>
         <comment>add an empty space after so it&apos;s easier for the user to add quickly a number</comment>
-        <translation type="unfinished">Capítulo </translation>
+        <translation>Capítulo </translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1809"/>
         <source>Scene </source>
         <comment>add an empty space after so it&apos;s easier for the user to add quickly a number</comment>
-        <translation type="unfinished">Escena </translation>
+        <translation>Escena </translation>
     </message>
     <message>
         <source>Book </source>
@@ -1248,7 +1248,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1858"/>
         <source>Proofread</source>
-        <translation>Corregir</translation>
+        <translation>Falta corregir</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreeabstractmodel.cpp" line="1859"/>
@@ -1296,7 +1296,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="144"/>
         <source>&amp;Auto Rename Children</source>
-        <translation>&amp;Renombrar automáticamentre vínculos</translation>
+        <translation>&amp;Renombrar vínculos automáticamente</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="147"/>
@@ -1350,22 +1350,22 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="191"/>
         <source>Set badge</source>
-        <translation>Conjunto de insignias</translation>
+        <translation>Ajuste de insignias</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="201"/>
         <source>Split Dialog</source>
-        <translation>Dividir diálogo</translation>
+        <translation>Diálogo de división</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="204"/>
         <source>&lt;p&gt;With this tool, you can split a text in several parts.For each part, Plume will create a chapter or a scene.&lt;/p&gt;&lt;br&gt;</source>
-        <translation>&lt;p&gt; Con esta herramienta, usted puede dividir un texto en varias partes.Por cada parte, Plume creará un capítulo o una escena. &lt;/ p&gt; &lt;br&gt;</translation>
+        <translation>&lt;p&gt;Con esta herramienta, usted puede dividir un texto en varias partes. Por cada parte, Plume creará un capítulo o una escena. &lt;/p&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="206"/>
         <source>&lt;center&gt;&lt;b&gt;Each sheet type has different behaviour !&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;In a scene sheet : split &lt;b&gt;only&lt;/b&gt; into scenes with *** .&lt;/blockquote&gt;&lt;blockquote&gt;In a chapter sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;blockquote&gt;In a book sheet : split into scenes with *** and into chapters with ### .&lt;/blockquote&gt;&lt;/p&gt;</source>
-        <translation>&lt;center&gt; &lt;b&gt; Cada tipo de hoja tiene un comportamiento diferente &lt;/ b&gt; &lt;/ center&gt; &lt;br&gt; &lt;p&gt; &lt;blockquote&gt; En una hoja de escena: división &lt;b&gt; sólo &lt;/ b&gt; en escenas con *** . &lt;/ blockquote&gt; &lt;blockquote&gt; En una hoja de capítulo: división en escenas con *** y en capítulos con # # # &lt;/ blockquote&gt; &lt;blockquote&gt; En una hoja de libro:. división en escenas con *** y en capítulos con # # #. &lt;/ blockquote&gt; &lt;/ p&gt;</translation>
+        <translation>&lt;center&gt; &lt;b&gt;Cada tipo de hoja tiene un comportamiento diferente &lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;p&gt;&lt;blockquote&gt;En una hoja de escena: se dividen las escenas &lt;b&gt; sólo &lt;/b&gt;con *** . &lt;/blockquote&gt;&lt;blockquote&gt;En una hoja de capítulo: se dividen las escenas con *** y los capítulos con # # # &lt;/blockquote&gt;&lt;blockquote&gt; En una hoja de libro: se dividen las escenas con *** y los capítulos con # # #. &lt;/blockquote&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="218"/>
@@ -1385,7 +1385,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="225"/>
         <source>Choose the type of document that you want to split :</source>
-        <translation>Elija el tipo de documento que desea dividir:</translation>
+        <translation>Elija el tipo de documento en el que desea dividir:</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="281"/>
@@ -1410,12 +1410,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="316"/>
         <source>Set badge text</source>
-        <translation>Ajuste de texto insignia</translation>
+        <translation>Ajuste el texto de la insignia</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="317"/>
         <source>Badge :</source>
-        <translation>Identificador:</translation>
+        <translation>Insignia:</translation>
     </message>
     <message>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="349"/>
@@ -1426,8 +1426,8 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/mainTree/maintreecontextmenu.cpp" line="350"/>
         <source>&lt;p&gt;The sheets in the trash will be permanently deleted.&lt;/p&gt;
 &lt;br&gt;&lt;p&gt;Do you really want to continue ?&lt;/p&gt;</source>
-        <translation>&lt;p&gt; Las hojas en la papelera se eliminará de forma permanente. &lt;/ p&gt;
-&lt;br&gt; &lt;p&gt; Realmente desea continuar? &lt;/ p&gt;</translation>
+        <translation>&lt;p&gt; Las hojas en la papelera se eliminarán de forma permanente.&lt;/p&gt;
+&lt;br&gt;&lt;p&gt;¿Realmente desea continuar?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -1445,22 +1445,22 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="96"/>
         <source>&lt;center&gt;&lt;b&gt;Hello ! Welcome to Plume Creator v</source>
-        <translation>&lt;center&gt; &lt;b&gt; Hola! Bienvenido a Plume Creator v</translation>
+        <translation>&lt;center&gt; &lt;b&gt;¡Hola! Bienvenido a Plume Creator v</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="96"/>
         <source>!&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Plume Creator is a little program for writers in quest of a complete yet simple way of writing and organizing a fiction.&lt;/p&gt;&lt;br&gt;&lt;p&gt;It allows :&lt;blockquote&gt;- fullscreen text editing&lt;/blockquote&gt;&lt;blockquote&gt;- chapters and scenes outlining&lt;/blockquote&gt;&lt;blockquote&gt;- note taking&lt;/blockquote&gt;&lt;blockquote&gt;- items/characters/places managing&lt;/blockquote&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;&lt;h1&gt;This is a Beta software ! It&apos;s stable but all the features are not finished !&lt;/h1&gt;&lt;/b&gt;&lt;/p&gt;</source>
-        <translation>!. &lt;/ b&gt; &lt;/ center&gt; &lt;p&gt; Plume Creator es un pequeño programa para escritores que busca hacer más completa y simple la escritura y organización de un texto narrativo &lt;/ p&gt; &lt;br&gt; &lt;p&gt; Permite: &lt;blockquote &gt; - edición de texto a pantalla completa &lt;/ blockquote&gt; &lt;blockquote&gt; - delineado de capítulos y escenas&lt;/ blockquote&gt; &lt;blockquote&gt; - toma de notas &lt;/ blockquote&gt; &lt;blockquote&gt; - gestión de objetos / personajes / &lt;/ blockquote&gt; &lt;/ p&gt; &lt;p&gt; &lt;b&gt; &lt;h1&gt; se trata de un software Beta! Es estable, pero todas las funciones aún no están terminadas! &lt;/ H1&gt; &lt;/ b&gt; &lt;/ p&gt;</translation>
+        <translation>&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Plume Creator es un pequeño programa para escritores que busca hacer más completa y simple la escritura y organización de un texto narrativo &lt;/p&gt;&lt;br&gt;&lt;p&gt;Permite: &lt;blockquote&gt; - edición de texto a pantalla completa &lt;/blockquote&gt;&lt;blockquote&gt; - delineado de capítulos y escenas&lt;/blockquote&gt;&lt;blockquote&gt; - toma de notas &lt;/blockquote&gt;&lt;blockquote&gt; - gestión de objetos / personajes /&lt;/blockquote&gt;&lt;/p&gt; &lt;p&gt; &lt;b&gt; &lt;h1&gt;¡se trata de un software en estado beta! Es estable, ¡pero la mayoría de las funciones aún no están terminadas!&lt;/H1&gt;&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="125"/>
         <source>Small screen size detected</source>
-        <translation>Detección de tamaño de pantalla pequeña</translation>
+        <translation>Pantalla pequeña detectada</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="126"/>
         <source>&lt;center&gt;&lt;b&gt;A small screen has been detected&lt;/b&gt;&lt;/center&gt;&lt;p&gt;Maybe you are running Plume on a netbook. Plume will adapt its interface to this type of computer.&lt;/p&gt;&lt;br&gt;&lt;p&gt;You can change this option in the &apos;Configure&apos; dialog.&lt;/p&gt;</source>
-        <translation>&lt;center&gt; &lt;b&gt; Se ha detectado una pantalla pequeña &lt;/ b&gt; &lt;/ center&gt; &lt;p&gt; Quizás esté ejecutando Plume en una netbook. Plume adaptará su interfaz para este tipo de equipo. &lt;/ P&gt; &lt;br&gt; &lt;p&gt; Puede cambiar esta opción en el cuadro de diálogo &quot;Configurar&quot;. &lt;/ P&gt;</translation>
+        <translation>&lt;center&gt; &lt;b&gt; Se ha detectado una pantalla pequeña.&lt;/b&gt;&lt;/center&gt;&lt;p&gt; Quizás esté ejecutando Plume en una netbook. Plume adaptará su interfaz para este tipo de equipo.&lt;/p&gt;&lt;br&gt;&lt;p&gt; Puede cambiar esta opción en el cuadro de diálogo &quot;Configurar&quot;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="214"/>
@@ -1552,7 +1552,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Act word count</source>
-        <translation>Conteo de palabras</translation>
+        <translation>Conteo de palabras por acto</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="542"/>
@@ -1562,7 +1562,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="544"/>
         <source>Current sheet word count</source>
-        <translation>Hoja de recuento de palabras actual</translation>
+        <translation>Conteo de palabras de la hoja actual</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="600"/>
@@ -1595,12 +1595,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="1615"/>
         <source>Do you want to quit ?</source>
-        <translation>¿Estás seguro de salir?</translation>
+        <translation>¿Estás seguro que desea salir?</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1616"/>
         <source>Your changes are already saved.</source>
-        <translation>Los cambios ya están guardados.</translation>
+        <translation>Los cambios ya se han guardado.</translation>
     </message>
     <message>
         <source>Your project was successfully saved.</source>
@@ -1642,7 +1642,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/menubar.cpp" line="148"/>
         <source>Your changes are already saved.</source>
-        <translation>Los cambios ya están guardados.</translation>
+        <translation>Los cambios ya se han guardado.</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="239"/>
@@ -1673,12 +1673,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/menubar.cpp" line="378"/>
         <source>Start &amp;Center</source>
-        <translation>Inicio &amp;Centro</translation>
+        <translation>Centro de &amp;inicio</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="380"/>
         <source>Create and manage your projects</source>
-        <translation>Creación y gestión de sus proyectos</translation>
+        <translation>Creación y gestión de proyectos</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="384"/>
@@ -1744,7 +1744,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/menubar.cpp" line="425"/>
         <source>Find &amp;&amp; Replace Dialog</source>
-        <translation>Buscar &amp;&amp; Reemplazar diálogo</translation>
+        <translation>Diálogo para buscar y reemplazar</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="432"/>
@@ -1784,7 +1784,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/menubar.cpp" line="458"/>
         <source>Show the attendance dock</source>
-        <translation>Mostrar las asistencia en el dock</translation>
+        <translation>Mostrar las asistencias en el dock</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="461"/>
@@ -1814,7 +1814,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/menubar.cpp" line="474"/>
         <source>Edit fullscreen</source>
-        <translation>Editar Pantalla Completa</translation>
+        <translation>Editar a Pantalla Completa</translation>
     </message>
     <message>
         <location filename="../src/menubar.cpp" line="477"/>
@@ -1867,7 +1867,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="16"/>
         <source>Project Creator</source>
-        <translation>Proyecto de Creación</translation>
+        <translation>Creador de proyectos</translation>
     </message>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="104"/>
@@ -2000,7 +2000,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/notezone.cpp" line="427"/>
         <source>&amp;Center</source>
-        <translation>&amp;Centro</translation>
+        <translation>&amp;Centrar</translation>
     </message>
     <message>
         <location filename="../src/notezone.cpp" line="429"/>
@@ -2086,7 +2086,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/prjmanager.cpp" line="24"/>
         <source>Projects Manager</source>
-        <translation>Manejo de Proyectos</translation>
+        <translation>Gestor de Proyectos</translation>
     </message>
     <message>
         <location filename="../src/prjmanager.cpp" line="30"/>
@@ -2156,7 +2156,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/prjmanager.cpp" line="596"/>
         <source>You can&apos;t rename while a project is opened !&lt;br&gt; Please close the current project and try again.</source>
-        <translation>No se puede cambiar el nombre, mientras el proyecto está abierto! &lt;br&gt; Por favor, cierre el proyecto actual y vuelva a intentarlo.</translation>
+        <translation>¡No se puede cambiar el nombre, mientras el proyecto está abierto! &lt;br&gt; Por favor, cierre el proyecto actual y vuelva a intentarlo.</translation>
     </message>
     <message>
         <location filename="../src/prjmanager.cpp" line="609"/>
@@ -2200,17 +2200,17 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../externals/quazip/quagzipfile.cpp" line="42"/>
         <source>Opening gzip for both reading and writing is not supported</source>
-        <translation>Gzip de apertura para la lectura y la escritura no es compatible</translation>
+        <translation>Abrir un gzip para la lectura y la escritura simultánea no es posible</translation>
     </message>
     <message>
         <location filename="../externals/quazip/quagzipfile.cpp" line="50"/>
         <source>You can open a gzip either for reading or for writing. Which is it?</source>
-        <translation>Puede abrir un gzip ya sea para lectura o para escritura. ¿Qué es?</translation>
+        <translation>Puede abrir un gzip ya sea para lectura o para escritura. ¿Cuál elige?</translation>
     </message>
     <message>
         <location filename="../externals/quazip/quagzipfile.cpp" line="56"/>
         <source>Could not gzopen() file</source>
-        <translation>No se pudo gzopen () archivo</translation>
+        <translation>No se pudo gzopen() archivo</translation>
     </message>
 </context>
 <context>
@@ -2244,7 +2244,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="193"/>
         <source>Specify the path of your new project. Please note you must have writing rights in it. Plume Creator will create a basic skeleton.</source>
-        <translation>Especifique la ruta de su nuevo proyecto. Tenga en cuenta que debe haber escrito los derechos en ella. Plume Creator creará un esqueleto básico.</translation>
+        <translation>Especifique la ruta de su nuevo proyecto. Tenga en cuenta que debe tener derechos de escritura en ella. Plume Creator creará un esqueleto básico.</translation>
     </message>
     <message>
         <location filename="../src/newprojectwizard.cpp" line="200"/>
@@ -2272,7 +2272,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="14"/>
         <source>Settings Dialog</source>
-        <translation>Cuadro de diálogo Configuración</translation>
+        <translation>Diálogo de configuración</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="41"/>
@@ -2308,7 +2308,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="118"/>
         <source>Portable :</source>
-        <translation>Portable:</translation>
+        <translation>Modo portable:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="125"/>
@@ -2323,7 +2323,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="151"/>
         <source>Prevent multiple space characters between words</source>
-        <translation>Prevenir múltiples caracteres de espacio entre palabras</translation>
+        <translation>Prevenir caracteres de espacio entre palabras</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="158"/>
@@ -2348,12 +2348,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="187"/>
         <source>Main Text Area</source>
-        <translation>Área de Texto Principal</translation>
+        <translation>Área de Texto principal</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="196"/>
         <source>Text Area Width :</source>
-        <translation>Área de texto Ancho:</translation>
+        <translation>Ancho del área de texto:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="206"/>
@@ -2399,7 +2399,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="320"/>
         <source>Note Area</source>
-        <translation>Nota Area</translation>
+        <translation>Área de notas</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="426"/>
@@ -2409,7 +2409,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="503"/>
         <source>Fixed Options :</source>
-        <translation>Opciones de corrección:</translation>
+        <translation>Opciones del texto:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="512"/>
@@ -2454,7 +2454,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="613"/>
         <source>1st Line Indent :</source>
-        <translation>Primera línea Sangría:</translation>
+        <translation>Sangría de 1era línea:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="630"/>
@@ -2469,12 +2469,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="649"/>
         <source>These options can be modified with the right-click menu.</source>
-        <translation>Estas opciones se pueden modificar con el menú del botón derecho.</translation>
+        <translation>Estas opciones se pueden modificar en el menú del botón derecho.</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="656"/>
         <source>Italic</source>
-        <translation>Itálica</translation>
+        <translation>Cursiva</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="663"/>
@@ -2494,32 +2494,32 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="722"/>
         <source>Spelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortografía</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="770"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="832"/>
         <source>Spell Checker :</source>
-        <translation type="unfinished"></translation>
+        <translation>Corrector ortográfico:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="841"/>
         <source>Dictionary :</source>
-        <translation type="unfinished"></translation>
+        <translation>Diccionario:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="864"/>
         <source>Include names from the Mise en scène</source>
-        <translation type="unfinished"></translation>
+        <translation>Incluir nombres de la puesta en escena</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="881"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>  </translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="917"/>
@@ -2534,7 +2534,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="940"/>
         <source>Host name :</source>
-        <translation>Nombre de equipo:</translation>
+        <translation>Nombre del host:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="950"/>
@@ -2554,7 +2554,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.ui" line="1000"/>
         <source>Use system settings :</source>
-        <translation>Utilice la configuración del sistema:</translation>
+        <translation>Usar la configuración del sistema:</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="1010"/>
@@ -2574,7 +2574,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.cpp" line="70"/>
         <source>System default</source>
-        <translation>Sistema por defecto</translation>
+        <translation>Predeterminada del sistema</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="70"/>
@@ -2634,7 +2634,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.cpp" line="278"/>
         <source>Name new style</source>
-        <translation>Nombre de nuevo estilo</translation>
+        <translation>Nombre de estilo nuevo</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="279"/>
@@ -2649,7 +2649,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.cpp" line="291"/>
         <source>Style Renaming</source>
-        <translation>Cambio de nombre de estilo</translation>
+        <translation>Cambiar nombre del estilo</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="292"/>
@@ -2669,17 +2669,17 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/settingsdialog.cpp" line="363"/>
         <source>&lt;p&gt;To install additional dictionaries, research &quot;hunspell&quot; in your package manager.&lt;/p&gt;&lt;p&gt;On Ubuntu you can type in a console :&lt;/p&gt;&lt;p&gt;sudo apt-get install hunspell*&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Para instalar diccionarios, busca &quot;hunspell&quot; en tu gestor de paquetes.&lt;/p&gt;&lt;p&gt;En Ubuntu puedes tipear en la consola:&lt;/p&gt;&lt;p&gt;sudo apt-get install hunspell*&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="376"/>
         <source>&lt;p&gt;To install additional dictionaries, paste hunspell dictionaries in the &quot;dicts&quot; folder of the install directory.&lt;/p&gt;&lt;p&gt;Hunspell dictionaries are in the form of pairs of *.aff and *.dic files.&lt;/p&gt;&lt;p&gt;You can find these files unzipping dictionaries extensions from OpenOffice or LibreOffice. They are *.oxt files and you can find them here : &lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Para instalar diccionarios adicionales, pega los diccionarios hunspell en la carpeta &quot;dicts&quot; dentro del lugar de instalación.&lt;/p&gt;&lt;p&gt;Los diccionarios hunspell son un par de archivos, un archivo *.aff y uno *.dic&lt;/p&gt;&lt;p&gt;Puedes encontrar estos archivos descomprimiendo las extenciones diccionario de OpenOffice o LibreOffice. Vienen en forma de archivos *.oxt y los puedes encontrar aquí:&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="391"/>
         <source>&lt;p&gt;To install additional dictionaries, research &quot;hunspell&quot; in your paquage manager.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Para instalar diccionarios, busca &quot;hunspell&quot; en tu gestor de paquetes&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -2714,7 +2714,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/slimfindreplace.ui" line="79"/>
         <source>Case sensitivity</source>
-        <translation>mayúsculas y minúsculas</translation>
+        <translation>Mayúsculas y minúsculas</translation>
     </message>
     <message>
         <location filename="../src/slimfindreplace.ui" line="82"/>
@@ -2773,7 +2773,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/slimupdater.cpp" line="95"/>
         <source>&lt;center&gt;Current version : </source>
-        <translation>&lt;center&gt; versión actual:</translation>
+        <translation>&lt;center&gt;Versión actual:</translation>
     </message>
     <message>
         <location filename="../src/slimupdater.cpp" line="95"/>
@@ -2828,7 +2828,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/slimupdater.cpp" line="238"/>
         <source>The file is not a Plume Creator version file.</source>
-        <translation>Este archivo no es un tipo de archivo de Plume Creator.</translation>
+        <translation>Este archivo no es un archivo de versión de Plume Creator.</translation>
     </message>
     <message>
         <location filename="../src/slimupdater.cpp" line="326"/>
@@ -2843,7 +2843,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/slimupdater.cpp" line="330"/>
         <source>&lt;b&gt;&lt;h3&gt;&lt;center&gt;You are up to date !&lt;/h3&gt;&lt;b&gt;</source>
-        <translation>&lt;b&gt; &lt;h3&gt; &lt;center&gt; Estás actualizado! &lt;/ h3&gt; &lt;b&gt;</translation>
+        <translation>&lt;b&gt; &lt;h3&gt; &lt;center&gt;¡Usas la versión más nueva! &lt;/ h3&gt; &lt;b&gt;</translation>
     </message>
 </context>
 <context>
@@ -2881,7 +2881,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/startcenter.cpp" line="97"/>
         <source>Path : </source>
-        <translation>Ruta de acceso:</translation>
+        <translation>Ruta de acceso: </translation>
     </message>
     <message>
         <location filename="../src/startcenter.cpp" line="98"/>
@@ -2901,7 +2901,7 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/startcenter.cpp" line="132"/>
         <source>Plume Project File (*.plume);;Plume Backup Project File (*.plume_backup)</source>
-        <translation>Archivo de Proyecto Plume (* pluma.); Plume Project File Backup (* plume_backup.)</translation>
+        <translation>Archivo de Proyecto Plume (* plume); Plume Project File Backup (* plume_backup)</translation>
     </message>
 </context>
 <context>
@@ -2909,12 +2909,12 @@ Have you checked the one(s) you want to look through ?</source>
     <message>
         <location filename="../src/statsbox.cpp" line="15"/>
         <source>Time</source>
-        <translation>Tiempo</translation>
+        <translation>Hora</translation>
     </message>
     <message>
         <location filename="../src/statsbox.cpp" line="23"/>
         <source>Timer</source>
-        <translation>Reloj</translation>
+        <translation>Cronómetro</translation>
     </message>
 </context>
 <context>
@@ -2923,7 +2923,7 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/textstyles.cpp" line="378"/>
         <location filename="../src/textstyles.cpp" line="468"/>
         <source>New Style</source>
-        <translation>Nuevo Estilo</translation>
+        <translation>Estilo nuevo</translation>
     </message>
     <message>
         <location filename="../src/textstyles.cpp" line="425"/>
@@ -3063,42 +3063,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/textzone.cpp" line="151"/>
         <source>&amp;Check Spelling</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Revisar ortografía</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="154"/>
         <source>Verify your spelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Verificar la ortografía</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="157"/>
         <source>&amp;Add to Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Agregar al diccionario</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="159"/>
         <source>Add the current word selection to the project dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregar al diccionario del proyecto</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="162"/>
         <source>Add &amp;Hyphen to Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregar &amp;guión al diccionario</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="164"/>
         <source>Add the selected hyphenated word to the project dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregar la palabra compuesta seleccionada al diccionario del proyecto</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="167"/>
         <source>&amp;Remove from Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remover del diccionario</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="169"/>
         <source>Remove the current word selection from the project dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover las palabras seleccionadas del diccionario del proyecto</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="177"/>
@@ -3118,14 +3118,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/textzone.cpp" line="469"/>
         <source>No suggestion</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin sugerencia</translation>
     </message>
     <message>
         <location filename="../src/textzone.cpp" line="687"/>
         <location filename="../src/textzone.cpp" line="691"/>
         <source>V</source>
         <comment>paste unformated</comment>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>F</source>
@@ -3191,7 +3191,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/wordgoalprogressbar.ui" line="17"/>
         <source>Session word count</source>
-        <translation>Número de palabras de esta Sesión</translation>
+        <translation>Número de palabras de esta sesión</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.ui" line="44"/>
@@ -3201,17 +3201,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/wordgoalprogressbar.ui" line="51"/>
         <source>Target word count for this session</source>
-        <translation>Objetivo número de palabras de esta sesión</translation>
+        <translation>Número de palabras previsto para esta sesión</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="54"/>
         <source>Set Session Target</source>
-        <translation>Establecer sesión de destino</translation>
+        <translation>Establecer meta de sesión</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="55"/>
         <source>Word count target :</source>
-        <translation>Destino Número de palabras:</translation>
+        <translation>Número de palabras tope:</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="67"/>
@@ -3221,12 +3221,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="177"/>
         <source>&amp;Set target</source>
-        <translation>&amp;Establecer destino</translation>
+        <translation>&amp;Establecer meta</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="178"/>
         <source>Set word count target</source>
-        <translation>Establezca el número de palabras de destino</translation>
+        <translation>Establezca el número de palabras tope</translation>
     </message>
     <message>
         <location filename="../src/wordgoalprogressbar.cpp" line="181"/>
@@ -3254,7 +3254,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/workbench.cpp" line="36"/>
         <source>Close the Outliner</source>
-        <translation>Cierre el Esquema</translation>
+        <translation>Cerrar el esquema</translation>
     </message>
 </context>
 </TS>

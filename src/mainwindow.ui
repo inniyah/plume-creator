@@ -14,18 +14,15 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*TextZone {
+   <string notr="true">TextZone {
 background-color: transparent;
 
-}*/
-
-
-QTreeView {
-            border: 0px none transparent;
-	background-color: /* rgb(199, 210, 234)*/ #dee4ea ;
-
-
 }
+
+
+/*QTreeView {
+            border: 0px none transparent;
+}*/
 
 QDockWidget {
            border: 1px solid gray;
@@ -36,8 +33,6 @@ QDockWidget {
 
             QDockWidget::title {
             text-align: left; /* align the text to the left */
-            
-	background-color: qlineargradient(spread:pad, x1:0.347, y1:0.0170455, x2:1, y2:1, stop:0.386364 rgba(193, 193, 193, 255), stop:1 rgba(255, 255, 255, 255));
             padding-left: 5px;
             }
 
@@ -96,7 +91,6 @@ QDockWidget {
   spacing: 0px;
             padding: 0px;
            margin: 0px;
-	background-color: #fff7d7;
 border-radius: 0px
 /*qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(243, 255, 180, 255), stop:1 rgba(255, 255, 255, 255));*/
 
@@ -113,7 +107,6 @@ border-radius: 0px
             QToolBar#docksToolBar {
             spacing: 5px;
             padding: 5px;
-	background-color: qlineargradient(spread:pad, x1:0.347, y1:0.0170455, x2:1, y2:1, stop:0.386364 rgba(193, 193, 193, 255), stop:1 rgba(255, 255, 255, 255));
             }
 QToolBar#statusDockToolBar {
             spacing: 2px;
@@ -123,19 +116,7 @@ QToolBar#statusDockToolBar {
 
 
 
-	TextTab {/*background-color: white;*/
-/*background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(250, 254, 255, 255), stop:1 rgba(255, 255, 255, 255));*/
-background-color: #fcfcf9
-}
-
-            QToolTip{
-           /*opacity: 250; */
-            border-style: outset; /*needed else tooltip is not modified*/
-            background: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0.42, stop:0 rgba(85, 170, 255, 255), stop:1 rgba(255, 255, 255, 255));
-            color: black;
-            }
-
-
+   
 
 
 

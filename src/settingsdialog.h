@@ -58,6 +58,9 @@ signals:
 
     // text tab :
 
+    // theme tab :
+    void applyStyleSheetSignal();
+
     // style tab :
     void changeAllDocsTextStylesSignal();
 
@@ -72,6 +75,7 @@ public slots:
 private slots:
     void createGeneralTab();
     void createTextTab();
+    void createThemeTab();
     void createStyleTab();
     void createSpellingTab();
 
@@ -87,6 +91,10 @@ private slots:
 
     // text tab :
     void setStyleInfos(int index);
+
+    // theme tab :
+    void setColorDialog();
+    void setStyleSheet();
 
     // style tab :
     void infoModified();
@@ -109,6 +117,10 @@ private slots:
 
 void itemDataChanged(QListWidgetItem *item);
 void on_includeNamesFromTheMiseEnSceneCheckBox_clicked();
+
+void on_customColorsBox_clicked(bool checked);
+
+void on_resetColorsButton_clicked();
 
 private:
     Hub *hub;
@@ -143,6 +155,12 @@ bool prevIsToolBarInStatusBar;
     QFont noteFont;
     int noteSpinValue;
     int noteIndentValue, noteMarginValue;
+
+
+    // theme tab :
+    QString prev_sheetColor, prev_sheetTextColor, prev_backColor, prev_treeBackColor, prev_treeTextColor, prev_notesColor, prev_notesTextColor,
+     sheetColor, sheetTextColor, backColor, treeBackColor, treeTextColor, notesColor, notesTextColor;
+bool prev_applyCustomColors;
 
     // style tab :
 

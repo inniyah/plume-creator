@@ -37,6 +37,7 @@ void SettingsDialog::createContent()
 {
     createGeneralTab();
     createTextTab();
+    createThemeTab();
 
     ui->stylesTab->setEnabled(false);
     if(hub->isProjectOpened()){
@@ -161,6 +162,135 @@ void SettingsDialog::createTextTab()
 
     ui->noteFontCombo->setCurrentFont(noteFont);
 
+
+
+}
+
+
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+
+
+
+void SettingsDialog::createThemeTab()
+{
+
+    prev_applyCustomColors = settings.value("Settings/applyCustomColors", true).toBool();
+
+
+    settings.beginGroup("MainWindow");
+
+    prev_sheetColor= settings.value("textZoneBackColor", "#ffffff").toString();
+    prev_sheetTextColor = settings.value("textZoneTextColor", "#000000").toString();
+    prev_backColor = settings.value("textTabBackColor", "#ffffff").toString();
+    prev_treeBackColor = settings.value("projectTreeBackColor", "#dee4ea").toString();
+    prev_treeTextColor = settings.value("projectTreeTextColor", "#000000").toString();
+    prev_notesColor = settings.value("noteZoneBackColor", "#fff7d7").toString();
+    prev_notesTextColor = settings.value("noteZoneTextColor", "#000000").toString();
+    settings.endGroup();
+
+    ui->sheetColorButton->setStyleSheet("background-color: " + prev_sheetColor );
+    ui->sheetTextColorButton->setStyleSheet("background-color: "  + prev_sheetTextColor);
+    ui->backColorButton->setStyleSheet("background-color: " + prev_backColor);
+    ui->treeBackColorButton->setStyleSheet("background-color: " + prev_treeBackColor);
+    ui->treeTextColorButton->setStyleSheet("background-color: " + prev_treeTextColor);
+    ui->notesColorButton->setStyleSheet("background-color: " + prev_notesColor);
+    ui->notesTextColorButton->setStyleSheet("background-color: " + prev_notesTextColor);
+
+
+    connect(ui->sheetColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->sheetTextColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->backColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->treeBackColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->treeTextColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->notesColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+    connect(ui->notesTextColorButton, SIGNAL(clicked()), this, SLOT(setColorDialog()));
+
+}
+
+void SettingsDialog::setColorDialog()
+{
+    QString objName;
+    QToolButton *button = qobject_cast<QToolButton *>(sender());
+    if (button){
+        objName = button->objectName();
+    }else
+        return;
+
+    QColor color = QColorDialog::getColor(Qt::white, this, button->text());
+    button->setStyleSheet("background-color: " + color.name() );
+
+    //    QString string;
+    //    QString r = string.setNum(backgroundColor.red(),10);
+    //    QString g = string.setNum(backgroundColor.green(), 10);
+    //    QString b = string.setNum(backgroundColor.blue(),10);
+
+    setStyleSheet();
+}
+void SettingsDialog::setStyleSheet(){
+
+
+    sheetColor= ui->sheetColorButton->styleSheet().remove("background-color: ");
+    sheetTextColor = ui->sheetTextColorButton->styleSheet().remove("background-color: ");
+    backColor = ui->backColorButton->styleSheet().remove("background-color: ");
+    treeBackColor = ui->treeBackColorButton->styleSheet().remove("background-color: ");
+    treeTextColor = ui->treeTextColorButton->styleSheet().remove("background-color: ");
+    notesColor = ui->notesColorButton->styleSheet().remove("background-color: ");
+    notesTextColor = ui->notesTextColorButton->styleSheet().remove("background-color: ");
+
+//    if(!ui->customColorsBox->isChecked()){
+
+//        sheetColor= prev_sheetColor;
+//        sheetTextColor = prev_sheetTextColor;
+//        backColor = prev_backColor;
+//        treeBackColor = prev_treeBackColor;
+//        treeTextColor = prev_treeTextColor;
+//        notesColor = prev_notesColor;
+//        notesTextColor = prev_notesTextColor;
+
+
+//    }
+
+
+
+    settings.beginGroup("MainWindow");
+
+    settings.setValue("textZoneBackColor", sheetColor);
+    settings.setValue("textZoneTextColor", sheetTextColor);
+    settings.setValue("textTabBackColor", backColor);
+    settings.setValue("projectTreeBackColor", treeBackColor);
+    settings.setValue("projectTreeTextColor",treeTextColor );
+    settings.setValue("noteZoneBackColor", notesColor);
+    settings.setValue("noteZoneTextColor", notesTextColor);
+
+
+    settings.endGroup();
+
+
+    emit applyStyleSheetSignal();
+
+}
+
+
+void SettingsDialog::on_customColorsBox_clicked(bool checked)
+{
+
+    settings.setValue("Settings/applyCustomColors", checked);
+    setStyleSheet();
+
+}
+
+void SettingsDialog::on_resetColorsButton_clicked()
+{
+    ui->sheetColorButton->setStyleSheet("background-color: #ffffff");
+    ui->sheetTextColorButton->setStyleSheet("background-color: #000000");
+    ui->backColorButton->setStyleSheet("background-color: #ffffff");
+    ui->treeBackColorButton->setStyleSheet("background-color: #dee4ea");
+    ui->treeTextColorButton->setStyleSheet("background-color: #000000");
+    ui->notesColorButton->setStyleSheet("background-color: #fff7d7");
+    ui->notesTextColorButton->setStyleSheet("background-color: #000000");
+
+    setStyleSheet();
 
 
 }
@@ -443,7 +573,7 @@ void SettingsDialog::dictsChanged()
 void SettingsDialog::spellCheckerComboBox_currentTextChanged()
 {
     spellLangIsModified = true;
-//    qDebug() << "spellLangIsModified = true";
+    //    qDebug() << "spellLangIsModified = true";
 }
 //---------------------------------------------------------------------------------
 
@@ -605,8 +735,9 @@ void SettingsDialog::readSettings()
 
     settings.endGroup();
 
+    // theme tab :
 
-
+    ui->customColorsBox->setChecked(settings.value("Settings/applyCustomColors", true).toBool());
 
 
     // style tab :
@@ -722,6 +853,8 @@ void SettingsDialog::accept()
     settings.endGroup();
 
 
+    // theme tab :
+    settings.setValue("Settings/applyCustomColors", ui->customColorsBox->isChecked());
 
     // style tab :
 
@@ -794,9 +927,26 @@ void SettingsDialog::reject()
 
     emit setDisplayModeSignal(prev_displayMode, prevIsToolBarInStatusBar);
 
-    // text tab :
+    // theme tab :
 
+    on_customColorsBox_clicked(prev_applyCustomColors);
+
+    settings.beginGroup("MainWindow");
+
+    settings.setValue("textZoneBackColor", prev_sheetColor);
+    settings.setValue("textZoneTextColor", prev_sheetTextColor);
+    settings.setValue("textTabBackColor", prev_backColor);
+    settings.setValue("projectTreeBackColor", prev_treeBackColor);
+    settings.setValue("projectTreeTextColor",prev_treeTextColor );
+    settings.setValue("noteZoneBackColor", prev_notesColor);
+    settings.setValue("noteZoneTextColor", prev_notesTextColor);
+
+    settings.endGroup();
+
+    emit applyStyleSheetSignal();
 
     QDialog::reject();
 
 }
+
+

@@ -13,6 +13,7 @@ TextTab::TextTab(QWidget *parent) :
     ui(new Ui::TextTab), m_idNumber(-1), firstTime(true)
 {
     ui->setupUi(this);
+    css = this->styleSheet();
 
 
     prevTextDocument = new MainTextDocument(this);
@@ -507,10 +508,31 @@ void TextTab::applyConfig()
 //-------------------------------------------------------------------
 void TextTab::giveStyle()
 {
+    QSettings settings;
 
+    QString  customCss =
+
+
+            "TextZone {"
+            "background-color: " + settings.value("MainWindow/textZoneBackColor", "#ffffff").toString() +";"
+            "color: " + settings.value("MainWindow/textZoneTextColor", "#000000").toString() +";"
+         "}"
+            "SizeHandle {"
+            "background-color: " + settings.value("MainWindow/textZoneBackColor", "#ffffff").toString() +";"
+         "}"
+            "TextTab {"
+               "background-color: " + settings.value("MainWindow/textTabBackColor", "#ffffff").toString() +" ;"
+               "}"
+ ;
+
+    if(!settings.value("Settings/applyCustomColors", true).toBool())
+        customCss =             ""
+                ;
+
+
+    this->setStyleSheet( css + customCss);
 }
 //-------------------------------------------------------------------
-
 
 void TextTab::paintEvent(QPaintEvent *)
 {

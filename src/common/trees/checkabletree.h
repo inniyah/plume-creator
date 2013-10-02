@@ -38,6 +38,7 @@ public:
 
 
     void clickCheckBox(QModelIndex index);
+
 protected:
 
 //    void mousePressEvent(QMouseEvent *event);

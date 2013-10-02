@@ -1417,3 +1417,4 @@ void NoteZone::setIdNumber(int idNumber)
 {
     m_idNumber = idNumber;
 }
+

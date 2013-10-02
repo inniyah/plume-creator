@@ -118,6 +118,9 @@ private:
     QString stackName;
 int m_idNumber;
 bool firstTime;
+
+QString css;
+
 };
 
 #endif // TEXTTAB_H

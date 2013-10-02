@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.64.1
+VERSION = 0.64.2
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -210,7 +210,6 @@ src/hub.h \
 CODECFORTR = UTF-8
 
 TRANSLATIONS = translations/plume-creator_fr_FR.ts \
-# translations/plume-creator_ro_RO.ts \
 translations/plume-creator_it_IT.ts \
 translations/plume-creator_de_DE.ts \
 translations/plume-creator_sp_SP.ts \

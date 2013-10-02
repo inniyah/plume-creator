@@ -73,6 +73,7 @@ signals:
     void tabWidgetWidth(int value);
     void applyConfigSignal();
     void changeAllDocsTextStylesSignal();
+    void applyStyleSheetSignal();
 
     void currentNumber(int);
 
@@ -258,6 +259,8 @@ QString noTabCss;
 
     Workbench *workbench;
     bool workbenchLaunched;
+
+    QString css;
 };
 
 #endif // MAINWINDOW_H

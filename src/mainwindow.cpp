@@ -28,9 +28,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+css = this->styleSheet();
 
 
-    //    systemTray = new QSystemTrayIcon(this);
+//QFile *styleFile = new QFile(qApp->applicationDirPath() + "/darkorange.stylesheet");
+
+//if(styleFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
+//    QTextStream stream(styleFile);
+//    QString userString;
+//    userString = stream.readAll();
+//    qDebug() << "css : " + userString;
+//    qApp->setStyleSheet(userString);
+//}
+
+        //    systemTray = new QSystemTrayIcon(this);
     //    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
 
     this->setMinimumSize(800, 400);
@@ -198,6 +209,7 @@ void MainWindow::createMenuBar()
     connect(menu, SIGNAL(setDisplayModeSignal(QString, bool)), this, SLOT(setDisplayMode(QString, bool)));
 
     connect(menu, SIGNAL(launchCheckUpdateSignal(QString)), this, SLOT(launchSlimUpdater(QString)));
+    connect(menu, SIGNAL(applyStyleSheetSignal()), this, SLOT(giveStyle()));
 
 
     menu->firstLaunch();
@@ -1229,7 +1241,7 @@ void MainWindow::textSlot(int number, QString action)
         QTimer::singleShot(0, tab, SLOT(applyConfig()));
 
 
-
+        connect(this, SIGNAL(applyStyleSheetSignal()), tab, SLOT(giveStyle()));
 
 
     }
@@ -2033,191 +2045,35 @@ void MainWindow::closeSlimUpdater()
 
 void MainWindow::giveStyle()
 {
-    QString  css =
-            "QDockWidget {"
-            "border: 1px solid lightgray;"
-            //            "titlebar-close-icon: url(close.png);"
-            //     e       "titlebar-normal-icon: url(undock.png);"
-            "margin: 3px"
-            "}"
-
-            "QDockWidget::title {"
-            "text-align: left;" /* align the text to the left */
-            //            "background: gray;"
-            "padding-left: 5px;"
-            "}"
-
-            "QDockWidget::close-button, QDockWidget::float-button {"
-            "border: 1px solid transparent;"
-            "background: transparent;"
-            " padding: 0px;"
-            "}"
-
-            "QDockWidget::close-button:hover, QDockWidget::float-button:hover {"
-            "background: transparent;"
-            "}"
-
-            "QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {"
-            "padding: 1px -1px -1px 1px;"
-
-            "}"
-
-            //            "QTabWidget::pane {" /* The tab widget frame */
-            //            "border-top: 2px solid #C2C7CB;"
-            //            "}"
-
-            //            "QTabWidget::tab-bar {"
-            //            "left: 5px;" /* move to the right by 5px */
-            //            "}"
-
-            //            /* Style the tab using the tab sub-control. Note that
-            //                it reads QTabBar _not_ QTabWidget */
-            //            "QTabBar::tab {"
-            //            "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-            //            "stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,"
-            //            "stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);"
-            //            "border: 2px solid #C4C4C3;"
-            //            "border-bottom-color: #C2C7CB; /* same as the pane color */"
-            //            "border-top-left-radius: 4px;"
-            //            "border-top-right-radius: 4px;"
-            //            "min-width: 8ex;"
-            //            "padding: 2px;"
-            //            "}"
-
-            //            "QTabBar::tab:selected, QTabBar::tab:hover {"
-            //            "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-            //            "stop: 0 #fafafa, stop: 0.4 #f4f4f4,"
-            //            "stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);"
-            //            "}"
-
-            //            "QTabBar::tab:selected {"
-            //            "border-color: #9B9B9B;"
-            //            "border-bottom-color: #C2C7CB;" /* same as pane color */
-            //            "}"
-
-            //            "QTabBar::tab:!selected {"
-            //            "margin-top: 2px;" /* make non-selected tabs look smaller */
-            //            "}"
-
-            //            "QPushButton#showNotesBt, QPushButton#showToolsBt, "
-            //            "QPushButton#showAttendBt, QPushButton#fullscreenBt, QPushButton#outlinerBt, "
-            //            "QPushButton#showTreeBt, QPushButton#showPrvScnBt {"
-            //            "border: 1px groove #8f8f91;"
-            //            "border-radius: 3px;"
-            //            "font: bold normal 10pt ""Times New Roman"";"
-            //            "padding-top: 4px;"
-            //            "padding-bottom: 4px;"
-            //            "background: mid(midlight);"
-            //            //            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-            //            //            "stop: 0 #f6f7fa, stop: 1 #dadbde);"
-            //            //                        "min-width: 1em;"
-            //            "}"
-
-            //            "QPushButton#showNotesBt:checked, QPushButton#showToolsBt:checked, "
-            //            "QPushButton#showAttendBt:checked, QPushButton#fullscreenBt:checked, QPushButton#outlinerBt:checked,"
-            //            "QPushButton#showTreeBt:checked, QPushButton#showPrvScnBt:checked {"
-            //            "background-color: palette(mid);"
-            //            "border: 2px inset #8f8f91;"
-            //            "}"
-
-            //            "QPushButton#showNotesBt:pressed, QPushButton#showToolsBt:pressed, "
-            //            "QPushButton#showAttendBt:pressed, QPushButton#fullscreenBt:pressed, QPushButton#outlinerBt:pressed,"
-            //            "QPushButton#showTreeBt:pressed, QPushButton#showPrvScnBt:pressed {"
-            //            "background-color: palette(mid);"
-            //            "border: 2px inset #8f8f91;"
-            //            "}"
-
-            //            "QToolButton#showFullscreenBt, QToolButton#showPrvSceneBt, QToolButton#showOutlinerBt {"
-            //            "border: 2px outset #8f8f91;"
-            //            "border-radius: 1px;"
-            //            "font: bold normal 12pt ""Times New Roman"";"
-            //            "padding-left: 4px;"
-            //            "padding-right: 4px;"
-            //            "}"
-
-            //"QToolButton#showFullscreenBt:checked, QToolButton#showPrvSceneBt:checked, QToolButton#showOutlinerBt:checked {"
-            //            "background-color: palette(mid);"
-            //            "border: 2px inset #8f8f91;"
-            //            "}"
-
-            //            "QToolButton#showFullscreenBt:pressed, QToolButton#showPrvSceneBt:pressed, QToolButton#showOutlinerBt:pressed {"
-            //                        "background-color: palette(mid);"
-            //                        "border: 2px inset #8f8f91;"
-            //                        "}"
 
 
+    QSettings settings;
 
-            //            "QStatusBar::item {"
-            //            "border: 0px none transparent;"
-            //            "}"
-
-
-
-            "QGroupBox#noteBox, QGroupBox#synBox {"
-            //            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-            //            "stop: 0 #E0E0E0, stop: 1 #FFFFFF);"
-            //            "border: 0px none transparent ;"
-            //            "border-radius: 0px;"
-            "margin-left: -5px;"
-            "margin-right: -5px;"
-            "margin-bottom: -5px;"
-            "margin-top: 1ex;" /* leave space at the top for the title */
-            "spacing: 0px;"
-            "padding-left: -6px;"
-            "padding-right: -6px;"
-            "padding-bottom: -6px;"
-            "padding-top: -3px;"
-            "}"
-
-            "QGroupBox::title {"
-            "subcontrol-origin: margin;"
-            "subcontrol-position: top center;" /* position at the top center */
-            ////            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-            ////            "stop: 0 #FFOECE, stop: 1 #FFFFFF);"
-            "}"
-
-            "QFrame#notesFrame { "
-            "border: 0px none transparent;"
-            "border-radius: 0px;"
-            "spacing: 0px;"
-            "padding: 0px;"
-            "margin: 0px;"
+    QString  customCss =
+            "QTreeView {"
+               "background-color: " + settings.value("MainWindow/projectTreeBackColor", "#dee4ea").toString() +" ;"
+               "}"
+            "QTreeView::item {"
+            "color: " + settings.value("MainWindow/projectTreeTextColor", "#000000").toString() +" ;"
             "}"
 
             "NoteZone {"
-            //            "border: 0px none transparent;"
-            "spacing: 0px;"
-            "padding: 0px;"
-            "margin: 0px;"
-            "}"
+            "color: " + settings.value("MainWindow/noteZoneTextColor", "#000000").toString() +";"
+            "background-color: " + settings.value("MainWindow/noteZoneBackColor", "#fff7d7").toString() +";"
+         "}"
 
-            "AttendBase {"
-            //            "border: 0px none transparent;"
-            "border-radius: 1px;"
-            "spacing: 0px;"
-            "padding: -6px;"
-            //            "margin: -4px;"
-            "}"
 
-            "QToolBar#docksToolBar {"
-            "spacing: 5px;"
-            "padding: 5px;"
+ ;
 
-            "}"
-            "QToolBar#statusDockToolBar {"
-            "spacing: 2px;"
+    if(!settings.value("Settings/applyCustomColors", true).toBool())
+        customCss =       "";
 
-            "}"
 
-            "QStatusBar {"
 
-            "}"
-            //            "QToolBar#docksToolBar::separator {"
-            //            "}"
+    this->setStyleSheet( css + customCss + noTabCss);
 
-            ;
+    emit applyStyleSheetSignal();
 
-    this->setStyleSheet(this->styleSheet() + noTabCss);
 }
 
 
