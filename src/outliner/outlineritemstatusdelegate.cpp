@@ -5,12 +5,9 @@ OutlinerItemStatusDelegate::OutlinerItemStatusDelegate(QObject *parent) :
 {
     statusCss = "QComboBox{"
             "border-style: none;"
-            "background-color: rgba(100,100,100,0)"
+            "background: rgba(100,100,100,0)"
             "}"
-            "QWidget#base{"
-            "border-style: none;"
-            "background-color: rgba(100,100,100,0)"
-            "}"
+
             ;
 }
 
@@ -93,7 +90,7 @@ void OutlinerItemStatusDelegate::paint( QPainter* painter,
     QComboBox *combo = new QComboBox;
     combo->addItems(MainTreeAbstractModel::giveStatusList());
     combo->setCurrentIndex(index.model()->data(index, 38).toInt());
-combo->setFixedHeight(20);
+//combo->setFixedHeight(20);
 
 
 //QWidget *widget = new QWidget;

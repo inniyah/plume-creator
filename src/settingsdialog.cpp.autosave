@@ -1038,6 +1038,7 @@ void SettingsDialog::reject()
 
 
 
+
 void SettingsDialog::on_devHelp_displayObjectNamesCheckBox_toggled(bool checked)
 {
     QList<QWidget *> childWidgets = qApp->findChildren<QWidget *>(QString());

@@ -7,16 +7,7 @@ FileUpdater::FileUpdater(QWidget *parent) :
 
 }
 
-bool FileUpdater::isZip(QString projectFileName)
-{
-    //necessary check to differenciate old .plume xml and new .plume zip files !
 
-    QStringList list = JlCompress::getFileList(projectFileName);
-    if(list.isEmpty())
-        return false;
-    else
-        return true;
-}
 
 
 bool FileUpdater::checkAttendanceFile(QString projectFileName)

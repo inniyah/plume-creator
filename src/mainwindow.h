@@ -261,6 +261,8 @@ QString noTabCss;
     bool workbenchLaunched;
 
     QString css;
+
+    QString numberSymbol;
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,9 @@
 PLUME CREATOR
 
+v 0.65
+	- added custom colors in settings
+	- removed 'text width' option from settings
+	
 v 0.64
 	- fix : crash when no dictionary was selected
 	- spell check activates for the whole project

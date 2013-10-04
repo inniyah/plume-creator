@@ -38,6 +38,7 @@
 #include "maintextdocument.h"
 #include "wordcountenginethread.h"
 #include "zipper/zipchecker.h"
+#include "themes.h"
 
 class Hub : public QWidget
 {
@@ -121,6 +122,8 @@ public:
     void saveCursorPos(int textCursorPosition, int synCursorPosition, int noteCursorPosition, int number);
 
 
+
+    Themes *themes();
 
 protected:
     void timerEvent(QTimerEvent *event);
@@ -243,6 +246,9 @@ private:
     // spell check :
     QStringList m_userDict;
     QString m_spellDictPath;
+
+    // themes
+    Themes *m_themes;
 };
 
 #endif // HUB_H

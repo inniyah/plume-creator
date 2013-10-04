@@ -247,7 +247,7 @@ QStringList SpellChecker::dictsPaths()
 #endif
 #ifdef Q_OS_WIN32
 
-    dir.setPath(QCoreApplication::applicationDirPath() + "/dicts");
+    dir.setPath(QCoreApplication::applicationDirPath() + "/share/dicts");
 
 #endif
 #ifdef Q_OS_MAC

@@ -16,6 +16,17 @@ ZipChecker::ZipChecker(QObject *parent) :
 
 
 }
+//-----------------------------------------------------------------------------------------
+bool ZipChecker::isZip(QString fileName)
+{
+    //necessary check to differenciate old .plume xml and new .plume zip files !
+
+    QStringList list = JlCompress::getFileList(fileName);
+    if(list.isEmpty())
+        return false;
+    else
+        return true;
+}
 
 //-----------------------------------------------------------------------------------------
 

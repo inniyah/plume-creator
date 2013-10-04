@@ -4,19 +4,18 @@ SizeHandle::SizeHandle(QWidget *parent) :
     QWidget(parent),isPressed(false)
 {
 
-
+this->setMouseTracking(true);
 }
 
 void SizeHandle::leaveEvent(QEvent *event)
 {
 
-    this->setStyleSheet( "QWidget {}"
-                         );
+//    this->setStyleSheet( "QWidget {}");
 
 
     QApplication::restoreOverrideCursor();
+    isPressed = false;
     event->accept();
-    isPressed = true;
 
 }
 
@@ -26,7 +25,7 @@ void SizeHandle::leaveEvent(QEvent *event)
 void SizeHandle::enterEvent(QEvent *event)
 {
 
-    this->setStyleSheet("QWidget {background: grey}");
+//    this->setStyleSheet("QWidget {background: grey}");
 
     QApplication::setOverrideCursor(QCursor(Qt::SizeHorCursor));
 
@@ -37,11 +36,13 @@ void SizeHandle::enterEvent(QEvent *event)
 
 void SizeHandle::paintEvent(QPaintEvent *event)
 {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
+
+        QStyleOption opt;
+        opt.init(this);
+        QPainter p(this);
+        style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    }
+
 
 //-------------------------------------------------------------------
 
@@ -51,6 +52,15 @@ void SizeHandle::mousePressEvent(QMouseEvent *event)
 
     isPressed = true;
 }
+
+void SizeHandle::mouseReleaseEvent(QMouseEvent *event)
+{
+
+    isPressed = false;
+    event->accept();
+}
+
+//-------------------------------------------------------------------
 
 //-------------------------------------------------------------------
 

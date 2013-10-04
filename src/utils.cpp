@@ -6,6 +6,7 @@
 #include  <QtCore>
 
 #include "utils.h"
+#include "zipper/zipchecker.h"
 
 /*!
    Delete a directory along with all of its contents.
@@ -473,8 +474,7 @@ QHash<QString, QString> Utils::listAllProjectsInSettingsArray()
 
 bool Utils::isProjectFromOldSystem(QString file)
 {
-    FileUpdater updater;
-    if(updater.isZip(file))
+    if(ZipChecker::isZip(file))
         return false;
     else
         return true;// means this version is < 0.3
@@ -655,4 +655,71 @@ void Utils::applyAttributeRecursively(QDomElement element, QString attribute, QS
 
 
 
+}
+
+
+
+
+
+
+
+
+
+
+QStringList Utils::addonsPathsList()
+{
+    QStringList list;
+
+
+    QDir dir;
+#ifdef Q_OS_LINUX
+
+    dir.setPath("/usr/share/plume-creator/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+    dir.setPath(QDir::homePath() + "/.plume-creator/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+
+#endif
+#ifdef Q_OS_WIN32
+
+    dir.setPath(QCoreApplication::applicationDirPath() + "/share/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+    dir.setPath(QDir::homePath() + "/AppData/Roaming/" + QCoreApplication::organizationName() + "/share/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+#endif
+#ifdef Q_OS_MAC
+
+    dir.setPath("/Library/Application Support/plume-creator/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+    dir.setPath(QDir::homePath() + "/Library/Application Support/plume-creator/");
+    if(dir.isReadable())
+        list.append(dir.path());
+#endif
+
+
+    return list;
+}
+
+void Utils::createPath(QStringList paths){
+    foreach(const QString path, paths){
+        QDir dir;
+        dir.setPath(path);
+        dir.mkpath(path);
+    }
+}
+
+void Utils::createPath(QString path){
+    QStringList list;
+    list.append(path);
+    Utils::createPath(list);
 }

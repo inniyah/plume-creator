@@ -239,10 +239,6 @@ void OutlinerSpreadsheet::giveStyle()
             "selection-background-color: rgba(100,100,100,30);"
             "selection-color: black;"
             "}"
-            " QTreeView::item {"
-//            "border-top: 1px solid rgba(100,100,100,40);"
-//            "border-bottom: 1px solid rgba(100,100,100,40);"
-            "}"
             ;
 
     this->setStyleSheet(css);

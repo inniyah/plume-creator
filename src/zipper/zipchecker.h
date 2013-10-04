@@ -37,6 +37,7 @@ public:
     void removeFile(QString type, int idNumber);
     void clearList();
     static bool compareAndClean(QString tempDirectory, QStringList fileList);
+    static bool isZip(QString fileName);
 
 signals:
     

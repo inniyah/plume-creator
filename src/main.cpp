@@ -101,7 +101,6 @@ int main(int argc, char *argv[])
 
 
 
-
     //Names for the QSettings
 
     QCoreApplication::setOrganizationName( "PlumeSoft" );

@@ -9,12 +9,7 @@ OutlinerItemPoVDelegate::OutlinerItemPoVDelegate(QObject *parent) :
 {
     qListWidgetCss =    "QListWidget{"
             "border-style: none;"
-//            "border-top: 1px solid rgba(100,100,100,40);"
-//            "border-bottom: 1px solid rgba(100,100,100,40);"
             "background-color: rgba(100,100,100,0)"
-            "}"
-            " QListWidget::item {"
-
             "}"
             ;
 }
@@ -56,9 +51,9 @@ void OutlinerItemPoVDelegate::setEditorData(QWidget *editor, const QModelIndex &
 void OutlinerItemPoVDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
 
-//    NoteZone * textEdit = static_cast<NoteZone*>(editor);
+    //    NoteZone * textEdit = static_cast<NoteZone*>(editor);
 
-//    model->setData(index,textEdit->toHtml(),  Qt::EditRole);
+    //    model->setData(index,textEdit->toHtml(),  Qt::EditRole);
 }
 
 void OutlinerItemPoVDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & index) const
@@ -145,10 +140,10 @@ void OutlinerItemPoVDelegate::paint( QPainter* painter,
 
 
 bool OutlinerItemPoVDelegate::editorEvent ( QEvent * event, QAbstractItemModel * model,
-                                         const QStyleOptionViewItem & option, const QModelIndex & index )
+                                            const QStyleOptionViewItem & option, const QModelIndex & index )
 {
 
-     return QStyledItemDelegate::editorEvent(event, model,option,index);
+    return QStyledItemDelegate::editorEvent(event, model,option,index);
 
 }
 
@@ -168,11 +163,11 @@ bool OutlinerItemPoVDelegate::eventFilter ( QObject * editor, QEvent * event )
     if(event->type() == QEvent::Wheel)
     {
 
-        qDebug(" QEvent::Wheel");
+        //        qDebug(" QEvent::Wheel");
         return true;
     }
     else
-
         return QStyledItemDelegate::eventFilter(editor, event);
+
 
 }

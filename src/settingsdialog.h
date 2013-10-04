@@ -95,6 +95,7 @@ private slots:
     // theme tab :
     void setColorDialog();
     void setStyleSheet();
+    void resetThemeListWidget();
 
     // style tab :
     void infoModified();
@@ -121,6 +122,10 @@ void on_includeNamesFromTheMiseEnSceneCheckBox_clicked();
 void on_customColorsBox_clicked(bool checked);
 
 void on_resetColorsButton_clicked();
+
+void themeListWidget_itemChanged(QListWidgetItem *item);
+
+void on_devHelp_displayObjectNamesCheckBox_toggled(bool checked);
 
 private:
     Hub *hub;
@@ -161,6 +166,7 @@ bool prevIsToolBarInStatusBar;
     QString prev_sheetColor, prev_sheetTextColor, prev_backColor, prev_treeBackColor, prev_treeTextColor, prev_notesColor, prev_notesTextColor,
      sheetColor, sheetTextColor, backColor, treeBackColor, treeTextColor, notesColor, notesTextColor;
 bool prev_applyCustomColors;
+QString prev_themePath;
 
     // style tab :
 

@@ -36,7 +36,6 @@ public:
     bool checkAttendanceFile(QString projectFileName);
     bool checkTreeFile(QString projectFileName);
     bool checkInfoFile(QString projectFileName);
-    static bool isZip(QString projectFileName);
 
     QString getAttendVersion(){return attendVersion;}
     QString getTreeVersion(){return treeVersion;}

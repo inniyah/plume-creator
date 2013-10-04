@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     ,ui(new Ui::MainWindow),  ui_dockedTreeBase(new Ui::DockedTreeBase)
     , isExternalProjectOpeningBool(false)
     ,workbenchLaunched(false), isProjectOpened(false)
+    ,numberSymbol(" ")
 
 {
 
@@ -31,15 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 css = this->styleSheet();
 
 
-//QFile *styleFile = new QFile(qApp->applicationDirPath() + "/darkorange.stylesheet");
 
-//if(styleFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
-//    QTextStream stream(styleFile);
-//    QString userString;
-//    userString = stream.readAll();
-//    qDebug() << "css : " + userString;
-//    qApp->setStyleSheet(userString);
-//}
 
         //    systemTray = new QSystemTrayIcon(this);
     //    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
@@ -541,6 +534,7 @@ void MainWindow::createStatusBar()
     stretcher2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     wordGoalBar = new WordGoalProgressBar(this);
+    wordGoalBar->setObjectName("statusBar_wordGoalBar");
     wordGoalBar->setHub(hub);
     wordGoalBar->postConstructor();
 
@@ -572,15 +566,15 @@ void MainWindow::createStatusBar()
 
     //    ui->bar->addPermanentWidget(sceneWCLabel,1);
     //    ui->bar->addPermanentWidget(stretcher2,10);
-    ui->bar->addWidget(stretcher2,10);
+    ui->bar->addWidget(stretcher2, 10);
     //    bar->addPermanentWidget(showPrevSceneButton,2);
     //    bar->addPermanentWidget(status_tabFullscreenButton,2);
-    ui->bar->addPermanentWidget(wordGoalBar);
+    ui->bar->addWidget(wordGoalBar);
     //    bar->addPermanentWidget(stretcher2);
 
 
 
-
+ui->bar->setSizeGripEnabled(true);
 
     this->setStatusBar(ui->bar);
 
@@ -1092,6 +1086,7 @@ void MainWindow::textSlot(int number, QString action)
                 ++i;
             }
         }
+
 
         // open and mem in :
 
@@ -1771,6 +1766,18 @@ void MainWindow::applyConfig()
     }
 
     giveStyle();
+
+
+
+    if(settings.value("Settings/numberSymbolIsComma", false).toBool())
+        numberSymbol =  ",";
+    else
+        numberSymbol =  " ";
+
+
+
+
+
     //    if(menuBarOnTop == true){
     //        menu->hide();
     //        toolBox->removeItem(toolBox->indexOf(menu));
@@ -2105,12 +2112,12 @@ void MainWindow::giveStyle()
 void MainWindow::updateProjectWCLabel(int count)
 {
 
-    projectWCLabel->setText(tr("Project: ") + Utils::spaceInNumber(QString::number(count)));
+    projectWCLabel->setText(tr("Project: ") + Utils::spaceInNumber(QString::number(count), numberSymbol));
 
 }
 void MainWindow::updateBookWCLabel(int count)
 {
-    bookWCLabel->setText(tr("Book: ") + Utils::spaceInNumber(QString::number(count)));
+    bookWCLabel->setText(tr("Book: ") + Utils::spaceInNumber(QString::number(count), numberSymbol));
 
 }
 void MainWindow::updateActWCLabel(int count)
@@ -2119,7 +2126,7 @@ void MainWindow::updateActWCLabel(int count)
         actWCLabel->hide();
     else {
         actWCLabel->show();
-        actWCLabel->setText(tr("Act: ") + Utils::spaceInNumber(QString::number(count)));
+        actWCLabel->setText(tr("Act: ") + Utils::spaceInNumber(QString::number(count), numberSymbol));
     }
 }
 
@@ -2129,12 +2136,12 @@ void MainWindow::updateChapterWCLabel(int count)
         chapterWCLabel->hide();
     else {
         chapterWCLabel->show();
-        chapterWCLabel->setText(tr("Chapter: ") + Utils::spaceInNumber(QString::number(count)));
+        chapterWCLabel->setText(tr("Chapter: ") + Utils::spaceInNumber(QString::number(count), numberSymbol));
     }
 }
 void MainWindow::updateCurrentSheetWCLabel(int count)
 {
 
-    currentWCLabel->setText(tr("Words: ") + Utils::spaceInNumber(QString::number(count)));
+    currentWCLabel->setText(tr("Words: ") + Utils::spaceInNumber(QString::number(count), numberSymbol));
 
 }

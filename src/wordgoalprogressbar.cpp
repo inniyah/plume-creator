@@ -24,12 +24,11 @@ void WordGoalProgressBar::postConstructor()
 
 
     ui->progressBar->setStyleSheet("QProgressBar {"
-                                   "border: 1px solid grey;"
+                                   "border: 1px solid;"
                                    "border-radius: 2px;"
                                    "text-align: center;"
                                    "}"
                                    "QProgressBar::chunk {"
-                                   "background-color: #05B8CC;"
                                    "width: 20px;"
                                    "}");
 

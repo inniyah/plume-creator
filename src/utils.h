@@ -47,6 +47,9 @@ public:
 
     static void applyAttributeRecursively(QDomElement element, QString attribute, QString value);
 
+    static QStringList addonsPathsList();
+    static void createPath(QStringList paths);
+    static void createPath(QString path);
 }
 ;
 

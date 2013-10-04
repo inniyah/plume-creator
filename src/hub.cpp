@@ -7,7 +7,10 @@ Hub::Hub(QWidget *parent) :
 {
     wcThread = new WordCountEngineThread(this);    // wordCount thread
     zipChecker = new ZipChecker(this);
+    m_themes = new Themes(this);
 
+    QSettings settings;
+    m_themes->loadTheme(settings.value("Themes/theme", "").toString());
 
 }
 //--------------------------------------------------------------------------------
@@ -429,7 +432,7 @@ void Hub::setUserDict(QStringList userDict)
     // send to all :
     emit spellDictsChangedSignal(m_spellDictPath , m_userDict);
 
-this->addToSaveQueue();
+    this->addToSaveQueue();
 }
 //--------------------------------------------------------------------------------
 QString Hub::spellDictPath()
@@ -444,6 +447,13 @@ void Hub::setSpellDictPath(QString spellDictPath)
 
 
 
+//--------------------------------------------------------------------------------
+
+
+Themes *Hub::themes()
+{
+    return m_themes;
+}
 
 
 
@@ -536,7 +546,7 @@ bool Hub::startProject(QString file)
                 oldFile.remove();
             //replace it by the backup
             QFile bckFile(file);
-             bckFile.rename(file.remove("_backup"));
+            bckFile.rename(file.remove("_backup"));
 
             file = bckFile.fileName();
         }
@@ -623,6 +633,8 @@ bool Hub::startProject(QString file)
     emit setProgressBarValues(0, 0, 1000);
     this->setWordGoalActivated(false);
     connect(wcThread, SIGNAL(projectWordCount(int)), this, SLOT(calculatWordCountGoalDelta(int)));
+
+
 
     return true;
 }
@@ -913,19 +925,19 @@ bool Hub::loadTemp()
 
 
 
-        if(userDictonaryFile->open(QIODevice::ReadOnly)) {
+    if(userDictonaryFile->open(QIODevice::ReadOnly)) {
         QTextStream stream(userDictonaryFile);
         QString userString;
-         stream >> userString;
+        stream >> userString;
 
-         QStringList list  = userString.split(";*$;", QString::SkipEmptyParts);
+        QStringList list  = userString.split(";*$;", QString::SkipEmptyParts);
 
-         this->setUserDict(list);
+        this->setUserDict(list);
 
         userDictonaryFile->close();
     } else {
-//        qWarning() << "User dictionary in " << projectWorkingPath + "/dicts/userDict.dict_plume" << "could not be opened";
-            this->setUserDict(QStringList());
+        //        qWarning() << "User dictionary in " << projectWorkingPath + "/dicts/userDict.dict_plume" << "could not be opened";
+        this->setUserDict(QStringList());
     }
 
 
@@ -1212,7 +1224,7 @@ void Hub::saveTemp()
 
     QDir dir(projectWorkingPath);
     if(!dir.cd("dicts"))
-    dir.mkdir("dicts");
+        dir.mkdir("dicts");
 
     QFile *userDictonaryFile = new QFile(projectWorkingPath + "/dicts/userDict.dict_plume");
     if(userDictonaryFile->open(QIODevice::Truncate | QFile::WriteOnly | QFile::Text)) {
