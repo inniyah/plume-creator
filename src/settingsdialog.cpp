@@ -1038,11 +1038,3 @@ void SettingsDialog::reject()
 
 
 
-void SettingsDialog::on_devHelp_displayObjectNamesCheckBox_toggled(bool checked)
-{
-    QList<QWidget *> childWidgets = qApp->findChildren<QWidget *>(QString());
-    foreach(QWidget *child, childWidgets){
-    QLabel *label = new QLabel(child->objectName(),0, Qt::WindowStaysOnTopHint | Qt::ToolTip);
-    label->move(mapToGlobal(child->pos()));
-    }
-}

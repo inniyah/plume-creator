@@ -25,7 +25,6 @@
 #endif 
 #include <QtGui>   
 #include <QWidget>
-#include <QFrame>
 
 #include "hub.h"
 #include "prjmanager.h"
@@ -40,7 +39,7 @@
 #include "mainTree/maintreeabstractmodel.h"
 
 //
-class MenuBar : public QFrame
+class MenuBar : public QObject
 {
     Q_OBJECT
 public:

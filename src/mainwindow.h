@@ -175,7 +175,6 @@ private:
     void createStatusBar();
     void setDockSizes();
 
-    QWidget *widgetToHideWith;
     MenuBar *menu;
     QToolBox *toolBox;
     //    EditMenuBox *editMenu;

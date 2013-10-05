@@ -412,24 +412,6 @@
        <string>Theme</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
-        <widget class="QGroupBox" name="groupBox_9">
-         <property name="title">
-          <string>Devel Help</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="devHelp_displayObjectNamesCheckBox">
-            <property name="text">
-             <string>Display Object Names In Tooltips</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-         <zorder>radioButton</zorder>
-         <zorder>devHelp_displayObjectNamesCheckBox</zorder>
-        </widget>
-       </item>
        <item row="1" column="0">
         <widget class="QGroupBox" name="customColorsBox">
          <property name="title">
@@ -608,7 +590,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

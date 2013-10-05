@@ -10,7 +10,7 @@
 
 WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
     QWidget(parent), m_isWordGoalActivated(false),
-    ui(new Ui::WordGoalProgressBar)
+    ui(new Ui::WordGoalProgressBar), m_beginColor(Qt::green), m_endColor(Qt::red)
 {
     ui->setupUi(this);
 
@@ -117,8 +117,9 @@ void WordGoalProgressBar::setColors()
 
 
 
-    QString red = QString::number(255*(100-percent)/100);
-    QString green = QString::number(255*percent/100);
+    QString red = QString::number(m_beginColor.red() + ((m_endColor.red() - m_beginColor.red())*percent/100));
+    QString green = QString::number(m_beginColor.green() + ((m_endColor.green() - m_beginColor.green())*percent/100));
+    QString blue = QString::number(m_beginColor.blue() + ((m_endColor.blue() - m_beginColor.blue())*percent/100));
 
 
 
@@ -128,7 +129,7 @@ void WordGoalProgressBar::setColors()
                                    "text-align: center;"
                                    "}"
                                    "QProgressBar::chunk {"
-                                   "background-color: rgb("+ red +","+ green + ", 0);"
+                                   "background-color: rgb("+ red +","+ green + ","+ blue +" 0);"
                                    "}");
 
 }
@@ -167,7 +168,6 @@ void  WordGoalProgressBar::init()
     hub->setAchievedWordGoal(hub->achievedWordGoal()-1);
 }
 
-
 //--------- Context Menu :------------------------------------------------------------------
 
 
@@ -193,4 +193,39 @@ void WordGoalProgressBar::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(resetAct);
 
     menu.exec(event->globalPos());
+}
+
+
+
+
+
+
+
+
+
+
+
+//---------------Colors--------------------------------------------------
+
+
+QColor WordGoalProgressBar::getBeginColor()
+{
+    return m_beginColor;
+}
+
+void WordGoalProgressBar::setBeginColor(QColor color)
+{
+    m_beginColor = color;
+}
+
+QColor WordGoalProgressBar::getEndColor()
+{
+    return m_endColor;
+
+}
+
+
+void WordGoalProgressBar::setEndColor(QColor color)
+{
+    m_endColor = color;
 }

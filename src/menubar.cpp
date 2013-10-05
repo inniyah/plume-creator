@@ -2,7 +2,7 @@
 
 //
 MenuBar::MenuBar(QWidget *parent) :
-    QFrame(parent),parentWidget(parent), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
+    QObject(parent),parentWidget(parent), currentVersion(QApplication::applicationVersion()), projectAlreadyOpened(false)
 {
 
     giveStyle();
@@ -16,7 +16,7 @@ MenuBar::MenuBar(QWidget *parent) :
 void MenuBar::createContent()
 {
     createActions(); // if buttons with menus
-    createButtons();
+//    createButtons();
 
 
     readSettings();
@@ -144,7 +144,7 @@ void MenuBar::closeProject()
     //    if(file == 0)
     //        return;
 
-    QMessageBox msgBox(this);
+    QMessageBox msgBox(parentWidget);
     msgBox.setText(tr("Do you want to close the current project ?"));
     msgBox.setInformativeText(tr("Your changes are already saved."));
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
@@ -249,7 +249,7 @@ void MenuBar::viewReleaseNotes()
 {
 
 
-    QDialog *relNotesDialog = new QDialog(this);
+    QDialog *relNotesDialog = new QDialog(parentWidget);
     relNotesDialog->setWindowTitle(tr("Release Notes"));
     relNotesDialog->setMinimumSize(600,400);
 
@@ -289,7 +289,7 @@ void MenuBar::viewCredits()
 {
 
 
-    QDialog *creditsDialog = new QDialog(this);
+    QDialog *creditsDialog = new QDialog(parentWidget);
     creditsDialog->setWindowTitle(tr("Credits"));
     creditsDialog->setMinimumSize(600,400);
 
@@ -442,7 +442,7 @@ void MenuBar::createActions()
     connect(exitAct, SIGNAL(triggered()), this, SLOT(exit()));
 
 
-    projectGroup = new QMenu(tr("&Project"),this);
+    projectGroup = new QMenu(tr("&Project"),parentWidget);
     projectGroup->addAction(startCenterAct);
     projectGroup->addSeparator();
     projectGroup->addAction(newProjectAct);
@@ -469,7 +469,7 @@ void MenuBar::createActions()
     manageStylesAct->setToolTip(tr("Manage the styles"));
     connect(manageStylesAct, SIGNAL(triggered()), this, SLOT(manageStyles()));
 
-    editGroup = new QMenu(tr("&Edit"),this);
+    editGroup = new QMenu(tr("&Edit"),parentWidget);
     editGroup->addAction(findReplaceAct);
     editGroup->addSeparator();
     //    editGroup->addAction(editWidgetAct);
@@ -509,7 +509,7 @@ void MenuBar::createActions()
     showFullscreenAct->setToolTip(tr("Edit fullscreen"));
     connect(showFullscreenAct, SIGNAL(triggered()), this, SIGNAL(showFullscreenSignal()));
 
-    viewGroup = new QMenu(tr("&View"),this);
+    viewGroup = new QMenu(tr("&View"));
     //viewGroup->addAction(showTreeDockAct);
     viewGroup->addAction(showNotesDockAct);
     viewGroup->addAction(showAttendDockAct);
@@ -545,7 +545,7 @@ void MenuBar::createActions()
     updaterAct->setToolTip(tr("check for an update"));
     connect(updaterAct, SIGNAL(triggered()), this, SLOT(checkUpdate()));
 
-    helpGroup = new QMenu(tr("&Help"),this);
+    helpGroup = new QMenu(tr("&Help"),parentWidget);
     helpGroup->addAction(aboutAct);
     helpGroup->addAction(aboutQtAct);
     helpGroup->addSeparator();

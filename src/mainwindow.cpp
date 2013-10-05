@@ -33,7 +33,6 @@ css = this->styleSheet();
 
 
 
-
         //    systemTray = new QSystemTrayIcon(this);
     //    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
 
@@ -352,7 +351,8 @@ void MainWindow::createTreeDock()
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
-    connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+//    connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+    treeDock->show();
 }
 
 //---------------------------------------------------------------------------
@@ -482,13 +482,6 @@ void MainWindow::createNoteDock()
 
 
 
-    //    QWidget *widgetToHideWith_syn = new QWidget;
-    //    QWidget *widgetToHideWith_note = new QWidget;
-    //    QWidget *widgetToHideWith_mid = new QWidget;
-
-    //    widgetToHideWith_syn->setLayout(synLayout);
-    //    widgetToHideWith_note->setLayout(noteLayout);
-    //    widgetToHideWith_mid->setLayout(midLayout);
 
 }
 

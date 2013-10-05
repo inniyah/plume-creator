@@ -125,7 +125,6 @@ void on_resetColorsButton_clicked();
 
 void themeListWidget_itemChanged(QListWidgetItem *item);
 
-void on_devHelp_displayObjectNamesCheckBox_toggled(bool checked);
 
 private:
     Hub *hub;
