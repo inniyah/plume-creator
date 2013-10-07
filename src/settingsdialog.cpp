@@ -559,7 +559,7 @@ void SettingsDialog::createSpellingTab()
         ++i;
     }
 
-    connect(ui->spellCheckerComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(spellCheckerComboBox_currentTextChanged()));
+    connect(ui->spellCheckerComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(spellCheckerComboBox_currentTextChanged()));
 
 
 
@@ -567,6 +567,7 @@ void SettingsDialog::createSpellingTab()
 
     // filling ui->dictInstallTipLabel :
 
+    QString downloadLink = "http://extensions.services.openoffice.org/en/search?f[0]=field_project_tags%3A157";
 
 #ifdef Q_OS_LINUX
 
@@ -576,14 +577,21 @@ void SettingsDialog::createSpellingTab()
                                          "in your package manager.</p>"
                                          "<p>On Ubuntu you can type in a console :</p>"
                                          "<p>sudo apt-get install hunspell*</p>"
+                                         "<br>"
+                                         "<p>Moreover, to install additional dictionaries, paste hunspell dictionaries in the \"/home/[user]/.plume-creator/dicts/\"  "
+                                         "of the install directory.</p>"
+                                         "<p>Hunspell dictionaries are in the form of pairs of *.aff and *.dic files.</p>"
+                                         "<p>You can find these files unzipping dictionaries extensions from OpenOffice or LibreOffice. They are "
+                                         "*.oxt files and you can find them here : </p>") +
+
+                                     "<address><a href=" + downloadLink + ">" + downloadLink + "</a></address></center>"
 
 
-                                         ));
+                                         );
 
 
 #endif
 #ifdef Q_OS_WIN32
-    QString downloadLink = "http://extensions.services.openoffice.org/en/search?f[0]=field_project_tags%3A157";
     ui->dictInstallTipLabel->setText(tr(
                                          "<p>To install additional dictionaries, paste hunspell dictionaries in the \"dicts\" folder "
                                          "of the install directory.</p>"

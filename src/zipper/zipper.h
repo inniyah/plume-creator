@@ -31,6 +31,7 @@ public:
     explicit Zipper(QObject *parent = 0);
     void setJob(QString job, QString fileName, QString workPath);
     void setFileListToCheck(QStringList fileList);
+    static bool checkZip(QString zipFileName);
 
 protected:
     void run();
@@ -46,7 +47,6 @@ signals:
 private:
     void extract(QString zipFileName);
     void compress(QString zipFileName);
-    bool checkZip(QString zipFileName);
     QString currentJob;
     QString m_fileName, m_workPath;
     bool oneTime;

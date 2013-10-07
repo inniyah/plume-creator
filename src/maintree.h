@@ -46,6 +46,8 @@ signals:
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
 
+    void createNewStructure(QHash<QString, int> newStructureHash);
+
 private slots:
 
 

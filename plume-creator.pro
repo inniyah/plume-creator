@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.64.6
+VERSION = 0.64.7
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -71,7 +71,6 @@ LIBS += -lhunspell
 
 SOURCES += src/main.cpp\
 src/mainwindow.cpp \
-src/newprojectwizard.cpp \
 src/prjmanager.cpp \
 src/maintree.cpp \
 src/statsbox.cpp \
@@ -138,11 +137,14 @@ src/hub.cpp \
     src/importuserdictdialog.cpp \
     src/attend/attendmanagertree.cpp \
     src/themes.cpp \
-    src/theme.cpp
+    src/theme.cpp \
+    src/newProjectWizard/newprojectwizard.cpp \
+    src/newProjectWizard/selectpage.cpp \
+    src/newProjectWizard/structurepage.cpp \
+    src/newProjectWizard/intropage.cpp
 
 
 HEADERS += src/mainwindow.h \
-src/newprojectwizard.h \
 src/prjmanager.h \
 src/maintree.h \
 src/statsbox.h \
@@ -209,7 +211,11 @@ src/hub.h \
     src/importuserdictdialog.h \
     src/attend/attendmanagertree.h \
     src/themes.h \
-    src/theme.h
+    src/theme.h \
+    src/newProjectWizard/newprojectwizard.h \
+    src/newProjectWizard/selectpage.h \
+    src/newProjectWizard/structurepage.h \
+    src/newProjectWizard/intropage.h
 
 CODECFORTR = UTF-8
 
@@ -239,7 +245,10 @@ src/wordgoalprogressbar.ui \
     src/startcenter.ui \
     src/texttab.ui \
     src/dockedTree/dockedtreebase.ui \
-    src/importuserdictdialog.ui
+    src/importuserdictdialog.ui \
+    src/newProjectWizard/selectpage.ui \
+    src/newProjectWizard/structurepage.ui \
+    src/newProjectWizard/intropage.ui
 
 RESOURCES += \
 translations/langs.qrc \

@@ -115,7 +115,13 @@ css = this->styleSheet();
 
 
         NewProjectWizard projectWizard;
-        projectWizard.exec();
+
+        if(projectWizard.exec()){
+
+            hub->startProject(projectWizard.newProjectFileName());
+            mainTree->createNewStructure(projectWizard.structureToCreate());
+}
+
 
         m_firstStart = false;
 
@@ -164,15 +170,17 @@ css = this->styleSheet();
 
 
 void MainWindow::postConstructor()
-{
+
+{    if (checkUpdateAtStartupBool){
+        launchSlimUpdater("auto");
+    }
+
     if(isExternalProjectOpeningBool == false){
         menu->openStartCenter();
     }
     isExternalProjectOpeningBool = false;
 
-    if (checkUpdateAtStartupBool){
-        launchSlimUpdater("auto");
-    }
+
 
 
 }
@@ -195,13 +203,14 @@ void MainWindow::createMenuBar()
     menu->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
     menu->createContent();
 
-
+    connect(menu, SIGNAL(createNewStructureSignal(QHash<QString,int>)), mainTree, SLOT(createNewStructure(QHash<QString,int>)));
 
     connect(menu,SIGNAL(exitSignal()), this, SLOT(close()));
     connect(menu, SIGNAL(setDisplayModeSignal(QString, bool)), this, SLOT(setDisplayMode(QString, bool)));
 
     connect(menu, SIGNAL(launchCheckUpdateSignal(QString)), this, SLOT(launchSlimUpdater(QString)));
     connect(menu, SIGNAL(applyStyleSheetSignal()), this, SLOT(giveStyle()));
+
 
 
     menu->firstLaunch();

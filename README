@@ -1,8 +1,13 @@
 PLUME CREATOR
 
 v 0.65
-	- added custom colors in settings
 	- removed 'text width' option from settings
+	- added option for commas in numbers (e.g. 1,000)
+	- fix : splitter option didn't launch
+	- added custom colors in settings
+	- added theme manager in settings
+	- new page in the "New Project" wizard : structure
+	
 	
 v 0.64
 	- fix : crash when no dictionary was selected

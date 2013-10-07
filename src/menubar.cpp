@@ -16,7 +16,7 @@ MenuBar::MenuBar(QWidget *parent) :
 void MenuBar::createContent()
 {
     createActions(); // if buttons with menus
-//    createButtons();
+    //    createButtons();
 
 
     readSettings();
@@ -27,8 +27,10 @@ void MenuBar::createContent()
 void MenuBar::newProject()
 {
     NewProjectWizard *projectWizard = new NewProjectWizard(parentWidget);
-    connect(projectWizard, SIGNAL(openProjectSignal(QString)), hub, SLOT(startProject(QString)));
-    projectWizard->exec();
+    if(projectWizard->exec()){
+        hub->startProject(projectWizard->newProjectFileName());
+        emit createNewStructureSignal(projectWizard->structureToCreate());
+    }
 
 
 }
@@ -122,7 +124,7 @@ void MenuBar::displayConfig(int tabIndex)
 
     settingsDialog->setCurrentTab(tabIndex);
 
-settingsDialog->setModal(true);
+    settingsDialog->setModal(true);
     settingsDialog->exec();
     emit resetFullscreenTextWidthSignal();
     //    //    Config config;

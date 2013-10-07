@@ -62,7 +62,6 @@ bool FileUpdater::checkAttendanceFile(QString projectFileName)
 
             QDomElement root = domDoc.createElement("root");
             root.setTagName("attendance");
-            root.setAttribute("projectName", projectName);
             root.setAttribute("version","0.2");
 
             QString defaultLevelsNames = tr("Main") + "--" + tr("Secondary") + "--" + tr("None");

@@ -49,6 +49,8 @@ public:
     QModelIndex parent(const QModelIndex&) const;
     void setDomDocument(QDomDocument domDoc);
 
+    void createNewStructure(QHash<QString, int> newStructureHash);
+
 
     static  QStringList giveStatusList();
     static QString giveStatus(int statusInt);
@@ -95,9 +97,9 @@ private slots:
 private:
     void removeItem(QDomElement element);
 
-    QDomElement addSheet(QDomElement targetElement, QString action, QString type);
     QStringList givePovList(QString listOfPovNumbers);
     QDomElement modifyAttributes(QDomElement newElement, QString typeOfNewElement);
+    QDomElement addSheet(QDomElement targetElement, QString action, QString type);
 
     Hub *hub;
     MainTreeItem *rootItem;

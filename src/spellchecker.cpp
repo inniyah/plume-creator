@@ -7,7 +7,9 @@
 #include <QDir>
 #include <QCoreApplication>
 
+
 #include "externals/hunspell/hunspell.hxx"
+#include "utils.h"
 
 SpellChecker::SpellChecker():
     m_isActive(false), encodingFix("utf8")
@@ -238,27 +240,20 @@ QStringList SpellChecker::dictsPaths()
     QStringList list;
 
 
-    QDir dir;
 #ifdef Q_OS_LINUX
 
+    QDir dir;
     dir.setPath("/usr/share/hunspell/");
-
-
-#endif
-#ifdef Q_OS_WIN32
-
-    dir.setPath(QCoreApplication::applicationDirPath() + "/share/dicts");
-
-#endif
-#ifdef Q_OS_MAC
-
-
-    dir.setPath(QCoreApplication::applicationDirPath() + "/dicts");
-
-
-#endif
-
     list.append(dir.path());
+
+#endif
+
+    QStringList addonsList = Utils::addonsPathsList();
+
+    foreach (QString string, addonsList) {
+        list.append(string + "/dicts/");
+    }
+
 
     return list;
 }

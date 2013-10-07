@@ -201,17 +201,14 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(slotError(QNetworkReply::NetworkError)));
 
-    if(timerNumber == 5){
+    if(timerNumber >= 5){
         ui->updateLabel->setText(text);
         timer->stop();
-    }
-    if (!domDocument.toString().isEmpty() || timerNumber == 5){
-        timer->stop();
+        return;
     }
     else{
         ui->updateLabel->setText(tr("Checking..."));
         timerNumber += 1;
-        return;
     }
 
 
@@ -234,8 +231,7 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
 
     root = domDocument.documentElement();
     if (root.tagName() != "plume-latest-version") {
-        QMessageBox::information(this, tr("Plume Creator Version"),
-                                 tr("The file is not a Plume Creator version file."));
+        qWarning() << tr("Plume Creator Version") << " : " << tr("The file is not a Plume Creator version file.");
         return;
 
     }
@@ -279,7 +275,7 @@ void SlimUpdater::replyFinished(QNetworkReply *reply)
     if(currentNumbers.size() > 3 || currentNumbers.size() == 0){
         ui->updateLabel->setText("<b><h3><center>Your current version " + currentAppVersion + " isn't understood !</h3><b>");
         ui->updateLabel->setText(QString::number(currentNumbers.size()) + "  " +QString::number(currentNumberStrings.size()));
-        return;
+       return;
     }
     int sizeMax = qMax(numbers.size(), currentNumbers.size());
 

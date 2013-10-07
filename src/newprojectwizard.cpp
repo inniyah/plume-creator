@@ -17,121 +17,54 @@ NewProjectWizard::NewProjectWizard(QWidget *parent)
 
 }
 
+QHash<QString, int> NewProjectWizard::structureToCreate()
+{
+    return m_structureToCreate;
+}
 
+QString NewProjectWizard::newProjectFileName()
+{
+    return m_newProjectFileName;
+
+}
 void NewProjectWizard::accept()
 
 {
-    QString creationDate(QDateTime::currentDateTime().toString(Qt::ISODate));
 
     QString projectNameFinish = field("projectNameField").toString();
     QString projectDirectoryFinish = field("projectDirectoryField").toString().toUtf8();
-    QString workingPath = (projectDirectoryFinish + "/" + projectNameFinish);
+    QString projectFileNameFinish = projectDirectoryFinish + "/" + field("projectNameField").toString() + ".plume";
+    QString workingPath = QDir::tempPath() + "/newProject";
+
+// cleaning :
+    Utils::removeDir(workingPath);
 
 
     // Creation of the doc using DOM
 
 
-
-    QDir path = projectDirectoryFinish + "/" + projectNameFinish;
+    QDir path;
     path.mkpath(workingPath);
     path.setCurrent(workingPath);
 
-    path.mkdir("objects");
+//    path.mkdir("objects");
     path.mkdir("text");
     path.mkdir("attend");
-
-    QStringList firstFiles;
-    firstFiles << "/text/T1.html"
-               << "/text/N1.html"
-               << "/text/S1.html"
-               << "/text/T2.html"
-               << "/text/N2.html"
-               << "/text/S2.html"
-               << "/text/T3.html"
-               << "/text/N3.html"
-               << "/text/S3.html" ;
-
-    for (int i = 0; i < firstFiles.size(); ++i){
-        QFile firstFile(path.path() + firstFiles.at(i).toLocal8Bit().constData());
-        firstFile.open(QFile::WriteOnly | QFile::Text);
-        QTextStream out(&firstFile);
-        out << "";
-        firstFile.close();
-        //qDebug() << "File written :" << firstFile.fileName();
-    }
+    path.mkdir("dicts");
 
 
-    QDomDocument domDoc("plume");
+// create tree :
 
+    QDomDocument domDoc("plume-tree");
 
-    //    QDomNode xmlNode = domDoc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
-    //    domDoc.insertBefore(xmlNode, domDoc.firstChild());
-
-
-    QFile file(field("projectNameField").toString() + ".plume");
+    QFile file("tree");
     file.open(QIODevice::ReadWrite | QIODevice::Text);
 
     QDomElement root = domDoc.createElement("root");
-    root.setTagName("plume");
+    root.setTagName("plume-tree");
     root.setAttribute("projectName", projectNameFinish);
-    root.setAttribute("creationDate", creationDate);
-    root.setAttribute("theme","");
-    root.setAttribute("version","0.2");
+    root.setAttribute("version","0.5");
     domDoc.appendChild(root);
-
-    QDomElement bookElem = domDoc.createElement("book");
-    bookElem.setAttribute("theme","");
-    bookElem.setAttribute("folded","no");
-    bookElem.setAttribute("textPath","/text/T1.html");
-    bookElem.setAttribute("notePath","/text/N1.html");
-    bookElem.setAttribute("synPath","/text/S1.html");
-    bookElem.setAttribute("name", projectNameFinish);
-    bookElem.setAttribute("number", "1");
-    bookElem.setAttribute("textCursorPos", "0");
-    bookElem.setAttribute("synCursorPos", "0");
-    bookElem.setAttribute("noteCursorPos", "0");
-
-    root.appendChild(bookElem);
-
-    // Here we append the very first chapter element and its attributes, and its Note
-
-    QDomElement chapterElem = domDoc.createElement("chapter");
-    chapterElem.setAttribute("theme","");
-    chapterElem.setAttribute("folded","no");
-    chapterElem.setAttribute("notePath","/text/N2.html");
-    chapterElem.setAttribute("textPath","/text/T2.html");
-    chapterElem.setAttribute("synPath","/text/S2.html");
-    chapterElem.setAttribute("name",tr("Chapter 1"));
-    chapterElem.setAttribute("number", "2");
-    chapterElem.setAttribute("textCursorPos", "0");
-    chapterElem.setAttribute("synCursorPos", "0");
-    chapterElem.setAttribute("noteCursorPos", "0");
-
-    bookElem.appendChild(chapterElem);
-
-    //Here we append the very first scene element and its attributes, and its Note
-
-
-    QDomElement sceneElem = domDoc.createElement("scene");
-    sceneElem.setAttribute("theme","");
-    sceneElem.setAttribute("notePath","/text/N3.html");
-    sceneElem.setAttribute("textPath","/text/T3.html");
-    sceneElem.setAttribute("synPath","/text/S3.html");
-    sceneElem.setAttribute("name",tr("Scene 1"));
-    sceneElem.setAttribute("number", "3");
-    sceneElem.setAttribute("textCursorPos", "0");
-    sceneElem.setAttribute("synCursorPos", "0");
-    sceneElem.setAttribute("noteCursorPos", "0");
-
-    chapterElem.appendChild(sceneElem);
-
-
-
-
-
-
-
-
 
 
     file.write(domDoc.toByteArray(3));
@@ -140,29 +73,142 @@ void NewProjectWizard::accept()
 
 
 
+    // create attend :
+
+
+    QDomDocument attendDomDoc("plume-attendance");
+
+    QFile attendFile("attendance");
+    attendFile.open(QIODevice::ReadWrite | QIODevice::Text);
+
+    QDomElement attendRoot = attendDomDoc.createElement("attendance");
+    attendRoot.setTagName("plume-attendance");
+    attendRoot.setAttribute("projectName", projectNameFinish);
+    QString defaultLevelsNames = tr("Main") + "--" + tr("Secondary") + "--" + tr("None");
+    attendRoot.setAttribute("box_1", defaultLevelsNames);
+    QString defaultRolesNames = tr("None") + "--" + tr("Protagonist") + "--" + tr("Supporting") + "--" + tr("Neutral") + "--" + tr("Antagonist");
+    attendRoot.setAttribute("box_2", defaultRolesNames);
+    attendRoot.setAttribute("version","0.5");
+    attendDomDoc.appendChild(attendRoot);
+
+    QDomElement charGroup = attendDomDoc.createElement("group");
+    charGroup.setAttribute("name", tr("Characters"));
+    attendRoot.appendChild(charGroup);
+    QDomElement itemGroup = attendDomDoc.createElement("group");
+    itemGroup.setAttribute("name", tr("Items"));
+    attendRoot.appendChild(itemGroup);
+    QDomElement placeGroup = attendDomDoc.createElement("group");
+    placeGroup.setAttribute("name", tr("Places"));
+    attendRoot.appendChild(placeGroup);
+
+    int groupNumber = 1;
+
+    QDomNodeList groupList = attendDomDoc.elementsByTagName("group");
+    for(int i = 0; i < groupList.count(); ++i){
+        QDomElement element = groupList.at(i).toElement();
+        element.setAttribute("number",  groupNumber );
+
+        // create docs :
+
+        element.setAttribute("attendPath", "/attend/A" + QString::number(groupNumber) + ".html");
+
+        QFile *attendDocFile = new QFile(workingPath + element.attribute("attendPath"));
+
+
+        QTextDocument *attendDocument = new QTextDocument();
+        attendDocument->toHtml();
+        QTextDocumentWriter docWriter(attendDocFile, "HTML");
+        docWriter.write(attendDocument);
+
+
+        delete attendDocument;
+
+        groupNumber += 1;
+
+
+
+    }
+
+
+    attendFile.write(attendDomDoc.toByteArray(3));
+    attendFile.close();
+
+
+
+
+    // create info
+
+
+
+    QFile infoFile( "info");
+    infoFile.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate);
+
+
+    QDomDocument infoDomDoc("plume-information");
+
+    QDomElement infoRoot = infoDomDoc.createElement("root");
+    infoRoot.setTagName("plume-information");
+    infoRoot.setAttribute("projectName", projectNameFinish);
+    infoRoot.setAttribute("version","0.2");
+    infoRoot.setAttribute("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+    infoRoot.setAttribute("creationDate", QDateTime::currentDateTime().toString(Qt::ISODate));
+    infoDomDoc.appendChild(infoRoot);
+
+
+    infoFile.write(infoDomDoc.toByteArray(3));
+    infoFile.close();
+
+
+
+
+    // compress :
+
+    QReadWriteLock lock;
+    bool isLockingSuccessfull = lock.tryLockForWrite();
+
+    if(isLockingSuccessfull == true){
+
+
+        JlCompress::compressDir(projectFileNameFinish, workingPath);
+}
+
+
+    lock.unlock();
+
+
+
+
+
+
+
     //Saving to .conf the new project :
+    QFile zipFile(projectFileNameFinish);
+    Utils::addProjectToSettingsArray(zipFile.fileName());
 
-    QSettings settings;
+    m_newProjectFileName = projectFileNameFinish;
 
-    int size = settings.value("Manager/projects/size", 0).toInt();
+//    QSettings settings;
+
+//    int size = settings.value("Manager/projects/size", 0).toInt();
 
 
-    settings.beginWriteArray("Manager/projects");
+//    settings.beginWriteArray("Manager/projects");
 
-    settings.setArrayIndex(size);
-    settings.setValue("name", projectNameFinish);
-    settings.setValue("path", projectDirectoryFinish);
-    settings.setValue("workPath", workingPath);
-    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
-    settings.setValue("creationDate", creationDate);
+//    settings.setArrayIndex(size);
+//    settings.setValue("name", projectNameFinish);
+//    settings.setValue("path", projectDirectoryFinish);
+//    settings.setValue("workPath", workingPath);
+//    settings.setValue("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+//    settings.setValue("creationDate", creationDate);
 
-    settings.endArray();
+//    settings.endArray();
 
-    emit openProjectSignal(workingPath + "/" + projectNameFinish +".plume");
     QDialog::accept();
 
 
 }
+
+
 
 IntroPage::IntroPage(QWidget *parent)
     : QWizardPage(parent)

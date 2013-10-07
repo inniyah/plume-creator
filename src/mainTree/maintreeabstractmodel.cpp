@@ -1204,13 +1204,15 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
 
 }
+
+
 //-----------------------------------------------------------------------------------------
+
 void MainTreeAbstractModel::actionSlot(QString action, int idNumber)
 {
 
-
-
-    QDomElement targetElement = hub->mainTree_domElementForNumberHash().value(idNumber);
+QDomElement targetElement;
+    targetElement = hub->mainTree_domElementForNumberHash().value(idNumber);
 
     if( targetElement.isNull())
         return;
@@ -1398,25 +1400,25 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber)
         this->addSheet(targetElement, "addSibling", "book");
 
     else if(action == "addActNext")
-        this->addSheet(targetElement, "addSibling", "act");
+         this->addSheet(targetElement, "addSibling", "act");
 
     else if(action == "addChapterNext")
-        this->addSheet(targetElement, "addSibling", "chapter");
+         this->addSheet(targetElement, "addSibling", "chapter");
 
     else if(action == "addSceneNext")
-        this->addSheet(targetElement, "addSibling", "scene");
+         this->addSheet(targetElement, "addSibling", "scene");
 
     else if(action == "addSeparatorNext")
-        this->addSheet(targetElement, "addSibling", "separator");
+         this->addSheet(targetElement, "addSibling", "separator");
 
     else if(action == "addChildAct")
-        this->addSheet(targetElement, "addChild", "act");
+         this->addSheet(targetElement, "addChild", "act");
 
     else if(action == "addChildChapter")
-        this->addSheet(targetElement, "addChild", "chapter");
+         this->addSheet(targetElement, "addChild", "chapter");
 
     else if(action == "addChildScene")
-        this->addSheet(targetElement, "addChild", "scene");
+         this->addSheet(targetElement, "addChild", "scene");
 
     else if(action == "addChildSeparator")
         this->addSheet(targetElement, "addChild", "separator");
@@ -1424,7 +1426,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber)
     else if(action == "emptyTrash"){
 
         if(!targetElement.hasChildNodes())
-            return;
+            return ;
 
         removeItem(targetElement);
 
@@ -1596,8 +1598,6 @@ QDomElement MainTreeAbstractModel::addSheet(QDomElement targetElement, QString a
 
 
     }
-
-
 
 
     return newElement;
@@ -1842,6 +1842,68 @@ QString MainTreeAbstractModel::giveStatus(int statusInt)
 
 }
 
+//---------------------------------------------------------------------------------------
+
+void MainTreeAbstractModel::createNewStructure(QHash<QString, int> newStructureHash)
+{
+
+    // clean tree :
+
+
+    QDomNodeList nodeList = hub->mainTreeDomDoc().elementsByTagName("book");
+
+    if(!nodeList.isEmpty())
+    for (int i = 0; i < nodeList.size(); ++i) {
+        hub->mainTreeDomDoc().documentElement().removeChild(nodeList.at(i));
+    }
+
+
+
+    // build :
+
+    int bookCount, actCount, chapterCount, sceneCount;
+
+    bookCount = newStructureHash.value("bookCount", 1);
+    actCount = newStructureHash.value("actCount", 0);
+    chapterCount = newStructureHash.value("chapterCount", 0);
+    sceneCount = newStructureHash.value("sceneCount", 0);
+
+
+
+    for(int i = 0; i  < bookCount; ++i){
+        QDomElement b = this->addSheet(hub->mainTreeDomDoc().documentElement(), "addChild", "book");
+
+
+        if(actCount == 0)
+            for(int j = 0; j  < chapterCount; ++j){
+                QDomElement c = this->addSheet(b, "addChild", "chapter");
+                for(int k = 0; k  < sceneCount; ++k){
+                    this->addSheet(c, "addChild", "scene");
+
+                }
+            }
+        else
+        for(int j = 0; j  < actCount; ++j){
+            QDomElement a = this->addSheet( b, "addChild", "act");
+            for(int k = 0; k  < chapterCount; ++k){
+                QDomElement c = this->addSheet(a, "addChild", "chapter");
+                for(int l = 0; l  < sceneCount; ++l){
+                    this->addSheet(c, "addChild", "scene");
+
+                }
+            }
+        }
+
+    }
+
+
+
+
+    hub->addToSaveQueue();
+    this->resetAbsModel();
+
+
+}
 //-----------------------------------------------------------------------------------------------------------
 QStringList MainTreeAbstractModel::giveStatusList()
 {

@@ -163,7 +163,7 @@ void Hub::set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc)
         if(ChangesTests::test(m_old_numForDoc, m_mainTree_numForDocHash) == false){
             emit mainTree_numForDocHashChanged(m_mainTree_numForDocHash);
             emit mainTree_numForDocHashChanged();
-            qDebug() << "mainTree_numForDocHashChanged"   ;
+//            qDebug() << "mainTree_numForDocHashChanged"   ;
         }
 }
 
@@ -647,7 +647,12 @@ void Hub::closeCurrentProject()
     emit closeProjectSignal();
     //
 
+
+
     Utils::modifyProjectModifiedDateInSettingsArray(this->currentProjectSettingArrayNumber(),QDateTime::currentDateTime().toString(Qt::ISODate) );
+
+    this->infoTreeDomDoc().firstChildElement("prj").setAttribute("lastModified", QDateTime::currentDateTime().toString(Qt::ISODate));
+
 
     this->stopSaveTimer();
     this->saveProject("wait");

@@ -51,20 +51,17 @@ public:
 
     void accept();
 
+    QHash<QString, int> structureToCreate();
+    QString newProjectFileName();
+
 signals:
     void openProjectSignal(QString fileName);
 
 private:
-    QString *projetNameFinish;
-    QString *projectDirectoryFinish;
-    QString *workingPath;
-    QDir *path;
 
-    QDomDocument *domDoc;
-    QDomElement *root;
-    QDomElement *tag;
-    QDomText *t;
-    QString *xml;
+
+QHash<QString, int> m_structureToCreate;
+QString m_newProjectFileName;
 
 
 };
@@ -113,6 +110,7 @@ private:
     QLineEdit *directoryLabelLineEdit;
     QLabel *projectNameLabel;
     QLineEdit *projectNameLabelLineEdit;
+
 };
 
 #endif // NEWPROJECTWIZARD_H

@@ -65,6 +65,7 @@ signals:
 
     void exitSignal();
 
+    void createNewStructureSignal(QHash<QString, int>);
     void openProjectSignal(QFile *device);
     void closeProjectSignal();
     void saveProjectSignal();

@@ -48,3 +48,10 @@ void MainTree::closeTree()
     this->mainTreeAbstractModel()->modifyDataForOpenedSheetMarker(0);
 }
 
+//---------------------------------------------------------------------------------------
+
+void MainTree::createNewStructure(QHash<QString, int> newStructureHash)
+{
+   this->mainTreeAbstractModel()->createNewStructure(newStructureHash);
+}
+
