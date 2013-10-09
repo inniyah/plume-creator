@@ -87,5 +87,8 @@
         <file>pics/tree/tree-act-expanded.png</file>
         <file>pics/tree/tree-chapter-expanded.png</file>
         <file>pics/document-import.png</file>
+        <file>pics/tools-check-spelling.png</file>
+        <file>pics/pin.png</file>
+        <file>pics/pin-off.png</file>
     </qresource>
 </RCC>

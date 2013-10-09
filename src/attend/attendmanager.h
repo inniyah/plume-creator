@@ -63,6 +63,8 @@ private slots:
 
     void nameEditingFinished();
 
+    void on_addButton_clicked();
+
 private:
     void connectAll();
     void disconnectAll();

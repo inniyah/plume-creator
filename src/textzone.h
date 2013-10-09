@@ -55,6 +55,8 @@ signals:
     void manageStylesSignal();
     void cursorPositionChanged(int pos);
     void activateSpellcheckSignal(bool isActivated);
+    void textZoneResized(QRect rect);
+    void cursorStateSignal(QString, bool);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -73,6 +75,7 @@ public slots:
     void scrollBy(QPoint viewportPoint);
 
     void setTextStyles(TextStyles *styles){textStyles = styles;}
+    void actionSlot(QString senderName, bool value);
 
 private slots:
 
@@ -142,15 +145,15 @@ private:
     bool showScrollbar;
 
     bool preventDoubleSpaceOption;
-bool forceCopyWithoutFormatting;
+    bool forceCopyWithoutFormatting;
     QList<QAction*> m_actions;
 
     int m_idNumber;
 
-//    Sounds *sounds;
+    //    Sounds *sounds;
 
-QString selectedWord, selectedHyphenWord;
-bool m_spellcheckBool;
+    QString selectedWord, selectedHyphenWord;
+    bool m_spellcheckBool;
 
 };
 

@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.64.7
+VERSION = 0.64.9
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -141,7 +141,9 @@ src/hub.cpp \
     src/newProjectWizard/newprojectwizard.cpp \
     src/newProjectWizard/selectpage.cpp \
     src/newProjectWizard/structurepage.cpp \
-    src/newProjectWizard/intropage.cpp
+    src/newProjectWizard/intropage.cpp \
+    src/edittoolbar.cpp \
+    src/overlay.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -215,7 +217,9 @@ src/hub.h \
     src/newProjectWizard/newprojectwizard.h \
     src/newProjectWizard/selectpage.h \
     src/newProjectWizard/structurepage.h \
-    src/newProjectWizard/intropage.h
+    src/newProjectWizard/intropage.h \
+    src/edittoolbar.h \
+    src/overlay.h
 
 CODECFORTR = UTF-8
 
@@ -248,7 +252,8 @@ src/wordgoalprogressbar.ui \
     src/importuserdictdialog.ui \
     src/newProjectWizard/selectpage.ui \
     src/newProjectWizard/structurepage.ui \
-    src/newProjectWizard/intropage.ui
+    src/newProjectWizard/intropage.ui \
+    src/edittoolbar.ui
 
 RESOURCES += \
 translations/langs.qrc \

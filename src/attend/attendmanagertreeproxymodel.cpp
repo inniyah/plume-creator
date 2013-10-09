@@ -222,6 +222,8 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
 
     hub->addToSaveQueue();
+    emit resetAbsModelSignal();
+
 
     // emit activateItemSignal(index);
 
@@ -268,7 +270,7 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
     if(sourceItem->isGroup())
         element.parentNode().appendChild(group);
     else
-        element.parentNode().parentNode().appendChild(group);
+        hub->attendTreeDomDoc().documentElement().appendChild(group);
 
 
     emit resetAbsModelSignal();
@@ -280,6 +282,8 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
     hub->addFileToZipList("attend", number );
 
     hub->addToSaveQueue();
+    emit resetAbsModelSignal();
+
 
 
 
@@ -300,14 +304,14 @@ int number = sourceItem->idNumber();
 
         if(sourceItem->childCount() != 0){
             QMessageBox::warning(0, tr("Plume Creator Attendance"),
-                                 tr("You can't delete a group if it's not empty./n"
+                                 tr("You can't delete a group if it's not empty.\n"
                                     "If you want to delete it, please delete its children first."),
                                  QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
     }
     int ret = QMessageBox::warning(0, tr("Plume Creator Attendance"),
-                                   tr("Do you really  want to delete it ?/n"
+                                   tr("Do you really  want to delete it ?\n"
                                       "You will not be able to recover it afterwards."),
                                    QMessageBox::Ok | QMessageBox::Cancel,QMessageBox::Cancel);
 
@@ -345,6 +349,8 @@ int number = sourceItem->idNumber();
     hub->removeFileFromZipList("attend", number );
 
     hub->addToSaveQueue();
+    emit resetAbsModelSignal();
+
 
 }
 

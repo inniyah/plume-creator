@@ -371,6 +371,12 @@ void AttendManager::on_removeAction_triggered()
 }
 
 
+void AttendManager::on_addButton_clicked()
+{
+        on_addObjectAction_triggered();
+
+}
+
 void AttendManager::nameEditingFinished()
 {
 //    qDebug() << "name editing finished";

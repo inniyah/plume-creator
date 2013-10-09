@@ -393,6 +393,7 @@ int main(int argc, char *argv[])
 //                }
     }
 
+
     splash->finish(&mw);
     mw.show();
     mw.setWindowState(Qt::WindowActive);

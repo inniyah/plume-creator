@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EditToolBar</class>
+ <widget class="QWidget" name="EditToolBar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+  </layout>
+  <action name="goBack">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/arrow-left.png</normaloff>:/pics/arrow-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>Go Back</string>
+   </property>
+   <property name="toolTip">
+    <string>Go Back</string>
+   </property>
+  </action>
+  <action name="goForward">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/arrow-right.png</normaloff>:/pics/arrow-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Go Forward</string>
+   </property>
+   <property name="toolTip">
+    <string>Go Forward</string>
+   </property>
+  </action>
+  <action name="undo">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-undo.png</normaloff>:/pics/edit-undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="redo">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-redo.png</normaloff>:/pics/edit-redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="cut">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-cut.png</normaloff>:/pics/edit-cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut</string>
+   </property>
+  </action>
+  <action name="copy">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-copy.png</normaloff>:/pics/edit-copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="paste">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-paste.png</normaloff>:/pics/edit-paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="pasteUnformated">
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/edit-paste.png</normaloff>:/pics/edit-paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste Undformated</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste Undformated</string>
+   </property>
+  </action>
+  <action name="spellChecker">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/tools-check-spelling.png</normaloff>:/pics/tools-check-spelling.png</iconset>
+   </property>
+   <property name="text">
+    <string>Activate / Deactivate Spell Cheking</string>
+   </property>
+   <property name="toolTip">
+    <string>Activate / Deactivate Spell Cheking</string>
+   </property>
+  </action>
+  <action name="bold">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/format-text-bold.png</normaloff>:/pics/format-text-bold.png</iconset>
+   </property>
+   <property name="text">
+    <string>Bold</string>
+   </property>
+   <property name="toolTip">
+    <string>Bold</string>
+   </property>
+  </action>
+  <action name="italic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/format-text-italic.png</normaloff>:/pics/format-text-italic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Italic</string>
+   </property>
+   <property name="toolTip">
+    <string>Italic</string>
+   </property>
+  </action>
+  <action name="pinToolBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pics.qrc">
+     <normaloff>:/pics/pin-off.png</normaloff>
+     <normalon>:/pics/pin.png</normalon>:/pics/pin-off.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pin Tool Bar</string>
+   </property>
+   <property name="toolTip">
+    <string>Pin Tool Bar</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="pics.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>undo</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bold</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copy</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cut</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>goBack</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>goForward</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>italic</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>paste</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pasteUnformated</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>redo</sender>
+   <signal>triggered()</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spellChecker</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>actionSlot(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pinToolBar</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>EditToolBar</receiver>
+   <slot>pinToolBar(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>actionSlot()</slot>
+  <slot>actionSlot(bool)</slot>
+  <slot>pinToolBar(bool)</slot>
+ </slots>
+</ui>

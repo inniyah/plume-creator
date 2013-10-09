@@ -30,6 +30,8 @@
 #include "textzone.h"
 #include "textstyles.h"
 #include "slimfindreplace.h"
+#include "overlay.h"
+#include "edittoolbar.h"
 //
 namespace Ui {
 class TextTab;
@@ -66,7 +68,9 @@ signals:
 
 protected:
     void paintEvent(QPaintEvent *);
-void resizeEvent(QResizeEvent * event);
+    void resizeEvent(QResizeEvent * event);
+    void mouseMoveEvent(QMouseEvent *event);
+
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
@@ -87,6 +91,7 @@ public slots:
 
     void setTextStyles(TextStyles *styles);
 
+
 private slots:
     void launchSlimFindReplace();
     void giveStyle();
@@ -100,12 +105,13 @@ private slots:
     void on_splitter_splitterMoved(int pos, int index);
 
     void modifySize(int modifier);
+    void editZoneMoved(QRect editZoneRect);
 
 
 private:
     Ui::TextTab *ui;
 
-  void  setPrevButtonState(bool state);
+    void  setPrevButtonState(bool state);
     void  setNextButtonState(bool state);
     void addSlimFindReplaceAction();
     Hub *hub;
@@ -116,11 +122,16 @@ private:
     MainTextDocument *nextTextDocument;
 
     QString stackName;
-int m_idNumber;
-bool firstTime;
+    int m_idNumber;
+    bool firstTime;
 
-QString css;
+    QString css;
 
+
+    Overlay *overlay;
+    EditToolBar *editToolBar;
+
+    QRect m_leftHoverZone, m_rightHoverZone;
 };
 
 #endif // TEXTTAB_H

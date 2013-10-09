@@ -230,7 +230,7 @@ void SettingsDialog::setColorDialog()
     }else
         return;
 
-    QColor color = QColorDialog::getColor(Qt::white, this, button->text());
+    QColor color = QColorDialog::getColor(Qt::white, this, button->text(), QColorDialog::DontUseNativeDialog	);
     button->setStyleSheet("background-color: " + color.name() );
 
     //    QString string;

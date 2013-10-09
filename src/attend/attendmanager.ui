@@ -23,6 +23,9 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="1">
         <widget class="QToolButton" name="addButton">
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -31,12 +34,15 @@
            <normaloff>:/pics/list-add-32x32.png</normaloff>:/pics/list-add-32x32.png</iconset>
          </property>
          <property name="popupMode">
-          <enum>QToolButton::InstantPopup</enum>
+          <enum>QToolButton::DelayedPopup</enum>
          </property>
         </widget>
        </item>
        <item row="0" column="2">
         <widget class="QToolButton" name="removeButton">
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -264,18 +270,18 @@
   </layout>
   <action name="addObjectAction">
    <property name="text">
-    <string>add object</string>
+    <string>Add Element</string>
    </property>
    <property name="toolTip">
-    <string>add an object (character, item, places, ...) to the list</string>
+    <string>Add an element (character, item, places, ...) to the list</string>
    </property>
   </action>
   <action name="addGroupAction">
    <property name="text">
-    <string>add group</string>
+    <string>Add Group</string>
    </property>
    <property name="toolTip">
-    <string>add a group to the list</string>
+    <string>Add a group to the list</string>
    </property>
   </action>
   <action name="removeAction">
@@ -283,7 +289,7 @@
     <string>remove</string>
    </property>
    <property name="toolTip">
-    <string>remove the selected object or group</string>
+    <string>remove the selected element or group</string>
    </property>
   </action>
  </widget>
@@ -299,6 +305,21 @@
    <header location="global">attend/attendmanagertree.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>addButton</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>managerTreeView</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>aliasesEdit</tabstop>
+  <tabstop>quickDetailsEdit</tabstop>
+  <tabstop>comboBox_1</tabstop>
+  <tabstop>comboBox_2</tabstop>
+  <tabstop>comboBox_3</tabstop>
+  <tabstop>spinBox_1</tabstop>
+  <tabstop>settingsButton</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>pushButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../pics.qrc"/>
  </resources>

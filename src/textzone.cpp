@@ -148,7 +148,7 @@ void TextZone::createActions()
     italicFont.setItalic(true);
     italicAct->setFont(italicFont);
 
-    spellcheckAct = new QAction(QIcon(""),tr("&Check Spelling"), this);
+    spellcheckAct = new QAction(QIcon(":/pics/tools-check-spelling.png"),tr("&Check Spelling"), this);
     spellcheckAct->setCheckable(true);
     //    spellcheckAct->setShortcuts(QKeySequence::Italic);
     spellcheckAct->setStatusTip(tr("Verify your spelling"));
@@ -317,6 +317,8 @@ if(m_spellcheckBool == spellcheckBool){
         spellcheckAct->setChecked(false);
         m_spellcheckBool = false;
     }
+
+    emit cursorStateSignal("spellChecker", m_spellcheckBool);
 
 
 
@@ -545,18 +547,24 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     bool italic = cFormat.fontItalic();
     //    Qt::Alignment align = alignment();
 
-    if(weight > 50)
+    if(weight > 50){
         boldAct->setChecked(true);
-    else
+        emit cursorStateSignal("bold", true);
+    }
+    else{
         boldAct->setChecked(false);
+        emit cursorStateSignal("bold", false);
+}
 
 
-
-    if(italic)
+    if(italic){
         italicAct->setChecked(true);
-    else
+        emit cursorStateSignal("italic", true);
+    }
+    else{
         italicAct->setChecked(false);
-
+        emit cursorStateSignal("italic", false);
+}
 
 
     //    if (align & Qt::AlignLeft){
@@ -879,6 +887,11 @@ void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
     textDocument->setTextWidth(this->width() - 14);// Fix ticket #10 : the wobbling of the text
+
+    QRect rect(this->mapToGlobal(this->pos()).x(), this->mapToGlobal(this->pos()).y(), this->width(), this->height());
+
+    emit textZoneResized(rect);
+
     QWidget::resizeEvent(event);
 
 }
@@ -891,6 +904,29 @@ void TextZone::resizeEvent(QResizeEvent* event)
 void TextZone::scrollBy(QPoint viewportPoint)
 {
     this->scrollContentsBy(viewportPoint.x(), viewportPoint.y());
+}
+
+void TextZone::actionSlot(QString senderName, bool value)
+{
+    if(senderName == "undo")
+        this->undo();
+    if(senderName == "redo")
+        this->redo();
+    if(senderName == "cut")
+        this->cut();
+    if(senderName == "copy")
+        this->copy();
+    if(senderName == "paste")
+        this->paste();
+    if(senderName == "pasteUnformated")
+        this->pasteWithoutFormatting();
+    if(senderName == "bold")
+        this->bold(value);
+    if(senderName == "italic")
+        this->italic(value);
+    if(senderName == "spellChecker")
+        this->activateSpellcheck(value);
+
 }
 
 //--------------------------------------------------------------------------------

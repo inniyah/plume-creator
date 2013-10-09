@@ -16,6 +16,7 @@ TextTab::TextTab(QWidget *parent) :
     css = this->styleSheet();
 
 
+
     prevTextDocument = new MainTextDocument(this);
     textDocument = new MainTextDocument(this);
     nextTextDocument = new MainTextDocument(this);
@@ -50,16 +51,14 @@ TextTab::TextTab(QWidget *parent) :
 
 
 
+    overlay = new Overlay(this);
+    connect(ui->textZone, SIGNAL(textZoneResized(QRect)), overlay,SLOT(editZoneMoved(QRect)));
 
+    connect(ui->textZone, SIGNAL(textZoneResized(QRect)), this, SLOT(editZoneMoved(QRect)));
 
-    //config
-
-
-
-
-
-
-
+    connect(ui->textZone, SIGNAL(textZoneResized(QRect)), ui->editToolBar, SLOT(editZoneMoved(QRect)));
+    connect(ui->editToolBar, SIGNAL(actionSignal(QString,bool)), ui->textZone, SLOT(actionSlot(QString,bool)));
+    connect(ui->textZone, SIGNAL(cursorStateSignal(QString,bool)), ui->editToolBar, SLOT(cursorStateSlot(QString,bool)));
 
 
 
@@ -144,6 +143,8 @@ bool TextTab::openText(MainTextDocument *doc)
     //    QString debug;
     //    qDebug() << "doc witdh : " << debug.setNum(textDocument->textWidth());
     //    qDebug() << "doc witdh : " << debug.setNum(doc->textWidth());
+
+
 
 
 
@@ -450,7 +451,6 @@ void TextTab::modifySize(int modifier)
     ui->nextTextZone->ensureCursorVisible();
 
 
-
 }
 
 
@@ -485,6 +485,7 @@ void  TextTab::launchSlimFindReplace()
 //-------------------------------------------------------------------------------
 void TextTab::applyConfig()
 {
+    ui->editToolBar->applyConfig();
     ui->textZone->applyConfig();
     ui->prevTextZone->applyConfig();
     ui->nextTextZone->applyConfig();
@@ -499,6 +500,9 @@ void TextTab::applyConfig()
     changeWidthSlot();
     settings.endGroup();
 
+
+    ui->textZone->setFixedWidth(ui->textZone->width() + 1);
+    ui->textZone->setFixedWidth(ui->textZone->width() -1);
 
 
 }
@@ -543,6 +547,9 @@ void TextTab::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+
+
 }
 //-------------------------------------------------------------------
 
@@ -562,6 +569,10 @@ void TextTab::resizeEvent(QResizeEvent *event)
 
     //    qDebug() << "event->size().width() : " + QString::number(event->size().width());
 
+        overlay->resize(event->size());
+
+//        overlay->editZoneMoved(this->mapFromGlobal(ui->textZone->mapToGlobal(ui->textZone->pos())).x(), this->mapFromGlobal(ui->textZone->mapToGlobal(ui->textZone->pos())).y(), ui->textZone->width(), ui->textZone->height());
+
     if(firstTime){
         firstTime = false;
         return;
@@ -574,6 +585,15 @@ void TextTab::resizeEvent(QResizeEvent *event)
     //    qDebug() << "event->size().width() - event->oldSize().width() : " + QString::number(event->size().width() - event->oldSize().width());
 
     //    qDebug() << "resizing";
+}
+
+//-------------------------------------------------------------------
+
+void TextTab::mouseMoveEvent(QMouseEvent *event)
+{
+    if(m_leftHoverZone.contains(event->pos()) || m_rightHoverZone.contains(event->pos()))
+        ui->editToolBar->openToolBar();
+
 }
 
 //-------------------------------------------------------------------
@@ -606,4 +626,42 @@ void TextTab::activateSpellcheck(bool isActivated)
     ui->textZone->activateSpellcheck(isActivated);
     ui->prevTextZone->activateSpellcheck(isActivated);
     ui->nextTextZone->activateSpellcheck(isActivated);
+}
+
+
+
+
+
+
+
+void TextTab::editZoneMoved(QRect editZoneRect)
+{
+
+    QPoint point = this->mapFromGlobal(QPoint(editZoneRect.x(), editZoneRect.y()));
+    editZoneRect.setX(point.x());
+    editZoneRect.setY(point.y());
+    editZoneRect.setWidth(editZoneRect.width());
+    editZoneRect.setHeight(editZoneRect.height());
+
+
+
+//    ui->editToolBar->move(editZoneRect.x(), editZoneRect.y());
+//    ui->editToolBar->resize(editZoneRect.width(), editToolBar->height());
+
+
+
+
+    // hover zones :
+
+    int hoverZoneSize =  editZoneRect.height() / 15;
+
+    QPoint leftPoint(editZoneRect.x(), editZoneRect.y());
+    m_leftHoverZone = QRect(leftPoint.x(), leftPoint.y(), - hoverZoneSize, hoverZoneSize);
+
+    QPoint rightPoint(editZoneRect.x() + editZoneRect.width(), editZoneRect.y());
+    m_rightHoverZone = QRect(rightPoint.x(), rightPoint.y(), hoverZoneSize, hoverZoneSize);
+
+
+
+
 }
