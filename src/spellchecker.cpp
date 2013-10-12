@@ -9,7 +9,7 @@
 
 
 #include "externals/hunspell/hunspell.hxx"
-#include "utils.h"
+#include "common/utils.h"
 
 SpellChecker::SpellChecker():
     m_isActive(false), encodingFix("utf8")

@@ -11,23 +11,26 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = plume-theme-tool
 TEMPLATE = app
 
-VERSION = 1.0
+VERSION = 0.1
+DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
+
+INCLUDEPATH += ../../src/common
 
 
 # dossier de zlib.h
-INCLUDEPATH += ../externals/zlib
+INCLUDEPATH += ../../externals/zlib
 
 LIBS += -L external/zlib
 win32: LIBS += -lzdll
 !win32: LIBS += -lz
 
 # dossier des headers de quazip
-INCLUDEPATH +=  ../externals/quazip
+INCLUDEPATH +=  ../../externals/quazip
 
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+             mainwindow.cpp
 
 HEADERS  += mainwindow.h
 

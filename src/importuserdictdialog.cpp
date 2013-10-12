@@ -1,6 +1,6 @@
 #include "importuserdictdialog.h"
 #include "ui_importuserdictdialog.h"
-#include "utils.h"
+#include "common/utils.h"
 #include "JlCompress.h"
 
 ImportUserDictDialog::ImportUserDictDialog(QWidget *parent) :

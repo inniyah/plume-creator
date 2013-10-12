@@ -25,7 +25,7 @@
 #include <QDir>
 #include <QHash>
 
-#include "utils.h"
+#include "common/utils.h"
 
 class ZipChecker : public QObject
 {

@@ -6,11 +6,12 @@ v 0.65
 	- added custom colors in settings
 	- added theme manager in settings
 	- new page in the "New Project" wizard : structure
+	- new theme : Space Opera (dark theme)
 	- new tool bar
 	- fix : splitter option didn't launch
 	- fix : Mise en Scène manager tree didn't update correctly
-	
-
+	- fix : update checker was bloquing the interface
+	- updated Windows version to Qt 5.1.1
 	
 	
 v 0.64

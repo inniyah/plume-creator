@@ -21,7 +21,7 @@
 #define DOCKEDTREEPROXY_H
 
 #include <QSortFilterProxyModel>
-#include "utils.h"
+#include "common/utils.h"
 #include "hub.h"
 #include "mainTree/maintreeitem.h"
 #include "mainTree/maintreeabstractmodel.h"

@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.64.10
+VERSION = 0.65
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -112,7 +112,7 @@ src/hub.cpp \
     src/maintextdocument.cpp \
     src/wordcountengine.cpp \
     src/wordcountenginethread.cpp \
-    src/utils.cpp \
+    src/common/utils.cpp \
     src/outliner/outlineritemnotedelegate.cpp \
     src/outliner/outlineritempovdelegate.cpp \
     src/slimfindreplace.cpp \
@@ -143,7 +143,8 @@ src/hub.cpp \
     src/newProjectWizard/structurepage.cpp \
     src/newProjectWizard/intropage.cpp \
     src/edittoolbar.cpp \
-    src/overlay.cpp
+    src/overlay.cpp \
+    src/updatechecker.cpp
 
 
 HEADERS += src/mainwindow.h \
@@ -188,7 +189,7 @@ src/hub.h \
     src/maintextdocument.h \
     src/wordcountengine.h \
     src/wordcountenginethread.h \
-    src/utils.h \
+    src/common/utils.h \
     src/outliner/outlineritemnotedelegate.h \
     src/outliner/outlineritempovdelegate.h \
     src/slimfindreplace.h \
@@ -219,7 +220,8 @@ src/hub.h \
     src/newProjectWizard/structurepage.h \
     src/newProjectWizard/intropage.h \
     src/edittoolbar.h \
-    src/overlay.h
+    src/overlay.h \
+    src/updatechecker.h
 
 CODECFORTR = UTF-8
 

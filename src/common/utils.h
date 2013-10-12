@@ -22,8 +22,8 @@
 
 #include <QString>
 #include <QDomDocument>
-#include "JlCompress.h"
-#include "fileupdater.h"
+#include "../../externals/quazip/JlCompress.h"
+#include "../fileupdater.h"
 
 class Utils
 {

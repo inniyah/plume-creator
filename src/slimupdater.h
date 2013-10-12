@@ -33,6 +33,7 @@
 #include <QNetworkProxy>
 
 #include "hub.h"
+#include "updatechecker.h"
 
 namespace Ui {
 class SlimUpdater;
@@ -52,7 +53,6 @@ signals:
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
     void setCurrentVersion(QString currentVersion);
-    void setMode(QString mode);
 
     //    void execute();
     //    void downloadFinished(QNetworkReply *reply);
@@ -60,9 +60,9 @@ public slots:
 
 
 private slots:
-    void checkUpdate();
-    void replyFinished(QNetworkReply *reply);
-    void slotError(QNetworkReply::NetworkError);
+
+
+
     bool checkConnection();
 
     void readSettings();
@@ -72,9 +72,13 @@ private slots:
 
     void on_verifyButton_clicked();
 
+    void packageComboBox_currentIndexChanged(int index);
+
+    void replySlot(QString reply);
 private :
     Hub *hub;
     Ui::SlimUpdater *ui;
+UpdateChecker *updateChecker;
 
     bool proxyEnabled;
     bool proxySystemEnabled;

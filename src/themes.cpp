@@ -6,7 +6,7 @@
 #include <QSettings>
 
 #include "themes.h"
-#include "utils.h"
+#include "common/utils.h"
 #include "JlCompress.h"
 #include "zipper/zipchecker.h"
 

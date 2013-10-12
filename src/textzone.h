@@ -27,7 +27,7 @@
 #include "hub.h"
 #include "textstyles.h"
 #include "editmenu.h"
-#include "utils.h"
+#include "common/utils.h"
 
 
 //#include "sounds.h"

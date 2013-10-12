@@ -93,42 +93,7 @@ css = this->styleSheet();
 
 
 
-    // Welcome dialog at first start
 
-    if (m_firstStart){
-//        QMessageBox firstStart;
-//        firstStart.setWindowTitle(tr("Welcome"));
-//        firstStart.setText(tr("<center><b>Hello ! Welcome to Plume Creator v") + QApplication::applicationVersion() + tr("!</b></center>"
-//                                                                                                                         "<p>Plume Creator is a little program for writers"
-//                                                                                                                         " in quest of a complete yet simple way of"
-//                                                                                                                         " writing and organizing a fiction.</p>"
-//                                                                                                                         "<br>"
-//                                                                                                                         "<p>It allows :"
-//                                                                                                                         "<blockquote>- fullscreen text editing</blockquote>"
-//                                                                                                                         "<blockquote>- chapters and scenes outlining</blockquote>"
-//                                                                                                                         "<blockquote>- note taking</blockquote>"
-//                                                                                                                         "<blockquote>- items/characters/places managing</blockquote></p>"
-//                                                                                                                         "<p><b><h1>This is a Beta software ! It's stable but all the features are not finished !</h1></b></p>"
-
-
-//                                                                                                                         ));
-//        firstStart.exec();
-
-
-
-        NewProjectWizard projectWizard;
-
-        if(projectWizard.exec()){
-
-            hub->startProject(projectWizard.newProjectFileName());
-            mainTree->createNewStructure(projectWizard.structureToCreate());
-}
-
-
-        m_firstStart = false;
-
-
-    }
 
 
     if (m_firstStart_checkDisplay && QApplication::desktop()->availableGeometry().height() < 650){
@@ -156,28 +121,44 @@ css = this->styleSheet();
 
 
 
-
-    //    if(checkScreenResAtStartupBool){
-    //        QRect scrGeom = QDesktopWidget::availableGeometry();
-    //        if(scrGeom.x() <= 1024 && scrGeom.x() <= 600)
-
-    //    }
-
-
-
-
-
 }
 
 
 
 void MainWindow::postConstructor()
+{
 
-{    if (checkUpdateAtStartupBool){
+
+    // Welcome dialog at first start
+
+    bool projectWizardAccepted = false;
+
+     if (m_firstStart){
+
+
+         NewProjectWizard projectWizard;
+
+         if(projectWizard.exec()){
+
+             hub->startProject(projectWizard.newProjectFileName());
+             mainTree->createNewStructure(projectWizard.structureToCreate());
+
+         projectWizardAccepted = true;
+         }
+
+
+         m_firstStart = false;
+
+
+     }
+
+
+
+    if (checkUpdateAtStartupBool){
         launchSlimUpdater("auto");
     }
 
-    if(isExternalProjectOpeningBool == false){
+    if(!isExternalProjectOpeningBool && !projectWizardAccepted){
         menu->openStartCenter();
     }
     isExternalProjectOpeningBool = false;
@@ -1515,7 +1496,7 @@ void MainWindow::readSettings()
     checkScreenResAtStartupBool = settings.value("checkScreenResAtStartup", true).toBool();
     settings.endGroup();
     settings.beginGroup( "Updater" );
-    checkUpdateAtStartupBool = settings.value("checkAtStartup_1", true).toBool();
+    checkUpdateAtStartupBool = settings.value("checkAtStartup_2", true).toBool();
     settings.endGroup();
 
 
@@ -1996,7 +1977,7 @@ void MainWindow::launchSlimUpdater(QString mode)
     connect(this, SIGNAL(applyConfigSignal()), updater, SLOT(readSettings()));
     connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
     ui->baseWidget->layout()->addWidget(updater);
-    updater->setMode(mode);
+
 }
 
 void MainWindow::closeSlimUpdater()
