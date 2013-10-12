@@ -187,6 +187,14 @@ void FullscreenEditor::zoomOut()
     textStyles->setZoomModifier(textStyles->zoomModifier() - 1);
     textStyles->changeDocStyles(ui->fullTextEdit->document(), "modifyZoom");
 }
+
+//------------------------------------------------------------------------------------
+
+void FullscreenEditor::setShowFullScrollbar(bool value)
+{
+
+    saveConfig();
+}
 //------------------------------------------------------------------------------------
 
 void FullscreenEditor::createOptionMenu()
@@ -219,9 +227,15 @@ void FullscreenEditor::createOptionMenu()
     setColorsAct->setToolTip(tr("Set the colors"));
     connect(setColorsAct, SIGNAL(triggered()), this, SLOT(callColorDialog()));
 
+    showScrollbarAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Show Scroll Bar"),this);
+showScrollbarAct->setCheckable(true);
+    showScrollbarAct->setToolTip(tr("Show the scroll bar"));
+    connect(showScrollbarAct, SIGNAL(triggered(bool)), this, SLOT(setShowFullScrollbar(bool)));
+
     optionsMenu->addAction(editWidgetAct);
     optionsMenu->addAction(manageStylesAct);
     optionsMenu->addAction(setColorsAct);
+    optionsMenu->addAction(showScrollbarAct);
     ui->optionsButton->setMenu(optionsMenu);
 }
 
@@ -804,7 +818,12 @@ void FullscreenEditor::applyConfig()
 
     setTreeViewVisible(settings.value("FullTextArea/treeOpened", "false").toBool());
 
+    showScrollbarAct->setChecked(settings.value("FullTextArea/showScrollbar", false).toBool());
 
+    if(showScrollbarAct->isChecked())
+        ui->fullTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        ui->fullTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 }
 
@@ -812,7 +831,13 @@ void FullscreenEditor::applyConfig()
 void FullscreenEditor::saveConfig()
 {
     settings.setValue("FullTextArea/treeOpened",ui->treeView->isVisible());
+    settings.setValue("FullTextArea/showScrollbar", showScrollbarAct->isChecked());
 
+
+    if(showScrollbarAct->isChecked())
+        ui->fullTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    else
+        ui->fullTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 

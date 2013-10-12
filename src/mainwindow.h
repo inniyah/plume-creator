@@ -46,6 +46,7 @@
 namespace Ui {
 class MainWindow;
 class DockedTreeBase;
+class NoteDock;
 }
 
 class MainWindow : public QMainWindow
@@ -160,6 +161,7 @@ private slots:
 
 private:
     Ui::DockedTreeBase *ui_dockedTreeBase;
+    Ui::NoteDock *ui_noteDock;
     Ui::MainWindow *ui;
 
     TextStyles *textStyles;
@@ -185,8 +187,8 @@ private:
     QDockWidget *noteDock;
     QDockWidget *toolDock;
     QDockWidget *attendDock;
-    QStackedLayout *synLayout;
-    QStackedLayout *noteLayout;
+    QStackedWidget *synLayout;
+    QStackedWidget *noteLayout;
     StatsBox *stats;
     ItemBox *items;
     AttendBase *attendBase;

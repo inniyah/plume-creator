@@ -103,6 +103,8 @@ private slots:
     void zoomIn();
     void zoomOut();
 
+    void setShowFullScrollbar(bool value);
+
     void cursorPositionChangedSlot();   
     void changeTextStyleSlot(int styleIndex);
     void noteCursorPositionChangedSlot(int position);
@@ -144,6 +146,8 @@ private:
     *textBackColorButton,
     *textColorButton,
     *addOnColorButton;
+
+    QAction *showScrollbarAct;
 
     QSettings settings;
 

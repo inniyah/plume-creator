@@ -677,7 +677,6 @@ void FullTextZone::applyTextConfig()
     QSettings settings;
     settings.beginGroup( "Settings" );
     alwaysCenter = settings.value("FullTextArea/alwaysCenter", true).toBool();
-    bool showScrollbar = settings.value("FullTextArea/showScrollbar", false).toBool();
     preventDoubleSpaceOption = settings.value("preventDoubleSpace", false).toBool();
     settings.endGroup();
     setFixedWidth(settings.value("FullTextArea/areaWidth", 400).toInt());
@@ -685,10 +684,7 @@ void FullTextZone::applyTextConfig()
 
     centerCursor();
 
-    if(showScrollbar)
-        setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    else
-        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 
 }
 

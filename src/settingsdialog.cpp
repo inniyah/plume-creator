@@ -794,9 +794,8 @@ void SettingsDialog::readSettings()
     settings.beginGroup( "Settings" );
 
 
-    // Fullscreen text :
 
-    ui->showFullScrollbarBox->setChecked(settings.value("FullTextArea/showScrollbar", false).toBool());
+
 
     // Synopsis :
 
@@ -923,7 +922,6 @@ void SettingsDialog::accept()
 
     settings.beginGroup( "Settings" );
 
-    settings.setValue("FullTextArea/showScrollbar", ui->showFullScrollbarBox->isChecked());
 
 
     // Synopsis :

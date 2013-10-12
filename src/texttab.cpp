@@ -530,6 +530,7 @@ void TextTab::giveStyle()
             "TextTab {"
                "background-color: " + settings.value("MainWindow/textTabBackColor", "#ffffff").toString() +" ;"
                "}"
+
  ;
 
     if(!settings.value("Settings/applyCustomColors", true).toBool())
@@ -656,7 +657,7 @@ void TextTab::editZoneMoved(QRect editZoneRect)
     int hoverZoneSize =  editZoneRect.height() / 15;
 
     QPoint leftPoint(editZoneRect.x(), editZoneRect.y());
-    m_leftHoverZone = QRect(leftPoint.x(), leftPoint.y(), - hoverZoneSize, hoverZoneSize);
+    m_leftHoverZone = QRect(leftPoint.x() + 5, leftPoint.y(), - hoverZoneSize, hoverZoneSize);
 
     QPoint rightPoint(editZoneRect.x() + editZoneRect.width(), editZoneRect.y());
     m_rightHoverZone = QRect(rightPoint.x(), rightPoint.y(), hoverZoneSize, hoverZoneSize);

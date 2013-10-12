@@ -18,7 +18,6 @@
 #include <QWindowsXPStyle>
 #endif
 
-
 #ifdef Q_OS_MAC
 #include <QMacStyle>
 #endif

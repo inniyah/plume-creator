@@ -16,12 +16,14 @@
 #include "notezone.h"
 #include "ui_mainwindow.h"
 #include "ui_dockedtreebase.h"
+#include "ui_notedock.h"
 
 //
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),noTabCss(""),textAlreadyChanged(false)
-    ,ui(new Ui::MainWindow),  ui_dockedTreeBase(new Ui::DockedTreeBase)
+    ,ui(new Ui::MainWindow),  ui_dockedTreeBase(new Ui::DockedTreeBase),
+      ui_noteDock(new Ui::NoteDock)
     , isExternalProjectOpeningBool(false)
     ,workbenchLaunched(false), isProjectOpened(false)
     ,numberSymbol(" ")
@@ -421,6 +423,10 @@ void MainWindow::createToolDock()
 void MainWindow::createNoteDock()
 {
 
+    QWidget *baseWidget = new QWidget(this);
+    ui_noteDock->setupUi(baseWidget);
+
+
     noteDock = new QDockWidget(this);
 
     noteDock->setObjectName("noteDock");
@@ -428,57 +434,20 @@ void MainWindow::createNoteDock()
     noteDock->setAllowedAreas(Qt::BottomDockWidgetArea);
 
 
-    synLayout = new QStackedLayout;
+    synLayout = ui_noteDock->synStackedWidget;
 
-    noteLayout = new QStackedLayout;
-    QGroupBox *synopsisBox = new QGroupBox;
-    synopsisBox->setObjectName("synBox");
-    synopsisBox->setContentsMargins(0,0,0,0);
-    QGroupBox *noteBox = new QGroupBox;
-    noteBox->setObjectName("noteBox");
-    noteBox->setContentsMargins(0,0,0,0);
-    noteSplitter = new QSplitter;
-    noteSplitter->setObjectName("notesSplitter");
-    //    frame->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    //    frame->setLineWidth(2);
-    //    frame->setMidLineWidth(3);
+    noteLayout = ui_noteDock->noteStackedWidget;
 
 
-    //    QFrame *midFrame = new QFrame;
-    //    midFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    //    midFrame->setLineWidth(1);
-    //    midFrame->setMidLineWidth(3);
 
 
-    synopsisBox->setLayout(synLayout);
 
-    noteBox->setLayout(noteLayout);
+    noteSplitter = ui_noteDock->notesSplitter;
 
-    //    QWidget *noteDockLayoutWidget = new QWidget();
-
-    //    noteDockLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    //    noteDockLayout->setMargin(0);
-    //    noteDockLayout->setSpacing(0);
-    //    noteDockLayout->setContentsMargins(0,0,0,0);
-    //    noteDockLayout->addWidget(synopsisBox);
-    //    layout->addWidget(midFrame);
-    //    noteDockLayout->addWidget(noteBox);
-    //    noteDockLayoutWidget->setLayout(noteDockLayout);
-    //    noteSplitter->addWidget(noteDockLayoutWidget);
-    noteSplitter->addWidget(synopsisBox);
-    noteSplitter->addWidget(noteBox);
-
-    noteDock->setWidget(noteSplitter);
-
-    QStringList list;
-    list << tr("Draft") << tr("25%") << tr("50%") << tr("75%") << tr("Done") << tr("Corrected");
-    //    stateCombo->insertItems(0, list);
+    noteDock->setWidget(baseWidget);
 
 
-    synopsisBox->setTitle(tr("Synopsis"));
-    noteBox->setTitle(tr("Note"));
-
-    addDockWidget(Qt::BottomDockWidgetArea, noteDock);
+    this->addDockWidget(Qt::BottomDockWidgetArea, noteDock);
 
 
 
@@ -1108,6 +1077,7 @@ void MainWindow::textSlot(int number, QString action)
         QVBoxLayout *nLayout = new QVBoxLayout(noteWidget);
         NoteZone *noteStack = new NoteZone(noteWidget);
         noteStack->setHub(hub);
+        nLayout->setContentsMargins(0,0,0,0);
         nLayout->addWidget(noteStack);
         noteStack->openNote(noteDoc);
         noteWidget->setLayout(nLayout);
@@ -1117,6 +1087,7 @@ void MainWindow::textSlot(int number, QString action)
         QVBoxLayout *sLayout = new QVBoxLayout(synWidget);
         NoteZone *synStack = new NoteZone(synWidget);
         synStack->setHub(hub);
+        sLayout->setContentsMargins(0,0,0,0);
         sLayout->addWidget(synStack);
         synStack->openSyn(synDoc);
         synWidget->setLayout(sLayout);

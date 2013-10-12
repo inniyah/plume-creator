@@ -4,8 +4,8 @@
 # Project created by QtCreator 2011-07-25T11:13:12
 #
 #-------------------------------------------------
-lessThan(QT_VERSION, 4.8.3) {
-        error("FocusWriter requires Qt 4.8.3 or greater")
+lessThan(QT_VERSION, 4.8.4) {
+        error("Plume Creator requires Qt 4.8.4 or greater")
 }
 
 
@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.64.9
+VERSION = 0.64.10
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -253,7 +253,8 @@ src/wordgoalprogressbar.ui \
     src/newProjectWizard/selectpage.ui \
     src/newProjectWizard/structurepage.ui \
     src/newProjectWizard/intropage.ui \
-    src/edittoolbar.ui
+    src/edittoolbar.ui \
+    src/notedock.ui
 
 RESOURCES += \
 translations/langs.qrc \

@@ -151,6 +151,7 @@ bool Themes::loadTheme(QString themeFileOrPath)
         return false;
     }
 
+ QDir::setSearchPaths("themePics", QStringList(m_currentTheme->tempPath() + "/themePics"));
 
     QFile *styleFile = new QFile(cssFile.absoluteFilePath());
 

@@ -11,7 +11,7 @@ TextZone::TextZone(QWidget *parent) :
 
 {
 
-
+this->setMouseTracking(true);
 
 }
 
@@ -713,6 +713,11 @@ void TextZone::keyPressEvent(QKeyEvent *event)
         QTextEdit::keyPressEvent(event);
     }
 
+}
+
+void TextZone::mouseMoveEvent(QMouseEvent *event)
+{
+    event->ignore();
 }
 
 

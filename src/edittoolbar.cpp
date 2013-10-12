@@ -9,6 +9,8 @@
 EditToolBar::EditToolBar(QWidget *parent) :
     QWidget(parent),ui(new Ui::EditToolBar), isOpened(false), m_height(this->height()), isPressed(false), timerIsActivated(true)
 {
+
+
     ui->setupUi(this);
     toolBar = new QToolBar(this);
     ui->verticalLayout->addWidget(toolBar);
