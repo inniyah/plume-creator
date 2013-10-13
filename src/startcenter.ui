@@ -18,15 +18,7 @@
     <normaloff>:/pics/plume-creator-128x128.png</normaloff>:/pics/plume-creator-128x128.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QListView::item:selected {
-color: black;
- }
-QListView::item {border-top: 1px solid rgba(100,100,100,40);}
-            QToolTip{
-            border-style: outset; 
-            background: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0.42, stop:0 rgba(85, 170, 255, 255), stop:1 rgba(255, 255, 255, 255));
-            color: black;
-            }</string>
+   <string notr="true">QListView::item {border-top: 1px solid rgba(100,100,100,40);}</string>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>

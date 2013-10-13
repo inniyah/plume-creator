@@ -23,7 +23,6 @@
 #endif
 #endif
 
-
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
 

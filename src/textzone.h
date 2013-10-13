@@ -64,7 +64,6 @@ protected:
     bool canInsertFromMimeData (const QMimeData *source) const;
     void resizeEvent(QResizeEvent* event);
     void keyPressEvent(QKeyEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
 
 public slots:
 

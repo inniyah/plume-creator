@@ -4,8 +4,8 @@
 # Project created by QtCreator 2011-07-25T11:13:12
 #
 #-------------------------------------------------
-lessThan(QT_VERSION, 4.8.4) {
-        error("Plume Creator requires Qt 4.8.4 or greater")
+lessThan(QT_VERSION, 4.8.3) {
+        error("Plume Creator requires Qt 4.8.3 or greater")
 }
 
 
@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.65
+VERSION = 0.65.2
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin

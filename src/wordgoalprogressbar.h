@@ -33,6 +33,7 @@ class WordGoalProgressBar : public QWidget
     Q_OBJECT
     Q_PROPERTY(QColor beginColor READ getBeginColor WRITE setBeginColor NOTIFY beginColorChanged DESIGNABLE true)
     Q_PROPERTY(QColor endColor READ getEndColor WRITE setEndColor NOTIFY endColorChanged DESIGNABLE true)
+    Q_PROPERTY(QColor textColor READ getTextColor WRITE setTextColor NOTIFY textColorChanged DESIGNABLE true)
 
 public:
     explicit WordGoalProgressBar(QWidget *parent = 0);
@@ -42,16 +43,19 @@ public:
 
     void setBeginColor(QColor color);
     void setEndColor(QColor color);
+    void setTextColor(QColor color);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
     QColor getBeginColor();
     QColor getEndColor();
+    QColor getTextColor();
 
 signals:
     void beginColorChanged();
     void endColorChanged();
+    void textColorChanged();
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
@@ -76,7 +80,7 @@ private:
     QAction *resetAct, *setGoalAct;
     bool m_isWordGoalActivated;
 
-    QColor  m_beginColor, m_endColor;
+    QColor  m_beginColor, m_endColor, m_textColor;
 
 
 };

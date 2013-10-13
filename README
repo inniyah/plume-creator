@@ -1,5 +1,8 @@
 PLUME CREATOR
 
+V 0.65.2
+	- quick fix : we can't select a word.
+	
 v 0.65
 	- removed 'text width' option from settings
 	- added option for commas in numbers (e.g. 1,000)
@@ -10,7 +13,7 @@ v 0.65
 	- new tool bar
 	- fix : splitter option didn't launch
 	- fix : Mise en Scène manager tree didn't update correctly
-	- fix : update checker was bloquing the interface
+	- fix : update checker was blocking the interface
 	- updated Windows version to Qt 5.1.1
 	
 	

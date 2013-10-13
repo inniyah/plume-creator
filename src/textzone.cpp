@@ -715,10 +715,6 @@ void TextZone::keyPressEvent(QKeyEvent *event)
 
 }
 
-void TextZone::mouseMoveEvent(QMouseEvent *event)
-{
-    event->ignore();
-}
 
 
 

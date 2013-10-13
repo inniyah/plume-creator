@@ -36,6 +36,7 @@ void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &use
 
 
     userDict = userDictionary;
+    encodingFix = this->testHunspellForEncoding();
 
     foreach (const QString name, userDict) {
         put_word(name);
@@ -49,7 +50,6 @@ void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &use
     //test :
 
 
-    encodingFix = this->testHunspellForEncoding();
 //    qWarning() << "encodingFix : " + encodingFix;
 
 

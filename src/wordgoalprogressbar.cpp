@@ -10,7 +10,7 @@
 
 WordGoalProgressBar::WordGoalProgressBar(QWidget *parent) :
     QWidget(parent), m_isWordGoalActivated(false),
-    ui(new Ui::WordGoalProgressBar), m_beginColor(Qt::green), m_endColor(Qt::red)
+    ui(new Ui::WordGoalProgressBar), m_beginColor(Qt::green), m_endColor(Qt::red), m_textColor(Qt::black)
 {
     ui->setupUi(this);
 
@@ -127,6 +127,7 @@ void WordGoalProgressBar::setColors()
                                    "border: 1px solid grey;"
                                    "border-radius: 2px;"
                                    "text-align: center;"
+                                   "color: " + m_textColor.name() + ";"
                                    "}"
                                    "QProgressBar::chunk {"
                                    "background-color: rgb("+ red +","+ green + ","+ blue +" 0);"
@@ -223,9 +224,18 @@ QColor WordGoalProgressBar::getEndColor()
     return m_endColor;
 
 }
-
-
 void WordGoalProgressBar::setEndColor(QColor color)
 {
     m_endColor = color;
+}
+
+QColor WordGoalProgressBar::getTextColor()
+{
+    return m_textColor;
+
+}
+
+void WordGoalProgressBar::setTextColor(QColor color)
+{
+    m_textColor = color;
 }
