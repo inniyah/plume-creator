@@ -607,11 +607,15 @@ void SettingsDialog::createSpellingTab()
 
 #endif
 #ifdef Q_OS_MAC
-    ui->dictInstallTipLabel->setText(tr(
-                                         "<p>To install additional dictionaries, research \"hunspell\" "
-                                         "in your paquage manager.</p>"
-
-                                         ));
+    ui->dictInstallTipLabel->setText(tr("<p>To install additional dictionaries,  paste hunspell dictionaries in the \"/Library/Spelling\" folder "
+                                     "</p>"
+                                     "<p>Hunspell dictionaries are in the form of pairs of *.aff and *.dic files.</p>"
+                                     "<p>You can find these files unzipping dictionaries extensions from OpenOffice or LibreOffice. They are "
+                                     "*.oxt files and you can find them here : </p>") +
+    
+    "<address><a href=" + downloadLink + ">" + downloadLink + "</a></address></center>"
+    
+                                         );
 
 
 

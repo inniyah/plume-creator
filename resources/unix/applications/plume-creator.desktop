@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Plume Creator
+Version=0.58
 GenericName=Writing software
 GenericName[fr]=Logiciel d'écriture
 Comment=Write your fiction here ! Manage your writing projects
@@ -9,4 +10,4 @@ Exec=plume-creator
 Terminal=false
 Type=Application
 Categories=Qt;Office;
-MimeType=application/x-plume;application/x-plumebackup;
+MimeType=application/x-plume

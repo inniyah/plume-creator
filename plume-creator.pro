@@ -51,13 +51,13 @@ INCLUDEPATH +=  ./externals/quazip
 # hunspell
 
 
-win32 {
+unix: !macx {
 
-include(./externals/hunspell/hunspell.pro)
+LIBS += -lhunspell
 
 }
 else {
-LIBS += -lhunspell
+include(./externals/hunspell/hunspell.pro)
 }
 
 
@@ -265,22 +265,12 @@ readme.qrc \
     src/sounds.qrc
 
 
-macx {
-# ICON = resources/mac/plume-creator.icns
-}
-
 
 
 win32 {
 RC_FILE = resources/windows/icon.rc
 }
 
-
-macx {
-ICONS.files = resources/images/icons/hicolor
-ICONS.path = Contents/Resources/icons
-QMAKE_BUNDLE_DATA += ICONS
-}
 
 
 unix: !macx {
@@ -297,13 +287,13 @@ DEFINES += DATADIR=\\\"$${DATADIR}/plume-creator\\\"
 target.path = $$BINDIR
 icon.files = resources/images/icons/hicolor/*
 icon.path = $$DATADIR/icons/hicolor
-pixmap.files = resources/unix/plume-creator.png
+pixmap.files = resources/unix/pixmaps/plume-creator.png
 pixmap.path = $$DATADIR/pixmaps
-desktop.files = resources/unix/plume-creator.desktop
+desktop.files = resources/unix/applications/plume-creator.desktop
 desktop.path = $$DATADIR/applications/
-mime.files = resources/unix/plume-creator.xml
+mime.files = resources/unix/mime/packages/plume-creator.xml
 mime.path = $$DATADIR/mime/packages/
-mimeInk.files += resources/unix/x-plume.desktop resources/unix/x-plumebackup.desktop
+mimeInk.files += resources/unix/mimeInk/application/x-plume.desktop resources/unix/mimeInk/application/x-plumebackup.desktop
 mimeInk.path = $$DATADIR/mimeInk/application/
 docs.files += README COPYING License INSTALL
 docs.path = $$DATADIR/plume-creator/
@@ -314,5 +304,43 @@ qm.path = $$DATADIR/plume-creator/translations
 # sounds.path = $$DATADIR/plume-creator/sounds
 # symbols.files = resources/symbols/symbols.dat
 # symbols.path = $$DATADIR/plume-creator
-INSTALLS += target icon pixmap desktop mime mimeInk docs qm
+dicts.files = resources/dicts/*
+dicts.path = $$DATADIR/plume-creator/dicts
+themes.files = resources/themes/*
+themes.path = $$DATADIR/plume-creator/themes
+INSTALLS += target icon pixmap desktop mime mimeInk docs qm dicts themes
+}
+
+
+macx {
+ICON = resources/mac/plume-creator.icns
+
+icons.files = resources/images/icons
+icons.path = Contents/Resources/
+dicts.files = resources/dicts
+dicts.path = Contents/Resources/
+themes.files = resources/themes
+themes.path = Contents/Resources/
+QMAKE_BUNDLE_DATA += icons dicts themes
+QMAKE_INFO_PLIST = resources/mac/Info.plist
+
+#QMAKE_INFO_PLIST_OUT = $${TARGET}.app/Contents/Info.plist
+#PRE_TARGETDEPS +=	$${TARGET}.app/Contents/Info.plist
+
+#QMAKE_POST_LINK += ;/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $${VERSION}\" $${OUT_PWD}/$${TARGET}.app/Contents/Info.plist
+
+#Info_plist.target = Info.plist
+#Info_plist.depends = Info.plist.template $${TARGET}.app/Contents/Info.plist
+#Info_plist.commands = @$(DEL_FILE) $${TARGET}.app/Contents/Info.plist$$escape_expand(\n\t) \
+#@$(SED) -e “s,@EXECUTABLE@,$$TARGET,g” -e “s,@VERSION@,$$MODULE_VERSION,g” -e “s,@TYPEINFO@,$$HiView_SIGNATURE,g” -e “s,@ICON@,$$basename(ICON),g” Info.plist.template > $${TARGET}.app/Contents/Info.plist
+#QMAKE_EXTRA_TARGETS += Info_plist
+#PRE_TARGETDEPS += $$Info_plist.target
+#PkgInfo.target = PkgInfo
+#PkgInfo.depends = $${TARGET}.app/Contents/PkgInfo
+#PkgInfo.commands = @$(DEL_FILE) $$PkgInfo.depends$$escape_expand(\n\t) \ @echo “APPL$$HiView_SIGNATURE” > $$PkgInfo.depends
+#QMAKE_EXTRA_TARGETS += PkgInfo
+#PRE_TARGETDEPS += $$PkgInfo.target
+
+
+
 }

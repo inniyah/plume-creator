@@ -20,6 +20,7 @@ FullscreenEditor::~FullscreenEditor()
     this->restoreDoc();
     emit openSheetOnMainWindow(numberOfCurrentFullscreenSheet, currentCursorPos);
 
+    this->showNormal();
 
     delete ui;
 }

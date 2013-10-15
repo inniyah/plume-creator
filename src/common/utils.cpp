@@ -704,6 +704,18 @@ QStringList Utils::addonsPathsList()
     dir.setPath(QDir::homePath() + "/Library/Application Support/plume-creator/");
     if(dir.isReadable())
         list.append(dir.path());
+
+    dir.setPath("/Library/Spelling/");
+    if(dir.isReadable())
+        list.append(dir.path());
+
+
+    dir.setPath(QApplication::applicationDirPath());
+    dir.cdUp();
+    dir.cd("Resources");
+    if(dir.isReadable())
+        list.append(dir.path());
+
 #endif
 
 

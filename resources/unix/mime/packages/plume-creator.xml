@@ -5,12 +5,11 @@
 	<comment xml:lang="fr">Projet Plume Creator</comment>
 	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator.svg" />
 	<glob pattern="*.plume" />
-      </mime-type>
-      <mime-type type="application/x-plumebackup">
+    </mime-type>
+    <mime-type type="application/x-plumebackup">
 	<comment xml:lang="en">Plume Creator Project Backup</comment>
 	<comment xml:lang="fr">Projet Plume Creator Backup</comment>
 	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator-backup.svg" />
 	<glob pattern="*.plume_backup" />
     </mime-type>
 </mime-info>
-

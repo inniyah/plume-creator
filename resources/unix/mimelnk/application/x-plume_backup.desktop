@@ -1,13 +1,13 @@
 # KDE Config File
 [Desktop Entry]
 Encoding=UTF-8
-MimeType=application/x-plumebackup
+MimeType=application/x-plume_backup
 Icon=plume-creator
 Comment=Write your fiction here ! Manage your writing projects
 Comment[fr]=Ecrivez ici votre fiction ! Organisez avec vos projets
 Type=MimeType
-Patterns=*.plumebackup
+Patterns=*.plume_backup
 X-KDE-AutoEmbed=false
 [Property::X-KDE-NativeExtension]
 Type=QString
-Value=.plumebackup
+Value=.plume_backup
