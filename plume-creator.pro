@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.65.2
+VERSION = 0.65.3
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin

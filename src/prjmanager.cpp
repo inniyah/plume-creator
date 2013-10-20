@@ -36,7 +36,7 @@ PrjManager::PrjManager(QWidget *parent) :
     QVBoxLayout *pictureLayout = new QVBoxLayout;
 
     QLabel *pictureLabel = new QLabel;
-    pictureLabel->setPixmap(QPixmap(":/pics/plume-creator-128x128.png"));
+    pictureLabel->setPixmap(QPixmap(":/pics/plume-creator.png"));
     QLabel *versionLabel = new QLabel("V "+ QApplication::applicationVersion());
 
     pictureLayout->addWidget(pictureLabel);

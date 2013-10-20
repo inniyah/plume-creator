@@ -6,7 +6,7 @@
 	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator.svg" />
 	<glob pattern="*.plume" />
     </mime-type>
-    <mime-type type="application/x-plumebackup">
+    <mime-type type="application/x-plume-backup">
 	<comment xml:lang="en">Plume Creator Project Backup</comment>
 	<comment xml:lang="fr">Projet Plume Creator Backup</comment>
 	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator-backup.svg" />

@@ -1,0 +1,2 @@
+application/x-plume; /usr/bin/plume-creator '%s';edit=/usr/bin/plume-creator '%s'; test=test -n "$DISPLAY"; description="Plume Creator Project"; textualnewlines; nametemplate=%s.plume; priority=9
+application/x-plume-backup; /usr/bin/plume-creator '%s';edit=/usr/bin/plume-creator '%s'; test=test -n "$DISPLAY"; description="Plume Creator Project Backup"; textualnewlines; nametemplate=%s.plume_backup; priority=9

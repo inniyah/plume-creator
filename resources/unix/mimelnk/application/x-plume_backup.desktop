@@ -2,9 +2,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 MimeType=application/x-plume_backup
-Icon=plume-creator
-Comment=Write your fiction here ! Manage your writing projects
-Comment[fr]=Ecrivez ici votre fiction ! Organisez avec vos projets
+Icon=plume-creator-backup
+Comment=Plume Creator Backup file
+Comment[fr]=Copie de secours d'un projet de Plume Creator
 Type=MimeType
 Patterns=*.plume_backup
 X-KDE-AutoEmbed=false
