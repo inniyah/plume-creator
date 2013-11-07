@@ -234,14 +234,15 @@ enteredItemModelIndex = index;
 void OutlinerSpreadsheet::giveStyle()
 {
     this->setAlternatingRowColors(true);
-    QString css = "QTreeView {"
-            "alternate-background-color: rgba(100,100,100,20);"
-            "selection-background-color: rgba(100,100,100,30);"
-            "selection-color: black;"
-            "}"
-            ;
+    //to take :
+//    QString css = "QTreeView {"
+//            "alternate-background-color: rgba(100,100,100,20);"
+//            "selection-background-color: rgba(100,100,100,30);"
+//            "selection-color: black;"
+//            "}"
+//            ;
 
-    this->setStyleSheet(css);
+//    this->setStyleSheet(css);
 }
 
 void OutlinerSpreadsheet::finishStatusEdit()

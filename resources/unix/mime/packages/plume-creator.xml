@@ -3,13 +3,13 @@
     <mime-type type="application/x-plume">
 	<comment xml:lang="en">Plume Creator Project</comment>
 	<comment xml:lang="fr">Projet Plume Creator</comment>
-	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator.svg" />
+	<generic-icon name="plume-creator" />
 	<glob pattern="*.plume" />
     </mime-type>
     <mime-type type="application/x-plume-backup">
 	<comment xml:lang="en">Plume Creator Project Backup</comment>
 	<comment xml:lang="fr">Projet Plume Creator Backup</comment>
-	<icon name="/usr/share/icons/hicolor/scalable/apps/plume-creator-backup.svg" />
+	<generic-icon name="plume-creator-backup" />
 	<glob pattern="*.plume_backup" />
     </mime-type>
 </mime-info>

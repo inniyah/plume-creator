@@ -248,9 +248,7 @@ void UpdateChecker::timeOut()
     text = tr("<p>Connection status :"
               "<blockquote>- ") + connectionText
             + tr("</blockquote>"
-                  "<blockquote>- Verify the proxy settings"
                   "<blockquote>- ") + webSiteAvailableText + tr("</blockquote>"
-                   "<blockquote>- Click again on the refresh button --></blockquote>"
                    "</p>");
 
     emit replySignal(text);

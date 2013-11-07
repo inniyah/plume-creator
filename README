@@ -1,4 +1,17 @@
 PLUME CREATOR
+v 0.66.1
+	- fix : new project dialog freeze on Windows when clicking on "next"
+	- russian translation updated
+	- french translation updated
+
+v 0.66
+	- new icon set
+	- fix the Space Opera theme
+	- fix the copy/paste from a document with comments
+	- project dock now adapts itself to the tree size.
+	- fix : text is truncated when text zone width at max
+	- fix : can't open plume project in Gnome and Unity
+	- added a script to compile and deploy on OSX
 
 V 0.65.2
 	- quick fix : we can't select a word.

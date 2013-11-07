@@ -21,9 +21,10 @@ NewProjectWizard::NewProjectWizard(QWidget *parent) :
          this->setModal(true);
          this->setWizardStyle(QWizard::ModernStyle);
 
+         this->setWindowTitle(tr("New Project"));
 
 
-         this->addPage(createIntroPage());
+//         this->addPage(createIntroPage());
          this->addPage(createSelectPage());
             this->addPage(createStructurePage());
 

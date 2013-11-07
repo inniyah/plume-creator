@@ -14,4 +14,13 @@ fi
 if [ "$1" = "configure" ] && [ -x "`which update-mime-database 2>/dev/null`" ]; then
 	update-mime-database /usr/share/mime
 fi
+if [ "$1" = "configure" ] && [ -x "`which update-desktop-database 2>/dev/null`" ]; then
+	update-desktop-database
+fi
+if [ "$1" = "configure" ] && [ -x "`which gtk-update-icon-cache 2>/dev/null`" ]; then
+	gtk-update-icon-cache -fqt /usr/share/icons/hicolor
+fi
+if [ "$1" = "configure" ] && [ -x "`which touch 2>/dev/null`" ]; then
+	touch /usr/share/icons/hicolor
+fi
 # End automatically added section

@@ -18,6 +18,9 @@ StructurePage::StructurePage(QWidget *parent) :
 void StructurePage::initializePage()
 {
     m_bookCount = 1; //minimum and default
+    m_actCount = 0;
+    m_chapterCount = 0;
+    m_sceneCount = 0;
     resetPreviewTree();
     fillTemplateList();
 }
@@ -133,8 +136,8 @@ void StructurePage::fillTemplateList()
 
 
     item = new QListWidgetItem(tr("Short novel"),ui->bookTemplatesListWidget);
- list.clear();
- list << 1 << 0 << 20 << 5;// book// act// chapter// scene
+    list.clear();
+    list << 1 << 0 << 20 << 5;// book// act// chapter// scene
     item->setData(32, list);
 
 

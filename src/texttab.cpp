@@ -426,25 +426,38 @@ void TextTab::on_splitter_splitterMoved(int pos, int index)
 void TextTab::modifySize(int modifier)
 {
     int textZoneWidth;
+int maxWidth = this->width() - 50 ;
 
     if(modifier == 0)
         changeWidthSlot();
 
 
-    if(ui->textZone->width() < 400)
-        textZoneWidth = 400;
+
     if(ui->textZone->width() <= 400 && modifier < 0)
         return;
-    if(ui->textZone->width() > this->width())
-        textZoneWidth = this->width() - 20 ;
-    if(ui->textZone->width() > this->width() - 20 &&  modifier > 0)
+    else if(ui->textZone->width() < 400)
+        textZoneWidth = 400;
+    else if(ui->textZone->width() > maxWidth &&  modifier > 0){
         return;
-    else{
+    }
+    else if(ui->textZone->width() > maxWidth)
+        textZoneWidth = maxWidth;
+     else{
         textZoneWidth = ui->textZone->width() + modifier;
 
     }
+//        qDebug() << "textZoneWidth : " + QString::number(textZoneWidth);
+
+    if(textZoneWidth > maxWidth)
+        textZoneWidth = maxWidth;
+
 
     changeWidthSlot(textZoneWidth);
+
+//    qDebug() << "ui->textZone->width() : " + QString::number(ui->textZone->width());
+//    qDebug() << "textWidth() : " + QString::number(ui->textZone->document()->textWidth());
+//    if(ui->textZone->document()->textWidth() > this->width())
+//    ui->textZone->document()->setTextWidth(ui->textZone->width() - 50);
 
     ui->textZone->ensureCursorVisible();
     ui->prevTextZone->ensureCursorVisible();

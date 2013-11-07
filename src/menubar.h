@@ -27,11 +27,9 @@
 #include <QWidget>
 
 #include "hub.h"
-#include "prjmanager.h"
 #include "settingsdialog.h"
 #include "editmenu.h"
 #include "startcenter.h"
-#include "prjmanager.h"
 #include "newprojectwizard.h"
 #include "settingsdialog.h"
 #include "exporter/exporter.h"
@@ -80,7 +78,6 @@ signals:
     //repeater between Dialog Settings and MainWindow
     void setDisplayModeSignal(QString mode, bool isToolBarInStatusBar);
 void changeAllDocsTextStylesSignal();
-void resetFullscreenTextWidthSignal();
 void applyStyleSheetSignal();
 
     // repeater to join editWidget to MainWindow :

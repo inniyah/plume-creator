@@ -111,10 +111,10 @@
      <normaloff>:/pics/edit-paste.png</normaloff>:/pics/edit-paste.png</iconset>
    </property>
    <property name="text">
-    <string>Paste Undformated</string>
+    <string>Paste Unformated</string>
    </property>
    <property name="toolTip">
-    <string>Paste Undformated</string>
+    <string>Paste Unformated</string>
    </property>
   </action>
   <action name="spellChecker">

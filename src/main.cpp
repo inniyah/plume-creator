@@ -18,6 +18,7 @@
 #include <QWindowsXPStyle>
 #endif
 
+
 #ifdef Q_OS_MAC
 #include <QMacStyle>
 #endif
@@ -25,6 +26,7 @@
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -123,8 +125,6 @@ int main(int argc, char *argv[])
         iniSettings.setValue("Settings/isMovedtoIniFile", true);
     }
     QSettings::setDefaultFormat(QSettings::IniFormat);
-
-
 
 
 

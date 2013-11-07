@@ -905,6 +905,8 @@ void MainWindow::openProjectSlot()
     connect(mainTree->mainTreeAbstractModel(), SIGNAL(applySettingsFromDataSignal()), dockedTree, SLOT(applySettingsFromData()), Qt::UniqueConnection);
     connect(dockedTree, SIGNAL(modifyFlagsForDropsSignal(QString)), proxy, SLOT(modifyFlagsForDrops(QString)), Qt::UniqueConnection);
     connect(proxy, SIGNAL(resetAbsModelSignal()), mainTree->mainTreeAbstractModel(), SLOT(resetAbsModel()), Qt::UniqueConnection);
+    connect(proxy, SIGNAL(dataChanged(QModelIndex,QModelIndex)), dockedTree, SLOT(adaptColumn()), Qt::UniqueConnection); // resize column to content
+    connect(dockedTree, SIGNAL(contentSizeChanged(int)), this, SLOT(resizeMinimumTreeDockWidth(int)), Qt::UniqueConnection);
     dockedTree->applySettingsFromData();
 
 
@@ -1792,7 +1794,6 @@ void MainWindow::editFullscreen()
 
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
     connect(fullEditor, SIGNAL(manageStylesSignal()), menu, SLOT(manageStyles()));
-    connect(menu, SIGNAL(resetFullscreenTextWidthSignal()), fullEditor, SLOT(resetFullscreenTextWidthSlot()));
     connect(fullEditor, SIGNAL(newSheetSignal(int)), mainTree->mainTreeAbstractModel(), SLOT(addItemNext(int)));
     connect(fullEditor, SIGNAL(openSheetOnMainWindow(int,int)), this, SLOT(openSheet(int,int)));
 
@@ -1857,6 +1858,19 @@ void MainWindow::activateSpellCheck(bool isActivated)
     QSettings settings;
     settings.setValue("SpellChecking/globalSpellCheckActivated", isActivated);
 
+
+
+}
+
+//----------------------------------------------------------------------------
+
+
+void MainWindow::resizeMinimumTreeDockWidth(int width)
+{
+    treeDock->setMinimumWidth(width);
+    treeDock->setFixedSize(width, treeDock->height());
+    QApplication::processEvents();
+            treeDock->setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
 
 }

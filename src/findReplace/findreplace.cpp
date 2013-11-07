@@ -113,7 +113,7 @@ void FindReplace::resetSearch()
     QList<QDomElement> checkedElementList = searchForCheckedItems(root);
 
     if(checkedElementList.size() == 0 && !startingOrClosing){
-        QMessageBox::information(this, tr("Find & Replace"),
+        QMessageBox::information(this, tr("Find && Replace"),
                                  tr("No document has been selected in the tree.\n"
                                     "Have you checked the one(s) you want to look through ?"),
                                  QMessageBox::Ok,
@@ -122,7 +122,7 @@ void FindReplace::resetSearch()
 
     }
     if(ui->findEdit->text().size() == 0 && !startingOrClosing){
-        QMessageBox::information(this, tr("Find & Replace"),
+        QMessageBox::information(this, tr("Find && Replace"),
                                  tr("No text has been entered to find."),
                                  QMessageBox::Ok,
                                  QMessageBox::Ok);

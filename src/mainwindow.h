@@ -159,6 +159,16 @@ private slots:
     // spell check :
     void activateSpellCheck(bool isActivated);
 
+
+
+
+
+
+
+
+
+    void resizeMinimumTreeDockWidth(int width);
+
 private:
     Ui::DockedTreeBase *ui_dockedTreeBase;
     Ui::NoteDock *ui_noteDock;

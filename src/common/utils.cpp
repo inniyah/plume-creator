@@ -589,6 +589,14 @@ QString Utils::projectRealName(QString fileName)
 
 QString Utils::parseHtmlText(QString htmlText)
 {
+
+
+
+
+
+
+
+
     QTextEdit *textEdit = new QTextEdit;
     textEdit->setHtml(htmlText);
 
@@ -704,6 +712,8 @@ QStringList Utils::addonsPathsList()
     dir.setPath(QDir::homePath() + "/Library/Application Support/plume-creator/");
     if(dir.isReadable())
         list.append(dir.path());
+
+    dir.setPath(QCoreApplication::applicationDirPath());
 
     dir.setPath("/Library/Spelling/");
     if(dir.isReadable())

@@ -122,12 +122,15 @@ void WordGoalProgressBar::setColors()
     QString blue = QString::number(m_beginColor.blue() + ((m_endColor.blue() - m_beginColor.blue())*percent/100));
 
 
+    QColor m_finalTextColor = m_textColor;
+//    if(percent > 70 && (m_textColor.value() > && ))
+
 
     ui->progressBar->setStyleSheet("QProgressBar {"
                                    "border: 1px solid grey;"
                                    "border-radius: 2px;"
                                    "text-align: center;"
-                                   "color: " + m_textColor.name() + ";"
+                                   "color: " + m_finalTextColor.name() + ";"
                                    "}"
                                    "QProgressBar::chunk {"
                                    "background-color: rgb("+ red +","+ green + ","+ blue +" 0);"

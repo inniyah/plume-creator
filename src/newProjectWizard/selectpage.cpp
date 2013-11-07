@@ -13,7 +13,7 @@ SelectPage::SelectPage(QWidget *parent) :
 
 
     this->registerField("projectNameField*", ui->projectNameLabelLineEdit);
-     this->registerField("projectDirectoryField*", ui->directoryLabelLineEdit);
+     this->registerField("projectDirectoryField", ui->directoryLabelLineEdit);
 
 
 }

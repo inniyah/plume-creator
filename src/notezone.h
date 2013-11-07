@@ -121,6 +121,7 @@ void giveOutlinerStyle();
 void preventDoubleSpace();
 
 
+QByteArray mimeToRtf(const QMimeData *source) const;
 private:
 
 Hub *hub;

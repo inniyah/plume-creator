@@ -12,6 +12,13 @@ Hub::Hub(QWidget *parent) :
     QSettings settings;
     m_themes->loadTheme(settings.value("Themes/theme", "").toString());
 
+
+
+
+
+
+
+
 }
 //--------------------------------------------------------------------------------
 

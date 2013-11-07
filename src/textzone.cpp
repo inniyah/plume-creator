@@ -4,6 +4,9 @@
 #include <QtGui>   
 
 #include "textzone.h"
+#include "rtf/reader.h"
+#include "rtf/writer.h"
+
 //
 TextZone::TextZone(QWidget *parent) :
     QTextEdit(parent), forceCopyWithoutFormatting(false), m_idNumber(-1),
@@ -759,12 +762,12 @@ void TextZone::cursorPositionChangedSlot()
 
 }
 
-
-
-
-
-
-
+QMimeData* TextZone::createMimeDataFromSelection() const
+{
+    QMimeData* mime = QTextEdit::createMimeDataFromSelection();
+    mime->setData(QLatin1String("text/rtf"), mimeToRtf(mime));
+    return mime;
+}
 
 //--------------------------------------------------------------------------------
 
@@ -804,12 +807,32 @@ void TextZone::insertFromMimeData (const QMimeData *source )
     }
 
     if(source->hasHtml() && !forceCopyWithoutFormatting){
-        QString sourceString = qvariant_cast<QString>(source->html());
+
+        QByteArray richtext;
+        if (source->hasFormat(QLatin1String("text/rtf"))) {
+            richtext = source->data(QLatin1String("text/rtf"));
+        } else if (source->hasHtml()) {
+            richtext = mimeToRtf(source);
+        }
+
+        QTextEdit *textEdit = new QTextEdit(0);
+
+        RTF::Reader reader;
+        QBuffer buffer(&richtext);
+        buffer.open(QIODevice::ReadOnly);
+        reader.read(&buffer, textEdit->textCursor());
+        buffer.close();
+
+        QString sourceString = textEdit->toHtml();
+        sourceString.remove(QChar::ReplacementCharacter);
+        sourceString.remove(QChar::ObjectReplacementCharacter);
+        sourceString.remove(QChar::Null);
+
 
 
         //htmlText
         QTextDocument *document = new QTextDocument;
-        document->setHtml(Utils::parseHtmlText(sourceString));
+          document->setHtml(Utils::parseHtmlText(sourceString));
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
@@ -852,6 +875,12 @@ void TextZone::insertFromMimeData (const QMimeData *source )
         charFormat.setFontPointSize(textHeight);
         charFormat.setFontFamily(fontFamily);
         charFormat.clearForeground();
+        charFormat.setBackground(QBrush(Qt::NoBrush));
+        charFormat.setForeground(QBrush(Qt::NoBrush));
+        charFormat.setAnchor(false);
+        charFormat.setUnderlineStyle(QTextCharFormat::NoUnderline);
+        charFormat.setFontStrikeOut(false);
+
         QTextCursor *tCursor = new QTextCursor(document);
         tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
         tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -869,12 +898,31 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 }
 
 //--------------------------------------------------------------------------------
+QByteArray TextZone::mimeToRtf(const QMimeData* source) const
+{
+    // Parse HTML
+    QTextDocument document;
+    if (source->hasHtml()) {
+        document.setHtml(source->html());
+    } else {
+        document.setPlainText(source->text());
+    }
 
+    // Convert to RTF
+    RTF::Writer writer;
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    writer.write(&buffer, &document, false);
+    buffer.close();
+
+    return buffer.data();
+}
+//--------------------------------------------------------------------------------
 
 bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 {
 
-    if (source->hasHtml() || source->hasText())
+    if (source->hasHtml() || source->hasText() || source->hasFormat(QLatin1String("text/rtf")))
         return true;
 
     else
@@ -887,7 +935,8 @@ bool TextZone::canInsertFromMimeData (const QMimeData *source) const
 void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
-    textDocument->setTextWidth(this->width() - 14);// Fix ticket #10 : the wobbling of the text
+    textDocument->setTextWidth(this->width() - 20);// Fix ticket #10 : the wobbling of the text
+//    textDocument->setTextWidth(-1);
 
     QRect rect(this->mapToGlobal(this->pos()).x(), this->mapToGlobal(this->pos()).y(), this->width(), this->height());
 

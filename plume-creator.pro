@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.65.3
+VERSION = 0.66.1
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -51,27 +51,39 @@ INCLUDEPATH +=  ./externals/quazip
 # hunspell
 
 
-unix: !macx {
+#unix: !macx {
 
-LIBS += -lhunspell
+#LIBS += -lhunspell \
+#-lhunspell-1.3
 
-}
-else {
+#}
+#else {
 include(./externals/hunspell/hunspell.pro)
+#}
+
+
+
+
+
+
+macx {
+
+        lessThan(QT_MAJOR_VERSION, 5) {
+                HEADERS += src/rtf/clipboard_mac.h
+                SOURCES += src/rtf/clipboard_mac.cpp
+        }
+
+} else:win32 {
+
+        lessThan(QT_MAJOR_VERSION, 5) {
+                HEADERS += src/rtf/clipboard_windows.h
+                SOURCES += src/rtf/clipboard_windows.cpp
+        }
 }
-
-
-
-
-
-
-
-
 
 
 SOURCES += src/main.cpp\
 src/mainwindow.cpp \
-src/prjmanager.cpp \
 src/maintree.cpp \
 src/statsbox.cpp \
 src/itembox.cpp \
@@ -144,11 +156,12 @@ src/hub.cpp \
     src/newProjectWizard/intropage.cpp \
     src/edittoolbar.cpp \
     src/overlay.cpp \
-    src/updatechecker.cpp
-
+    src/updatechecker.cpp \
+    src/rtf/writer.cpp \
+    src/rtf/tokenizer.cpp \
+    src/rtf/reader.cpp
 
 HEADERS += src/mainwindow.h \
-src/prjmanager.h \
 src/maintree.h \
 src/statsbox.h \
 src/itembox.h \
@@ -221,7 +234,10 @@ src/hub.h \
     src/newProjectWizard/intropage.h \
     src/edittoolbar.h \
     src/overlay.h \
-    src/updatechecker.h
+    src/updatechecker.h \
+    src/rtf/writer.h \
+    src/rtf/tokenizer.h \
+    src/rtf/reader.h
 
 CODECFORTR = UTF-8
 
@@ -287,13 +303,15 @@ DEFINES += DATADIR=\\\"$${DATADIR}/plume-creator\\\"
 target.path = $$BINDIR
 icon.files = resources/images/icons/hicolor/*
 icon.path = $$DATADIR/icons/hicolor
-pixmap.files = resources/unix/pixmaps/plume-creator.png
+pixmap.files += resources/unix/pixmaps/plume-creator.png \
+	      resources/unix/pixmaps/plume-creator-backup.png
 pixmap.path = $$DATADIR/pixmaps
 desktop.files = resources/unix/applications/plume-creator.desktop
 desktop.path = $$DATADIR/applications/
 mime.files = resources/unix/mime/packages/plume-creator.xml
 mime.path = $$DATADIR/mime/packages/
-mimeInk.files += resources/unix/mimeInk/application/x-plume.desktop resources/unix/mimeInk/application/x-plumebackup.desktop
+mimeInk.files += resources/unix/mimeInk/application/x-plume.desktop \
+	      resources/unix/mimeInk/application/x-plume-backup.desktop
 mimeInk.path = $$DATADIR/mimeInk/application/
 docs.files += README COPYING License INSTALL
 docs.path = $$DATADIR/plume-creator/
@@ -308,6 +326,9 @@ dicts.files = resources/dicts/*
 dicts.path = $$DATADIR/plume-creator/dicts
 themes.files = resources/themes/*
 themes.path = $$DATADIR/plume-creator/themes
+
+
+
 INSTALLS += target icon pixmap desktop mime mimeInk docs qm dicts themes
 }
 
@@ -321,6 +342,9 @@ dicts.files = resources/dicts
 dicts.path = Contents/Resources/
 themes.files = resources/themes
 themes.path = Contents/Resources/
+
+
+
 QMAKE_BUNDLE_DATA += icons dicts themes
 QMAKE_INFO_PLIST = resources/mac/Info.plist
 
@@ -344,3 +368,4 @@ QMAKE_INFO_PLIST = resources/mac/Info.plist
 
 
 }
+

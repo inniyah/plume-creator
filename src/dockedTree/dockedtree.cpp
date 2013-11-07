@@ -4,8 +4,9 @@ DockedTree::DockedTree(QWidget *parent) :
     QTreeView(parent)
 {
 
+//this->header()->setResizeMode(0,QHeaderView::ResizeToContents);
 
-
+//    this->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
 
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 
@@ -19,8 +20,6 @@ DockedTree::DockedTree(QWidget *parent) :
 
 void DockedTree::postConstructor()
 {
-
-
 }
 
 //--------------------------------------------------------------------------------
@@ -37,6 +36,10 @@ void DockedTree::applySettingsFromData()
 
     connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(itemExpandedSlot(QModelIndex)), Qt::UniqueConnection);
     connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(itemCollapsedSlot(QModelIndex)), Qt::UniqueConnection);
+
+
+
+    this->adaptColumn();
 }
 //--------------------------------------------------------------------------------
 
@@ -219,3 +222,26 @@ delete contextMenu;
 }
 
 //--------------------------------------------------------------------------------
+//void DockedTree::adaptColumns (const QModelIndex & topleft, const QModelIndex& bottomRight)
+//{
+//    int firstColumn= topleft.column();
+//    int lastColumn = bottomRight.column();
+//    // Resize the column to the size of its contents
+//    do {
+//        this->resizeColumnToContents(firstColumn);
+//        firstColumn++;
+//    } while (firstColumn < lastColumn);
+
+//    emit contentSizeChanged(this->columnWidth(0) + 5);
+
+
+//}
+void DockedTree::adaptColumn ()
+{
+
+        this->resizeColumnToContents(0);
+
+    emit contentSizeChanged(this->columnWidth(0) + 5);
+
+
+}

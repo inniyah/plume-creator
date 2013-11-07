@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>250</height>
+    <width>563</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,14 +33,14 @@
       <widget class="QLabel" name="label">
        <property name="minimumSize">
         <size>
-         <width>210</width>
-         <height>210</height>
+         <width>260</width>
+         <height>260</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>200</width>
-         <height>200</height>
+         <width>300</width>
+         <height>300</height>
         </size>
        </property>
        <property name="autoFillBackground">
@@ -49,20 +49,17 @@
        <property name="lineWidth">
         <number>0</number>
        </property>
-       <property name="text">
-        <string/>
-       </property>
        <property name="textFormat">
-        <enum>Qt::AutoText</enum>
+        <enum>Qt::RichText</enum>
        </property>
        <property name="pixmap">
         <pixmap resource="pics.qrc">:/pics/plume-creator-splash.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignBottom|Qt::AlignJustify</set>
        </property>
        <property name="wordWrap">
         <bool>false</bool>

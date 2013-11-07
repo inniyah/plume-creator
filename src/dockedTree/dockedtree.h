@@ -44,11 +44,15 @@ signals:
  void modifyFlagsForDropsSignal(QString type);
  void textAndNoteSignal(int number, QString action);
  void currentOpenedSheetSignal(int sheetIdNumber);
+ void contentSizeChanged(int width);
+
 
 public slots:
     void setHub(Hub *varHub){hub = varHub;}
     void setMainTreeAbstractModel(MainTreeAbstractModel *tree){absTreeModel = tree;}
     void applySettingsFromData();
+    void adaptColumn();
+
 
 private slots:
     void itemCollapsedSlot(QModelIndex index);

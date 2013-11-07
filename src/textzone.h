@@ -65,6 +65,7 @@ protected:
     void resizeEvent(QResizeEvent* event);
     void keyPressEvent(QKeyEvent *event);
 
+    QMimeData *createMimeDataFromSelection() const;
 public slots:
 
     void setHub(Hub *varHub){hub = varHub;}
@@ -110,6 +111,7 @@ private slots:
     void changeTextStyleSlot(int styleIndex);
 
 
+    QByteArray mimeToRtf(const QMimeData *source) const;
 private:
     Hub *hub;
 

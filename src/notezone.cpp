@@ -1,4 +1,8 @@
 #include "notezone.h"
+
+#include "rtf/reader.h"
+#include "rtf/writer.h"
+
 //
 NoteZone::NoteZone(QWidget *parent) :
     QTextEdit(parent)
@@ -867,15 +871,31 @@ void NoteZone::insertFromMimeData (const QMimeData *source )
 
         if(source->hasHtml()){
 
-            QString sourceString = qvariant_cast<QString>(source->html());
+            QByteArray richtext;
+            if (source->hasFormat(QLatin1String("text/rtf"))) {
+                richtext = source->data(QLatin1String("text/rtf"));
+            } else if (source->hasHtml()) {
+                richtext = mimeToRtf(source);
+            }
 
+            QTextEdit *textEdit = new QTextEdit(0);
+
+            RTF::Reader reader;
+            QBuffer buffer(&richtext);
+            buffer.open(QIODevice::ReadOnly);
+            reader.read(&buffer, textEdit->textCursor());
+            buffer.close();
+
+            QString sourceString = textEdit->toHtml();
+            sourceString.remove(QChar::ReplacementCharacter);
+            sourceString.remove(QChar::ObjectReplacementCharacter);
+            sourceString.remove(QChar::Null);
 
 
 
             //htmlText
             QTextDocument *document = new QTextDocument;
-            document->setHtml(Utils::parseHtmlText(sourceString));
-
+              document->setHtml(Utils::parseHtmlText(sourceString));
             QTextBlockFormat blockFormat;
             blockFormat.setBottomMargin(bottMargin);
             blockFormat.setTextIndent(textIndent);
@@ -918,6 +938,11 @@ void NoteZone::insertFromMimeData (const QMimeData *source )
             charFormat.setFontPointSize(textHeight);
             charFormat.setFontFamily(fontFamily);
             charFormat.clearForeground();
+            charFormat.setBackground(QBrush(Qt::NoBrush));
+            charFormat.setForeground(QBrush(Qt::NoBrush));
+            charFormat.setAnchor(false);
+            charFormat.setUnderlineStyle(QTextCharFormat::NoUnderline);
+            charFormat.setFontStrikeOut(false);
             QTextCursor *tCursor = new QTextCursor(document);
             tCursor->movePosition(QTextCursor::Start, QTextCursor::MoveAnchor,1);
             tCursor->movePosition(QTextCursor::End, QTextCursor::KeepAnchor,1);
@@ -1076,7 +1101,26 @@ void NoteZone::insertFromMimeData (const QMimeData *source )
 
 
 }
+//--------------------------------------------------------------------------------
+QByteArray NoteZone::mimeToRtf(const QMimeData* source) const
+{
+    // Parse HTML
+    QTextDocument document;
+    if (source->hasHtml()) {
+        document.setHtml(source->html());
+    } else {
+        document.setPlainText(source->text());
+    }
 
+    // Convert to RTF
+    RTF::Writer writer;
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    writer.write(&buffer, &document, false);
+    buffer.close();
+
+    return buffer.data();
+}
 //--------------------------------------------------------------------------------
 
 

@@ -116,7 +116,6 @@ void MenuBar::displayConfig(int tabIndex)
 
     connect(settingsDialog, SIGNAL(accepted()), this, SLOT(applyConfig()));
     connect(settingsDialog, SIGNAL(setDisplayModeSignal(QString, bool)), this, SIGNAL(setDisplayModeSignal(QString, bool)));
-    connect(settingsDialog, SIGNAL(resetFullscreenTextWidthSignal()), this, SIGNAL(resetFullscreenTextWidthSignal()));
     connect(settingsDialog, SIGNAL(changeAllDocsTextStylesSignal()), textStyles, SLOT(changeAllDocsTextStyles()));
     connect(settingsDialog, SIGNAL(spellDictsChangedSignal(QString)), hub, SLOT(spellDictsChangedSlot(QString)));
     connect(settingsDialog, SIGNAL(applyStyleSheetSignal()), this, SIGNAL(applyStyleSheetSignal()));
@@ -126,7 +125,6 @@ void MenuBar::displayConfig(int tabIndex)
 
     settingsDialog->setModal(true);
     settingsDialog->exec();
-    emit resetFullscreenTextWidthSignal();
     //    //    Config config;
     //    ConfigDialog dialog(/*config, */this);
     //    if (dialog.exec() == QDialog::Accepted) {
@@ -501,9 +499,9 @@ void MenuBar::createActions()
     showToolsDockAct->setToolTip(tr("Show the tool dock"));
     connect(showToolsDockAct, SIGNAL(toggled(bool)), this, SIGNAL(showToolsDockSignal(bool)));
 
-    launchOutlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("&Outliner"),this);
+    launchOutlinerAct = new QAction(QIcon(":/pics/view-time-schedule.png"),tr("&Workbench"),this);
     launchOutlinerAct->setShortcut(Qt::Key_F6);
-    launchOutlinerAct->setToolTip(tr("Show the outliner"));
+    launchOutlinerAct->setToolTip(tr("Show the workbench"));
     connect(launchOutlinerAct, SIGNAL(triggered()), this, SIGNAL(launchOutlinerSignal()));
 
     showFullscreenAct = new QAction(QIcon(":/pics/view-fullscreen.png"),tr("&Fullscreen"), this);
