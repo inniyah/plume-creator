@@ -5,7 +5,10 @@
 TextHighlighter::TextHighlighter(QTextDocument *parentDoc, SpellChecker *spellCheck) :
     QSyntaxHighlighter(parentDoc)
 {
+    if(spellCheck)
     spellChecker = spellCheck;
+    else
+        qWarning() << "TextHighlighter : no spellchecker set";
 }
 void TextHighlighter::highlightBlock(const QString &text)
 {

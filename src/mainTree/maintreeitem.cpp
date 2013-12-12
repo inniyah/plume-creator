@@ -176,6 +176,8 @@ Qt::CheckState MainTreeItem::checkState(MainTreeItem::Trees tree) const
          return m_exporterCheckState;
     if(tree.testFlag(MainTreeItem::FindReplace))
         return m_findReplaceCheckState;
+
+    return Qt::Unchecked;
 }
 
 void MainTreeItem::setCheckState(const Qt::CheckState &checkState, MainTreeItem::Trees tree)

@@ -20,7 +20,6 @@ this->setMouseTracking(true);
 
 TextZone::~TextZone()
 {
-    textDocument->deactivateSpellChecker();
 
     delete undoAct;
     delete redoAct;

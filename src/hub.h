@@ -39,6 +39,7 @@
 #include "wordcountenginethread.h"
 #include "zipper/zipchecker.h"
 #include "themes.h"
+#include "spellchecker.h"
 
 class Hub : public QWidget
 {
@@ -183,6 +184,7 @@ public slots:
     // spell check :
     void spellDictsChangedSlot(const QString dictionaryPath);
     void setUserDict(QStringList userDict);
+    SpellChecker *spellChecker();
 
 private slots:
     void saveProject(QString mode = "");
@@ -246,6 +248,7 @@ private:
     // spell check :
     QStringList m_userDict;
     QString m_spellDictPath;
+    SpellChecker *m_spellChecker;
 
     // themes
     Themes *m_themes;

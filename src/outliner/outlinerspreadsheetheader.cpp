@@ -35,7 +35,7 @@ void OutlinerSpreadsheetHeader::contextMenuEvent(QContextMenuEvent *event)
     int clickedSectionIndex = this->logicalIndexAt(event->pos());
     QString clickedSectionData = this->model()->headerData(clickedSectionIndex, Qt::Horizontal).toString();
 
-    OutlinerSpreadsheetHeaderSection *clickedSection = new OutlinerSpreadsheetHeaderSection();
+    OutlinerSpreadsheetHeaderSection *clickedSection = new OutlinerSpreadsheetHeaderSection(this);
     clickedSection->setHub(hub);
     clickedSection->setId(clickedSectionIndex);
 
@@ -58,7 +58,7 @@ void OutlinerSpreadsheetHeader::contextMenuEvent(QContextMenuEvent *event)
             continue;
 
         QString otherSectionData = this->model()->headerData(i, Qt::Horizontal).toString();
-        OutlinerSpreadsheetHeaderSection *otherSection = new OutlinerSpreadsheetHeaderSection();
+        OutlinerSpreadsheetHeaderSection *otherSection = new OutlinerSpreadsheetHeaderSection(this);
         otherSection->setHub(hub);
         otherSection->setId(i);
         QAction *otherSectionAction = new QAction(otherSectionData, this);

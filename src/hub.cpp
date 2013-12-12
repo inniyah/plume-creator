@@ -8,6 +8,7 @@ Hub::Hub(QWidget *parent) :
     wcThread = new WordCountEngineThread(this);    // wordCount thread
     zipChecker = new ZipChecker(this);
     m_themes = new Themes(this);
+    m_spellChecker = new SpellChecker(this);
 
     QSettings settings;
     m_themes->loadTheme(settings.value("Themes/theme", "").toString());
@@ -451,8 +452,11 @@ void Hub::setSpellDictPath(QString spellDictPath)
 {
     m_spellDictPath = spellDictPath;
 }
-
-
+//--------------------------------------------------------------------------------
+SpellChecker *Hub::spellChecker()
+{
+    return m_spellChecker;
+}
 
 //--------------------------------------------------------------------------------
 
@@ -1004,7 +1008,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             textFile->setFileName(textPath);
             textFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream textFileStream( textFile );
-            MainTextDocument *textDocument = new MainTextDocument(this);
+            MainTextDocument *textDocument = new MainTextDocument(this, m_spellChecker);
             textDocument->setIdNumber(number.toInt());
             textDocument->setDocType("text");
             textDocument->setCursorPos(element.attribute("textPos", "0").toInt());
@@ -1019,7 +1023,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             synFile->setFileName(synPath);
             synFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream synFileStream( synFile );
-            MainTextDocument *synDocument = new MainTextDocument(this);
+            MainTextDocument *synDocument = new MainTextDocument(this, m_spellChecker);
             synDocument->setIdNumber(number.toInt());
             synDocument->setDocType("synopsis");
             synDocument->setCursorPos(element.attribute("synPos", "0").toInt());
@@ -1034,7 +1038,7 @@ void Hub::loadTextDocs(QDomNodeList list)
             noteFile->setFileName(notePath);
             noteFile->open(QFile::ReadOnly | QFile::Text);
             QTextStream noteFileStream( noteFile );
-            MainTextDocument *noteDocument = new MainTextDocument(this);
+            MainTextDocument *noteDocument = new MainTextDocument(this, m_spellChecker);
             noteDocument->setIdNumber(number.toInt());
             noteDocument->setDocType("note");
             noteDocument->setCursorPos(element.attribute("notePos", "0").toInt());

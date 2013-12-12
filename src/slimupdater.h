@@ -63,7 +63,6 @@ private slots:
 
 
 
-    bool checkConnection();
 
     void readSettings();
     void writeSettings();

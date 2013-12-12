@@ -1837,6 +1837,7 @@ void MainWindow::launchWorkbench()
 void MainWindow::killWorkbench()
 {
     workbenchLaunched = false;
+    workbench->deleteLater();
 }
 //----------------------------------------------------------------------------
 

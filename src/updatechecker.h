@@ -17,7 +17,7 @@ public:
     explicit UpdateChecker(QObject *parent = 0);
     void setPackageType(int index);
     int packageType();
-    bool checkConnection();
+    void checkConnection();
 
 protected:
 

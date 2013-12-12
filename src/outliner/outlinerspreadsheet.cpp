@@ -76,7 +76,7 @@ OutlinerSpreadsheet::OutlinerSpreadsheet(QWidget *parent) :
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemEntered(QModelIndex)));
 
 
-    OutlinerSpreadsheetHeader *hHeader = new OutlinerSpreadsheetHeader(Qt::Horizontal);
+    OutlinerSpreadsheetHeader *hHeader = new OutlinerSpreadsheetHeader(Qt::Horizontal, this);
     hHeader->setHub(hub);
     this->setHeader(hHeader);
 

@@ -42,6 +42,7 @@ class OutlinerBase : public QWidget
 public:
     explicit OutlinerBase(QWidget *parent = 0);
     void postConstructor();
+   ~OutlinerBase();
     QList<QAction *> toolButtons();
     QWidget *spreadsheetWidget();
 

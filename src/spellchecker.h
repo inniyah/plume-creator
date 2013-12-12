@@ -15,7 +15,7 @@ class SpellChecker : public QObject
     Q_OBJECT
 public:
 
-    SpellChecker();
+    SpellChecker(QObject *parent);
     ~SpellChecker();
     void setDict(const QString &dictionaryPath, const QStringList &userDictionary, const QStringList &attendTree_names);
 
@@ -43,7 +43,7 @@ signals:
 private:
     void put_word(const QString &word);
     Hunspell *_hunspell;
-    bool m_isActive;
+    bool m_isActive, hunspellLaunched;
     QStringList userDict;
 
 

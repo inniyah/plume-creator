@@ -49,8 +49,7 @@ SlimUpdater::SlimUpdater(QString mode, QWidget *parent) :
     readSettings();
 
 
-    checkConnection();
-
+updateChecker->checkConnection();
 
 
 
@@ -82,16 +81,6 @@ void SlimUpdater::setCurrentVersion(QString currentVersion)
 
 
 
-
-
-//---------------------------------------------------------------------------
-bool SlimUpdater::checkConnection()
-{
-
-    updateChecker->checkConnection();
-
-
-}
 //---------------------------------------------------------------------------
 
 
@@ -163,7 +152,8 @@ void SlimUpdater::writeSettings()
 void SlimUpdater::on_verifyButton_clicked()
 {
 
-    checkConnection();
+updateChecker->checkConnection();
+
 }
 
 void SlimUpdater::packageComboBox_currentIndexChanged(int index)

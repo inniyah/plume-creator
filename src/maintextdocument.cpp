@@ -1,12 +1,17 @@
 #include "maintextdocument.h"
 
-MainTextDocument::MainTextDocument(QObject *parent) :
+MainTextDocument::MainTextDocument(QObject *parent, SpellChecker *spellCheck) :
     QTextDocument(parent), m_cursorPos(0), isWordCountEnabled(false)
 {
 
+
+
     wordCountEngine = new WordCountEngine(this, this);
 
-    m_spellChecker = new SpellChecker;
+
+
+
+    m_spellChecker = spellCheck;
     connect(m_spellChecker, SIGNAL(userDictSignal(QStringList)), this, SIGNAL(userDictSignal(QStringList)));
     connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), this, SLOT(attendTree_namesListChangedSlot(QStringList)));
 
@@ -107,11 +112,13 @@ void MainTextDocument::deactivateSpellChecker()
     m_spellChecker->deactivate();
     highlighter->rehighlight();
 
+
 }
 //-------------------------------------------------------------
 
 void MainTextDocument::setDicts(const QString &dictionaryPath, const QStringList &userDictionary)
 {
+
     m_dictionaryPath = dictionaryPath;
     m_userDictionary = userDictionary ;
 
@@ -120,7 +127,6 @@ void MainTextDocument::setDicts(const QString &dictionaryPath, const QStringList
         m_spellChecker->setDict(m_dictionaryPath, m_userDictionary, m_attendTree_names);
         highlighter->rehighlight();
     }
-
 }
 
 //-------------------------------------------------------------

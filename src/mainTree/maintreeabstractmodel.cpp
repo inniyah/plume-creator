@@ -271,7 +271,7 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
 
 
         QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
-        MainTextDocument *synDoc = new MainTextDocument;
+        MainTextDocument *synDoc = new MainTextDocument(this, hub->spellChecker());
         for(int i = 0; i < miniDocList.size(); ++i){
             if(miniDocList.at(i)->objectName().left(11) == "synDocClone"){
                 synDoc = miniDocList.at(i);
@@ -299,7 +299,7 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
 
 
         QList<MainTextDocument *> miniDocList = mtoO_numForClonedDoc.keys(index.data(Qt::UserRole).toInt());
-        MainTextDocument *noteDoc = new MainTextDocument;
+        MainTextDocument *noteDoc = new MainTextDocument(this, hub->spellChecker());
         for(int i = 0; i < miniDocList.size(); ++i){
 
             if(miniDocList.at(i)->objectName().left(12) == "noteDocClone"){
@@ -954,7 +954,7 @@ void MainTreeAbstractModel::reset_mtoO_setNumForDoc()
     QHash<MainTextDocument *, int>::const_iterator  i = mtoO_numForDoc.constBegin();
     while (i != mtoO_numForDoc.constEnd()) {
         MainTextDocument *textDoc = i.key();
-        MainTextDocument *textDocClone = new MainTextDocument();
+        MainTextDocument *textDocClone = new MainTextDocument(this, hub->spellChecker());
         textDocClone->setHtml(textDoc->toHtml());
 
         if(textDoc->objectName().left(6) == "synDoc")
@@ -1743,7 +1743,9 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
         QHash<MainTextDocument *, int> numForDoc = hub->mainTree_numForDocHash();
 
-        MainTextDocument *textDocument = new MainTextDocument(hub);
+        SpellChecker *m_spellChecker = hub->spellChecker();
+
+        MainTextDocument *textDocument = new MainTextDocument(hub, m_spellChecker);
         textDocument->setIdNumber(number);
         textDocument->setDocType("text");
         textDocument->toHtml();
@@ -1754,7 +1756,7 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         numForDoc.insert(textDocument, number);
 
 
-        MainTextDocument *noteDocument = new MainTextDocument(hub);
+        MainTextDocument *noteDocument = new MainTextDocument(hub, m_spellChecker);
         noteDocument->setIdNumber(number);
         noteDocument->setDocType("note");
         noteDocument->toHtml();
@@ -1765,7 +1767,7 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         numForDoc.insert(noteDocument, number);
 
 
-        MainTextDocument *synDocument = new MainTextDocument(hub);
+        MainTextDocument *synDocument = new MainTextDocument(hub, m_spellChecker);
         synDocument->setIdNumber(number);
         synDocument->setDocType("synopsis");
         synDocument->toHtml();

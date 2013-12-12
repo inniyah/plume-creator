@@ -40,7 +40,7 @@ void UpdateChecker::checkUpdate()
 }
 
 //---------------------------------------------------------------------------
-bool UpdateChecker::checkConnection()
+void UpdateChecker::checkConnection()
 {
     emit replySignal(tr("Checking..."));
 

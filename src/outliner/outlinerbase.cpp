@@ -14,8 +14,9 @@ OutlinerBase::OutlinerBase(QWidget *parent) :
     setFocusPolicy(Qt::WheelFocus);
 
 
+this->setAttribute(Qt::WA_DeleteOnClose);
 
-    spreadsheet = new OutlinerSpreadsheet();
+    spreadsheet = new OutlinerSpreadsheet(this);
 
 
 
@@ -47,7 +48,12 @@ void OutlinerBase::postConstructor()
 }
 
 //------------------------------------------------------------------------------------
+OutlinerBase::~OutlinerBase()
+{
 
+}
+
+//------------------------------------------------------------------------------------
 void OutlinerBase::saveConfig()
 {
     QSettings settings;
@@ -146,7 +152,7 @@ spreadsheet->postConstructor();
 
 
 
-    proxy = new OutlinerSpreadheetProxy;
+    proxy = new OutlinerSpreadheetProxy(this);
     proxy->setHub(hub);
     proxy->setSourceModel(absTreeModel);
     connect(absTreeModel, SIGNAL(applySettingsFromDataSignal()), spreadsheet, SLOT(applySettingsFromData()), Qt::UniqueConnection);
@@ -158,17 +164,17 @@ spreadsheet->postConstructor();
 
     spreadsheet->setWordWrap(true);
 
-    OutlinerItemNoteDelegate *noteDelegate = new OutlinerItemNoteDelegate;
+    OutlinerItemNoteDelegate *noteDelegate = new OutlinerItemNoteDelegate(this);
     noteDelegate->setHub(hub);
     //spreadsheet->setItemDelegateForColumn(0, delegate); //tree
     spreadsheet->setItemDelegateForColumn(1, noteDelegate); //syn
     spreadsheet->setItemDelegateForColumn(2, noteDelegate); //notes
 
-    OutlinerItemPoVDelegate *povDelegate = new OutlinerItemPoVDelegate;
+    OutlinerItemPoVDelegate *povDelegate = new OutlinerItemPoVDelegate(this);
     povDelegate->setHub(hub);
     spreadsheet->setItemDelegateForColumn(3, povDelegate); // Point of View
 
-    OutlinerItemStatusDelegate *statusDelegate = new OutlinerItemStatusDelegate;
+    OutlinerItemStatusDelegate *statusDelegate = new OutlinerItemStatusDelegate(this);
     spreadsheet->setItemDelegateForColumn(4, statusDelegate); //status
     connect(statusDelegate, SIGNAL(finishStatusEdit()), spreadsheet, SLOT(finishStatusEdit()), Qt::UniqueConnection);
 
@@ -234,7 +240,7 @@ settings.beginGroup( "Outline" );
 settings.setValue( "spreadsheetState", 0);
 settings.endGroup();
 spreadsheet->parentWidget()->layout()->removeWidget(spreadsheet);
-QHBoxLayout *box = new QHBoxLayout;
+QHBoxLayout *box = new QHBoxLayout(this);
 box->addWidget(spreadsheet);
 delete box;
 

@@ -11,8 +11,8 @@
 #include "externals/hunspell/hunspell.hxx"
 #include "common/utils.h"
 
-SpellChecker::SpellChecker():
-    m_isActive(false), encodingFix("utf8")
+SpellChecker::SpellChecker(QObject *parent):
+    QObject(parent), m_isActive(false), encodingFix("utf8"), hunspellLaunched(false)
 {
 
 }
@@ -20,13 +20,14 @@ SpellChecker::SpellChecker():
 
 SpellChecker::~SpellChecker()
 {
-    delete _hunspell;
+    if(hunspellLaunched)
+            delete _hunspell;
 }
 
 void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &userDictionary, const QStringList &attendTree_names)
 {
-
-
+    if(hunspellLaunched)
+            delete _hunspell;
 
     QString dictFile = dictionaryPath + ".dic";
     QString affixFile = dictionaryPath + ".aff";
@@ -46,6 +47,7 @@ void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &use
         ignoreWord(name);
     }
 
+    hunspellLaunched = true;
 
     //test :
 

@@ -33,7 +33,7 @@ class MainTextDocument : public QTextDocument
 {
     Q_OBJECT
 public:
-    explicit MainTextDocument(QObject *parent = 0);
+    explicit MainTextDocument(QObject *parent = 0, SpellChecker *spellCheck = 0);
 
 
     int idNumber() const;

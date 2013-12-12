@@ -28,7 +28,7 @@ class TextHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    TextHighlighter(QTextDocument *parentDoc = 0, SpellChecker *spellCheck = new SpellChecker());
+    TextHighlighter(QTextDocument *parentDoc = 0, SpellChecker *spellCheck = 0);
     void setTextToHighlight(QString string);
     void setCaseSensitivity(bool isCaseSensitive);
 
