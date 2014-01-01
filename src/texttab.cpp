@@ -17,9 +17,6 @@ TextTab::TextTab(QWidget *parent) :
 
 
 
-    prevTextDocument = new MainTextDocument(this);
-    textDocument = new MainTextDocument(this);
-    nextTextDocument = new MainTextDocument(this);
 
     QScrollBar *baseScrollBar = ui->textZone->verticalScrollBar();
 
@@ -81,6 +78,14 @@ TextTab::TextTab(QWidget *parent) :
 TextTab::~TextTab()
 {
     delete ui;
+
+}
+
+void TextTab::postConstructor()
+{
+    prevTextDocument = new MainTextDocument(this, hub->spellChecker());
+    textDocument = new MainTextDocument(this, hub->spellChecker());
+    nextTextDocument = new MainTextDocument(this, hub->spellChecker());
 
 }
 
@@ -654,8 +659,10 @@ void TextTab::activateSpellcheck(bool isActivated)
 {
 
     ui->textZone->activateSpellcheck(isActivated);
-    ui->prevTextZone->activateSpellcheck(isActivated);
-    ui->nextTextZone->activateSpellcheck(isActivated);
+    if(ui->prevTextZone->isVisible())
+        ui->prevTextZone->activateSpellcheck(isActivated);
+    if(ui->nextTextZone->isVisible())
+     ui->nextTextZone->activateSpellcheck(isActivated);
 }
 
 

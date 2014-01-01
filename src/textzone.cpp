@@ -1,4 +1,4 @@
-#if QT_VERSION >= 0x050000
+﻿#if QT_VERSION >= 0x050000
 #include <QtWidgets>
 #endif
 #include <QtGui>   
@@ -762,7 +762,15 @@ void TextZone::createThumbnail()
         tempEdit.setDocument(textDocument);
         tempEdit.setFixedHeight(textDocument->size().height());
         tempEdit.setFixedWidth(textDocument->textWidth());
+
+#if QT_VERSION < 0x050000
+        QPixmap thumbnail = QPixmap::grabWidget(&tempEdit);
+#endif
+#if QT_VERSION >= 0x050000
         QPixmap thumbnail = tempEdit.grab();
+#endif
+
+
         emit textThumbnailSignal(thumbnail);
     }
 }

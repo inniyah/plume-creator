@@ -31,11 +31,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
-css = this->styleSheet();
+    css = this->styleSheet();
 
 
 
-        //    systemTray = new QSystemTrayIcon(this);
+    //    systemTray = new QSystemTrayIcon(this);
     //    systemTray->setIcon(QIcon(":/pics/plume-creator.png"));
 
     this->setMinimumSize(800, 400);
@@ -133,24 +133,24 @@ void MainWindow::postConstructor()
 
     bool projectWizardAccepted = false;
 
-     if (m_firstStart){
+    if (m_firstStart){
 
 
-         NewProjectWizard projectWizard;
+        NewProjectWizard projectWizard;
 
-         if(projectWizard.exec()){
+        if(projectWizard.exec()){
 
-             hub->startProject(projectWizard.newProjectFileName());
-             mainTree->createNewStructure(projectWizard.structureToCreate());
+            hub->startProject(projectWizard.newProjectFileName());
+            mainTree->createNewStructure(projectWizard.structureToCreate());
 
-         projectWizardAccepted = true;
-         }
-
-
-         m_firstStart = false;
+            projectWizardAccepted = true;
+        }
 
 
-     }
+        m_firstStart = false;
+
+
+    }
 
 
 
@@ -343,7 +343,7 @@ void MainWindow::createTreeDock()
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDock);
 
-//    connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
+    //    connect(treeDock, SIGNAL(visibilityChanged(bool)), this, SLOT(checkHiddenDocks()));
     treeDock->show();
 }
 
@@ -526,7 +526,7 @@ void MainWindow::createStatusBar()
 
 
 
-ui->bar->setSizeGripEnabled(true);
+    ui->bar->setSizeGripEnabled(true);
 
     this->setStatusBar(ui->bar);
 
@@ -1046,7 +1046,7 @@ void MainWindow::textSlot(int number, QString action)
 
         TextTab *tab = new TextTab(this);
         tab->setHub(hub);
-
+        tab->postConstructor();
 
         //set text Styles :
         tab->setTextStyles(textStyles);
@@ -1871,7 +1871,7 @@ void MainWindow::resizeMinimumTreeDockWidth(int width)
     treeDock->setMinimumWidth(width);
     treeDock->setFixedSize(width, treeDock->height());
     QApplication::processEvents();
-            treeDock->setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    treeDock->setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
 
 }
@@ -2027,8 +2027,8 @@ void MainWindow::giveStyle()
 
     QString  customCss =
             "QTreeView {"
-               "background-color: " + settings.value("MainWindow/projectTreeBackColor", "#dee4ea").toString() +" ;"
-               "}"
+            "background-color: " + settings.value("MainWindow/projectTreeBackColor", "#dee4ea").toString() +" ;"
+            "}"
             "QTreeView::item {"
             "color: " + settings.value("MainWindow/projectTreeTextColor", "#000000").toString() +" ;"
             "}"
@@ -2036,10 +2036,10 @@ void MainWindow::giveStyle()
             "NoteZone {"
             "color: " + settings.value("MainWindow/noteZoneTextColor", "#000000").toString() +";"
             "background-color: " + settings.value("MainWindow/noteZoneBackColor", "#fff7d7").toString() +";"
-         "}"
+            "}"
 
 
- ;
+            ;
 
     if(!settings.value("Settings/applyCustomColors", true).toBool())
         customCss =       "";

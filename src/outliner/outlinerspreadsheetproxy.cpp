@@ -234,13 +234,31 @@ QVariant OutlinerSpreadheetProxy::data(const QModelIndex &index, int role) const
         return MainTreeAbstractModel::giveDecoration(this->mapToSource(index), MainTreeItem::Outliner);
 
     }
+    if (role == Qt::ForegroundRole && col == 0){
+        return giveTextColor(this->mapToSource(index));
+    }
 
 
     return QSortFilterProxyModel::data(index,role);
 }
 
 
-
+QBrush OutlinerSpreadheetProxy::giveTextColor(QModelIndex index)
+{
+    MainTreeItem *item = static_cast<MainTreeItem*>(index.internalPointer());
+    if(item->type() == "book")
+        return QBrush(Qt::black);
+    if(item->type() == "act")
+        return QBrush(Qt::red);
+    if(item->type() == "chapter")
+        return QBrush(Qt::blue);
+    if(item->type() == "scene")
+        return QBrush(Qt::black);
+    if(item->type() == "separator")
+        return QBrush(Qt::black);
+    else
+        return QBrush(Qt::black);
+}
 
 
 

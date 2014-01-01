@@ -10,9 +10,9 @@ Hub::Hub(QWidget *parent) :
     m_themes = new Themes(this);
 
     m_spellChecker = new SpellChecker(this);
-    m_spellChecker->setDict(this->spellDictPath(), this->userDict(), m_attendTree_names);
+//    m_spellChecker->setDict(this->spellDictPath(), this->userDict(), m_attendTree_names);
 
-QSettings settings;
+    QSettings settings;
     m_themes->loadTheme(settings.value("Themes/theme", "").toString());
 
 

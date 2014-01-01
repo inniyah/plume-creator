@@ -34,7 +34,7 @@
            <normaloff>:/pics/list-add-32x32.png</normaloff>:/pics/list-add-32x32.png</iconset>
          </property>
          <property name="popupMode">
-          <enum>QToolButton::DelayedPopup</enum>
+          <enum>QToolButton::InstantPopup</enum>
          </property>
         </widget>
        </item>

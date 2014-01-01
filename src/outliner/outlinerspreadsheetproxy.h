@@ -48,6 +48,8 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     bool removeRows(int row, int count, const QModelIndex &parent);
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+
+    static QBrush giveTextColor(QModelIndex index);
 signals:
     void resetAbsModelSignal();
 

@@ -1,4 +1,13 @@
 PLUME CREATOR
+
+v 0.66.2
+	- fix : huge memory leak when opening a sheet with spellchecker activated.
+	- trash : you can rename deleted files
+	- adds a few colors
+	- fix : colors of "Space Opera" theme
+	- fix : "add" menu button of Mise en Scene pops up instantly
+
+
 v 0.66.1
 	- fix : new project dialog freeze on Windows when clicking on "next"
 	- russian translation updated

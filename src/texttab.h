@@ -42,7 +42,7 @@ class TextTab : public QWidget
 public:
     explicit TextTab(QWidget *parent = 0);
     ~TextTab();
-
+void postConstructor();
     bool openText(MainTextDocument *doc);
     //    bool saveText(QFile *textFile, QString name);
 
