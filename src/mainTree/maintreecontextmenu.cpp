@@ -31,7 +31,7 @@ QMenu *MainTreeContextMenu::menu(MainTreeContextMenu::Actions flags)
 
     QMenu *m_menu = new QMenu;
 
-    if(flags.testFlag(MainTreeContextMenu::Rename)){
+    if(flags.testFlag(MainTreeContextMenu::Rename) && targetedElement.tagName() != "trash" ){
         if(tagName != "separator")
             m_menu->addAction(renameAct);
 

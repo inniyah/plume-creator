@@ -3,12 +3,10 @@
 #include <QDebug>
 
 TextHighlighter::TextHighlighter(QTextDocument *parentDoc, SpellChecker *spellCheck) :
-    QSyntaxHighlighter(parentDoc)
+    QSyntaxHighlighter(parentDoc), spellCheckerSet(false)
 {
-    if(spellCheck)
-    spellChecker = spellCheck;
-    else
-        qWarning() << "TextHighlighter : no spellchecker set";
+    this->setSpellChecker(spellCheck);
+
 }
 void TextHighlighter::highlightBlock(const QString &text)
 {
@@ -65,82 +63,83 @@ void TextHighlighter::highlightBlock(const QString &text)
     spellcheckFormat.setUnderlineColor(QColor("red"));
     spellcheckFormat.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-    if(spellChecker->isActive()){
+    if(spellCheckerSet)
+        if(m_spellChecker->isActive()){
 
 
 
 
 
-        QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word,text);
-        int wordStart = 0;
-        int wordLength = 0;
-        QString wordValue = "";
-        while (wordFinder.position() < text.length())
-        {
-            if(wordFinder.position() == -1)
-                break;
-
-            if (wordFinder.position()==0)
+            QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word,text);
+            int wordStart = 0;
+            int wordLength = 0;
+            QString wordValue = "";
+            while (wordFinder.position() < text.length())
             {
-                wordStart=0;
-            }
-            else
-            {
-                wordStart=wordFinder.position();
-            }
+                if(wordFinder.position() == -1)
+                    break;
+
+                if (wordFinder.position()==0)
+                {
+                    wordStart=0;
+                }
+                else
+                {
+                    wordStart=wordFinder.position();
+                }
 
 
-            wordLength=wordFinder.toNextBoundary()-wordStart;
+                wordLength=wordFinder.toNextBoundary()-wordStart;
 
-            wordValue=text.mid(wordStart,wordLength);
-
-
-
-            if(!spellChecker->spell(text.mid(wordStart,wordLength))){
-                //                setFormat(wordStart, wordLength, spellcheckFormat);
+                wordValue=text.mid(wordStart,wordLength);
 
 
-                if(text.mid(wordStart + wordLength, 1) == "-"){ // cerf-volant, orateur-né
-                    wordFinder.toNextBoundary();
-                    int nextWordLength = wordFinder.toNextBoundary()- (wordStart + wordLength +1);
-                    wordFinder.toPreviousBoundary();
-                    wordFinder.toPreviousBoundary();
 
-                    QString hyphenWord = text.mid(wordStart, wordLength + nextWordLength + 1);
-//                    qDebug() << "hyphenWord_Highlighter : " + hyphenWord;
-                    if(!spellChecker->spell(text.mid(wordStart, hyphenWord.size()))){
-                        wordLength = hyphenWord.size();
+                if(!m_spellChecker->spell(text.mid(wordStart,wordLength))){
+                    //                setFormat(wordStart, wordLength, spellcheckFormat);
+
+
+                    if(text.mid(wordStart + wordLength, 1) == "-"){ // cerf-volant, orateur-né
                         wordFinder.toNextBoundary();
-                        wordFinder.toNextBoundary();
+                        int nextWordLength = wordFinder.toNextBoundary()- (wordStart + wordLength +1);
+                        wordFinder.toPreviousBoundary();
+                        wordFinder.toPreviousBoundary();
 
-                        for(int i = wordStart; i < wordStart + wordLength; ++i)
-                            spellcheckerList.append(i);
-                        continue;
-
-                    }
-                    else {
-
-                        wordFinder.toNextBoundary();
+                        QString hyphenWord = text.mid(wordStart, wordLength + nextWordLength + 1);
+                        //                    qDebug() << "hyphenWord_Highlighter : " + hyphenWord;
+                        if(!m_spellChecker->spell(text.mid(wordStart, hyphenWord.size()))){
+                            wordLength = hyphenWord.size();
                             wordFinder.toNextBoundary();
-                    continue;
+                            wordFinder.toNextBoundary();
+
+                            for(int i = wordStart; i < wordStart + wordLength; ++i)
+                                spellcheckerList.append(i);
+                            continue;
+
+                        }
+                        else {
+
+                            wordFinder.toNextBoundary();
+                            wordFinder.toNextBoundary();
+                            continue;
+                        }
                     }
+
+
+
+
+                    // list for later merging :
+                    for(int i = wordStart; i < wordStart + wordLength; ++i)
+                        spellcheckerList.append(i);
+
                 }
 
 
 
-
-                // list for later merging :
-                for(int i = wordStart; i < wordStart + wordLength; ++i)
-                    spellcheckerList.append(i);
-
             }
-
-
+            setCurrentBlockState(2);
 
         }
-        setCurrentBlockState(2);
-
-    }
 
 
     for(int k = 0; k < text.length(); ++k){
@@ -170,5 +169,17 @@ void TextHighlighter::setCaseSensitivity(bool isCaseSensitive)
     else{
 
         sensitivity = Qt::CaseInsensitive;
+    }
+}
+void TextHighlighter::setSpellChecker(SpellChecker *spellChecker)
+{
+    if(spellChecker){
+        m_spellChecker = spellChecker;
+        spellCheckerSet = true;
+    }
+    else{
+        qWarning() << "TextHighlighter : no spellchecker set";
+        spellCheckerSet = false;
+
     }
 }

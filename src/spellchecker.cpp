@@ -12,8 +12,10 @@
 #include "common/utils.h"
 
 SpellChecker::SpellChecker(QObject *parent):
-    QObject(parent), m_isActive(false), encodingFix("utf8"), hunspellLaunched(false)
+    QObject(parent), m_isActive(false), encodingFix("utf8"), hunspellLaunched(false), m_dictionaryPath("")
 {
+
+
 
 }
 
@@ -29,8 +31,18 @@ void SpellChecker::setDict(const QString &dictionaryPath, const QStringList &use
     if(hunspellLaunched)
             delete _hunspell;
 
+    m_dictionaryPath = dictionaryPath;
+
     QString dictFile = dictionaryPath + ".dic";
     QString affixFile = dictionaryPath + ".aff";
+
+    QFile testFile(dictFile);
+    if(!testFile.exists())
+        this->deactivate();
+
+
+
+
     QByteArray dictFilePathBA = dictFile.toUtf8();
     QByteArray affixFilePathBA = affixFile.toUtf8();
     _hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData());
@@ -183,6 +195,9 @@ void SpellChecker::ignoreWord(const QString &word)
 
 void SpellChecker::put_word(const QString &word)
 {
+    if(word == "")
+        return;
+
     if(encodingFix == "latin1")
         _hunspell->add(word.toLatin1().constData());
     if(encodingFix == "utf8")
@@ -199,6 +214,15 @@ void SpellChecker::addToUserWordlist(const QString &word)
 
 
     emit userDictSignal(userDict);
+
+}
+
+bool SpellChecker::isActive()
+{
+
+            return m_isActive;
+
+
 
 }
 
@@ -223,9 +247,19 @@ bool SpellChecker::isInUserWordlist( QString &word)
     return userDict.contains(word);
 
 }
-void SpellChecker::activate()
+bool SpellChecker::activate()
 {
+
+    if(m_dictionaryPath.isEmpty()){
+
+
+            m_isActive = false;
+    return false;
+    }
+
     m_isActive = true;
+
+    return true;
 }
 
 void SpellChecker::deactivate()

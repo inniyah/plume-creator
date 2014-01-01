@@ -67,10 +67,20 @@ TextTab::TextTab(QWidget *parent) :
     connect(ui->leftHandle, SIGNAL(modifySizeSignal(int)), this, SLOT(modifySize(int)));
     connect(ui->rightHandle, SIGNAL(modifySizeSignal(int)), this, SLOT(modifySize(int)));
 
+
+
+
+
+
+    //minimap :
+    connect(ui->textZone, SIGNAL(textThumbnailSignal(QPixmap)), ui->minimap, SLOT(setTextThumbnail(QPixmap)));
+
+
 }
 
 TextTab::~TextTab()
 {
+    delete ui;
 
 }
 
@@ -103,6 +113,7 @@ bool TextTab::openText(MainTextDocument *doc)
     //  stackName = name;
 
     textDocument = doc;
+    textDocument->setSpellChecker(hub->spellChecker());
     QApplication::processEvents();
     ui->textZone->setDoc(textDocument);
     QApplication::processEvents();
@@ -453,6 +464,11 @@ int maxWidth = this->width() - 50 ;
 
 
     changeWidthSlot(textZoneWidth);
+
+    //minimap :
+    ui->minimap->setFixedWidth(ui->textZone->width()/3);
+    ui->minimap->resizeContent();
+
 
 //    qDebug() << "ui->textZone->width() : " + QString::number(ui->textZone->width());
 //    qDebug() << "textWidth() : " + QString::number(ui->textZone->document()->textWidth());

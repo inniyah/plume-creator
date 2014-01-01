@@ -31,6 +31,7 @@ public:
     TextHighlighter(QTextDocument *parentDoc = 0, SpellChecker *spellCheck = 0);
     void setTextToHighlight(QString string);
     void setCaseSensitivity(bool isCaseSensitive);
+    void setSpellChecker(SpellChecker *spellChecker);
 
 protected:
     void highlightBlock(const QString &text);
@@ -41,7 +42,8 @@ public slots:
 private:
     QString textToHighLight;
     Qt::CaseSensitivity sensitivity;
-    SpellChecker *spellChecker;
+    SpellChecker *m_spellChecker;
+    bool spellCheckerSet;
 };
 
 #endif // TEXTHIGHLIGHTER_H

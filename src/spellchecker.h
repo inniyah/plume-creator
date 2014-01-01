@@ -24,8 +24,8 @@ public:
     void ignoreWord(const QString &word);
     void addToUserWordlist(const QString &word);
 
-    bool isActive(){return m_isActive;}
-    void activate();
+    bool isActive();
+    bool activate();
     void deactivate();
 
     static QStringList dictsPaths();
@@ -47,7 +47,7 @@ private:
     QStringList userDict;
 
 
-    QString encodingFix;
+    QString encodingFix, m_dictionaryPath;
 };
 
 #endif // SPELLCHECKER_H

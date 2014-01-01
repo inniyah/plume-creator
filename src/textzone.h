@@ -57,6 +57,7 @@ signals:
     void activateSpellcheckSignal(bool isActivated);
     void textZoneResized(QRect rect);
     void cursorStateSignal(QString, bool);
+    void textThumbnailSignal(QPixmap);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -77,6 +78,8 @@ public slots:
 
     void setTextStyles(TextStyles *styles){textStyles = styles;}
     void actionSlot(QString senderName, bool value);
+
+    void createThumbnail();
 
 private slots:
 

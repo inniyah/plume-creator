@@ -64,11 +64,11 @@ signals:
 
 public slots:
     void setCursorPos(int pos);
-    void setDicts(const QString &dictionaryPath, const QStringList &userDictionary);
+    void setDicts();
 
 private slots:
     void wordCountChangedSlot(int count);
-    void attendTree_namesListChangedSlot(QStringList namesList);
+//    void attendTree_namesListChangedSlot(QStringList namesList);
 
 private:
     WordCountEngine *wordCountEngine;
@@ -79,7 +79,7 @@ private:
     SpellChecker *m_spellChecker;
 
     QString m_dictionaryPath;
-    QStringList  m_userDictionary, m_attendTree_names;
+    QStringList  m_userDictionary;
 
 
 };

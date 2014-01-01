@@ -198,6 +198,8 @@ private slots:
 
 
 
+    void attendTree_namesListChangedSlot(QStringList namesList);
+
 private:
     bool refreshIsLocked;
 
@@ -216,7 +218,7 @@ private:
     QHash<QTextDocument *, QFile *> m_attendTree_fileForDocHash;
     QHash<QTextDocument *, int> m_attendTree_numForDocHash;
     QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
-    QStringList m_namesList;
+    QStringList m_attendTree_names;
 
     int m_currentSheetNumber, m_currentProjectSettingArrayNumber;
     int m_baseWordCount , m_wordGoal, m_achievedWordGoal;

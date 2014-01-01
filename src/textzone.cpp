@@ -14,7 +14,7 @@ TextZone::TextZone(QWidget *parent) :
 
 {
 
-this->setMouseTracking(true);
+    this->setMouseTracking(true);
 
 }
 
@@ -41,7 +41,7 @@ void TextZone::createContent()
 
     this->setAttribute(Qt::WA_KeyCompression, true);
 
-    textDocument = new MainTextDocument;
+    textDocument = new MainTextDocument(this);
 
     createActions();
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -85,6 +85,10 @@ void TextZone::setDoc(MainTextDocument *doc)
     QSettings settings;
     this->activateSpellcheck(settings.value("SpellChecking/globalSpellCheckActivated", true).toBool());
 
+
+    //minimap :
+    createThumbnail();
+    connect(doc, SIGNAL(contentsChanged()), this, SLOT(createThumbnail()));
 
 }
 
@@ -296,13 +300,13 @@ void TextZone::activateSpellcheck(bool spellcheckBool)
 {
 
 
-if(m_spellcheckBool == spellcheckBool){
-    return;
-}
+    if(m_spellcheckBool == spellcheckBool){
+        return;
+    }
 
     if(spellcheckBool){
         if(!textDocument->activateSpellChecker()){
-//                        QMessageBox::warning(this, tr("Plume Creator Spell Checker"), tr("No dictionary is selected. Please select one in "));
+            //                        QMessageBox::warning(this, tr("Plume Creator Spell Checker"), tr("No dictionary is selected. Please select one in "));
             spellcheckAct->setChecked(false);
             m_spellcheckBool = false;
             //hub->showStatusBarMessage(tr("No dictionary is selected. Please select one in Settings/Spelling."));
@@ -556,7 +560,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     else{
         boldAct->setChecked(false);
         emit cursorStateSignal("bold", false);
-}
+    }
 
 
     if(italic){
@@ -566,7 +570,7 @@ void TextZone::charFormat(QTextCharFormat cFormat)
     else{
         italicAct->setChecked(false);
         emit cursorStateSignal("italic", false);
-}
+    }
 
 
     //    if (align & Qt::AlignLeft){
@@ -717,8 +721,51 @@ void TextZone::keyPressEvent(QKeyEvent *event)
 
 }
 
+//--------------------------------------------------------------------------------
 
 
+
+void TextZone::createThumbnail()
+{
+    QWidget *w = QApplication::focusWidget();
+    if(w){
+
+
+        //        pixmap.fill( Qt::white );
+
+        //        QPainter painter( &pixmap );
+        //        painter.setPen( Qt::black );
+
+
+
+
+
+        ////        rect.translate( 0, rect.height()+10 );
+        ////        rect.setHeight( 160 );
+        //        doc.setTextWidth( rect.width() );
+        //        painter.save();
+        //        painter.translate( rect.topLeft() );
+        //        doc.drawContents( &painter, rect.translated( -rect.topLeft() ) );
+        //        painter.restore();
+
+        //        rect.setHeight( textDocument.size().height()-160 );
+        //        painter.setBrush( Qt::gray );
+        //        painter.drawRect( rect );
+
+        //        pixmap.save( "text.png" );
+
+
+
+
+
+        QTextEdit tempEdit;
+        tempEdit.setDocument(textDocument);
+        tempEdit.setFixedHeight(textDocument->size().height());
+        tempEdit.setFixedWidth(textDocument->textWidth());
+        QPixmap thumbnail = tempEdit.grab();
+        emit textThumbnailSignal(thumbnail);
+    }
+}
 
 //--------------------------------------------------------------------------------
 void TextZone::centerCursor()
@@ -831,7 +878,7 @@ void TextZone::insertFromMimeData (const QMimeData *source )
 
         //htmlText
         QTextDocument *document = new QTextDocument;
-          document->setHtml(Utils::parseHtmlText(sourceString));
+        document->setHtml(Utils::parseHtmlText(sourceString));
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
         blockFormat.setTextIndent(textIndent);
@@ -935,7 +982,7 @@ void TextZone::resizeEvent(QResizeEvent* event)
 {
     centerCursor();
     textDocument->setTextWidth(this->width() - 20);// Fix ticket #10 : the wobbling of the text
-//    textDocument->setTextWidth(-1);
+    //    textDocument->setTextWidth(-1);
 
     QRect rect(this->mapToGlobal(this->pos()).x(), this->mapToGlobal(this->pos()).y(), this->width(), this->height());
 

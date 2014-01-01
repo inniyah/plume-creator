@@ -200,7 +200,7 @@ void DockedTrashTree::itemClicked(QModelIndex index)
 void DockedTrashTree::contextMenuEvent(QContextMenuEvent *event)
 {
 QModelIndex index = this->indexAt(event->pos());
-if(!index.isValid() || index.data(36) != "trash"){
+if(!index.isValid() /*|| index.data(36) != "trash"*/){
     return;
 }
 

@@ -8,9 +8,11 @@ Hub::Hub(QWidget *parent) :
     wcThread = new WordCountEngineThread(this);    // wordCount thread
     zipChecker = new ZipChecker(this);
     m_themes = new Themes(this);
-    m_spellChecker = new SpellChecker(this);
 
-    QSettings settings;
+    m_spellChecker = new SpellChecker(this);
+    m_spellChecker->setDict(this->spellDictPath(), this->userDict(), m_attendTree_names);
+
+QSettings settings;
     m_themes->loadTheme(settings.value("Themes/theme", "").toString());
 
 
@@ -280,14 +282,29 @@ void Hub::set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElem
 
 QStringList Hub::attendTree_namesList()
 {
-    return m_namesList;
+    return m_attendTree_names;
 }
 
 void Hub::set_attendTree_namesList(QStringList namesList)
 {
-    m_namesList = namesList;
+    m_attendTree_names.clear();
 
-    emit attendTree_namesListChanged(namesList);
+    for(int i = 0; i < namesList.size() ; ++i){
+
+        QString name = namesList.at(i);
+
+    //break names into parts :
+        QStringList fragmentList = name.split(" ", QString::SkipEmptyParts);
+        if(!fragmentList.isEmpty())
+            foreach (QString fragment, fragmentList) {
+                m_attendTree_names.append( fragment );
+            }
+
+
+    }
+
+
+    emit attendTree_namesListChanged(m_attendTree_names);
 }
 
 
@@ -437,7 +454,6 @@ void Hub::setUserDict(QStringList userDict)
     m_userDict = userDict;
 
 
-    // send to all :
     emit spellDictsChangedSignal(m_spellDictPath , m_userDict);
 
     this->addToSaveQueue();
@@ -957,6 +973,8 @@ bool Hub::loadTemp()
     }
 
 
+
+
     //end :
 
 
@@ -1407,15 +1425,16 @@ void Hub::connectAllSheetsToWordCountThread()
 
 void Hub::connectAllSheetsToSpellChecker()
 {
+    connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), this, SLOT(attendTree_namesListChangedSlot(QStringList)), Qt::UniqueConnection);
+    connect(m_spellChecker, SIGNAL(userDictSignal(QStringList)), this, SLOT(setUserDict(QStringList)), Qt::UniqueConnection);
 
     QHash<MainTextDocument *, QFile *>::iterator i = m_mainTree_fileForDocHash.begin();
     while (i != m_mainTree_fileForDocHash.end()) {
         MainTextDocument *doc = i.key();
         if(doc->docType() == "text" /*|| doc->docType() == "synopsis" || doc->docType() == "note"*/)
 
-            connect(this, SIGNAL(spellDictsChangedSignal(QString, QStringList)), doc, SLOT(setDicts(QString, QStringList)), Qt::UniqueConnection);
-        connect(doc, SIGNAL(userDictSignal(QStringList)), this, SLOT(setUserDict(QStringList)), Qt::UniqueConnection);
-        connect(this, SIGNAL(attendTree_namesListChanged(QStringList)), doc, SIGNAL(attendTree_namesListChanged(QStringList)), Qt::UniqueConnection);
+            connect(this, SIGNAL(spellDictsChangedSignal(QString, QStringList)), doc, SLOT(setDicts()), Qt::UniqueConnection);
+
         ++i;
     }
 
@@ -1429,11 +1448,32 @@ void Hub::spellDictsChangedSlot(QString dictionaryPath)
 
     this->setSpellDictPath(dictionaryPath);
 
-    // send to all docs:
+        m_spellChecker->setDict(dictionaryPath, this->userDict(), m_attendTree_names);
+   // send to all docs:
     emit spellDictsChangedSignal(dictionaryPath, this->userDict());
 
 }
 
+
+//--------------------------------------------------------------------------------------
+
+
+void Hub::attendTree_namesListChangedSlot(QStringList namesList)
+{
+
+QSettings settings;
+
+if(namesList.isEmpty() || !settings.value("SpellChecking/includeNamesFromTheMiseEnScene", true).toBool())
+        return;
+
+
+
+
+    if(m_spellChecker->isActive()){
+        m_spellChecker->setDict(this->spellDictPath(), this->userDict(), m_attendTree_names);
+        emit spellDictsChangedSignal(this->spellDictPath(), this->userDict());
+    }
+}
 
 //--------------------------------------------------------------------------------------
 void Hub::clearBin()
