@@ -666,7 +666,24 @@ void Utils::applyAttributeRecursively(QDomElement element, QString attribute, QS
 }
 
 
+QList<QDomElement> Utils::allChildElements(QDomElement element)
+{
+   // The first number af the final list is the targeted element
 
+    QList<QDomElement> childElementsList;
+
+    if(!element.isNull())
+        childElementsList.append(element);
+
+    QDomNodeList childNodeList = element.childNodes();
+    if(!childNodeList.isEmpty())
+    for(int i = 0 ; i < childNodeList.count(); ++i )
+        if(!childNodeList.at(i).isNull())
+            if(!childNodeList.at(i).toElement().isNull())
+                childElementsList.append(allChildElements(childNodeList.at(i).toElement()));
+
+    return childElementsList;
+}
 
 
 

@@ -473,6 +473,12 @@ SpellChecker *Hub::spellChecker()
 {
     return m_spellChecker;
 }
+//--------------------------------------------------------------------------------
+void Hub::openSheet(int id)
+{
+    emit textAndNoteSignal(id, "open");
+
+}
 
 //--------------------------------------------------------------------------------
 

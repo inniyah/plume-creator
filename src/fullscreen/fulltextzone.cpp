@@ -21,6 +21,29 @@ FullTextZone::FullTextZone(QWidget *parent) :
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     textDocument = new MainTextDocument;
+
+
+
+
+//    QTextEdit *textEdit = new QTextEdit("Hello");
+//    QGraphicsScene *graphicsScene = new QGraphicsScene;
+//    QGraphicsProxyWidget *proxyWidget = graphicsScene->addWidget(textEdit);
+//    ui->graphicsView->setScene(graphicsScene);
+//    proxyWidget->setScale(0.5);
+
+    // reimplementer qgraphicsscene avec :
+
+//    void YourGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+//    {
+//        // event->scenePos() is available
+//        QMenu menu(this);
+//        menu.addAction(...);
+//        menu.addAction(...);
+//        ...
+//        menu.exec(event->screenPos());
+//    }
+
+    //pour le scrollbar, en ajouter un nouveau séparé mais relié et non scalable.
 }
 
 void FullTextZone::setDoc(MainTextDocument *doc)

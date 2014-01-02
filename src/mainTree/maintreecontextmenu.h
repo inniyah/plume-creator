@@ -37,7 +37,8 @@ public:
         Delete = 0x16,
         Move = 0x32,
         AddSheet = 0x64,
-        Status = 0x128
+        Status = 0x128,
+        Overview = 0x254
 
        };
        Q_DECLARE_FLAGS(Actions, Action)
@@ -76,12 +77,14 @@ void addChildSeparator(){emit actionSignal("addChildSeparator", m_id);}
 
 
 
+
        void displaySplitDialog();
        void rename();
        void addMulti();
        void displayBadge(bool value);
        void setBadgeText();
        void setStatus();
+       void showOverview();
     // for trash :
     void displayEmptyTrashDialog();
 
@@ -114,7 +117,8 @@ QDomElement targetedElement;
     *addMultiAct,
     *emptyTrashAct,
     *displayBadgeAct,
-    *setBadgeTextAct;
+    *setBadgeTextAct,
+    *showOverviewAct;
 
 QString splitChoice;
 

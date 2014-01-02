@@ -16,7 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport multimedia
 
 TEMPLATE = app
 
-VERSION = 0.66.2
+VERSION = 0.66.3
 DEFINES += VERSIONSTR=\\\"$${VERSION}\\\"
 
 #DESTDIR = bin
@@ -160,7 +160,9 @@ src/hub.cpp \
     src/rtf/writer.cpp \
     src/rtf/tokenizer.cpp \
     src/rtf/reader.cpp \
-    src/minimap/minimap.cpp
+    src/minimap/minimap.cpp \
+    src/overview/overviewbase.cpp \
+    src/overview/textcell.cpp
 
 HEADERS += src/mainwindow.h \
 src/maintree.h \
@@ -239,7 +241,9 @@ src/hub.h \
     src/rtf/writer.h \
     src/rtf/tokenizer.h \
     src/rtf/reader.h \
-    src/minimap/minimap.h
+    src/minimap/minimap.h \
+    src/overview/overviewbase.h \
+    src/overview/textcell.h
 
 CODECFORTR = UTF-8
 
@@ -275,7 +279,9 @@ src/wordgoalprogressbar.ui \
     src/newProjectWizard/intropage.ui \
     src/edittoolbar.ui \
     src/notedock.ui \
-    src/minimap/minimap.ui
+    src/minimap/minimap.ui \
+    src/overview/overviewbase.ui \
+    src/overview/textcell.ui
 
 RESOURCES += \
 translations/langs.qrc \

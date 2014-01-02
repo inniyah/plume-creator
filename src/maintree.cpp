@@ -22,6 +22,7 @@ bool MainTree::startTree()
     mainTreeAbsModel->resetAbsModel();
 
     connect(mainTreeAbsModel, SIGNAL(textAndNoteSignal(int,QString)), this, SIGNAL(textAndNoteSignal(int,QString)), Qt::UniqueConnection);
+    connect(hub, SIGNAL(textAndNoteSignal(int,QString)), SIGNAL(textAndNoteSignal(int,QString)), Qt::UniqueConnection);
 
 
     return true;

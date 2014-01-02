@@ -53,8 +53,10 @@ MainWindow::MainWindow(QWidget *parent)
     hub = new Hub(this);
     connect(hub, SIGNAL(openProjectSignal()), this, SLOT(openProjectSlot()));
     connect(hub, SIGNAL(closeProjectSignal()), this, SLOT(closeProjectSlot()));
+   connect(this, SIGNAL(closeAllChildrenWindowsSignal()), hub, SIGNAL(closeAllChildrenWindowsSignal()));
     connect(hub, SIGNAL(textAlreadyChangedSignal(bool)), this, SLOT(textAlreadyChangedSlot(bool)));
     connect(hub, SIGNAL(showStatusBarMessageSignal(QString,int)), ui->bar, SLOT(showMessage(QString,int)));
+
     textStyles = new TextStyles();
     textStyles->setHub(hub);
 

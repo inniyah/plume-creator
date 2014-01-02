@@ -1,5 +1,7 @@
 #include "maintreecontextmenu.h"
 
+#include "overview/overviewbase.h"
+
 MainTreeContextMenu::MainTreeContextMenu(QObject *parent, QWidget *baseWidget):
     QObject(parent), base(baseWidget)
 {
@@ -37,6 +39,18 @@ QMenu *MainTreeContextMenu::menu(MainTreeContextMenu::Actions flags)
 
         m_menu->addSeparator();
     }
+    if(flags.testFlag(MainTreeContextMenu::Overview)){
+
+        if(tagName == "book" || tagName == "act" || tagName == "chapter"){
+            m_menu->addAction(showOverviewAct);
+
+        }
+
+
+        m_menu->addSeparator();
+    }
+
+
     if(flags.testFlag(MainTreeContextMenu::AddSheet)){
 
         if(tagName == "book"){
@@ -191,6 +205,10 @@ void MainTreeContextMenu::prepareContextMenu()
     setBadgeTextAct = new QAction(QIcon(""),tr("Set badge"), this);
     connect(setBadgeTextAct, SIGNAL(triggered()), this, SLOT(setBadgeText()));
 
+
+    showOverviewAct = new QAction(QIcon(""),tr("Overview"), this);
+    connect(showOverviewAct, SIGNAL(triggered()), this, SLOT(showOverview()));
+
 }
 
 
@@ -286,6 +304,10 @@ void MainTreeContextMenu::rename()
     }
 }
 
+
+//---------------------------------------------------------------------------
+
+
 void MainTreeContextMenu::addMulti()
 {
     bool ok;
@@ -300,6 +322,10 @@ void MainTreeContextMenu::addMulti()
 
 }
 
+
+//---------------------------------------------------------------------------
+
+
 void MainTreeContextMenu::displayBadge(bool value)
 {
     QSettings settings;
@@ -307,6 +333,11 @@ void MainTreeContextMenu::displayBadge(bool value)
 
     emit actionSignal("displayBadge", m_id, value);
 }
+
+
+//---------------------------------------------------------------------------
+
+
 
 void MainTreeContextMenu::setBadgeText()
 {
@@ -321,6 +352,10 @@ void MainTreeContextMenu::setBadgeText()
 
     emit actionSignal("setBadgeText", m_id, text);
 }
+
+
+//---------------------------------------------------------------------------
+
 
 void MainTreeContextMenu::setStatus()
 {
@@ -344,6 +379,12 @@ void MainTreeContextMenu::setStatus()
     }
 }
 
+
+//---------------------------------------------------------------------------
+
+
+
+
 void MainTreeContextMenu::displayEmptyTrashDialog()
 {
     int ret = QMessageBox::warning(base, tr("Empty the trash"),
@@ -365,4 +406,20 @@ void MainTreeContextMenu::displayEmptyTrashDialog()
         return;
         break;
     }
+}
+
+
+
+//---------------------------------------------------------------------------
+
+void MainTreeContextMenu::showOverview()
+{
+     OverviewBase *overviewBase = new OverviewBase(0, hub, m_id);
+     connect(hub, SIGNAL(closeAllChildrenWindowsSignal()), overviewBase, SLOT(close()), Qt::UniqueConnection);
+
+
+
+
+
+
 }

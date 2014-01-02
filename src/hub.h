@@ -145,8 +145,10 @@ signals:
 
     void openProjectSignal();
     void closeProjectSignal();
+    void closeAllChildrenWindowsSignal();
 
     void currentSheetNumberChanged(int currentSheetNumber);
+    void textAndNoteSignal(int number, QString action);
 
     void textAlreadyChangedSignal(bool textChanged);
     void showStatusBarMessageSignal(QString string = "", int time = 3000);
@@ -185,6 +187,9 @@ public slots:
     void spellDictsChangedSlot(const QString dictionaryPath);
     void setUserDict(QStringList userDict);
     SpellChecker *spellChecker();
+
+
+    void openSheet(int id);
 
 private slots:
     void saveProject(QString mode = "");

@@ -215,7 +215,7 @@ contextMenu->setId(enteredItemId);
 contextMenu->menu((MainTreeContextMenu::Rename | MainTreeContextMenu::Badge
                   | MainTreeContextMenu::Move | MainTreeContextMenu::Delete
                  | MainTreeContextMenu::AddSheet | MainTreeContextMenu::Advanced
-                  | MainTreeContextMenu::Status) & ~(MainTreeContextMenu::EmptyTrash))->exec(event->globalPos());
+                  | MainTreeContextMenu::Status | MainTreeContextMenu::Overview) & ~(MainTreeContextMenu::EmptyTrash))->exec(event->globalPos());
 
 delete contextMenu;
 
