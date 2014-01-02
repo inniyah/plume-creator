@@ -1,4 +1,6 @@
 PLUME CREATOR
+v 0.66.3
+	- new feature : overview in the project tree.
 
 v 0.66.2
 	- fix : huge memory leak when opening a sheet with spellchecker activated.
