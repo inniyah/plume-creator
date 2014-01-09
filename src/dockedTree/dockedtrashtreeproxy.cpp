@@ -63,7 +63,7 @@ bool DockedTrashTreeProxy::setData(const QModelIndex &index, const QVariant &val
 
         int itemId = sourceIndex.data(Qt::UserRole).toInt();
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(itemId);
         if(value.toBool() == true)
             element.setAttribute("dockedTreeExpanded", "yes");
         else
@@ -179,14 +179,14 @@ bool DockedTrashTreeProxy::dropMimeData ( const QMimeData * data, Qt::DropAction
 
         int draggedInt = objectsList.first();
 
-        QHash<int, QDomElement> domElementForNumber = hub->mainTree_domElementForNumberHash();
+        QHash<int, QDomElement> domElementForNumber = hub->project()->mainTree_domElementForNumberHash();
 
         QDomElement draggedElement = domElementForNumber.value(draggedInt);
 
         QDomElement parentTargetElement = domElementForNumber.value(parent.data(Qt::UserRole).toInt());
 
         // if(!parent.isValid())
-        parentTargetElement = hub->mainTreeDomDoc().documentElement().elementsByTagName("trash").at(0).toElement();
+        parentTargetElement = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("trash").at(0).toElement();
 
         parentTargetElement.appendChild(draggedElement);
 

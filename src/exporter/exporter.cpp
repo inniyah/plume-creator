@@ -199,7 +199,7 @@ QTextDocument * Exporter::buildFinalDoc()
 {
     //search for checked items :
 
-    QDomDocument domDoc = hub->mainTreeDomDoc();
+    QDomDocument domDoc = hub->project()->mainTreeDomDoc();
     QDomElement root = domDoc.documentElement();
 
     QList<QDomElement> itemList = searchForCheckedItems(root);
@@ -226,8 +226,8 @@ QTextDocument * Exporter::buildFinalDoc()
     //    QString debug;
     //    qDebug() << "itemList" << debug.setNum(itemList->size());
 
-    QTextDocument *textDocument = new QTextDocument;
-    QTextEdit *edit = new QTextEdit;
+    QTextDocument *textDocument = new QTextDocument(this);
+    QTextEdit *edit = new QTextEdit(this);
 
     textDocument->setDefaultStyleSheet("p, li { white-space: pre-wrap; } p{line-height: 2em; font-family:'Liberation Serif'; font-size:12pt;margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:72px;}");
 
@@ -254,9 +254,9 @@ QTextDocument * Exporter::buildFinalDoc()
         if(element.tagName() != "separator"){
 
             qDebug() << "element name : "+ element.attribute("name");
-            MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
-            MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
-            MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
+            MainTextDocument *textDoc = hub->project()->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
+            MainTextDocument *synDoc = hub->project()->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
+            MainTextDocument *noteDoc = hub->project()->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
 
             QTextDocumentFragment textFrag(prepareTextDoc(textDoc));
             QTextDocumentFragment synFrag(prepareSynDoc(synDoc));
@@ -765,7 +765,7 @@ void Exporter::exportInCSV()
 
     //search for checked items :
 
-    QDomDocument domDoc = hub->mainTreeDomDoc();
+    QDomDocument domDoc = hub->project()->mainTreeDomDoc();
     QDomElement root = domDoc.documentElement();
 
     QList<QDomElement> itemList = searchForCheckedItems(root);
@@ -834,9 +834,9 @@ void Exporter::exportInCSV()
         }
 
 
-        MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
-        MainTextDocument *synDoc = hub->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
-        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
+        MainTextDocument *textDoc = hub->project()->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
+        MainTextDocument *synDoc = hub->project()->findChild<MainTextDocument *>("synDoc_" + element.attribute("number"));
+        MainTextDocument *noteDoc = hub->project()->findChild<MainTextDocument *>("noteDoc_" + element.attribute("number"));
         syn = synDoc->toPlainText();
         note = noteDoc->toPlainText();
 
@@ -852,7 +852,7 @@ void Exporter::exportInCSV()
         objectsList.removeOne(0);
 
         foreach(const int &number, objectsList)
-            pov += hub->attendTree_domElementForNumberHash().value(number).attribute("name", "error") + ", ";
+            pov += hub->project()->attendTree_domElementForNumberHash().value(number).attribute("name", "error") + ", ";
         pov.chop(2);
 
 
@@ -954,7 +954,7 @@ void Exporter::on_fileTypeComboBox_currentIndexChanged(int index)
 
 void Exporter::applyConfig()
 {
-    ui->fileNameLineEdit->setText(hub->projectName());
+    ui->fileNameLineEdit->setText(hub->project()->projectName());
 
 
     QSettings settings;

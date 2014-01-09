@@ -178,7 +178,7 @@ void TextHighlighter::setSpellChecker(SpellChecker *spellChecker)
         spellCheckerSet = true;
     }
     else{
-        qWarning() << "TextHighlighter : no spellchecker set";
+//        qWarning() << "TextHighlighter : no spellchecker set";
         spellCheckerSet = false;
 
     }

@@ -122,7 +122,7 @@ void AttendManager::setItemActivated(QModelIndex index)
 
     ui->spinBox_1->setValue(openedElement.attribute("spinBox_1", "20").toInt());
 
-    ui->textEdit->openAttendDetail(hub->attendTree_numForDocHash().key(number));
+    ui->textEdit->openAttendDetail(hub->project()->attendTree_numForDocHash().key(number));
 
 
 
@@ -138,7 +138,7 @@ void AttendManager::resetDomElementForNumber()
     domElementForNumber.clear();
 
 
-    QDomDocument attendDomDoc = hub->attendTreeDomDoc();
+    QDomDocument attendDomDoc = hub->project()->attendTreeDomDoc();
     QDomElement root = attendDomDoc.documentElement();
 
     QDomNode m = root.firstChild();
@@ -195,7 +195,7 @@ void AttendManager::applySettings()
     ui->comboBox_2->clear();
     ui->comboBox_3->clear();
 
-    QDomElement root = hub->attendTreeDomDoc().documentElement().toElement();
+    QDomElement root = hub->project()->attendTreeDomDoc().documentElement().toElement();
 
 
     QStringList box1List = root.attribute("box_1", "None").split("--", QString::SkipEmptyParts);

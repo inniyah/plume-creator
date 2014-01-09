@@ -40,6 +40,7 @@
 #include "zipper/zipchecker.h"
 #include "themes.h"
 #include "spellchecker.h"
+#include "project.h"
 
 class Hub : public QWidget
 {
@@ -52,40 +53,10 @@ public:
     void unlockRefresh();
     bool isRefreshLocked();
 
-    QString projectName() const;
-    void setProjectName(QString projectName);
+    Project *project();
 
-    QString projectFileName() const;
-    void setProjectFileName(QString projectFileName);
-    QString projectWorkPath() const;
-    bool isProjectOpened() const;
 
-    QDomDocument mainTreeDomDoc();
-    void setMainTreeDomDoc(QDomDocument doc);
-    QHash<MainTextDocument *, QFile *> mainTree_fileForDocHash();
-    void set_mainTree_fileForDocHash(QHash<MainTextDocument *, QFile *> fileForDoc);
-    QHash<MainTextDocument *, int> mainTree_numForDocHash();
-    void set_mainTree_numForDocHash(QHash<MainTextDocument *, int> numForDoc);
-    QHash<int, QDomElement> mainTree_domElementForNumberHash();
-    void set_mainTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
 
-    QDomDocument infoTreeDomDoc();
-
-    QDomDocument attendTreeDomDoc();
-    QHash<QTextDocument *, QFile *> attendTree_fileForDocHash();
-    void set_attendTree_fileForDocHash(QHash<QTextDocument *, QFile *> fileForDoc);
-    QHash<QTextDocument *, int> attendTree_numForDocHash();
-    void set_attendTree_numForDocHash(QHash<QTextDocument *, int> numForDoc);
-    QHash<int, QDomElement> attendTree_domElementForNumberHash();
-    void set_attendTree_domElementForNumberHash(QHash<int, QDomElement> domElementForNumber);
-    QStringList attendTree_namesList();
-    void set_attendTree_namesList(QStringList namesList);
-
-    int currentProjectSettingArrayNumber() const;
-    void setCurrentProjectSettingArrayNumber(int projectNumber);
-
-    int currentSheetNumber() const;
-    void setCurrentSheetNumber(int sheetNumber);
 
     // wordCount goal :
     int baseWordCount() const;
@@ -130,30 +101,16 @@ protected:
     void timerEvent(QTimerEvent *event);
 
 signals:
-    void projectNameChanged();
-    void projectFileNameChanged();
-
-    void mainTree_fileForDocHashChanged();
-    void mainTree_numForDocHashChanged();
-    void mainTree_numForDocHashChanged(QHash<MainTextDocument *, int> numForDoc);
-    void mainTree_domElementForNumberHashChanged();
-
-    void attendTree_fileForDocHashChanged();
-    void attendTree_numForDocHashChanged();
-    void attendTree_domElementForNumberHashChanged();
-    void attendTree_namesListChanged(QStringList namesList);
 
     void openProjectSignal();
     void closeProjectSignal();
     void closeAllChildrenWindowsSignal();
 
-    void currentSheetNumberChanged(int currentSheetNumber);
     void textAndNoteSignal(int number, QString action);
 
     void textAlreadyChangedSignal(bool textChanged);
     void showStatusBarMessageSignal(QString string = "", int time = 3000);
 
-    void projectOpenedSignal(bool opened);
 
     void savingSignal();
 
@@ -201,42 +158,29 @@ private slots:
 
     void debuggg(int count){ qDebug() << "debuggg : " << QString::number(count);}
 
-
-
     void attendTree_namesListChangedSlot(QStringList namesList);
 
+
+
 private:
-    bool refreshIsLocked;
-
-    QString m_projectName;
-    QString m_projectFileName;
-
-    QDomDocument m_mainTreeDomDoc;
-    QHash<MainTextDocument *, QFile *> m_mainTree_fileForDocHash;
-    QHash<MainTextDocument *, int> m_mainTree_numForDocHash;
-    QHash<int, QDomElement> m_mainTree_domElementForNumberHash;
 
 
-    QDomDocument m_infoTreeDomDoc;
 
-    QDomDocument m_attendTreeDomDoc;
-    QHash<QTextDocument *, QFile *> m_attendTree_fileForDocHash;
-    QHash<QTextDocument *, int> m_attendTree_numForDocHash;
-    QHash<int, QDomElement> m_attendTree_domElementForNumberHash;
-    QStringList m_attendTree_names;
 
-    int m_currentSheetNumber, m_currentProjectSettingArrayNumber;
+
     int m_baseWordCount , m_wordGoal, m_achievedWordGoal;
     bool m_isWordGoalActivated;
 
+
+    Project *m_project;
+
+
     // file managment :
     void saveTemp();
-    bool areFilesLocked();
-    bool filesLocked;
-    bool projectOpened;
-    QString projectWorkingPath;
     bool saveDoc(QTextDocument *doc, QString mode);
     bool saveMainDoc(MainTextDocument *doc, QString mode);
+    bool areFilesLocked();
+bool filesLocked;
 
     void loadTextDocs(QDomNodeList list);
     void loadAttendDocs(QDomNodeList list);
@@ -259,6 +203,7 @@ private:
 
     // themes
     Themes *m_themes;
+
 };
 
 #endif // HUB_H

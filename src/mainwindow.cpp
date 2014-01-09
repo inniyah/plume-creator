@@ -946,7 +946,7 @@ void MainWindow::openProjectSlot()
 
 void MainWindow::closeProjectSlot()
 {
-    if(!hub->isProjectOpened())
+    if(!hub->project()->isProjectOpened())
         return;
 
     emit closeAllChildrenWindowsSignal();
@@ -1002,14 +1002,14 @@ void MainWindow::textSlot(int number, QString action)
         if(number > 10000) // separator
             return;
 
-        MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + QString::number(number));
-        MainTextDocument *synDoc =  hub->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
-        MainTextDocument *noteDoc = hub->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
+        MainTextDocument *textDoc = hub->project()->findChild<MainTextDocument *>("textDoc_" + QString::number(number));
+        MainTextDocument *synDoc =  hub->project()->findChild<MainTextDocument *>("synDoc_" + QString::number(number));
+        MainTextDocument *noteDoc = hub->project()->findChild<MainTextDocument *>("noteDoc_" + QString::number(number));
 
 
 
 
-        QString name = hub->mainTree_domElementForNumberHash().value(number).attribute("name");
+        QString name = hub->project()->mainTree_domElementForNumberHash().value(number).attribute("name");
 
         // verify if tree item not already opened, and if yes focus on it :
 
@@ -1143,7 +1143,7 @@ void MainWindow::textSlot(int number, QString action)
         connect(this, SIGNAL(applySynNoteFontConfigSignal()), synStack, SLOT(applySynFontConfig()));
 
         //launch autosaving :
-        if(!hub->isProjectOpened())
+        if(!hub->project()->isProjectOpened())
             autosaveTimer();
 
 
@@ -1569,7 +1569,7 @@ void MainWindow::writeDocksSettings()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 
-    if(!hub->isProjectOpened()){
+    if(!hub->project()->isProjectOpened()){
         writeSettings();
         event->accept();
         return;
@@ -1699,7 +1699,7 @@ void MainWindow::applyConfig()
     //    menuBarOnTop = settings.value("menuBarOnTop", true).toBool();
     settings.endGroup();
 
-    if(hub->isProjectOpened())
+    if(hub->project()->isProjectOpened())
         configTimer();
 
     if(oneTabOnly){
@@ -1791,7 +1791,7 @@ void MainWindow::editFullscreen()
     fullEditor->setMainTreeAbstractModel(mainTree->mainTreeAbstractModel());
 
     fullEditor->postConstructor();
-    fullEditor->openBySheetNumber(hub->currentSheetNumber());
+    fullEditor->openBySheetNumber(hub->project()->currentSheetNumber());
 
 
     connect(stats,SIGNAL(timerSignal(QString)),fullEditor,SLOT(setTimer(QString)));
@@ -1928,10 +1928,10 @@ void MainWindow::openSheet(int sheetNumber, int textCursorPos, int noteCursorPos
 
 
 
-    TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + QString::number(hub->currentSheetNumber()));
+    TextTab *tab = ui->mainTabWidget->findChild<TextTab *>("tab_" + QString::number(hub->project()->currentSheetNumber()));
 
-    NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
-    NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(hub->currentSheetNumber()) + "-NoteZone");
+    NoteZone *noteStack = this->findChild<NoteZone *>("note_" + QString::number(hub->project()->currentSheetNumber()) + "-NoteZone");
+    NoteZone *synStack = this->findChild<NoteZone *>("syn_" + QString::number(hub->project()->currentSheetNumber()) + "-NoteZone");
 
     //set cursor position :
     tab->setCursorPos(textCursorPos);
@@ -1957,7 +1957,7 @@ void MainWindow::setCurrentAttendList(int tabNum)
 
 
     int number = ui->mainTabWidget->widget(tabNum)->objectName().mid(ui->mainTabWidget->widget(tabNum)->objectName().indexOf("_") + 1).toInt();
-    hub->setCurrentSheetNumber(number); //updates also the attendance list
+    hub->project()->setCurrentSheetNumber(number); //updates also the attendance list
 
     //    attendList->setCurrentList(number);
     //    QString currentTabName = ui->mainTabWidget->tabText(tabNum);

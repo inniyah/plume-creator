@@ -1,11 +1,11 @@
 PLUME CREATOR
-v 0.66.3
-	- new feature : overview in the project tree.
 
-v 0.66.2
+v 0.67
+	- new feature : overview in the project tree.
+	- Fix Mise en Scene crash when deleting an object
 	- fix : huge memory leak when opening a sheet with spellchecker activated.
 	- trash : you can rename deleted files
-	- adds a few colors
+	- Outliner : adds a few colors
 	- fix : colors of "Space Opera" theme
 	- fix : "add" menu button of Mise en Scene pops up instantly
 

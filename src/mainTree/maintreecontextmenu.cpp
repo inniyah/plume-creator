@@ -23,7 +23,7 @@ QMenu *MainTreeContextMenu::menu(MainTreeContextMenu::Actions flags)
 {
 
 
-    targetedElement = hub->mainTree_domElementForNumberHash().value(m_id);
+    targetedElement = hub->project()->mainTree_domElementForNumberHash().value(m_id);
 
     if(targetedElement.isNull())
         return 0;

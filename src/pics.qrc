@@ -89,5 +89,7 @@
         <file>pics/tools-check-spelling.png</file>
         <file>pics/pin.png</file>
         <file>pics/pin-off.png</file>
+        <file>pics/edit-undo-32x32.png</file>
+        <file>pics/dialog-ok-apply-32x32.png</file>
     </qresource>
 </RCC>

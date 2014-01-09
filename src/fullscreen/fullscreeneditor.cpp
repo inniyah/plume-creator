@@ -6,9 +6,8 @@ FullscreenEditor::FullscreenEditor(QWidget *parent) :
     ui(new Ui::FullscreenEditor)
 {
     ui->setupUi(this);
-
-this->setAttribute(Qt::WA_DeleteOnClose);
-    setWindowModality(Qt::ApplicationModal);
+    this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setWindowModality(Qt::ApplicationModal);
 
 
 
@@ -27,22 +26,26 @@ FullscreenEditor::~FullscreenEditor()
 //------------------------------------------------------------------------------------
 void FullscreenEditor::postConstructor()
 {
-    clonedDoc = new MainTextDocument;
-    clonedNoteDoc = new MainTextDocument;
-            clonedSynDoc = new MainTextDocument;
+    originalDoc = new MainTextDocument(this, hub->spellChecker());
+    clonedDoc = new MainTextDocument(this, hub->spellChecker());
+    clonedNoteDoc = new MainTextDocument(this, hub->spellChecker());
+    clonedSynDoc = new MainTextDocument(this, hub->spellChecker());
 
-            synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
-            fullSynEdit = new FullTextZone(synWidget);
-            fullSynEdit->setHub(hub);
 
-            noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
-            fullNoteEdit = new FullTextZone(noteWidget);
-            fullNoteEdit->setHub(hub);
+
+    synWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
+    fullSynEdit = new FullTextZone(synWidget);
+    fullSynEdit->setHub(hub);
+
+    noteWidget = new QWidget(this, Qt::Tool | Qt::WindowStaysOnTopHint);
+    fullNoteEdit = new FullTextZone(noteWidget);
+    fullNoteEdit->setHub(hub);
 
     ui->progressBar->setHub(hub);
     ui->progressBar->postConstructor();
     ui->progressBar->init();
 
+//    ui->fullTextEdit = new FullTextZone(this);
     ui->fullTextEdit->setHub(hub);
     connect(hub, SIGNAL(savingSignal()), this, SLOT(restoreDoc()));
 
@@ -92,14 +95,12 @@ void FullscreenEditor::setText(MainTextDocument *doc)
 {
 
 
-
-
     originalDoc = doc;
     // for wordcont goal :
     baseWordCount = originalDoc->wordCount();
     //    QTextDocument *clonedDoc = doc->clone();
 
-    clonedDoc = new MainTextDocument();
+    clonedDoc = new MainTextDocument(this, hub->spellChecker());
 
     // for wordcount :
     connect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(setWordCount(QString,int,int)), Qt::UniqueConnection);
@@ -229,7 +230,7 @@ void FullscreenEditor::createOptionMenu()
     connect(setColorsAct, SIGNAL(triggered()), this, SLOT(callColorDialog()));
 
     showScrollbarAct = new QAction(/*QIcon(":/pics/edit-find-replace.png"),*/tr("Show Scroll Bar"),this);
-showScrollbarAct->setCheckable(true);
+    showScrollbarAct->setCheckable(true);
     showScrollbarAct->setToolTip(tr("Show the scroll bar"));
     connect(showScrollbarAct, SIGNAL(triggered(bool)), this, SLOT(setShowFullScrollbar(bool)));
 
@@ -563,7 +564,7 @@ void FullscreenEditor::changeTextStyleSlot(int styleIndex)
 
 void FullscreenEditor::noteCursorPositionChangedSlot(int position)
 {
-currentNoteCursoPos = position;
+    currentNoteCursoPos = position;
 }
 
 void FullscreenEditor::synCursorPositionChangedSlot(int position)
@@ -581,7 +582,7 @@ void FullscreenEditor::restoreDoc()
     settings.setValue( "FullTextArea/areaWidth", sliderCurrentValue);
     settings.setValue( "FullTextArea/zoom", textStyles->zoomModifier());
 
-    QTextDocument *doc = ui->fullTextEdit->document()->clone();
+    QTextDocument *doc = ui->fullTextEdit->document()->clone(this);
     if(textStyles->zoomModifier() != 0){
         textStyles->changeDocStyles(doc, "removeZoom");
     }
@@ -769,7 +770,7 @@ void FullscreenEditor::setAddOnColor()
             "QLabel#wordGoalLabel {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QToolButton#treeButton {color: rgb(" + r + ", " + g + ", " + b + ");}"
             "QPushButton#addOnColorButton {background-color: rgb(" + r + ", " + g + ", " + b + ");}"
-    "QTreeView::item#treeView {color: rgb(" + r + ", " + g + ", " + b + ");}";
+            "QTreeView::item#treeView {color: rgb(" + r + ", " + g + ", " + b + ");}";
 
     //    "QToolButton {background-color: red; border: none;}"
     ;
@@ -859,7 +860,7 @@ void FullscreenEditor::openBySheetNumber(int number)
     if(number == 0)
         return;
 
-clonedDoc->disconnectWordCount();
+    clonedDoc->disconnectWordCount();
     disconnect(clonedDoc, SIGNAL(wordCountChanged(QString,int,int)), this, SLOT(setWordCount(QString,int,int)));
     disconnect(clonedDoc, SIGNAL(contentsChanged()), hub, SLOT(addToSaveQueue()));
     disconnect(ui->fullTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
@@ -879,7 +880,7 @@ clonedDoc->disconnectWordCount();
 
 
 
-    QList<MainTextDocument *> sheetsList = hub->mainTree_numForDocHash().keys(number);
+    QList<MainTextDocument *> sheetsList = hub->project()->mainTree_numForDocHash().keys(number);
 
     if(!sheetsList.isEmpty())
         if(number != sheetsList.first()->idNumber())
@@ -907,7 +908,7 @@ clonedDoc->disconnectWordCount();
 
 
     numberOfCurrentFullscreenSheet = number;
-    ui->treeButton->setText(hub->mainTree_domElementForNumberHash().value(number).attribute("name", tr("Project")));
+    ui->treeButton->setText(hub->project()->mainTree_domElementForNumberHash().value(number).attribute("name", tr("Project")));
     emit currentOpenedSheetSignal(number);
 
 
@@ -970,7 +971,7 @@ void FullscreenEditor::on_newButton_clicked()
 
 void FullscreenEditor::on_treeButton_toggled(bool checked)
 {
-this->setTreeViewVisible(checked);
+    this->setTreeViewVisible(checked);
 }
 
 void FullscreenEditor::setTreeViewVisible(bool isVisible)
@@ -984,16 +985,16 @@ void FullscreenEditor::setTreeViewVisible(bool isVisible)
 void FullscreenEditor::createTreeView()
 {
     ui->treeView->setHub(hub);
-ui->treeView->setMainTreeAbstractModel(absTreeModel);
-ui->treeView->postConstructor();
+    ui->treeView->setMainTreeAbstractModel(absTreeModel);
+    ui->treeView->postConstructor();
 
 
     DockedTreeProxy *proxy = new DockedTreeProxy;
     proxy->setHub(hub);
     proxy->setSourceModel(absTreeModel);
-proxy->postConstructor();
-proxy->setSourceModel(absTreeModel);
-ui->treeView->setModel(proxy);
+    proxy->postConstructor();
+    proxy->setSourceModel(absTreeModel);
+    ui->treeView->setModel(proxy);
 
     ui->treeView->setModel(proxy);
     connect(absTreeModel, SIGNAL(applySettingsFromDataSignal()), ui->treeView, SLOT(applySettingsFromData()), Qt::UniqueConnection);
@@ -1009,12 +1010,12 @@ ui->treeView->setModel(proxy);
 void FullscreenEditor::on_prevButton_clicked()
 {
     //find directly before :
-    int prevNum = hub->mainTree_domElementForNumberHash().key(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).previousSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
+    int prevNum = hub->project()->mainTree_domElementForNumberHash().key(hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).previousSiblingElement(hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
 
 
     //find before the father :
     if(prevNum == 0){
-        QDomElement father = hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
+        QDomElement father = hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
         QDomElement prevFather = father.previousSiblingElement(father.tagName());
         if(prevFather.isNull())
             return;
@@ -1022,7 +1023,7 @@ void FullscreenEditor::on_prevButton_clicked()
         //cancel :
         if(lastChild.isNull())
             return;
-        prevNum = hub->mainTree_domElementForNumberHash().key(lastChild);
+        prevNum = hub->project()->mainTree_domElementForNumberHash().key(lastChild);
 
     }
 
@@ -1033,12 +1034,12 @@ void FullscreenEditor::on_nextButton_clicked()
 {
     //find directly after :
 
-    int nextNum = hub->mainTree_domElementForNumberHash().key(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).nextSiblingElement(hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
+    int nextNum = hub->project()->mainTree_domElementForNumberHash().key(hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).nextSiblingElement(hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).tagName()));
 
 
     //find after the father :
     if(nextNum == 0){
-        QDomElement father = hub->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
+        QDomElement father = hub->project()->mainTree_domElementForNumberHash().value(numberOfCurrentFullscreenSheet).parentNode().toElement();
         QDomElement nextFather = father.nextSiblingElement(father.tagName());
         if(nextFather.isNull())
             return;
@@ -1046,10 +1047,10 @@ void FullscreenEditor::on_nextButton_clicked()
         //cancel :
         if(firstChild.isNull())
             return;
-        nextNum = hub->mainTree_domElementForNumberHash().key(firstChild);
+        nextNum = hub->project()->mainTree_domElementForNumberHash().key(firstChild);
     }
 
-this->openBySheetNumber(nextNum);
+    this->openBySheetNumber(nextNum);
 
 }
 

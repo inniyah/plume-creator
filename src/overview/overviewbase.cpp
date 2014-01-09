@@ -31,7 +31,7 @@ OverviewBase::OverviewBase(QWidget *parent, Hub *hub, int id) :
     if(id == -1)
         return;
 
-    QDomElement targetedElement = hub->mainTree_domElementForNumberHash().value(id);
+    QDomElement targetedElement = hub->project()->mainTree_domElementForNumberHash().value(id);
 
     QList<QDomElement> childElementsList = Utils::allChildElements(targetedElement);
 
@@ -53,7 +53,7 @@ OverviewBase::OverviewBase(QWidget *parent, Hub *hub, int id) :
             QDomElement element = childElementsList.at(i);
             TextCell *cell = new TextCell(this);
 
-            MainTextDocument *textDoc = hub->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
+            MainTextDocument *textDoc = hub->project()->findChild<MainTextDocument *>("textDoc_" + element.attribute("number"));
          if(textDoc != 0){
              MainTextDocument *tempText = new MainTextDocument(this, hub->spellChecker());
             tempText->setHtml(textDoc->toHtml());

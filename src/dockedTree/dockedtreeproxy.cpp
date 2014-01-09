@@ -72,7 +72,7 @@ bool DockedTreeProxy::setData(const QModelIndex &index, const QVariant &value, i
 
         int itemId = sourceIndex.data(Qt::UserRole).toInt();
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(itemId);
         if(value.toBool() == true)
             element.setAttribute("dockedTreeExpanded", "yes");
         else
@@ -169,14 +169,14 @@ bool DockedTreeProxy::dropMimeData ( const QMimeData * data, Qt::DropAction acti
 
         int draggedInt = objectsList.first();
 
-        QHash<int, QDomElement> domElementForNumber = hub->mainTree_domElementForNumberHash();
+        QHash<int, QDomElement> domElementForNumber = hub->project()->mainTree_domElementForNumberHash();
 
         QDomElement draggedElement = domElementForNumber.value(draggedInt);
 
         QDomElement parentTargetElement = domElementForNumber.value(parent.data(Qt::UserRole).toInt());
 
         if(draggedElement.tagName() == "book")
-            parentTargetElement = hub->mainTreeDomDoc().documentElement();
+            parentTargetElement = hub->project()->mainTreeDomDoc().documentElement();
         else if(!parent.isValid())
             return false;
 

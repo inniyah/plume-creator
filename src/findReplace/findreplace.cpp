@@ -69,7 +69,7 @@ FindReplace::~FindReplace()
 
 void FindReplace::createTree()
 {
-    domDocument = hub->mainTreeDomDoc();
+    domDocument = hub->project()->mainTreeDomDoc();
     root = domDocument.documentElement();
 
 
@@ -107,7 +107,7 @@ void FindReplace::resetSearch()
 {
     //search for checked items :
 
-    QDomDocument domDoc = hub->mainTreeDomDoc();
+    QDomDocument domDoc = hub->project()->mainTreeDomDoc();
     QDomElement root = domDoc.documentElement();
 
     QList<QDomElement> checkedElementList = searchForCheckedItems(root);
@@ -959,7 +959,7 @@ void FindReplace::on_noteCheckBox_toggled(bool checked)
 void FindReplace::cloneAllDocs()
 {
     QString name;
-    QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
+    QHash<MainTextDocument *, QFile *> fileForDoc = hub->project()->mainTree_fileForDocHash();
 
 
     QHash<MainTextDocument *, QFile *>::iterator i = fileForDoc.begin();

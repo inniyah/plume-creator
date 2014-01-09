@@ -4,9 +4,9 @@
 //
 FullTextZone::FullTextZone(QWidget *parent) :
     QTextEdit(parent)
-{
+{/*
     this->setMouseTracking(true);
-    this->viewport()->setMouseTracking(true);
+    this->viewport()->setMouseTracking(true);*/
 
     createActions();
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -20,7 +20,7 @@ FullTextZone::FullTextZone(QWidget *parent) :
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    textDocument = new MainTextDocument;
+    textDocument = new MainTextDocument(this,0);
 
 
 
@@ -522,7 +522,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
         //         /<\s*\w.*?>/g
 
         //htmlText
-        QTextDocument *document = new QTextDocument;
+        QTextDocument *document = new QTextDocument(this);
         document->setHtml(sourceString);
         QTextBlockFormat blockFormat;
         blockFormat.setBottomMargin(bottMargin);
@@ -554,7 +554,7 @@ void FullTextZone::insertFromMimeData (const QMimeData *source )
 
     }
     else if(source->hasText()){
-        QTextDocument *document = new QTextDocument;
+        QTextDocument *document = new QTextDocument(this);
         document->setPlainText(qvariant_cast<QString>(source->text()));
 
         QTextBlockFormat blockFormat;

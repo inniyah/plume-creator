@@ -41,7 +41,7 @@ void SettingsDialog::createContent()
     createThemeTab();
 
     ui->stylesTab->setEnabled(false);
-    if(hub->isProjectOpened()){
+    if(hub->project()->isProjectOpened()){
         createStyleTab();
         ui->stylesTab->setEnabled(true);
     }
@@ -627,7 +627,7 @@ void SettingsDialog::createSpellingTab()
     // filling listWidget
 
     QStringList userDictList = hub->userDict();
-    QStringList attendTreeNamesList = hub->attendTree_namesList();
+    QStringList attendTreeNamesList = hub->project()->attendTree_namesList();
 
 
     foreach(QString word, userDictList){
@@ -837,7 +837,7 @@ void SettingsDialog::readSettings()
     // style tab :
 
 
-    if(hub->isProjectOpened()){
+    if(hub->project()->isProjectOpened()){
 
         ui->styleListWidget->addItems(textStyles->namesList());
         ui->styleListWidget->setCurrentRow(0);
@@ -952,7 +952,7 @@ void SettingsDialog::accept()
 
     // style tab :
 
-    if(hub->isProjectOpened()){
+    if(hub->project()->isProjectOpened()){
         textStyles->saveStyles();
         if(styleInfoModified){
             emit changeAllDocsTextStylesSignal();

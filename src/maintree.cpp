@@ -14,10 +14,10 @@ bool MainTree::startTree()
 
     // load mainTree model :
 
-    mainTreeAbsModel->setDomDocument(hub->mainTreeDomDoc());
+    mainTreeAbsModel->setDomDocument(hub->project()->mainTreeDomDoc());
     mainTreeAbsModel->setHub(hub);
-    connect(hub, SIGNAL(mainTree_numForDocHashChanged(QHash<MainTextDocument*,int>)), mainTreeAbsModel, SLOT(mtoO_setNumForDoc(QHash<MainTextDocument *, int>)));
-    mainTreeAbsModel->mtoO_setNumForDoc(hub->mainTree_numForDocHash());
+    connect(hub->project(), SIGNAL(mainTree_numForDocHashChanged(QHash<MainTextDocument*,int>)), mainTreeAbsModel, SLOT(mtoO_setNumForDoc(QHash<MainTextDocument *, int>)));
+    mainTreeAbsModel->mtoO_setNumForDoc(hub->project()->mainTree_numForDocHash());
 
     mainTreeAbsModel->resetAbsModel();
 

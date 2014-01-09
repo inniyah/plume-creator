@@ -25,7 +25,7 @@ void AttendSettings::postConstructor()
 
 
 
-    QDomElement root = hub->attendTreeDomDoc().documentElement().toElement();
+    QDomElement root = hub->project()->attendTreeDomDoc().documentElement().toElement();
 
 
 
@@ -145,7 +145,7 @@ void AttendSettings::renameItem_3()
 
 void AttendSettings::accept()
 {
-    QDomElement root = hub->attendTreeDomDoc().documentElement().toElement();
+    QDomElement root = hub->project()->attendTreeDomDoc().documentElement().toElement();
 
     QStringList list_1;
     int i;

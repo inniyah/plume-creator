@@ -43,7 +43,7 @@ bool AttendManagerTreeProxyModel::setData(const QModelIndex &index,
 
         int itemId = sourceIndex.data(Qt::UserRole).toInt();
 
-        QDomElement element = hub->attendTree_domElementForNumberHash().value(itemId);
+        QDomElement element = hub->project()->attendTree_domElementForNumberHash().value(itemId);
         if(value.toBool() == true)
             element.setAttribute("managerTreeExpanded", "yes");
         else
@@ -82,16 +82,16 @@ bool AttendManagerTreeProxyModel::insertRows(int position, int rows, const QMode
     //        stringList.insert(position, "");
     //    }
 
+
+
+
+
+
+
+
+
+
     this->domModified();
-
-
-
-
-
-
-
-
-
     endInsertRows();
     return true;
 }
@@ -120,7 +120,7 @@ void AttendManagerTreeProxyModel::domModified()
     domElementForNumber.clear();
 
 
-    QDomDocument attendDomDoc = hub->attendTreeDomDoc();
+    QDomDocument attendDomDoc = hub->project()->attendTreeDomDoc();
     QDomElement root = attendDomDoc.documentElement();
 
     QDomNode m = root.firstChild();
@@ -176,11 +176,15 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 {
     QModelIndex sourceIndex = this->mapToSource(index);
 
+    if(!sourceIndex.isValid())
+        return;
+
     AttendTreeItem *sourceItem = static_cast<AttendTreeItem*>(sourceIndex.internalPointer());
+
 
     QDomElement element = domElementForNumber.value(sourceItem->idNumber());
     int number = freeNumber();
-    QDomElement obj = hub->attendTreeDomDoc().createElement("obj");
+    QDomElement obj = hub->project()->attendTreeDomDoc().createElement("obj");
     obj.setTagName("obj");
     obj.setAttribute("number", QString::number(number));
     obj.setAttribute("name", tr("new"));
@@ -188,11 +192,11 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
     // create doc :
 
-    QFile *attendFile = new QFile(hub->projectWorkPath() + obj.attribute("attendPath"));
-    QHash<QTextDocument *, QFile *> fileForDoc = hub->attendTree_fileForDocHash();
-    QHash<QTextDocument *, int> numForDoc = hub->attendTree_numForDocHash();
+    QFile *attendFile = new QFile(hub->project()->projectWorkPath() + obj.attribute("attendPath"));
+    QHash<QTextDocument *, QFile *> fileForDoc = hub->project()->attendTree_fileForDocHash();
+    QHash<QTextDocument *, int> numForDoc = hub->project()->attendTree_numForDocHash();
 
-    QTextDocument *attendDocument = new QTextDocument(hub);
+    QTextDocument *attendDocument = new QTextDocument(hub->project());
     attendDocument->toHtml();
     QTextDocumentWriter attendDocWriter(attendFile, "HTML");
     attendDocWriter.write(attendDocument);
@@ -200,8 +204,8 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
     fileForDoc.insert(attendDocument, attendFile);
     numForDoc.insert(attendDocument, number);
 
-    hub->set_attendTree_fileForDocHash(fileForDoc);
-    hub->set_attendTree_numForDocHash(numForDoc);
+    hub->project()->set_attendTree_fileForDocHash(fileForDoc);
+    hub->project()->set_attendTree_numForDocHash(numForDoc);
 
 
 
@@ -223,6 +227,7 @@ void AttendManagerTreeProxyModel::addObject(QModelIndex index)
 
     hub->addToSaveQueue();
     emit resetAbsModelSignal();
+    this->domModified();
 
 
     // emit activateItemSignal(index);
@@ -241,7 +246,7 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 
     QDomElement element = domElementForNumber.value(sourceItem->idNumber());
     int number = freeNumber();
-    QDomElement group = hub->attendTreeDomDoc().createElement("group");
+    QDomElement group = hub->project()->attendTreeDomDoc().createElement("group");
     group.setTagName("group");
     group.setAttribute("number", QString::number(number));
     group.setAttribute("name", tr("new group"));
@@ -249,11 +254,11 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 
     // create doc :
 
-    QFile *attendFile = new QFile(hub->projectWorkPath() + group.attribute("attendPath"));
-    QHash<QTextDocument *, QFile *> fileForDoc = hub->attendTree_fileForDocHash();
-    QHash<QTextDocument *, int> numForDoc = hub->attendTree_numForDocHash();
+    QFile *attendFile = new QFile(hub->project()->projectWorkPath() + group.attribute("attendPath"));
+    QHash<QTextDocument *, QFile *> fileForDoc = hub->project()->attendTree_fileForDocHash();
+    QHash<QTextDocument *, int> numForDoc = hub->project()->attendTree_numForDocHash();
 
-    QTextDocument *attendDocument = new QTextDocument(hub);
+    QTextDocument *attendDocument = new QTextDocument(hub->project());
     attendDocument->toHtml();
     QTextDocumentWriter attendDocWriter(attendFile, "HTML");
     attendDocWriter.write(attendDocument);
@@ -261,8 +266,8 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
     fileForDoc.insert(attendDocument, attendFile);
     numForDoc.insert(attendDocument, number);
 
-    hub->set_attendTree_fileForDocHash(fileForDoc);
-    hub->set_attendTree_numForDocHash(numForDoc);
+    hub->project()->set_attendTree_fileForDocHash(fileForDoc);
+    hub->project()->set_attendTree_numForDocHash(numForDoc);
 
 
 
@@ -270,7 +275,7 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
     if(sourceItem->isGroup())
         element.parentNode().appendChild(group);
     else
-        hub->attendTreeDomDoc().documentElement().appendChild(group);
+        hub->project()->attendTreeDomDoc().documentElement().appendChild(group);
 
 
     emit resetAbsModelSignal();
@@ -283,6 +288,7 @@ void AttendManagerTreeProxyModel::addGroup(QModelIndex index)
 
     hub->addToSaveQueue();
     emit resetAbsModelSignal();
+    this->domModified();
 
 
 
@@ -295,9 +301,21 @@ void AttendManagerTreeProxyModel::remove(QModelIndex index)
 {
     QModelIndex sourceIndex = this->mapToSource(index);
 
+    if(!sourceIndex.isValid())
+        QMessageBox::warning(0, tr("Plume Creator Attendance"),
+                             tr("error\n"
+                                "!sourceIndex.isValid()"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+
     AttendTreeItem *sourceItem = static_cast<AttendTreeItem*>(sourceIndex.internalPointer());
 
     QDomElement element = domElementForNumber.value(sourceItem->idNumber());
+    if(element.isNull())
+        QMessageBox::warning(0, tr("Plume Creator Attendance"),
+                             tr("error\n"
+                                "element.isNull()"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+
 int number = sourceItem->idNumber();
 
     if(sourceItem->isGroup()){
@@ -318,23 +336,32 @@ int number = sourceItem->idNumber();
     if(ret == QMessageBox::Cancel)
         return;
 
-    QHash<QTextDocument *, QFile *> fileForDoc = hub->attendTree_fileForDocHash();
-    QHash<QTextDocument *, int> numForDoc = hub->attendTree_numForDocHash();
+    QHash<QTextDocument *, QFile *> fileForDoc = hub->project()->attendTree_fileForDocHash();
+    QHash<QTextDocument *, int> numForDoc = hub->project()->attendTree_numForDocHash();
     QTextDocument *doc = numForDoc.key(sourceItem->idNumber());
 
+    if(doc != 0){
     QFile *attendFile = fileForDoc.value(doc);
     doc->setObjectName("");
     fileForDoc.remove(doc);
     numForDoc.remove(doc);
 
-    hub->set_attendTree_fileForDocHash(fileForDoc);
-    hub->set_attendTree_numForDocHash(numForDoc);
+    hub->project()->set_attendTree_fileForDocHash(fileForDoc);
+    hub->project()->set_attendTree_numForDocHash(numForDoc);
 
     attendFile->remove();
 
-    element.parentNode().removeChild(element);
+}
+
+    QDomElement parentElement = element.parentNode().toElement();
 
 
+    QDomNode oldChild = parentElement.removeChild(element);
+if(oldChild.isNull())
+    QMessageBox::warning(0, tr("Plume Creator Attendance"),
+                         tr("error\n"
+                            "oldChild.isNull()"),
+                         QMessageBox::Ok, QMessageBox::Ok);
 
     this->removeAttendNumberFromSheets(number);
 
@@ -350,6 +377,7 @@ int number = sourceItem->idNumber();
 
     hub->addToSaveQueue();
     emit resetAbsModelSignal();
+    this->domModified();
 
 
 }
@@ -365,10 +393,9 @@ void AttendManagerTreeProxyModel::removeAttendNumberFromSheets(int itemNumber)
 {
 
     QHash<int, QDomElement> mainTree_domElementForNumber;
-    mainTree_domElementForNumber.clear();
 
 
-    QDomDocument treeDomDoc = hub->mainTreeDomDoc();
+    QDomDocument treeDomDoc = hub->project()->mainTreeDomDoc();
     QDomElement root = treeDomDoc.documentElement();
 
     QDomNode m = root.firstChild();
@@ -531,14 +558,14 @@ bool AttendManagerTreeProxyModel::dropMimeData ( const QMimeData * data, Qt::Dro
 
         int draggedInt = objectsList.first();
 
-        QHash<int, QDomElement> domElementForNumber = hub->attendTree_domElementForNumberHash();
+        QHash<int, QDomElement> domElementForNumber = hub->project()->attendTree_domElementForNumberHash();
 
         QDomElement draggedElement = domElementForNumber.value(draggedInt);
 
         QDomElement parentTargetElement = domElementForNumber.value(parent.data(Qt::UserRole).toInt());
 
         if(draggedElement.tagName() == "group")
-            parentTargetElement = hub->attendTreeDomDoc().documentElement();
+            parentTargetElement = hub->project()->attendTreeDomDoc().documentElement();
         else if(!parent.isValid())
             return false;
 

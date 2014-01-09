@@ -67,7 +67,7 @@ void AttendSheetTreeProxyModel::currentSheetModified(int sheetNumber)
     povList.clear();
 
 
-    QDomDocument treeDomDoc = hub->mainTreeDomDoc();
+    QDomDocument treeDomDoc = hub->project()->mainTreeDomDoc();
     QDomElement root = treeDomDoc.documentElement();
 
     QDomNode m = root.firstChild();

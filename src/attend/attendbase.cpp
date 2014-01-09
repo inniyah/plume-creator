@@ -21,7 +21,7 @@ void AttendBase::startAttendance()
 {
     absModel = new AttendAbstractModel();
     absModel->setHub(hub);
-absModel->setDomDocument(hub->attendTreeDomDoc());
+absModel->setDomDocument(hub->project()->attendTreeDomDoc());
 
     absModel->resetAbsModel();
 
@@ -36,7 +36,7 @@ absModel->setDomDocument(hub->attendTreeDomDoc());
     ui->sheetTreeView->setModel(sheetProxyModel );
     ui->sheetTreeView->expandAll();
 
-    connect(hub, SIGNAL(currentSheetNumberChanged(int)), sheetProxyModel, SLOT(currentSheetModified(int)), Qt::UniqueConnection);
+    connect(hub->project(), SIGNAL(currentSheetNumberChanged(int)), sheetProxyModel, SLOT(currentSheetModified(int)), Qt::UniqueConnection);
     connect(globalProxyModel, SIGNAL(attendSheetDataNumbersDropped(QList<int>)),sheetProxyModel, SLOT(removeSheetObjects(QList<int>)), Qt::UniqueConnection);
 
 

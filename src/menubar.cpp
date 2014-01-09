@@ -192,7 +192,7 @@ void MenuBar::exporter()
 
 void MenuBar::print()
 {
-    if(!hub->isProjectOpened())
+    if(!hub->project()->isProjectOpened())
         return;
 
     emit saveProjectSignal();
@@ -210,7 +210,7 @@ void MenuBar::print()
 
 void MenuBar::findAndReplace()
 {
-    if(!hub->isProjectOpened())
+    if(!hub->project()->isProjectOpened())
         return;
 
     emit saveProjectSignal();

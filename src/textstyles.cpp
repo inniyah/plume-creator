@@ -13,7 +13,7 @@ TextStyles::TextStyles(QObject *parent) :
 void TextStyles::setProjectInfoFile()
 {
 
-    domDocument = hub->infoTreeDomDoc();
+    domDocument = hub->project()->infoTreeDomDoc();
 
 
 
@@ -23,7 +23,7 @@ QDomElement root = domDocument.documentElement();
     //    if(extFilePath != prjInfoElem.attribute("workPath")){
 
 
-    QDir dir(hub->projectWorkPath());
+    QDir dir(hub->project()->projectWorkPath());
 
     prjInfoElem.setAttribute("workPath", dir.absolutePath());
     dir.cdUp();
@@ -596,7 +596,7 @@ void TextStyles::changeAllDocsTextStyles()
     this->loadBaseStyles();
     this->loadStyles();
 
-    QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
+    QHash<MainTextDocument *, QFile *> fileForDoc = hub->project()->mainTree_fileForDocHash();
     QHash<MainTextDocument *, QFile *>::const_iterator i = fileForDoc.constBegin();
     while (i != fileForDoc.constEnd()) {
 

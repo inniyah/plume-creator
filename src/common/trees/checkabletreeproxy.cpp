@@ -130,7 +130,7 @@ bool CheckableTreeProxy::setData(const QModelIndex &index,
 
         int itemId = sourceIndex.data(Qt::UserRole).toInt();
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(itemId);
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(itemId);
         if(value.toBool() == true)
             element.setAttribute(expandAttributeName, "yes");
         else
@@ -188,7 +188,7 @@ void CheckableTreeProxy::setChildrenCheckState(QModelIndex index, Qt::CheckState
 
     MainTreeItem *item = static_cast<MainTreeItem*>(this->mapToSource(index).internalPointer());
     int number = index.data(Qt::UserRole).toInt();
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(number);
+    QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(number);
 
     int count = item->childCount();
 
@@ -312,7 +312,7 @@ void CheckableTreeProxy::setParentCheckState(QModelIndex parentIndex, Qt::CheckS
 
 
     int number = parentIndex.data(Qt::UserRole).toInt();
-    QDomElement element = hub->mainTree_domElementForNumberHash().value(number);
+    QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(number);
 
 
 

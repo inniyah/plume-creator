@@ -50,7 +50,6 @@ void OutlinerBase::postConstructor()
 //------------------------------------------------------------------------------------
 OutlinerBase::~OutlinerBase()
 {
-
 }
 
 //------------------------------------------------------------------------------------
@@ -130,6 +129,15 @@ void OutlinerBase::applySpreadsheetConfig()
 QWidget *OutlinerBase::spreadsheetWidget()
 {
     return spreadsheet;
+}
+
+//------------------------------------------------------------------------------------
+
+void OutlinerBase::closeEvent(QCloseEvent *event)
+{
+    this->saveConfig();
+
+    event->accept();
 }
 
 
@@ -223,7 +231,7 @@ void OutlinerBase::updateOutliner()
 {
 
 
-    absTreeModel->mtoO_setNumForDoc(hub->mainTree_numForDocHash());
+    absTreeModel->mtoO_setNumForDoc(hub->project()->mainTree_numForDocHash());
 
                 absTreeModel->resetAbsModel();
 

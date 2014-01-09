@@ -271,7 +271,7 @@ void FileUpdater::updateAttendanceFile()
             QFile *attendDocFile = new QFile(devicePath + element.attribute("attendPath"));
 
 
-            QTextDocument *attendDocument = new QTextDocument();
+            QTextDocument *attendDocument = new QTextDocument(this);
             attendDocument->toHtml();
             QTextDocumentWriter docWriter(attendDocFile, "HTML");
             docWriter.write(attendDocument);

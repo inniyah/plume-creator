@@ -25,6 +25,7 @@
 #include "hub.h"
 #include "mainTree/maintreeabstractmodel.h"
 #include "outliner/outlinerbase.h"
+#include "infoSheet/infosheetbase.h"
 
 class Workbench : public QWidget
 {
@@ -47,19 +48,24 @@ public slots:
     void applyConfig();
 
 private slots:
+    void resetCommonToolBar();
     void shiftToSpreadsheet();
+    void shiftToSpreadsheetSingleShot();
+void shiftToInfoSheet();
+void shiftToInfoSheetSingleShot();
+void quitCurrentMode();
 
 private:
 Hub *hub;
 MainTreeAbstractModel  *absTree;
 
-QAction *shiftToSpreadsheetAct;
+QAction *shiftToSpreadsheetAct, *shiftToInfoSheetAct;
 QString lastOpened;
 QVBoxLayout *zoneLayout;
 QToolBar *commonToolBar;
 OutlinerBase *outlinerBase;
-
-
+InfoSheetBase *infoSheetBase;
+QWidget *currentModeWidget;
 
 
 

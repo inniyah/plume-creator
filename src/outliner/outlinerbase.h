@@ -47,7 +47,7 @@ public:
     QWidget *spreadsheetWidget();
 
 protected:
-//    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 signals:
     void toSpreadsheetSignal(bool spreadsheetSignal);

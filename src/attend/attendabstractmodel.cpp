@@ -215,8 +215,8 @@ void AttendAbstractModel::resetDomDoc()
     root = domDoc.documentElement().toElement();
     parseFolderElement(domDoc.documentElement());
 
-    hub->set_attendTree_domElementForNumberHash(domElementForNumber);
-    hub->set_attendTree_namesList(namesList);
+    hub->project()->set_attendTree_domElementForNumberHash(domElementForNumber);
+    hub->project()->set_attendTree_namesList(namesList);
 
 
 }

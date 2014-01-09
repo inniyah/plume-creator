@@ -258,7 +258,7 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
         if (item->type() == "separator" || item->type() == "trash")//for not sheets
             return false;
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
         element.setAttribute("name", value.toString());
 
         emit dataChanged(index, index);
@@ -334,7 +334,7 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
         if (item->type() == "separator" || item->type() == "trash")//for not sheets
             return false;
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
         element.setAttribute("status", QString::number(value.toInt()));
 
         item->setStatus(value.toInt());
@@ -356,7 +356,7 @@ bool MainTreeAbstractModel::setData(const QModelIndex &index,
         if (item->type() == "trash")
             return false;
 
-        QDomElement element = hub->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
+        QDomElement element = hub->project()->mainTree_domElementForNumberHash().value(index.data(Qt::UserRole).toInt());
         element.setAttribute("badge", value.toString());
 
         item->setBadge(value.toString());
@@ -471,7 +471,7 @@ void MainTreeAbstractModel::resetDomDoc()
 
 
 
-    hub->set_mainTree_domElementForNumberHash(domElementForNumber);
+    hub->project()->set_mainTree_domElementForNumberHash(domElementForNumber);
 
     emit treeStructureChanged();
 }
@@ -919,7 +919,7 @@ QStringList MainTreeAbstractModel::givePovList(QString listOfPovNumbers)
 
     foreach(const int &number, intList){
         if(number != 0){
-            QString name = hub->attendTree_domElementForNumberHash().value(number).attribute("name", "error");
+            QString name = hub->project()->attendTree_domElementForNumberHash().value(number).attribute("name", "error");
 
             names << name;
             qDebug() <<"";
@@ -975,7 +975,7 @@ void MainTreeAbstractModel::reset_mtoO_setNumForDoc()
 void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant var)
 {
 
-    QDomElement targetElement = hub->mainTree_domElementForNumberHash().value(idNumber);
+    QDomElement targetElement = hub->project()->mainTree_domElementForNumberHash().value(idNumber);
 
 
     if( targetElement.isNull())
@@ -1046,7 +1046,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
         int number = targetElement.attribute("number").toInt();
 
-        MainTextDocument *textDoc = hub->findChild<MainTextDocument *>( splitChoice + QString::number(number));
+        MainTextDocument *textDoc = hub->project()->findChild<MainTextDocument *>( splitChoice + QString::number(number));
         QString mainString = textDoc->toHtml("utf-8");
 
 
@@ -1068,7 +1068,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
                 item = addSheet(itemOfWork, "addSibling", "scene");
                 int num = item.attribute("number").toInt();
-                MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                 doc->setHtml(scenesList.at(i));
 
                 itemOfWork = item;
@@ -1092,7 +1092,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
                 scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
                 childItem = addSheet(item, "addChild", "scene");
                 int num = childItem.toElement().attribute("number").toInt();
-                MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                 doc->setHtml(scenesList.at(0));
 
                 progressValue += 1;
@@ -1102,7 +1102,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
                     itemOfWork2 = addSheet(childItem, "addSibling", "scene");
                     int num = itemOfWork2.toElement().attribute("number").toInt();
-                    MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                    MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                     doc->setHtml(scenesList.at(j));
                     childItem = itemOfWork2;
                 }
@@ -1123,13 +1123,13 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
             childItem = addSheet(itemOfWork, "addChild", "chapter");
             //            int num = domElementForItem.value(childItem).toElement().attribute("number").toInt();
-            //            MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + string.setNum(num,10));
+            //            MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + string.setNum(num,10));
             //            doc->setHtml(chaptersList.at(0));
 
             scenesList = chaptersList.at(0).split("***", QString::KeepEmptyParts);
             childItem2 = addSheet(childItem, "addChildren", "scene");
             int num = childItem2.toElement().attribute("number").toInt();
-            MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+            MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
             doc->setHtml(scenesList.at(0));
 
             progressValue += 1;
@@ -1139,7 +1139,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
 
                 itemOfWork2 = addSheet(childItem2, "addSibling", "scene");
                 int num = itemOfWork2.toElement().attribute("number").toInt();
-                MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                 doc->setHtml(scenesList.at(k));
                 childItem2 = itemOfWork2;
 
@@ -1155,14 +1155,14 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber, QVariant va
                 scenesList = chaptersList.at(i).split("***", QString::KeepEmptyParts);
                 childItem = addSheet(item, "addChild", "scene");
                 int num = childItem.toElement().attribute("number").toInt();
-                MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                 doc->setHtml(scenesList.at(0));
 
                 for(int j = 1; j < scenesList.size(); ++j){
 
                     itemOfWork2 = addSheet(childItem, "addSibling", "scene");
                     int num = itemOfWork2.toElement().attribute("number").toInt();
-                    MainTextDocument *doc = hub->findChild<MainTextDocument *>(splitChoice + QString::number(num));
+                    MainTextDocument *doc = hub->project()->findChild<MainTextDocument *>(splitChoice + QString::number(num));
                     doc->setHtml(scenesList.at(j));
                     childItem = itemOfWork2;
                 }
@@ -1212,7 +1212,7 @@ void MainTreeAbstractModel::actionSlot(QString action, int idNumber)
 {
 
 QDomElement targetElement;
-    targetElement = hub->mainTree_domElementForNumberHash().value(idNumber);
+    targetElement = hub->project()->mainTree_domElementForNumberHash().value(idNumber);
 
     if( targetElement.isNull())
         return;
@@ -1296,7 +1296,7 @@ QDomElement targetElement;
     else if(action == "sendToTrash"){
 
         Utils::applyAttributeRecursively(targetElement, "isTrashed", "yes");
-        hub->mainTreeDomDoc().documentElement().elementsByTagName("trash").at(0).appendChild(targetElement);
+        hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("trash").at(0).appendChild(targetElement);
     }
     else if(action == "autoRenameChildren"){
         QString actName = tr("Act");
@@ -1443,7 +1443,7 @@ int MainTreeAbstractModel::addItemNext(int baseNumber)
 {
     int newNumber;
 
-    QDomElement baseItem = hub->mainTree_domElementForNumberHash().value(baseNumber);
+    QDomElement baseItem = hub->project()->mainTree_domElementForNumberHash().value(baseNumber);
 
 
     QString type;
@@ -1461,7 +1461,7 @@ int MainTreeAbstractModel::addItemNext(int baseNumber)
 
 
     QDomElement newItem = addSheet(baseItem, "addSibling", type);
-    newNumber = hub->mainTree_domElementForNumberHash().key(newItem);
+    newNumber = hub->project()->mainTree_domElementForNumberHash().key(newItem);
 
 
 
@@ -1515,12 +1515,12 @@ void MainTreeAbstractModel::removeItem(QDomElement element)
     emit textAndNoteSignal(number,"close");
 
     QString string;
-    MainTextDocument *text = hub->findChild<MainTextDocument *>("textDoc_" + string.setNum(number));
-    MainTextDocument *note = hub->findChild<MainTextDocument *>("noteDoc_" + string.setNum(number));
-    MainTextDocument *syn = hub->findChild<MainTextDocument *>("synDoc_" + string.setNum(number));
+    MainTextDocument *text = hub->project()->findChild<MainTextDocument *>("textDoc_" + string.setNum(number));
+    MainTextDocument *note = hub->project()->findChild<MainTextDocument *>("noteDoc_" + string.setNum(number));
+    MainTextDocument *syn = hub->project()->findChild<MainTextDocument *>("synDoc_" + string.setNum(number));
 
 
-    QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
+    QHash<MainTextDocument *, QFile *> fileForDoc = hub->project()->mainTree_fileForDocHash();
 
     QFile *textFile = fileForDoc.value(text);
     QFile *noteFile = fileForDoc.value(note);
@@ -1539,17 +1539,17 @@ void MainTreeAbstractModel::removeItem(QDomElement element)
     fileForDoc.remove(note);
     fileForDoc.remove(syn);
 
-    hub->set_mainTree_fileForDocHash(fileForDoc);
+    hub->project()->set_mainTree_fileForDocHash(fileForDoc);
 
 
-    QHash<MainTextDocument *, int> numForDoc = hub->mainTree_numForDocHash();
+    QHash<MainTextDocument *, int> numForDoc = hub->project()->mainTree_numForDocHash();
 
 
     numForDoc.remove(text);
     numForDoc.remove(note);
     numForDoc.remove(syn);
 
-    hub->set_mainTree_numForDocHash(numForDoc);
+    hub->project()->set_mainTree_numForDocHash(numForDoc);
 
 
     text->deleteLater();
@@ -1580,7 +1580,7 @@ QDomElement MainTreeAbstractModel::addSheet(QDomElement targetElement, QString a
 
     if(action == "addChild"){
 
-        newElement = hub->mainTreeDomDoc().createElement("nothing");
+        newElement = hub->project()->mainTreeDomDoc().createElement("nothing");
         targetElement.appendChild(newElement);
         newElement = modifyAttributes(newElement, type);
         // expand the parent in order to see the child :
@@ -1592,7 +1592,7 @@ QDomElement MainTreeAbstractModel::addSheet(QDomElement targetElement, QString a
 
 
 
-        newElement = hub->mainTreeDomDoc().createElement("nothing");
+        newElement = hub->project()->mainTreeDomDoc().createElement("nothing");
         targetElement.parentNode().insertAfter(newElement, targetElement);
         newElement = modifyAttributes(newElement, type);
 
@@ -1623,11 +1623,11 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         QList<int> separatorsNumList;
 
 
-        QDomNodeList bookNodes = hub->mainTreeDomDoc().documentElement().elementsByTagName("book");
-        QDomNodeList actNodes = hub->mainTreeDomDoc().documentElement().elementsByTagName("act");
-        QDomNodeList chapterNodes = hub->mainTreeDomDoc().documentElement().elementsByTagName("chapter");
-        QDomNodeList sceneNodes = hub->mainTreeDomDoc().documentElement().elementsByTagName("scene");
-        QDomNodeList separatorNodes = hub->mainTreeDomDoc().documentElement().elementsByTagName("separator");
+        QDomNodeList bookNodes = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("book");
+        QDomNodeList actNodes = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("act");
+        QDomNodeList chapterNodes = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("chapter");
+        QDomNodeList sceneNodes = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("scene");
+        QDomNodeList separatorNodes = hub->project()->mainTreeDomDoc().documentElement().elementsByTagName("separator");
 
 
         for(int i = 0; i < bookNodes.size(); ++i)
@@ -1734,18 +1734,18 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         newElement.setAttribute("isTrashed", "no");
 
 
-        QFile *textFile = new QFile(hub->projectWorkPath() + newElement.attribute("textPath"));
-        QFile *noteFile = new QFile(hub->projectWorkPath() + newElement.attribute("notePath"));
-        QFile *synFile = new QFile(hub->projectWorkPath() + newElement.attribute("synPath"));
+        QFile *textFile = new QFile(hub->project()->projectWorkPath() + newElement.attribute("textPath"));
+        QFile *noteFile = new QFile(hub->project()->projectWorkPath() + newElement.attribute("notePath"));
+        QFile *synFile = new QFile(hub->project()->projectWorkPath() + newElement.attribute("synPath"));
 
 
         int number = newElement.attribute("number").toInt();
-        QHash<MainTextDocument *, QFile *> fileForDoc = hub->mainTree_fileForDocHash();
-        QHash<MainTextDocument *, int> numForDoc = hub->mainTree_numForDocHash();
+        QHash<MainTextDocument *, QFile *> fileForDoc = hub->project()->mainTree_fileForDocHash();
+        QHash<MainTextDocument *, int> numForDoc = hub->project()->mainTree_numForDocHash();
 
         SpellChecker *m_spellChecker = hub->spellChecker();
 
-        MainTextDocument *textDocument = new MainTextDocument(hub, m_spellChecker);
+        MainTextDocument *textDocument = new MainTextDocument(hub->project(), m_spellChecker);
         textDocument->setIdNumber(number);
         textDocument->setDocType("text");
         textDocument->toHtml();
@@ -1756,7 +1756,7 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         numForDoc.insert(textDocument, number);
 
 
-        MainTextDocument *noteDocument = new MainTextDocument(hub, m_spellChecker);
+        MainTextDocument *noteDocument = new MainTextDocument(hub->project(), m_spellChecker);
         noteDocument->setIdNumber(number);
         noteDocument->setDocType("note");
         noteDocument->toHtml();
@@ -1767,7 +1767,7 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         numForDoc.insert(noteDocument, number);
 
 
-        MainTextDocument *synDocument = new MainTextDocument(hub, m_spellChecker);
+        MainTextDocument *synDocument = new MainTextDocument(hub->project(), m_spellChecker);
         synDocument->setIdNumber(number);
         synDocument->setDocType("synopsis");
         synDocument->toHtml();
@@ -1777,8 +1777,8 @@ QDomElement MainTreeAbstractModel::modifyAttributes(QDomElement newElement, QStr
         fileForDoc.insert(synDocument, synFile);
         numForDoc.insert(synDocument, number);
 
-        hub->set_mainTree_fileForDocHash(fileForDoc);
-        hub->set_mainTree_numForDocHash(numForDoc);
+        hub->project()->set_mainTree_fileForDocHash(fileForDoc);
+        hub->project()->set_mainTree_numForDocHash(numForDoc);
         hub->connectAllSheetsToWordCountThread();
         hub->connectAllSheetsToSpellChecker();
 
@@ -1852,11 +1852,11 @@ void MainTreeAbstractModel::createNewStructure(QHash<QString, int> newStructureH
     // clean tree :
 
 
-    QDomNodeList nodeList = hub->mainTreeDomDoc().elementsByTagName("book");
+    QDomNodeList nodeList = hub->project()->mainTreeDomDoc().elementsByTagName("book");
 
     if(!nodeList.isEmpty())
     for (int i = 0; i < nodeList.size(); ++i) {
-        hub->mainTreeDomDoc().documentElement().removeChild(nodeList.at(i));
+        hub->project()->mainTreeDomDoc().documentElement().removeChild(nodeList.at(i));
     }
 
 
@@ -1873,7 +1873,7 @@ void MainTreeAbstractModel::createNewStructure(QHash<QString, int> newStructureH
 
 
     for(int i = 0; i  < bookCount; ++i){
-        QDomElement b = this->addSheet(hub->mainTreeDomDoc().documentElement(), "addChild", "book");
+        QDomElement b = this->addSheet(hub->project()->mainTreeDomDoc().documentElement(), "addChild", "book");
 
 
         if(actCount == 0)
