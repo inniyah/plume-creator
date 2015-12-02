@@ -41,7 +41,12 @@ TARGET = $$join(TARGET,,,_beta)
 win32: LIBS += -lzdll
 !win32: LIBS += -lz
 
-LIBS += -lquazip
+equals(QT_MAJOR_VERSION, 4) {
+    LIBS += -lquazip
+}
+greaterThan(QT_MAJOR_VERSION, 4) {
+    LIBS += -lquazip-qt5
+}
 
 LIBS += -lhunspell
 

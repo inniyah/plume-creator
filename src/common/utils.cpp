@@ -536,11 +536,25 @@ QString Utils::projectRealName(QString fileName)
     //  creation date :
     QString realName;
     QString tempFileName = QDir::tempPath() + "/Plume/info";
-    QString infoFileName = JlCompress::extractFile(fileName, "info", tempFileName );
+
+    QFileInfo checkFile(fileName);
+    if (!checkFile.exists()) { // check if file exists
+        return QString("ERROR file does not exist: %1").arg(fileName);
+    }
+    if (!checkFile.isFile()) { // check that it's indeed a file and not a directory
+        return QString("ERROR not a file: %1").arg(fileName);
+    }
+
+    qDebug() << QString("Info File: %1 -> %2\n")
+                .arg(fileName)
+                .arg(tempFileName);
+
+    QString infoFileName = JlCompress::extractFile(fileName, "info", tempFileName);
     QFile *infoFile = new QFile(infoFileName);
 
-    if(!infoFile->exists())
+    if (!infoFile->exists()) {
         return "ERROR real name";
+    }
 
     QDomDocument infoDomDoc;
     QString errorStr;
@@ -552,8 +566,6 @@ QString Utils::projectRealName(QString fileName)
                     .arg(errorLine)
                     .arg(errorColumn)
                     .arg(errorStr);
-
-
 
         return "ERROR real name";
     }
