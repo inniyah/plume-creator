@@ -1,0 +1,5 @@
+Makefile
+plume-creator
+*.o
+*.a
+*~
