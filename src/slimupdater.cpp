@@ -1,3 +1,5 @@
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
+
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>
 #endif 
@@ -160,3 +162,5 @@ void SlimUpdater::packageComboBox_currentIndexChanged(int index)
 {
     updateChecker->setPackageType(index);
 }
+
+#endif

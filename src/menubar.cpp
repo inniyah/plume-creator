@@ -540,10 +540,12 @@ void MenuBar::createActions()
     viewCreditsAct->setToolTip(tr("View credits"));
     connect(viewCreditsAct, SIGNAL(triggered()), this, SLOT(viewCredits()));
 
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
     updaterAct = new QAction(QIcon(":/pics/download.png"),tr("Check Update"),this);
     // aboutQtAct->setShortcut(QKeySequence::Quit);
     updaterAct->setToolTip(tr("check for an update"));
     connect(updaterAct, SIGNAL(triggered()), this, SLOT(checkUpdate()));
+#endif
 
     helpGroup = new QMenu(tr("&Help"),parentWidget);
     helpGroup->addAction(aboutAct);
@@ -551,7 +553,9 @@ void MenuBar::createActions()
     helpGroup->addSeparator();
     helpGroup->addAction(viewReleaseNotesAct);
     helpGroup->addAction(viewCreditsAct);
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
     helpGroup->addAction(updaterAct);
+#endif
 }
 
 //---------------------------------------------------------------------------

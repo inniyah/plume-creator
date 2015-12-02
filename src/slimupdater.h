@@ -1,3 +1,5 @@
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
+
 /***************************************************************************
  *   Copyright (C) 2011 by Cyril Jacquet                                   *
  *   cyril.jacquet@plume-creator.eu                                                 *
@@ -103,3 +105,5 @@ bool oneTime;
 };
 
 #endif // SLIMUPDATER_H
+
+#endif

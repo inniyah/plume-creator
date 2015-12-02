@@ -183,7 +183,9 @@ bool projectAlreadyOpened;
     *aboutAct,
     *viewReleaseNotesAct,
     *viewCreditsAct,
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
     *updaterAct,
+#endif
    *showTreeDockAct, *showNotesDockAct, *showAttendDockAct, *showToolsDockAct, *launchOutlinerAct, *showFullscreenAct;
 
 QMenu *projectGroup, *editGroup, *helpGroup, *viewGroup;

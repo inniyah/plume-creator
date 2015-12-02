@@ -1988,23 +1988,22 @@ int MainWindow::setCurrentNumber()
 
 void MainWindow::launchSlimUpdater(QString mode)
 {
-
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
     SlimUpdater *updater = new SlimUpdater;
     updater->setHub(hub);
     connect(this, SIGNAL(applyConfigSignal()), updater, SLOT(readSettings()));
     connect(updater, SIGNAL(closeUpdaterSignal()), this, SLOT(closeSlimUpdater()));
     ui->baseWidget->layout()->addWidget(updater);
-
+#endif
 }
 
 void MainWindow::closeSlimUpdater()
 {
-
-
-
+#ifdef INCLUDE_SLIMUPDATER_PLUGIN
     QWidget *widget = ui->baseWidget->findChild<QWidget *>("SlimUpdater");
     ui->baseWidget->layout()->removeWidget(widget);
     widget->deleteLater();
+#endif
 }
 
 
