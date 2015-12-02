@@ -33,7 +33,7 @@
 #include "zipper/zipper.h"
 #include "changestests.h"
 #include "fileupdater.h"
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 #include "common/utils.h"
 #include "maintextdocument.h"
 #include "wordcountenginethread.h"

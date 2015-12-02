@@ -7,7 +7,7 @@
 
 #include "themes.h"
 #include "common/utils.h"
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 #include "zipper/zipchecker.h"
 
 Themes::Themes(QObject *parent) :

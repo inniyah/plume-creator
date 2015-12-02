@@ -1,5 +1,5 @@
 #include "fileupdater.h"
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 
 FileUpdater::FileUpdater(QWidget *parent) :
     QWidget(parent), attendVersion("0.6"), treeVersion("0.5"), infoVersion("0.3")

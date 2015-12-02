@@ -8,7 +8,7 @@
 #include <QCoreApplication>
 
 
-#include "externals/hunspell/hunspell.hxx"
+#include <hunspell/hunspell.hxx>
 #include "common/utils.h"
 
 SpellChecker::SpellChecker(QObject *parent):

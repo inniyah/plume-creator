@@ -1,5 +1,5 @@
 #include "zipper.h"
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 
 Zipper::Zipper(QObject *parent) :
     currentJob("extract"), oneTime(true)

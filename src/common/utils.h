@@ -22,7 +22,7 @@
 
 #include <QString>
 #include <QDomDocument>
-#include "../../externals/quazip/JlCompress.h"
+#include <quazip/JlCompress.h>
 #include "../fileupdater.h"
 
 class Utils

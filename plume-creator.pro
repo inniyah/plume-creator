@@ -38,33 +38,12 @@ CONFIG(beta_release) {
 TARGET = $$join(TARGET,,,_beta)
 }
 
-# dossier de zlib.h
-INCLUDEPATH += ./externals/zlib
-
-LIBS += -L external/zlib
 win32: LIBS += -lzdll
 !win32: LIBS += -lz
 
-# dossier des headers de quazip
-INCLUDEPATH +=  ./externals/quazip
+LIBS += -lquazip
 
-# hunspell
-
-
-#unix: !macx {
-
-#LIBS += -lhunspell \
-#-lhunspell-1.3
-
-#}
-#else {
-include(./externals/hunspell/hunspell.pro)
-#}
-
-
-
-
-
+LIBS += -lhunspell
 
 macx {
 
@@ -259,7 +238,7 @@ translations/plume-creator_ru_RU.ts \
 translations/plume-creator_pt_BR.ts
 
 include(./externals/qtsingleapplication/src/qtsingleapplication.pri)
-include(./externals/quazip/quazip.pro)
+#include(./externals/quazip/quazip.pro)
 
 FORMS += \
 src/settingsdialog.ui \
