@@ -1093,19 +1093,19 @@ Have you checked the one(s) you want to look through ?</source>
         <location filename="../src/hub.cpp" line="503"/>
         <location filename="../src/hub.cpp" line="511"/>
         <source>The document </source>
-        <translation>El documento</translation>
+        <translation>¡El documento</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="503"/>
         <source> you are trying to open doesn&apos;t exist !
 </source>
-        <translation>¡Lo que está intentando abrir no existe!</translation>
+        <translation>que está intentando abrir no existe!</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="511"/>
         <source> you are trying to open isn&apos;t a *.plume or .plume_backup file !
 </source>
-        <translation>¡Lo que está intentando abrir no es un archivo *.plume o un archivo *.plume_backup!</translation>
+        <translation>que está intentando abrir no es un archivo *.plume o un archivo *.plume_backup!</translation>
     </message>
     <message>
         <location filename="../src/hub.cpp" line="525"/>
